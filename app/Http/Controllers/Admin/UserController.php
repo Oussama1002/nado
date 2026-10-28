@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
+use Spatie\Permission\Guard;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -50,6 +52,8 @@ class UserController extends Controller
 
         $data['password'] = Hash::make($request->password);
         $user = User::create($data);
+
+        $this->ensureRole($user, $data['role']);
         $user->assignRole($data['role']);
 
         return to_route('users.index')->with('success', 'user added successfully');
@@ -85,11 +89,34 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255',  Rule::unique(User::class)->ignore($user->id)],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()->min(4)],
         ]);
-        $data['password'] = Hash::make($request->password);
+        // Only change the password when a new one was actually typed; otherwise
+        // the previous behaviour overwrote it with Hash::make(null) on every edit.
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']);
+        }
+
         $user->update($data);
-        $user->assignRole($data['role']);
+
+        $this->ensureRole($user, $data['role']);
+        $user->syncRoles([$data['role']]);
 
         return to_route('users.index')->with('success', 'user edits successfully');
+    }
+
+    /**
+     * Make sure the given role exists for the user's own guard before it is
+     * assigned. The User model resolves to the "admin" guard, while the role
+     * seeder created roles on the default guard — so a role could be missing
+     * and Spatie would throw RoleDoesNotExist.
+     */
+    private function ensureRole(User $user, string $role): void
+    {
+        Role::firstOrCreate([
+            'name'       => $role,
+            'guard_name' => Guard::getDefaultName($user),
+        ]);
     }
 
     /**

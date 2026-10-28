@@ -12,7 +12,12 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::firstOrCreate(['name' => 'admin']);
-        Role::firstOrCreate(['name' => 'client']);
+        // Admin users resolve to the "admin" guard, so their roles must be
+        // created on that guard (the two the users form offers: admin, member).
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'admin']);
+        Role::firstOrCreate(['name' => 'member', 'guard_name' => 'admin']);
+
+        // Client-side role lives on the "client" guard.
+        Role::firstOrCreate(['name' => 'client', 'guard_name' => 'client']);
     }
 }
