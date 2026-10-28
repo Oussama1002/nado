@@ -2534,6 +2534,64 @@
             transform: translateX(4px);
         }
 
+        /* BLOG — mobile fixes: stop the featured title overflowing onto the image */
+        @media (max-width: 767px) {
+            .blog-section {
+                padding: 4rem 0;
+            }
+
+            .blog-header {
+                margin-bottom: 3rem;
+                gap: 1.25rem;
+            }
+
+            .blog-big-title {
+                font-size: 2.75rem;
+                line-height: 0.9;
+            }
+
+            .btn-explore-blog {
+                align-self: flex-start;
+            }
+
+            /* Taller card on phones so a long headline has room to sit */
+            .blog-featured {
+                aspect-ratio: 4 / 5;
+                border-radius: 1.5rem;
+            }
+
+            /* Darken more of the image so overlaid text stays readable */
+            .blog-featured-overlay {
+                background: linear-gradient(to top,
+                    #020617 22%,
+                    rgba(2, 6, 23, 0.65) 48%,
+                    rgba(2, 6, 23, 0) 78%);
+            }
+
+            .blog-featured-content {
+                bottom: 1.5rem;
+                left: 1.25rem;
+                right: 1.25rem;
+            }
+
+            .blog-meta-tag {
+                margin-bottom: 0.75rem;
+            }
+
+            .blog-featured-title {
+                font-size: 1.5rem;
+                line-height: 1.1;
+            }
+
+            .blog-sidebar-card {
+                border-radius: 1.5rem;
+            }
+
+            .blog-sidebar-title {
+                font-size: 1.25rem;
+            }
+        }
+
         .sidebar-content {
             padding: 2.5rem;
             text-align: left;
