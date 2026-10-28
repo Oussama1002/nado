@@ -2553,23 +2553,15 @@
                 align-self: flex-start;
             }
 
-            /* Stack order on phones: small blog, main blog, small blog.
-               Promote the two sidebar cards to direct grid items so the
-               featured card can sit between them. */
-            .blog-sidebar {
-                display: contents !important;
+            /* Main blog stays first (natural order), and is bigger than the
+               two small cards below it: taller, more prominent, larger title. */
+            .blog-hero .blog-featured {
+                aspect-ratio: 4 / 5;
             }
 
-            .blog-sidebar .blog-sidebar-card:first-child {
-                order: 1;
-            }
-
-            .blog-hero {
-                order: 2;
-            }
-
-            .blog-sidebar .blog-sidebar-card:last-child {
-                order: 3;
+            .blog-hero .blog-featured-title {
+                font-size: clamp(1.6rem, 9cqw, 2.6rem);
+                line-height: 1;
             }
         }
 
