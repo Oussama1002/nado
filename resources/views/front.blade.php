@@ -4017,8 +4017,7 @@
         <!-- 3b. DERNIERS VEHICULES -->
         <section class="listings-section" id="derniers-vehicules" style="background-color: var(--white);">
             <div class="container">
-                <h2 class="section-title">Nos <br /><span class="text-primary">DERNIERS</span> <span
-                        class="text-secondary">VÉHICULES</span></h2>
+                <h2 class="section-title">{!! __('messages.home.vehicles_heading') !!}</h2>
 
                 <div class="dv-wrap">
                     <button type="button" class="dv-btn dv-btn-prev" id="dv-prev" aria-label="Précédent">
@@ -4105,7 +4104,7 @@
                     </button>
                 </div>
 
-                <a href="{{ route('achat.index') }}" class="btn-view-all"><span>Voir tout le catalogue</span><i
+                <a href="{{ route('achat.index') }}" class="btn-view-all"><span>{{ __('messages.home.view_all_catalog') }}</span><i
                         data-lucide="arrow-right" style="width: 20px; height: 20px;"></i></a>
             </div>
         </section>
@@ -4115,7 +4114,7 @@
         <section class="stories">
             <div class="container">
                 <div class="story-header">
-                    <h2 class="story-title"><span class="nado-b">NADO</span><span class="nado-y">.MA</span> sur les réseaux : Ne ratez rien !</h2>
+                    <h2 class="story-title">{!! __('messages.home.story_heading') !!}</h2>
                 </div>
 
                 <div class="story-scroll no-scrollbar">
@@ -4267,8 +4266,7 @@
         <!-- 4. ANNONCES CERTIFIÉES -->
         <section class="listings-section" id="annonces-certifiees">
             <div class="container">
-                <h2 class="section-title">Dernières <br /><span class="text-primary">ANNONCES</span> <span
-                        class="text-secondary">CERTIFIÉES</span></h2>
+                <h2 class="section-title">{!! __('messages.home.certified_heading') !!}</h2>
 
                 <div class="listings-grid">
                     @foreach ($similar_ads->take(3) as $ad)
@@ -4346,7 +4344,7 @@
                     @endforeach
                 </div>
 
-                <a href="{{ route('achat.index') }}" class="btn-view-all"><span>Voir tout le catalogue</span><i
+                <a href="{{ route('achat.index') }}" class="btn-view-all"><span>{{ __('messages.home.view_all_catalog') }}</span><i
                         data-lucide="arrow-right" style="width: 20px; height: 20px;"></i></a>
             </div>
         </section>
@@ -4358,11 +4356,9 @@
                 <div class="expert-card">
                     <div class="expert-content">
                         <div class="label-trust"><i data-lucide="shield-check"
-                                style="color: var(--secondary); width: 24px; height: 24px;"></i><span>Label
-                                Confiance</span></div>
-                        <h2 class="expert-title">Expertise <span class="text-primary">110 Points</span></h2>
-                        <p class="expert-desc">Chaque véhicule certifié passe une inspection chirurgicale avant sa mise
-                            en ligne.</p>
+                                style="color: var(--secondary); width: 24px; height: 24px;"></i><span>{{ __('messages.home.trust_label') }}</span></div>
+                        <h2 class="expert-title">{!! __('messages.home.expertise_heading') !!}</h2>
+                        <p class="expert-desc">{{ __('messages.home.expertise_desc') }}</p>
                     </div>
                     <div class="expert-image"><img
                             src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=800"
@@ -4375,8 +4371,7 @@
         @if(($similar_adsp ?? collect())->isNotEmpty())
         <section class="listings-section" style="background-color: var(--white);">
             <div class="container">
-                <h2 class="section-title">Dernières <br /><span class="text-primary">ANNONCES</span> <span
-                        class="text-secondary">PARTICULIERS</span></h2>
+                <h2 class="section-title">{!! __('messages.home.particuliers_heading') !!}</h2>
 
                 <div class="listings-grid">
                     @foreach ($similar_adsp->take(3) as $ad)
@@ -4465,14 +4460,12 @@
                     <div class="expert-content">
                         <div class="label-trust"><i data-lucide="hand-coins"
                                 style="color: var(--slate-900); width: 24px; height: 24px;"></i><span
-                                style="color: var(--slate-900);">Solutions Finance</span></div>
-                        <h2 class="expert-title" style="color: var(--slate-900);">Financement <br /><span
-                                class="text-primary">Accordé en 24H</span></h2>
-                        <p class="expert-desc" style="color: rgba(15, 23, 42, 0.7); font-weight: 700;">Réponse de
-                            principe immédiate. Taux préférentiels pour nos clients Premium.</p>
+                                style="color: var(--slate-900);">{{ __('messages.home.finance_solutions') }}</span></div>
+                        <h2 class="expert-title" style="color: var(--slate-900);">{!! __('messages.home.financement_heading') !!}</h2>
+                        <p class="expert-desc" style="color: rgba(15, 23, 42, 0.7); font-weight: 700;">{{ __('messages.home.financement_desc') }}</p>
                         <a class="btn-discover" href="{{ route('financement.index') }}"
                             style="background-color: var(--slate-900); color: var(--white); text-decoration: none;">
-                            Simuler mon crédit
+                            {{ __('messages.home.simulate_credit') }}
                             <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
                         </a>
                     </div>
@@ -4488,8 +4481,7 @@
         <section class="listings-section">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Dernières <br /><span class="text-primary">ANNONCES</span> <span
-                            class="text-secondary">PROS</span></h2>
+                    <h2 class="section-title">{!! __('messages.home.pros_heading') !!}</h2>
                 </div>
                 <div class="listings-grid">
                     @foreach (($similar_ads_pro ?? collect())->take(3) as $ad)
@@ -4576,10 +4568,10 @@
             <div class="container relative z-10">
                 <div class="price-grid">
                     <div>
-                        <h2 class="price-title">Combien vaut <br /><span class="text-secondary">VOTRE VOITURE ?</span>
+                        <h2 class="price-title">{!! __('messages.home.price_heading') !!}
                         </h2>
-                        <p class="price-desc">Obtenez une estimation précise en 2 minutes basée sur l'IA.</p>
-                        <a href="{{ route('estimate.page') }}" class="btn-estimate" style="text-decoration: none; display: inline-flex;"><span>Estimer ma voiture</span><i data-lucide="arrow-right"
+                        <p class="price-desc">{{ __('messages.home.price_desc') }}</p>
+                        <a href="{{ route('estimate.page') }}" class="btn-estimate" style="text-decoration: none; display: inline-flex;"><span>{{ __('messages.home.estimate_my_car') }}</span><i data-lucide="arrow-right"
                                 style="width: 20px; height: 20px;"></i></a>
                     </div>
                     <div class="price-image-container"><img
@@ -4593,8 +4585,7 @@
         <section class="immersive-section">
             <div class="container">
                 <div style="margin-bottom: 4rem;">
-                    <h2 class="section-title " style="color: white">Expériences <span
-                            class="text-primary">Immersives</span></h2>
+                    <h2 class="section-title " style="color: white">{!! __('messages.home.immersive_heading') !!}</h2>
                 </div>
                 <div class="immersive-scroll no-scrollbar">
                     @forelse ($videoAds as $vid)
@@ -4627,7 +4618,7 @@
         <section class="live-section">
             <div class="container">
                 <div style="margin-bottom: 4rem;">
-                    <h2 class="section-title">L'Arène des <br /><span class="text-primary">Enchères Live</span></h2>
+                    <h2 class="section-title">{!! __('messages.home.live_heading') !!}</h2>
                 </div>
                 @if ($autoEncheres->isNotEmpty())
                 <div class="auction-grid">
@@ -4698,11 +4689,10 @@
             <div class="container">
                 <div class="whatsapp-card">
                     <div class="whatsapp-content">
-                        <h2 class="whatsapp-title">BESOIN D'UN <br /><span class="text-secondary">EXPERT <br />NADO
-                                ?</span></h2>
+                        <h2 class="whatsapp-title">{!! __('messages.home.expert_heading') !!}</h2>
                         <button type="button" class="btn-whatsapp" onclick="openExpertModal()" style="border:none; cursor:pointer;">
                             <i data-lucide="mail" style="width: 24px; height: 24px; stroke-width: 3;"></i>
-                            FORMULAIRE DE CONTACT
+                            {{ __('messages.expert.form_btn') }}
                         </button>
                     </div>
                     <div class="whatsapp-image">
@@ -4718,25 +4708,25 @@
             <div class="expert-modal__backdrop" onclick="closeExpertModal()"></div>
             <div class="expert-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="expertModalTitle">
                 <button type="button" class="expert-modal__close" onclick="closeExpertModal()" aria-label="Fermer">&times;</button>
-                <h3 id="expertModalTitle" class="expert-modal__title">Besoin d'un <span class="text-primary">expert NADO</span> ?</h3>
-                <p class="expert-modal__subtitle">Laissez vos coordonnées, un expert vous recontacte rapidement.</p>
+                <h3 id="expertModalTitle" class="expert-modal__title">{!! __('messages.expert.title') !!}</h3>
+                <p class="expert-modal__subtitle">{{ __('messages.expert.subtitle') }}</p>
 
                 <form id="expertForm" class="expert-modal__form" method="post" action="{{ route('contactez-nous.store') }}">
                     @csrf
-                    <input type="text" name="name" required placeholder="Nom complet *" class="expert-input">
+                    <input type="text" name="name" required placeholder="{{ __('messages.expert.name') }}" class="expert-input">
                     <div class="expert-modal__grid">
-                        <input type="tel" name="phone" required placeholder="Téléphone *" class="expert-input">
-                        <input type="email" name="email" required placeholder="Email *" class="expert-input">
+                        <input type="tel" name="phone" required placeholder="{{ __('messages.expert.phone') }}" class="expert-input">
+                        <input type="email" name="email" required placeholder="{{ __('messages.expert.email') }}" class="expert-input">
                     </div>
                     <select name="ville" required class="expert-input">
-                        <option value="" disabled selected>Choisir une ville *</option>
+                        <option value="" disabled selected>{{ __('messages.expert.ville') }}</option>
                         @foreach($villes as $ville)
                             <option value="{{ $ville->name }}">{{ $ville->name }}</option>
                         @endforeach
                     </select>
-                    <textarea name="message" rows="4" placeholder="Votre message" class="expert-input"></textarea>
+                    <textarea name="message" rows="4" placeholder="{{ __('messages.expert.message') }}" class="expert-input"></textarea>
                     <div id="expertFormFeedback" class="expert-modal__feedback" role="status"></div>
-                    <button type="submit" id="expertSubmitBtn" class="expert-modal__submit">Envoyer ma demande</button>
+                    <button type="submit" id="expertSubmitBtn" class="expert-modal__submit">{{ __('messages.expert.submit') }}</button>
                 </form>
             </div>
         </div>
@@ -4934,11 +4924,10 @@
             <div class="container">
                 <div class="testimonial-grid">
                     <div class="testimonial-left text-left">
-                        <h2 class="section-title">Ce que disent <br /><span class="text-primary">NOS</span> <span
-                                class="text-secondary">CLIENTS</span></h2>
+                        <h2 class="section-title">{!! __('messages.home.clients_heading') !!}</h2>
                         <p
                             style="color: var(--slate-500); font-weight: 500; font-size: 1.125rem; max-width: 24rem;">
-                            La satisfaction de nos client est notre priorité absolue.</p>
+                            {{ __('messages.home.clients_desc') }}</p>
                     </div>
                     <div class="testimonial-right">
                         <div class="testimonial-carousel-row">
@@ -4986,10 +4975,10 @@
             <div class="container">
                 <div class="blog-header">
                     <div class="blog-title-wrapper">
-                        <h2 class="blog-big-title">BLOG <br /><span class="text-primary">NADO</span></h2>
+                        <h2 class="blog-big-title">{!! __('messages.home.blog_heading') !!}</h2>
                     </div>
                     <a href="{{ route('articles.index') }}" class="btn-explore-blog" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                        Explorer nos blog <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                        {{ __('messages.home.explore_blog') }} <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
                     </a>
                 </div>
 
