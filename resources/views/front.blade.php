@@ -2554,24 +2554,35 @@
                 align-self: flex-start;
             }
 
-            /* Taller card on phones so a long headline has room to sit */
+            /* On phones the featured card matches the sidebar cards:
+               image on top, content in a card below (no overlay). */
             .blog-featured {
-                aspect-ratio: 4 / 5;
+                aspect-ratio: auto;
                 border-radius: 1.5rem;
+                box-shadow: none;
+                background-color: rgba(15, 23, 42, 0.4);
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                display: flex;
+                flex-direction: column;
             }
 
-            /* Darken more of the image so overlaid text stays readable */
+            .blog-featured img {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                height: auto;
+                object-fit: cover;
+            }
+
+            /* No gradient overlay in the card layout */
             .blog-featured-overlay {
-                background: linear-gradient(to top,
-                    #020617 22%,
-                    rgba(2, 6, 23, 0.65) 48%,
-                    rgba(2, 6, 23, 0) 78%);
+                display: none;
             }
 
             .blog-featured-content {
-                bottom: 1.5rem;
-                left: 1.25rem;
-                right: 1.25rem;
+                position: static;
+                inset: auto;
+                padding: 2.5rem;
             }
 
             .blog-meta-tag {
@@ -2579,7 +2590,7 @@
             }
 
             .blog-featured-title {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 line-height: 1.1;
             }
 
