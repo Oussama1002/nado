@@ -30,21 +30,33 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|max:255',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'name'    => 'required|string|max:255',
+            'phone'   => 'required|string|max:255',
+            'ville'   => 'nullable|string|max:255',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'nullable|string|max:5000',
         ]);
 
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'subject' => $request->subject,
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'phone'   => $request->phone,
+            'ville'   => $request->ville,
+            'subject' => $request->subject ?: 'Demande expert NADO',
             'message' => $request->message,
-
         ];
 
         Mail::to('contact@nado.ma')->send(new ContactFromMail($data));
+
+        // The homepage "Expert NADO" popup submits via fetch and expects JSON,
+        // so it can stay on the page and show a confirmation.
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Votre demande a bien été envoyée. Un expert NADO vous recontactera rapidement.',
+            ]);
+        }
 
         return to_route('contactez-nous.index');
     }

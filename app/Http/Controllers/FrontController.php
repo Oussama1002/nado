@@ -111,8 +111,12 @@ $similar_ads = Cache::remember('similar_ads', 86400, function () {
 });
 
 
+        $villes = Cache::remember('villes', 86400, function () {
+            return \App\Models\Ville::orderBy('name')->get();
+        });
+
         return view('front', ['imgslider' => $imgslider,    'articles'      => $articles,
-        'autoEncheres' => $autoEncheres,
+        'autoEncheres' => $autoEncheres, 'villes' => $villes,
  'vdAds' => $vdAds, 'avistext' => $avistext, 'avisvideos' => $avisvideos, 'brands' => $brands,
             'similar_ads' => $similar_ads, 'latestAds' => $latestAds, 'videoAds' =>$videoAds, 'stories' => $stories, 'leftBanner' => $leftBanner, 'rightBanner' => $rightBanner, 'centerBanner' => $centerBanner,'similar_adsp' => $similar_adsp, 'similar_ads_pro' => $similar_ads_pro, 'formatDate' => function ($date) {
                 return $this->formatDateLabel($date);

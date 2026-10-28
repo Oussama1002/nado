@@ -4696,10 +4696,10 @@
                     <div class="whatsapp-content">
                         <h2 class="whatsapp-title">BESOIN D'UN <br /><span class="text-secondary">EXPERT <br />NADO
                                 ?</span></h2>
-                        <a href="{{ url('/contactez-nous') }}" class="btn-whatsapp">
+                        <button type="button" class="btn-whatsapp" onclick="openExpertModal()" style="border:none; cursor:pointer;">
                             <i data-lucide="mail" style="width: 24px; height: 24px; stroke-width: 3;"></i>
                             FORMULAIRE DE CONTACT
-                        </a>
+                        </button>
                     </div>
                     <div class="whatsapp-image">
                         <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1200"
@@ -4708,6 +4708,222 @@
                 </div>
             </div>
         </section>
+
+        <!-- Expert NADO — popup contact form -->
+        <div id="expertModal" class="expert-modal" aria-hidden="true">
+            <div class="expert-modal__backdrop" onclick="closeExpertModal()"></div>
+            <div class="expert-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="expertModalTitle">
+                <button type="button" class="expert-modal__close" onclick="closeExpertModal()" aria-label="Fermer">&times;</button>
+                <h3 id="expertModalTitle" class="expert-modal__title">Besoin d'un <span class="text-primary">expert NADO</span> ?</h3>
+                <p class="expert-modal__subtitle">Laissez vos coordonnées, un expert vous recontacte rapidement.</p>
+
+                <form id="expertForm" class="expert-modal__form" method="post" action="{{ route('contactez-nous.store') }}">
+                    @csrf
+                    <input type="text" name="name" required placeholder="Nom complet *" class="expert-input">
+                    <div class="expert-modal__grid">
+                        <input type="tel" name="phone" required placeholder="Téléphone *" class="expert-input">
+                        <input type="email" name="email" required placeholder="Email *" class="expert-input">
+                    </div>
+                    <select name="ville" required class="expert-input">
+                        <option value="" disabled selected>Choisir une ville *</option>
+                        @foreach($villes as $ville)
+                            <option value="{{ $ville->name }}">{{ $ville->name }}</option>
+                        @endforeach
+                    </select>
+                    <textarea name="message" rows="4" placeholder="Votre message" class="expert-input"></textarea>
+                    <div id="expertFormFeedback" class="expert-modal__feedback" role="status"></div>
+                    <button type="submit" id="expertSubmitBtn" class="expert-modal__submit">Envoyer ma demande</button>
+                </form>
+            </div>
+        </div>
+
+        <style>
+            .expert-modal {
+                position: fixed;
+                inset: 0;
+                z-index: 1000;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            }
+            .expert-modal.open { display: flex; }
+            .expert-modal__backdrop {
+                position: absolute;
+                inset: 0;
+                background: rgba(2, 6, 23, 0.7);
+                backdrop-filter: blur(6px);
+            }
+            .expert-modal__dialog {
+                position: relative;
+                width: 100%;
+                max-width: 540px;
+                max-height: 92vh;
+                overflow-y: auto;
+                background: #0b1220;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 1.5rem;
+                padding: 2.5rem;
+                box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+                animation: expertPop 0.25s ease;
+            }
+            @keyframes expertPop {
+                from { transform: translateY(16px) scale(0.98); opacity: 0; }
+                to   { transform: translateY(0) scale(1); opacity: 1; }
+            }
+            .expert-modal__close {
+                position: absolute;
+                top: 1rem;
+                right: 1.25rem;
+                background: none;
+                border: none;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 2rem;
+                line-height: 1;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+            .expert-modal__close:hover { color: #fff; }
+            .expert-modal__title {
+                font-size: 1.75rem;
+                font-weight: 900;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: -0.03em;
+                margin: 0 0 0.5rem;
+            }
+            .expert-modal__subtitle {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 0.95rem;
+                margin: 0 0 1.75rem;
+            }
+            .expert-modal__form {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .expert-modal__grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            @media (max-width: 520px) {
+                .expert-modal__grid { grid-template-columns: 1fr; }
+                .expert-modal__dialog { padding: 2rem 1.5rem; }
+            }
+            .expert-input {
+                width: 100%;
+                padding: 0.9rem 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 0.75rem;
+                color: #fff;
+                font-size: 0.95rem;
+                font-family: inherit;
+                outline: none;
+                transition: border-color 0.2s, background 0.2s;
+            }
+            .expert-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+            .expert-input:focus {
+                border-color: var(--primary, #0b84e3);
+                background: rgba(255, 255, 255, 0.08);
+            }
+            select.expert-input { appearance: none; cursor: pointer; }
+            select.expert-input option { color: #0b1220; }
+            textarea.expert-input { resize: vertical; min-height: 90px; }
+            .expert-modal__feedback {
+                font-size: 0.9rem;
+                font-weight: 600;
+                min-height: 1.2em;
+            }
+            .expert-modal__feedback.is-success { color: #22c55e; }
+            .expert-modal__feedback.is-error { color: #f87171; }
+            .expert-modal__submit {
+                width: 100%;
+                padding: 1rem;
+                border: none;
+                border-radius: 0.75rem;
+                background: var(--primary, #0b84e3);
+                color: #fff;
+                font-weight: 900;
+                font-size: 0.95rem;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                cursor: pointer;
+                transition: transform 0.15s, opacity 0.2s;
+            }
+            .expert-modal__submit:hover { transform: translateY(-2px); }
+            .expert-modal__submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        </style>
+
+        <script>
+            function openExpertModal() {
+                var m = document.getElementById('expertModal');
+                m.classList.add('open');
+                m.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeExpertModal() {
+                var m = document.getElementById('expertModal');
+                m.classList.remove('open');
+                m.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeExpertModal();
+            });
+
+            (function () {
+                var form = document.getElementById('expertForm');
+                if (!form) return;
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var btn = document.getElementById('expertSubmitBtn');
+                    var fb = document.getElementById('expertFormFeedback');
+                    var oldLabel = btn.textContent;
+                    btn.disabled = true;
+                    btn.textContent = 'Envoi…';
+                    fb.textContent = '';
+                    fb.className = 'expert-modal__feedback';
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value
+                        },
+                        body: new FormData(form)
+                    })
+                    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+                    .then(function (res) {
+                        if (res.ok && res.body && res.body.success) {
+                            fb.textContent = res.body.message || 'Demande envoyée.';
+                            fb.classList.add('is-success');
+                            form.reset();
+                            setTimeout(closeExpertModal, 2500);
+                        } else {
+                            var msg = 'Veuillez vérifier les champs du formulaire.';
+                            if (res.body && res.body.errors) {
+                                msg = Object.keys(res.body.errors)
+                                    .map(function (k) { return res.body.errors[k][0]; })
+                                    .join(' ');
+                            }
+                            fb.textContent = msg;
+                            fb.classList.add('is-error');
+                        }
+                    })
+                    .catch(function () {
+                        fb.textContent = 'Une erreur est survenue. Merci de réessayer.';
+                        fb.classList.add('is-error');
+                    })
+                    .finally(function () {
+                        btn.disabled = false;
+                        btn.textContent = oldLabel;
+                    });
+                });
+            })();
+        </script>
 
         <!-- 13. TÉMOIGNAGES -->
         <section class="testimonials">

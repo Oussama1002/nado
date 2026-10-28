@@ -8,6 +8,9 @@
     <p>Nom: {{ $data['name'] }}</p>
     <p>Phone: {{ $data['phone'] }}</p>
     <p>Email: {{ $data['email'] }}</p>
+    @if(!empty($data['ville']))
+        <p>Ville: {{ $data['ville'] }}</p>
+    @endif
 
     <p>{{ $data['message'] }}</p>
 
