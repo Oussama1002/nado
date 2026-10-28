@@ -19,7 +19,7 @@
 @endif
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -31,6 +31,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    @include('partials.locale-head')
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -96,11 +97,11 @@
         @endphp
         <a href="{{ $acheterUrl }}"
            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#1459DD] hover:bg-slate-100">
-            Acheter
+            {{ __('messages.ae.buy') }}
         </a>
         <a href="{{ route('nadoautoenchere.vendre') }}"
            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#F37021] hover:bg-orange-50">
-            Vendre
+            {{ __('messages.ae.sell') }}
         </a>
     @endsection
     @include('nadoautoenchere.partials.navbar')
@@ -120,23 +121,22 @@
         <div class="relative z-20 max-w-6xl mx-auto px-6 text-center">
 
             <h1 class="text-4xl md:text-4xl font-black text-white tracking-tighter uppercase mb-4 drop-shadow-lg">
-                Ventes aux enchères de véhicules d'occasion
+                {{ __('messages.ae.hero_title') }}
             </h1>
 
             <p class="text-sm md:text-base font-black uppercase tracking-[0.25em] text-[#F37021] mb-6">
-                Transparence • Professionnalisme • Tranquillité
+                {{ __('messages.ae.hero_tag') }}
             </p>
 
             <!-- CTA SCROLL BUTTON -->
             <button onclick="document.getElementById('comment-ca-marche').scrollIntoView({ behavior: 'smooth' })"
                 class="inline-flex items-center gap-3 px-8 py-4 mb-12 bg-[#F37021]/20 text-[#F37021] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#F37021] hover:text-white transition-all shadow-md active:scale-95 cursor-pointer border-none backdrop-blur-sm">
-                Comment ça marche
+                {{ __('messages.ae.how_btn') }}
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
 
             <p class="text-lg text-white/90 font-medium max-w-2xl mx-auto mb-12 drop-shadow-md">
-                Accédez aux meilleures opportunités du marché automobile marocain,
-                avec un processus sécurisé, clair et équitable.
+                {{ __('messages.ae.hero_desc') }}
             </p>
 
             <div class="flex flex-wrap justify-center gap-6">
@@ -151,7 +151,7 @@
                 @endphp
                 <a href="{{ $participerUrl }}"
                     class="px-10 py-5 bg-[#F37021] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-[#F37021]/20 active:scale-95 flex items-center gap-3 cursor-pointer border-none decoration-transparent">
-                    Participer aux enchères <i data-lucide="arrow-up-right" class="w-[18px] h-[18px]"></i>
+                    {{ __('messages.ae.cta_participate') }} <i data-lucide="arrow-up-right" class="w-[18px] h-[18px]"></i>
                 </a>
 
                 <!-- Voir Véhicules Button -->
@@ -163,7 +163,7 @@
                 <a href="{{ $voirVehiculesUrl }}"
                    class="px-10 py-5 bg-white/90 backdrop-blur-sm text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all flex items-center gap-3 cursor-pointer border-none decoration-transparent active:scale-95">
                     <i data-lucide="eye" class="w-[18px] h-[18px] text-[#1459DD]"></i>
-                    Voir les véhicules
+                    {{ __('messages.ae.cta_see') }}
                 </a>
             </div>
 
@@ -181,20 +181,16 @@
                     <div
                         class="inline-flex items-center gap-2 px-4 py-2 bg-[#F37021]/10 border border-[#F37021]/20 rounded-full mb-8">
                         <i data-lucide="sparkles" class="w-4 h-4 text-[#F37021]"></i>
-                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">NOTRE
-                            EXPERTISE</span>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">{{ __('messages.ae.exp_eyebrow') }}</span>
                     </div>
 
                     <h2
                         class="text-4xl md:text-6xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-8">
-                        Bénéficiez de <br />
-                        <span class="text-[#1459DD]">notre expertise</span> <br />
-                        pour vos <span class="text-[#F37021]">profits</span>
+                        {!! __('messages.ae.exp_title') !!}
                     </h2>
 
                     <p class="text-xl text-slate-600 font-medium leading-relaxed mb-12">
-                        Notre équipe d'experts automobile vous accompagne à chaque étape pour maximiser vos
-                        investissements et sécuriser vos transactions.
+                        {{ __('messages.ae.exp_desc') }}
                     </p>
 
                     <div class="space-y-6">
@@ -204,9 +200,8 @@
                                 <i data-lucide="shield-check" class="w-6 h-6 text-[#1459DD]"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">Véhicules certifiés</h3>
-                                <p class="text-slate-600 font-medium text-sm leading-relaxed">Inspection complète de
-                                    110 points pour chaque véhicule mis aux enchères</p>
+                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">{{ __('messages.ae.exp_f1_title') }}</h3>
+                                <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.exp_f1_desc') }}</p>
                             </div>
                         </div>
 
@@ -216,9 +211,8 @@
                                 <i data-lucide="trending-up" class="w-6 h-6 text-[#F37021]"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">Prix compétitifs</h3>
-                                <p class="text-slate-600 font-medium text-sm leading-relaxed">Jusqu'à 30% moins cher
-                                    que le marché traditionnel grâce au système d'enchères</p>
+                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">{{ __('messages.ae.exp_f2_title') }}</h3>
+                                <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.exp_f2_desc') }}</p>
                             </div>
                         </div>
 
@@ -228,10 +222,8 @@
                                 <i data-lucide="award" class="w-6 h-6 text-[#F37021]"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">Accompagnement premium
-                                </h3>
-                                <p class="text-slate-600 font-medium text-sm leading-relaxed">Support dédié et conseils
-                                    personnalisés de nos experts automobile</p>
+                                <h3 class="text-lg font-black text-slate-900 uppercase mb-2">{{ __('messages.ae.exp_f3_title') }}</h3>
+                                <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.exp_f3_desc') }}</p>
                             </div>
                         </div>
                     </div>
@@ -260,14 +252,13 @@
                 <div
                     class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full mb-6">
                     <i data-lucide="users" class="w-4 h-4 text-[#1459DD]"></i>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">NOS
-                        PARTENAIRES</span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">{{ __('messages.ae.partners_eyebrow') }}</span>
                 </div>
                 <h2 class="text-3xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter mb-4">
-                    Ils nous ont fait <span class="text-[#1459DD]">confiance</span>
+                    {!! __('messages.ae.partners_title') !!}
                 </h2>
                 <p class="text-slate-600 font-medium text-lg max-w-3xl mx-auto leading-relaxed">
-                    Chaque enchère, les experts AUTO ENCHÈRE répondent à ces principes, et c’est aussi pour cela que nos clients sont plus que de simples clients, ce sont nos partenaires de confiance.
+                    {{ __('messages.ae.partners_desc') }}
                 </p>
             </div>
 
@@ -301,15 +292,14 @@
                 <div
                     class="inline-flex items-center gap-2 px-4 py-2 bg-[#1459DD]/10 border border-[#1459DD]/20 rounded-full mb-6">
                     <i data-lucide="check-circle-2" class="w-4 h-4 text-[#1459DD]"></i>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">PROCESSUS
-                        SIMPLE</span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">{{ __('messages.ae.how_eyebrow') }}</span>
                 </div>
                 <h2
                     class="text-4xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-[0.85] mb-6">
-                    Comment <span class="text-[#1459DD]">ça marche</span>
+                    {!! __('messages.ae.how_title') !!}
                 </h2>
                 <p class="text-xl text-slate-600 font-medium max-w-3xl mx-auto">
-                    8 étapes simples pour participer à nos enchères et acquérir le véhicule de vos rêves
+                    {{ __('messages.ae.how_sub') }}
                 </p>
             </div>
 
@@ -325,10 +315,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="user-plus" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Créez un
-                        compte</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Renseignez votre nom, numéro de
-                        téléphone, et CIN</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step1_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step1_d') }}</p>
                 </div>
 
                 <!-- Step 2 -->
@@ -342,10 +330,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="file-text" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Parcourez
-                        la liste</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Consultez tous les véhicules mis aux
-                        enchères avec leur fiche technique et date d'enchère</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step2_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step2_d') }}</p>
                 </div>
 
                 <!-- Step 3 -->
@@ -359,10 +345,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="heart" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Ajoutez à
-                        vos favoris</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Sélectionnez les véhicules qui vous
-                        intéressent pour ne pas les rater</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step3_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step3_d') }}</p>
                 </div>
 
                 <!-- Step 4 -->
@@ -376,10 +360,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="map-pin" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Visitez
-                        notre parking</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Californie, Casablanca pour inspecter
-                        les véhicules en personne</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step4_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step4_d') }}</p>
                 </div>
 
                 <!-- Step 5 -->
@@ -393,10 +375,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="banknote" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Déposez
-                        la caution</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Lisez les conditions et déposez
-                        5,000 DH par chèque, espèce, virement ou TPE</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step5_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step5_d') }}</p>
                 </div>
 
                 <!-- Step 6 -->
@@ -410,10 +390,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="gavel" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Placez
-                        vos offres</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">En personne ou en ligne. La meilleure
-                        offre l'emporte à la fin de la vente</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step6_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step6_d') }}</p>
                 </div>
 
                 <!-- Step 7 -->
@@ -427,10 +405,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="file-check" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Signez
-                        l'accord</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Signez l'accord de vente pour chaque
-                        achat et effectuez le paiement</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step7_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step7_d') }}</p>
                 </div>
 
                 <!-- Step 8 -->
@@ -444,10 +420,8 @@
                         class="w-16 h-16 bg-[#F37021]/10 text-[#F37021] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] group-hover:text-white transition-all">
                         <i data-lucide="car" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">Récupérez
-                        vos véhicules</h3>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">Récupérez ou faites-vous livrer les
-                        voitures que vous avez achetées</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{{ __('messages.ae.step8_t') }}</h3>
+                    <p class="text-slate-600 font-medium text-sm leading-relaxed">{{ __('messages.ae.step8_d') }}</p>
                 </div>
             </div>
         </div>
@@ -462,10 +436,10 @@
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
-                    Pour plus <span class="text-[#F37021]">d'infos</span>
+                    {!! __('messages.ae.contact_title') !!}
                 </h2>
                 <p class="text-xl text-slate-400 font-medium max-w-2xl mx-auto">
-                    Notre équipe est à votre disposition pour répondre à toutes vos questions
+                    {{ __('messages.ae.contact_sub') }}
                 </p>
             </div>
 
@@ -477,8 +451,7 @@
                         <i data-lucide="phone"
                             class="w-7 h-7 text-[#1459DD] group-hover:text-white transition-colors"></i>
                     </div>
-                    <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">TÉLÉPHONE
-                        1</span>
+                    <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">{{ __('messages.ae.phone1') }}</span>
                     <span class="text-2xl font-black text-white group-hover:text-[#F37021] transition-colors">
                         +212 6 63 33 90 72
                     </span>
@@ -491,8 +464,7 @@
                         <i data-lucide="phone"
                             class="w-7 h-7 text-[#F37021] group-hover:text-white transition-colors"></i>
                     </div>
-                    <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">TÉLÉPHONE
-                        2</span>
+                    <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">{{ __('messages.ae.phone2') }}</span>
                     <span class="text-2xl font-black text-white group-hover:text-[#F37021] transition-colors">
                         +212 6 69 55 93 15
                     </span>

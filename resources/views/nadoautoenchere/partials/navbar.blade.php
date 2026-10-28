@@ -81,13 +81,14 @@
                 @else
                     <a href="{{ route('nadoautoenchere.login') }}"
                         class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 hover:border-[#1459DD] hover:text-[#1459DD] text-slate-900 font-extrabold text-[13px] uppercase tracking-widest transition-all">
-                        Connexion
+                        {{ __('messages.ae.login') }}
                     </a>
                     <a href="{{ route('nadoautoenchere.register') }}"
                         class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#F37021]/20 border border-[#F37021]/50 hover:bg-[#F37021] text-slate-900 font-extrabold text-[13px] uppercase tracking-widest transition-all active:scale-95">
-                        <span class="whitespace-nowrap">Créez un compte</span>
+                        <span class="whitespace-nowrap">{{ __('messages.nav.create_account') }}</span>
                     </a>
                 @endif
+                @include('partials.lang-switcher')
             </div>
         </div>
     </nav>
