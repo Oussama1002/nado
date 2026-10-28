@@ -2405,6 +2405,8 @@
 
             .blog-hero {
                 grid-column: span 8;
+                /* Sit the main card in the middle, between the two small ones */
+                align-self: center;
             }
 
             .blog-sidebar {
