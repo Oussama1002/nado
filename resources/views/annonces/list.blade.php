@@ -929,11 +929,11 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                     </svg>
-                    Mis à jour il y a 5 min
+                    {{ __('messages.catalog.updated') }}
                 </div>
                 <h1 class="pp-h1">
-                    Trouvez votre<br>
-                    <span class="pp-blue">VOITURE</span> <span class="pp-yellow">IDÉALE</span>
+                    {{ __('messages.catalog.hero_1') }}<br>
+                    <span class="pp-blue">{{ __('messages.catalog.hero_blue') }}</span> <span class="pp-yellow">{{ __('messages.catalog.hero_yellow') }}</span>
                 </h1>
             </div>
         </div>
@@ -989,7 +989,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="pp-cat-label">{{ $cat['label'] }}</div>
+                    <div class="pp-cat-label">{{ __('messages.catalog.cat')[$cat['value']] ?? $cat['label'] }}</div>
                 </button>
             @endforeach
         </div>
@@ -1011,9 +1011,9 @@
                                     <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
                                 </svg>
                             </div>
-                            <h2>Filtres</h2>
+                            <h2>{{ __('messages.catalog.filters') }}</h2>
                         </div>
-                        <a href="{{ route('achat.index') }}" class="pp-reset-btn">Réinitialiser</a>
+                        <a href="{{ route('achat.index') }}" class="pp-reset-btn">{{ __('messages.catalog.reset') }}</a>
                     </div>
 
                     @include('annonces._filter_form', ['formId' => 'desktopFilterForm'])
@@ -1025,7 +1025,7 @@
 
                 {{-- Active filters row --}}
                 <div class="pp-active-filters">
-                    <span class="pp-af-label">Filtres actifs :</span>
+                    <span class="pp-af-label">{{ __('messages.catalog.active_filters') }}</span>
                     @if(request('marque'))
                         <a href="{{ route('achat.index', array_merge(request()->except('marque'), ['page'=>1])) }}" class="pp-af-chip">
                             {{ request('marque') }}
@@ -1050,9 +1050,9 @@
                             </svg>
                         </a>
                     @endif
-                    <span class="pp-results-count">{{ $count }} véhicule{{ $count > 1 ? 's' : '' }}</span>
+                    <span class="pp-results-count">{{ $count }} {{ $count > 1 ? __('messages.catalog.count_many') : __('messages.catalog.count_one') }}</span>
                     @if(request()->except('page'))
-                        <a href="{{ route('achat.index') }}" class="pp-af-clear">Effacer tout</a>
+                        <a href="{{ route('achat.index') }}" class="pp-af-clear">{{ __('messages.catalog.clear_all') }}</a>
                     @endif
                 </div>
 
@@ -1060,8 +1060,8 @@
                 @if(!empty($noAvailable))
                     <x-demande-empty-state
                         :filters="array_merge($searchKeys ?? [], ['source' => 'list'])"
-                        title="Pas de véhicule disponible pour le moment ?"
-                        message="Indiquez vos coordonnées ! Votre recherche sera affichée sur notre page forum et nous vous mettrons en relation dès qu’un particulier ou un vendeur propose le modèle souhaité." />
+                        :title="__('messages.catalog.empty_sold_title')"
+                        :message="__('messages.catalog.empty_sold_message')" />
                 @endif
 
                 {{-- Vehicle grid --}}
@@ -1140,14 +1140,20 @@
                                 @endif
                                 @php $st = strtolower($ad->status ?? 'disponible'); @endphp
                                 <span class="pp-status {{ $st }}">
-                                    {{ $ad->status == 'réserve' ? 'RÉSERVÉ' : strtoupper($ad->status ?? 'DISPONIBLE') }}
+                                    @if($ad->status == 'réserve')
+                                        {{ __('messages.catalog.reserved') }}
+                                    @elseif(empty($ad->status) || $st === 'disponible')
+                                        {{ __('messages.catalog.available') }}
+                                    @else
+                                        {{ strtoupper($ad->status) }}
+                                    @endif
                                 </span>
                                 @if(!empty($ad->certifie))
-                                    <span class="pp-type certifie">Certifié</span>
+                                    <span class="pp-type certifie">{{ __('messages.catalog.certified') }}</span>
                                 @elseif(!empty($ad->particulie))
-                                    <span class="pp-type particulier">Particulier</span>
+                                    <span class="pp-type particulier">{{ __('messages.catalog.particulier') }}</span>
                                 @elseif(!empty($ad->pro))
-                                    <span class="pp-type pro">Pro</span>
+                                    <span class="pp-type pro">{{ __('messages.catalog.pro') }}</span>
                                 @endif
                                 <div class="pp-price-overlay">
                                     <span>{{ number_format($ad->prix ?? 0, 0, ',', ' ') }} MAD</span>
@@ -1188,10 +1194,10 @@
                                 </div>
                                 <div class="pp-monthly">
                                     <div>
-                                        <div class="pp-monthly-eye">VOTRE MENSUALITÉ À PARTIR DE</div>
+                                        <div class="pp-monthly-eye">{{ __('messages.catalog.monthly') }}</div>
                                         <div class="pp-monthly-val">
                                             {{ number_format(($ad->prix ?? 0) / 84, 0, ',', ' ') }}
-                                            <small> MAD / MOIS</small>
+                                            <small> {{ __('messages.catalog.per_month') }}</small>
                                         </div>
                                     </div>
                                     <div class="pp-monthly-arrow">
@@ -1211,12 +1217,12 @@
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDD817" stroke-width="2">
                                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                                         </svg>
-                                        <span>Label Confiance</span>
+                                        <span>{{ __('messages.catalog.trust_label') }}</span>
                                     </div>
-                                    <h2>EXPERTISE <span class="pp-promo-accent">110 POINTS</span> DE CONTRÔLE</h2>
-                                    <p class="pp-promo-body">Chaque véhicule NADO passe par une inspection rigoureuse en 110 points certifiée par nos techniciens agréés — pour vous garantir la tranquillité d'esprit.</p>
+                                    <h2>{!! __('messages.catalog.expertise_heading') !!}</h2>
+                                    <p class="pp-promo-body">{{ __('messages.catalog.expertise_body') }}</p>
                                     <button class="pp-promo-cta" onclick="window.location.href='{{ route('about.index') }}'">
-                                        Découvrir le rapport d'expertise
+                                        {{ __('messages.catalog.expertise_cta') }}
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                                         </svg>
@@ -1259,12 +1265,12 @@
                         </svg>
                     </div>
                     <div class="pp-no-match-text">
-                        <h3>Vous n'avez pas trouvé votre voiture ?</h3>
-                        <p>Déposez une demande et notre équipe NADO vous trouvera la voiture qui correspond à vos critères.</p>
+                        <h3>{{ __('messages.catalog.nomatch_title') }}</h3>
+                        <p>{{ __('messages.catalog.nomatch_body') }}</p>
                     </div>
                     <a href="{{ route('demandes.create') }}" class="pp-no-match-btn">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Déposer une demande
+                        {{ __('messages.catalog.nomatch_cta') }}
                     </a>
                 </div>
                 <style>
@@ -1376,7 +1382,7 @@
                 <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
                 <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
             </svg>
-            Filtres
+            {{ __('messages.catalog.filters') }}
         </button>
     </div>
 
@@ -1392,7 +1398,7 @@
                             <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
                         </svg>
                     </div>
-                    <h2>Filtres</h2>
+                    <h2>{{ __('messages.catalog.filters') }}</h2>
                 </div>
                 <button class="pp-drawer-close" id="closeMobileFilter">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1482,12 +1488,12 @@ function run() {
 
     // ===== BRAND → MODEL AJAX =====
     function loadModels(brandId, modelSelect) {
-        if (!brandId) { modelSelect.innerHTML = '<option value="">Tous les modèles</option>'; return; }
-        modelSelect.innerHTML = '<option value="">Chargement...</option>';
+        if (!brandId) { modelSelect.innerHTML = '<option value="">' + @json(__('messages.catalog.all_models')) + '</option>'; return; }
+        modelSelect.innerHTML = '<option value="">' + @json(__('messages.catalog.loading')) + '</option>';
         fetch('/achat/models-by-brand/' + brandId)
             .then(function(r){ return r.json(); })
             .then(function(data) {
-                modelSelect.innerHTML = '<option value="">Tous les modèles</option>';
+                modelSelect.innerHTML = '<option value="">' + @json(__('messages.catalog.all_models')) + '</option>';
                 var current = new URLSearchParams(window.location.search).get('modele');
                 data.forEach(function(m) {
                     var o = document.createElement('option');
