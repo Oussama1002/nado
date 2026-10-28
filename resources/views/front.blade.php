@@ -2417,10 +2417,13 @@
         .blog-featured {
             position: relative;
             aspect-ratio: 16/10;
-            border-radius: 3rem;
+            border-radius: clamp(1.5rem, 6cqw, 3rem);
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             cursor: pointer;
+            /* Let the overlay content scale to THIS card's width, so the same
+               design works at both the big (featured) and small (sidebar) sizes. */
+            container-type: inline-size;
         }
 
         .blog-featured img {
@@ -2437,14 +2440,17 @@
         .blog-featured-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, #020617, transparent, transparent);
+            background: linear-gradient(to top,
+                #020617 8%,
+                rgba(2, 6, 23, 0.55) 40%,
+                rgba(2, 6, 23, 0) 72%);
         }
 
         .blog-featured-content {
             position: absolute;
-            bottom: 3rem;
-            left: 3rem;
-            right: 3rem;
+            bottom: clamp(1.25rem, 7cqw, 3rem);
+            left: clamp(1.25rem, 7cqw, 3rem);
+            right: clamp(1.25rem, 7cqw, 3rem);
         }
 
         .blog-meta-tag {
@@ -2456,15 +2462,15 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 1.5rem;
+            margin-bottom: clamp(0.5rem, 4cqw, 1.5rem);
         }
 
         .blog-featured-title {
-            font-size: 2.25rem;
+            font-size: clamp(1.1rem, 7cqw, 2.25rem);
             font-weight: 900;
             color: var(--white);
             margin-bottom: 0;
-            line-height: 0.9;
+            line-height: 0.95;
             text-transform: uppercase;
             letter-spacing: -0.05em;
             transition: color 0.2s;
@@ -2474,19 +2480,10 @@
             color: var(--secondary);
         }
 
+        /* Wrapper only — the overlay card (.blog-featured) inside carries the design */
         .blog-sidebar-card {
-            background-color: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 2.5rem;
-            overflow: hidden;
-            transition: all 0.2s;
-            cursor: pointer;
             display: block;
-        }
-
-        .blog-sidebar-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
         }
 
         .blog-sidebar-title {
@@ -2536,7 +2533,7 @@
             transform: translateX(4px);
         }
 
-        /* BLOG — mobile fixes: stop the featured title overflowing onto the image */
+        /* BLOG — mobile spacing + stack order (all cards share the overlay design) */
         @media (max-width: 767px) {
             .blog-section {
                 padding: 4rem 0;
@@ -2554,54 +2551,6 @@
 
             .btn-explore-blog {
                 align-self: flex-start;
-            }
-
-            /* On phones the featured card matches the sidebar cards:
-               image on top, content in a card below (no overlay). */
-            .blog-featured {
-                aspect-ratio: auto;
-                border-radius: 1.5rem;
-                box-shadow: none;
-                background-color: rgba(15, 23, 42, 0.4);
-                backdrop-filter: blur(4px);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                display: flex;
-                flex-direction: column;
-            }
-
-            .blog-featured img {
-                width: 100%;
-                aspect-ratio: 16 / 9;
-                height: auto;
-                object-fit: cover;
-            }
-
-            /* No gradient overlay in the card layout */
-            .blog-featured-overlay {
-                display: none;
-            }
-
-            .blog-featured-content {
-                position: static;
-                inset: auto;
-                padding: 2.5rem;
-            }
-
-            .blog-meta-tag {
-                margin-bottom: 0.75rem;
-            }
-
-            .blog-featured-title {
-                font-size: 1.25rem;
-                line-height: 1.1;
-            }
-
-            .blog-sidebar-card {
-                border-radius: 1.5rem;
-            }
-
-            .blog-sidebar-title {
-                font-size: 1.25rem;
             }
 
             /* Stack order on phones: small blog, main blog, small blog.
@@ -4860,15 +4809,16 @@
                     <div class="blog-sidebar" style="display: flex; flex-direction: column; gap: 2.5rem;">
                         @foreach($sideArticles as $sideArticle)
                             <a href="{{ route('articles.show', $sideArticle->slug) }}" class="blog-sidebar-card" style="text-decoration:none; color:inherit; display:block;">
-                                <div style="aspect-ratio: 16/9; position: relative;">
-                                    <img src="{{ $sideArticle->image ? asset('storage/' . ltrim($sideArticle->image, '/')) : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=400' }}"
-                                         alt="{{ $sideArticle->title }}"
-                                         style="width: 100%; height: 100%; object-fit: cover;" />
-                                </div>
-                                <div style="padding: 2.5rem; text-align: left;">
-                                    <h4 class="blog-sidebar-title">{{ $sideArticle->title }}</h4>
-                                    <div class="blog-read-more">Lire l'histoire
-                                        <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                                <div class="blog-featured">
+                                    <img src="{{ $sideArticle->image ? asset('storage/' . ltrim($sideArticle->image, '/')) : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=800' }}"
+                                         alt="{{ $sideArticle->title }}" />
+                                    <div class="blog-featured-overlay"></div>
+                                    <div class="blog-featured-content">
+                                        <div class="blog-meta-tag">
+                                            <i data-lucide="calendar" style="width: 12px; height: 12px; color: var(--primary);"></i>
+                                            {{ strtoupper($sideArticle->created_at->translatedFormat('d M Y')) }}
+                                        </div>
+                                        <h3 class="blog-featured-title">{{ $sideArticle->title }}</h3>
                                     </div>
                                 </div>
                             </a>
