@@ -1,9 +1,10 @@
 loo<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 
 
 <body id="bg" class="font-poppins home-2" style="background-color: #0f172a;">
+@include('partials.locale-head')
     <!-- Ensure body matches Dark Theme -->
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZMXWVX4" height="0" width="0"
@@ -72,24 +73,24 @@ loo<!DOCTYPE html>
                         <!-- Desktop Menu -->
                         <div class="desktop-menu">
                             @if ($isAutoEnchere)
-                                <a href="{{ route('achat.index') }}" class="nav-link">Acheter</a>
+                                <a href="{{ route('achat.index') }}" class="nav-link">{{ __('messages.nav.buy_ae') }}</a>
                                 <div class="nav-dropdown-wrapper">
                                     <button class="nav-link dropdown-trigger">
-                                        Vendre <i data-lucide="chevron-right" class="icon-sm"></i>
+                                        {{ __('messages.nav.sell_ae') }} <i data-lucide="chevron-right" class="icon-sm"></i>
                                     </button>
                                     <div class="nav-dropdown-menu">
-                                        <a href="{{ route('vente.form') }}">Particulier</a>
-                                        <a href="{{ route('client.login') }}">Professionnel</a>
+                                        <a href="{{ route('vente.form') }}">{{ __('messages.nav.individual') }}</a>
+                                        <a href="{{ route('client.login') }}">{{ __('messages.nav.professional') }}</a>
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ route('achat.index') }}" class="nav-link {{ request()->routeIs('achat.*') ? 'highlight-link' : '' }}">Achat</a>
-                                <a href="{{ route('vente.form') }}" class="nav-link {{ request()->routeIs('vente.*') ? 'highlight-link' : '' }}">Vente</a>
+                                <a href="{{ route('achat.index') }}" class="nav-link {{ request()->routeIs('achat.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.buy') }}</a>
+                                <a href="{{ route('vente.form') }}" class="nav-link {{ request()->routeIs('vente.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.sell') }}</a>
                                 <a href="{{ route('nadoautoenchere.prelogin') }}"
-                                    class="nav-link {{ request()->routeIs('nadoautoenchere.*') ? 'highlight-link' : '' }}">Auto-enchère</a>
-                                <a href="{{ route('reprise.form') }}" class="nav-link {{ request()->routeIs('reprise.*') ? 'highlight-link' : '' }}">Reprise</a>
-                                <a href="{{ route('financement.index') }}" class="nav-link {{ request()->routeIs('financement.*') ? 'highlight-link' : '' }}">Auto-financement</a>
-                                <a href="{{ route('about.index') }}" class="nav-link {{ request()->routeIs('about.*') ? 'highlight-link' : '' }}">À propos</a>
+                                    class="nav-link {{ request()->routeIs('nadoautoenchere.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.auction') }}</a>
+                                <a href="{{ route('reprise.form') }}" class="nav-link {{ request()->routeIs('reprise.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.tradein') }}</a>
+                                <a href="{{ route('financement.index') }}" class="nav-link {{ request()->routeIs('financement.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.financing') }}</a>
+                                <a href="{{ route('about.index') }}" class="nav-link {{ request()->routeIs('about.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.about') }}</a>
                             @endif
                         </div>
                     </div>
@@ -105,23 +106,25 @@ loo<!DOCTYPE html>
                                 </button>
                                 <div class="user-dropdown-menu">
                                     <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i>
-                                        Mon espace</a>
+                                        {{ __('messages.nav.my_space') }}</a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="logout-btn"><i data-lucide="log-out"></i>
-                                            Déconnexion</button>
+                                            {{ __('messages.nav.logout') }}</button>
                                     </form>
                                 </div>
                             </div>
                         @else
                             <a href="{{ route('client.login') }}" class="cta-button outline-btn">
                                 @if ($isAutoEnchere)
-                                    Créez un compte
+                                    {{ __('messages.nav.create_account') }}
                                 @else
-                                    Publier une annonce
+                                    {{ __('messages.nav.publish_ad') }}
                                 @endif
                             </a>
                         @endif
+
+                        @include('partials.lang-switcher')
 
                         <button id="mobileMenuBtn" class="mobile-menu-btn">
                             <i data-lucide="menu"></i>
@@ -151,17 +154,17 @@ loo<!DOCTYPE html>
 
                     <div class="drawer-links">
                         @if ($isAutoEnchere)
-                            <a href="{{ route('achat.index') }}">Acheter</a>
-                            <a href="{{ route('vente.form') }}">Vendre (Particulier)</a>
-                            <a href="{{ route('client.login') }}">Vendre (Pro)</a>
+                            <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy_ae') }}</a>
+                            <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell_individual') }}</a>
+                            <a href="{{ route('client.login') }}">{{ __('messages.nav.sell_pro') }}</a>
                         @else
-                            <a href="{{ route('achat.index') }}">Achat</a>
-                            <a href="{{ route('vente.form') }}">Vente</a>
+                            <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
+                            <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
                             <a href="{{ route('nadoautoenchere.prelogin') }}"
-                                style="color: #1459DD;">Auto-enchère</a>
-                            <a href="{{ route('reprise.form') }}">Reprise</a>
-                            <a href="{{ route('financement.index') }}">Auto-financement</a>
-                            <a href="{{ route('about.index') }}">À propos</a>
+                                style="color: #1459DD;">{{ __('messages.nav.auction') }}</a>
+                            <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
+                            <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
+                            <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
                         @endif
                     </div>
 
@@ -169,14 +172,15 @@ loo<!DOCTYPE html>
                         @if ($client)
                             <a href="{{ route('client.dashboard') }}" class="drawer-cta"
                                 style="background-color: {{ $accentColor }};">
-                                <i data-lucide="layout-dashboard"></i> Mon espace
+                                <i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}
                             </a>
                         @else
                             <a href="{{ route('client.login') }}" class="drawer-cta"
                                 style="background-color: {{ $accentColor }};">
-                                <i data-lucide="user"></i> Publier une annonce
+                                <i data-lucide="user"></i> {{ __('messages.nav.publish_ad') }}
                             </a>
                         @endif
+                        <div style="margin:14px 0 6px;display:flex;justify-content:center;">@include('partials.lang-switcher')</div>
 
                         <div class="drawer-socials">
                             <a href="#"><i data-lucide="facebook"></i></a>
@@ -1734,19 +1738,17 @@ loo<!DOCTYPE html>
                         <div class="hero-grid">
                             <div>
                                 <div class="badge">
-                                    <i data-lucide="hand-coins" width="14" height="14"></i> Reprise & Échange
+                                    <i data-lucide="hand-coins" width="14" height="14"></i> {{ __('messages.reprise.badge') }}
                                 </div>
                                 <h1>
-                                    Une reprise de voiture<br />
-                                    <span class="text-gradient">100% sereine.</span>
+                                    {{ __('messages.reprise.h1_1') }}<br />
+                                    <span class="text-gradient">{{ __('messages.reprise.h1_grad') }}</span>
                                 </h1>
                                 <p>
-                                    Nous reprenons votre véhicule au juste prix en échange d'une voiture de votre choix
-                                    dans le stock NADO. <strong>La solution la plus simple pour changer de
-                                        voiture.</strong>
+                                    {!! __('messages.reprise.desc') !!}
                                 </p>
                                 <button class="btn-primary" onclick="openRepriseModal()">
-                                    Estimer pour une reprise <i data-lucide="arrow-right" width="20"
+                                    {{ __('messages.reprise.cta') }} <i data-lucide="arrow-right" width="20"
                                         height="20"></i>
                                 </button>
                             </div>
@@ -1757,7 +1759,7 @@ loo<!DOCTYPE html>
                                         alt="Premium Car" class="hero-img">
                                     <div class="hero-card-content">
                                         <div>
-                                            <p class="hero-card-title">Juste Prix</p>
+                                            <p class="hero-card-title">{{ __('messages.reprise.card_title') }}</p>
                                         </div>
                                         <div class="icon-box">
                                             <i data-lucide="zap" width="32" height="32"></i>
@@ -1771,7 +1773,7 @@ loo<!DOCTYPE html>
                                     </div>
                                     <div>
                                         <div class="hero-float-num">94%</div>
-                                        <div class="hero-float-label">Satisfaction clients</div>
+                                        <div class="hero-float-label">{{ __('messages.reprise.float_label') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -1785,19 +1787,19 @@ loo<!DOCTYPE html>
                         <div class="stats-strip-grid">
                             <div>
                                 <span class="stat-item-num">+500</span>
-                                <span class="stat-item-label">Reprises réalisées</span>
+                                <span class="stat-item-label">{{ __('messages.reprise.stat1_label') }}</span>
                             </div>
                             <div>
                                 <span class="stat-item-num">48h</span>
-                                <span class="stat-item-label">Délai moyen</span>
+                                <span class="stat-item-label">{{ __('messages.reprise.stat2_label') }}</span>
                             </div>
                             <div>
                                 <span class="stat-item-num">94%</span>
-                                <span class="stat-item-label">Clients satisfaits</span>
+                                <span class="stat-item-label">{{ __('messages.reprise.stat3_label') }}</span>
                             </div>
                             <div>
                                 <span class="stat-item-num">100%</span>
-                                <span class="stat-item-label">Offre garantie écrite</span>
+                                <span class="stat-item-label">{{ __('messages.reprise.stat4_label') }}</span>
                             </div>
                         </div>
                     </div>
@@ -1807,9 +1809,9 @@ loo<!DOCTYPE html>
                 <section class="process-section">
                     <div class="container-custom">
                         <div class="section-header">
-                            <span class="subtitle">Notre Processus</span>
+                            <span class="subtitle">{{ __('messages.reprise.process_subtitle') }}</span>
                             <h2 class="section-title">
-                                Le Procès <br />REPRISE NADO.
+                                {!! __('messages.reprise.process_title') !!}
                             </h2>
                         </div>
                         <div class="steps-grid">
@@ -1819,9 +1821,8 @@ loo<!DOCTYPE html>
                                 <div class="step-icon">
                                     <i data-lucide="search" width="32" height="32"></i>
                                 </div>
-                                <h3 class="step-title">Évaluation en ligne</h3>
-                                <p class="step-desc">Obtenez une première estimation de la valeur de votre véhicule
-                                    actuel en quelques clics via notre simulateur IA.</p>
+                                <h3 class="step-title">{{ __('messages.reprise.step1_t') }}</h3>
+                                <p class="step-desc">{{ __('messages.reprise.step1_d') }}</p>
                             </div>
                             <!-- Step 2 -->
                             <div class="step-card">
@@ -1829,9 +1830,8 @@ loo<!DOCTYPE html>
                                 <div class="step-icon">
                                     <i data-lucide="shield-check" width="32" height="32"></i>
                                 </div>
-                                <h3 class="step-title">Expertise physique</h3>
-                                <p class="step-desc">Rendez-vous dans l'un de nos showrooms NADO pour une vérification
-                                    de 30 min et une offre de reprise ferme.</p>
+                                <h3 class="step-title">{{ __('messages.reprise.step2_t') }}</h3>
+                                <p class="step-desc">{{ __('messages.reprise.step2_d') }}</p>
                             </div>
                             <!-- Step 3 -->
                             <div class="step-card">
@@ -1839,9 +1839,8 @@ loo<!DOCTYPE html>
                                 <div class="step-icon">
                                     <i data-lucide="check-square" width="32" height="32"></i>
                                 </div>
-                                <h3 class="step-title">Validation & Échange</h3>
-                                <p class="step-desc">Nous rachetons votre voiture au juste prix. Ce montant est déduit
-                                    directement du prix de votre futur véhicule NADO.</p>
+                                <h3 class="step-title">{{ __('messages.reprise.step3_t') }}</h3>
+                                <p class="step-desc">{{ __('messages.reprise.step3_d') }}</p>
                             </div>
                             <!-- Step 4 -->
                             <div class="step-card">
@@ -1849,9 +1848,8 @@ loo<!DOCTYPE html>
                                 <div class="step-icon">
                                     <i data-lucide="truck" width="32" height="32"></i>
                                 </div>
-                                <h3 class="step-title">Livraison & Reprise</h3>
-                                <p class="step-desc">Repartez avec votre nouveau véhicule. Nous nous occupons de toute
-                                    la paperasse administrative de votre ancienne voiture.</p>
+                                <h3 class="step-title">{{ __('messages.reprise.step4_t') }}</h3>
+                                <p class="step-desc">{{ __('messages.reprise.step4_d') }}</p>
                             </div>
                         </div>
                     </div>
@@ -1867,23 +1865,23 @@ loo<!DOCTYPE html>
                             <div>
                                 <div class="modal-left-badge">
                                     <i data-lucide="hand-coins" width="12" height="12"></i>
-                                    Reprise NADO
+                                    {{ __('messages.reprise.modal_badge') }}
                                 </div>
-                                <h3>Reprise <br />Automatisée</h3>
-                                <p>Déposez votre demande pour un échange contre un véhicule NADO. Notre équipe vous contacte sous 24h.</p>
+                                <h3>{!! __('messages.reprise.modal_title') !!}</h3>
+                                <p>{{ __('messages.reprise.modal_desc') }}</p>
                             </div>
                             <div class="modal-left-trust">
                                 <div class="modal-left-trust-item">
                                     <span class="modal-left-trust-dot"></span>
-                                    Offre ferme garantie par écrit
+                                    {{ __('messages.reprise.trust1') }}
                                 </div>
                                 <div class="modal-left-trust-item">
                                     <span class="modal-left-trust-dot"></span>
-                                    Prise en charge administrative complète
+                                    {{ __('messages.reprise.trust2') }}
                                 </div>
                                 <div class="modal-left-trust-item">
                                     <span class="modal-left-trust-dot"></span>
-                                    Réponse sous 24h ouvrées
+                                    {{ __('messages.reprise.trust3') }}
                                 </div>
                             </div>
                         </div>
@@ -1900,9 +1898,9 @@ loo<!DOCTYPE html>
 
                                         <!-- Brand -->
                                         <div>
-                                            <label class="form-label">Marque</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_brand') }}</label>
                                             <select class="form-input" name="mark" id="mark" required>
-                                                <option value="" disabled selected>Marque</option>
+                                                <option value="" disabled selected>{{ __('messages.reprise.f_brand') }}</option>
                                                 @foreach ($brands as $brand)
                                                     <option value="{{ $brand->name }}"
                                                         data-id="{{ $brand->id }}">
@@ -1913,18 +1911,18 @@ loo<!DOCTYPE html>
 
                                         <!-- Model -->
                                         <div>
-                                            <label class="form-label">Modèle</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_model') }}</label>
                                             <select class="form-input" name="modele" id="modele" required
                                                 disabled>
-                                                <option value="" disabled selected>Modèle</option>
+                                                <option value="" disabled selected>{{ __('messages.reprise.f_model') }}</option>
                                             </select>
                                         </div>
 
                                         <!-- Year -->
                                         <div>
-                                            <label class="form-label">Année</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_year') }}</label>
                                             <select class="form-input" name="year" id="year" required>
-                                                <option value="" disabled selected>Année</option>
+                                                <option value="" disabled selected>{{ __('messages.reprise.f_year') }}</option>
                                                 @for ($i = date('Y'); $i >= 1992; $i--)
                                                     <option title="{{ $i }}" value="{{ $i }}">
                                                         {{ $i }}
@@ -1935,20 +1933,20 @@ loo<!DOCTYPE html>
 
                                         <!-- Kilometrage -->
                                         <div>
-                                            <label class="form-label">Kilométrage</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_km') }}</label>
                                             <input type="number" class="form-input" name="km" id="km"
-                                                placeholder="Ex : 45 000" min="0" step="1" required>
+                                                placeholder="{{ __('messages.reprise.km_ph') }}" min="0" step="1" required>
                                         </div>
 
                                         <!-- Photos du vehicule : 4 zones de depot -->
                                         <div class="form-col-full">
-                                            <label class="form-label">Photos du véhicule</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_photos') }}</label>
                                             <div class="rp-dropzones">
                                                 @foreach ([
-                                                    'gauche'  => ['Côté gauche', 'Vue du profil gauche'],
-                                                    'droite'  => ['Côté droit', 'Vue du profil droit'],
-                                                    'avant'   => ['Avant', 'Face avant du véhicule'],
-                                                    'arriere' => ['Arrière', 'Face arrière du véhicule'],
+                                                    'gauche'  => [__('messages.reprise.ph_left'), __('messages.reprise.ph_left_h')],
+                                                    'droite'  => [__('messages.reprise.ph_right'), __('messages.reprise.ph_right_h')],
+                                                    'avant'   => [__('messages.reprise.ph_front'), __('messages.reprise.ph_front_h')],
+                                                    'arriere' => [__('messages.reprise.ph_rear'), __('messages.reprise.ph_rear_h')],
                                                 ] as $slot => $meta)
                                                     <label class="rp-dz" for="photo-{{ $slot }}"
                                                         data-slot="{{ $slot }}">
@@ -1967,24 +1965,23 @@ loo<!DOCTYPE html>
                                                 @endforeach
                                             </div>
                                             <small class="rp-dz-note">
-                                                Glissez-déposez une photo sur chaque zone, ou cliquez pour parcourir.
-                                                JPG ou PNG, 5 Mo max par photo.
+                                                {{ __('messages.reprise.dz_note') }}
                                             </small>
                                         </div>
 
                                         <!-- Description -->
                                         <div class="form-col-full">
-                                            <label class="form-label">Description</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_desc') }}</label>
                                             <textarea class="form-input" name="description" id="description" rows="4"
                                                 style="resize:vertical;"
-                                                placeholder="État général, entretien, options, historique…"></textarea>
+                                                placeholder="{{ __('messages.reprise.desc_ph') }}"></textarea>
                                         </div>
 
                                         <!-- City -->
                                         <div>
-                                            <label class="form-label">Ville</label>
+                                            <label class="form-label">{{ __('messages.reprise.f_city') }}</label>
                                             <select class="form-input" name="city" id="city" required>
-                                                <option value="" disabled selected>Ville</option>
+                                                <option value="" disabled selected>{{ __('messages.reprise.f_city') }}</option>
                                                 @foreach ($city as $c)
                                                     <option value="{{ $c->name }}">{{ $c->name }}</option>
                                                 @endforeach
@@ -1995,17 +1992,17 @@ loo<!DOCTYPE html>
                                         <p id="repriseError" class="error-msg form-col-full"></p>
 
                                         <div class="form-col-full" style="margin-top: 1rem;">
-                                            <button type="submit" class="btn-submit">Calculer mon offre</button>
+                                            <button type="submit" class="btn-submit">{{ __('messages.reprise.submit') }}</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <!-- Success View -->
                             <div id="repriseSuccessView" class="success-view">
-                                <h3 class="success-title">Demande de reprise reçue</h3>
-                                <p class="success-desc">Un conseiller expert vous contactera pour finaliser l'offre.
+                                <h3 class="success-title">{{ __('messages.reprise.success_title') }}</h3>
+                                <p class="success-desc">{{ __('messages.reprise.success_desc') }}
                                 </p>
-                                <button onclick="closeRepriseModal()" class="btn-secondary">Retour au site</button>
+                                <button onclick="closeRepriseModal()" class="btn-secondary">{{ __('messages.reprise.back') }}</button>
                             </div>
                         </div>
                     </div>
@@ -2203,7 +2200,7 @@ loo<!DOCTYPE html>
                 let $modele = $('#modele');
 
                 // Disable and show loading
-                $modele.prop('disabled', true).html('<option value="">Chargement...</option>');
+                $modele.prop('disabled', true).html('<option value="">' + @json(__('messages.reprise.js_loading')) + '</option>');
 
                 if (brandId) {
                     $.ajax({
@@ -2214,7 +2211,7 @@ loo<!DOCTYPE html>
                         },
                         success: function(data) {
                             $modele.empty().append(
-                                '<option value="">Sélectionnez le modèle</option>');
+                                '<option value="">' + @json(__('messages.reprise.js_select_model')) + '</option>');
                             $.each(data, function(key, value) {
                                 $modele.append('<option value="' + value.name + '">' +
                                     value.name + '</option>');
@@ -2223,12 +2220,12 @@ loo<!DOCTYPE html>
                         },
                         error: function() {
                             $modele.empty().append(
-                                '<option value="">Erreur de chargement</option>');
+                                '<option value="">' + @json(__('messages.reprise.js_load_error')) + '</option>');
                             $modele.prop('disabled', false);
                         }
                     });
                 } else {
-                    $modele.empty().append('<option value="">Sélectionnez une marque d’abord</option>');
+                    $modele.empty().append('<option value="">' + @json(__('messages.reprise.js_select_brand')) + '</option>');
                     $modele.prop('disabled', true);
                 }
             });
