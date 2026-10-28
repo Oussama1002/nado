@@ -107,7 +107,6 @@
     font-size: 17px;
     line-height: 1.85;
     color: #334155;
-    white-space: pre-line;      /* honour newlines in plain-text content */
     word-wrap: break-word;
 }
 .article-content p { margin: 0 0 1.2em; }

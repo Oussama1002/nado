@@ -43,7 +43,7 @@
         <label class="form-label fw-bold">Contenu *</label>
         <textarea name="content" id="article-content" rows="15" class="form-control"
                   required>{{ old('content', $article->content ?? '') }}</textarea>
-        <small class="text-muted">HTML autorisé.</small>
+        <small class="text-muted">Utilisez la barre d'outils pour mettre en forme : gras, couleurs, police, titres, listes…</small>
     </div>
 
     <div class="col-md-6">
@@ -58,3 +58,32 @@
                value="{{ old('meta_description', $article->meta_description ?? '') }}">
     </div>
 </div>
+
+{{-- Rich-text (WYSIWYG) editor for the article content, Word-like:
+     bold / colours / fonts / headings / lists. Self-hosted TinyMCE bundle
+     (GPL licence, no API key, no cloud nag). --}}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#article-content',
+        license_key: 'gpl',
+        height: 520,
+        menubar: 'edit insert format table',
+        plugins: 'lists link image table code autolink wordcount searchreplace fullscreen',
+        toolbar: 'undo redo | blocks fontfamily fontsize | '
+               + 'bold italic underline strikethrough | forecolor backcolor | '
+               + 'alignleft aligncenter alignright alignjustify | '
+               + 'bullist numlist outdent indent | link image table | '
+               + 'removeformat | fullscreen code',
+        toolbar_mode: 'wrap',
+        branding: false,
+        promotion: false,
+        content_style: 'body{font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:1.7;color:#334155;}',
+        // Keep the <textarea> in sync so normal form submit sends the HTML.
+        setup: function (editor) {
+            editor.on('change keyup', function () {
+                editor.save();
+            });
+        }
+    });
+</script>
