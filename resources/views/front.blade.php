@@ -4807,7 +4807,7 @@
                         <h2 class="blog-big-title">BLOG <br /><span class="text-primary">NADO</span></h2>
                     </div>
                     <a href="{{ route('articles.index') }}" class="btn-explore-blog" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                        Explorer le blog <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                        Nos blog <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
                     </a>
                 </div>
 
