@@ -2601,6 +2601,25 @@
             .blog-sidebar-title {
                 font-size: 1.25rem;
             }
+
+            /* Stack order on phones: small blog, main blog, small blog.
+               Promote the two sidebar cards to direct grid items so the
+               featured card can sit between them. */
+            .blog-sidebar {
+                display: contents !important;
+            }
+
+            .blog-sidebar .blog-sidebar-card:first-child {
+                order: 1;
+            }
+
+            .blog-hero {
+                order: 2;
+            }
+
+            .blog-sidebar .blog-sidebar-card:last-child {
+                order: 3;
+            }
         }
 
         .sidebar-content {
