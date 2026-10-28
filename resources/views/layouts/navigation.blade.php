@@ -39,21 +39,21 @@
 
                 <div class="nv-menu">
                     @if ($isAutoEnchere)
-                        <a href="{{ route('achat.index') }}" class="nv-link">Acheter</a>
+                        <a href="{{ route('achat.index') }}" class="nv-link">{{ __('messages.nav.buy_ae') }}</a>
                         <div class="nv-dropdown">
-                            <button class="nv-link nv-dropdown-trigger">Vendre <i data-lucide="chevron-right" class="nv-icon-sm"></i></button>
+                            <button class="nv-link nv-dropdown-trigger">{{ __('messages.nav.sell_ae') }} <i data-lucide="chevron-right" class="nv-icon-sm"></i></button>
                             <div class="nv-dropdown-menu">
-                                <a href="{{ route('vente.form') }}">Particulier</a>
-                                <a href="{{ route('client.login') }}">Professionnel</a>
+                                <a href="{{ route('vente.form') }}">{{ __('messages.nav.individual') }}</a>
+                                <a href="{{ route('client.login') }}">{{ __('messages.nav.professional') }}</a>
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('achat.index') }}" class="nv-link {{ request()->routeIs('achat.*') ? 'nv-highlight' : '' }}">Achat</a>
-                        <a href="{{ route('vente.form') }}" class="nv-link {{ request()->routeIs('vente.*') ? 'nv-highlight' : '' }}">Vente</a>
-                        <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-link {{ request()->routeIs('nadoautoenchere.*') ? 'nv-highlight' : '' }}">Auto-enchère</a>
-                        <a href="{{ route('reprise.form') }}" class="nv-link {{ request()->routeIs('reprise.*') ? 'nv-highlight' : '' }}">Reprise</a>
-                        <a href="{{ route('financement.index') }}" class="nv-link {{ request()->routeIs('financement.*') ? 'nv-highlight' : '' }}">Auto-financement</a>
-                        <a href="{{ route('about.index') }}" class="nv-link {{ request()->routeIs('about.*') ? 'nv-highlight' : '' }}">À propos</a>
+                        <a href="{{ route('achat.index') }}" class="nv-link {{ request()->routeIs('achat.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.buy') }}</a>
+                        <a href="{{ route('vente.form') }}" class="nv-link {{ request()->routeIs('vente.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.sell') }}</a>
+                        <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-link {{ request()->routeIs('nadoautoenchere.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.auction') }}</a>
+                        <a href="{{ route('reprise.form') }}" class="nv-link {{ request()->routeIs('reprise.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.tradein') }}</a>
+                        <a href="{{ route('financement.index') }}" class="nv-link {{ request()->routeIs('financement.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.financing') }}</a>
+                        <a href="{{ route('about.index') }}" class="nv-link {{ request()->routeIs('about.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.about') }}</a>
                     @endif
                 </div>
             </div>
@@ -67,10 +67,10 @@
                             <i data-lucide="chevron-down" class="nv-icon-sm"></i>
                         </button>
                         <div class="nv-user-menu">
-                            <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i> Mon espace</a>
+                            <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="nv-logout"><i data-lucide="log-out"></i> Déconnexion</button>
+                                <button type="submit" class="nv-logout"><i data-lucide="log-out"></i> {{ __('messages.nav.logout') }}</button>
                             </form>
                         </div>
                     </div>
@@ -78,10 +78,11 @@
                     <a href="{{ route('client.login') }}" class="nv-cta nv-outline nv-cta-publish">
                         {{-- Long label on wide screens, short one on phones. Swapping the
                              text is reliable; shrinking it to fit depends on font metrics. --}}
-                        <span class="nv-cta-label-long">@if ($isAutoEnchere) Créez un compte @else Publier une annonce @endif</span>
-                        <span class="nv-cta-label-short">@if ($isAutoEnchere) Compte @else Publier @endif</span>
+                        <span class="nv-cta-label-long">@if ($isAutoEnchere) {{ __('messages.nav.create_account') }} @else {{ __('messages.nav.publish_ad') }} @endif</span>
+                        <span class="nv-cta-label-short">@if ($isAutoEnchere) {{ __('messages.nav.account_short') }} @else {{ __('messages.nav.publish_short') }} @endif</span>
                     </a>
                 @endif
+                @include('partials.lang-switcher')
                 <button id="mobileMenuBtn" class="nv-hamburger"><i data-lucide="menu"></i></button>
             </div>
         </div>
@@ -101,35 +102,36 @@
             </div>
             <div class="nv-drawer-links">
                 @if ($isAutoEnchere)
-                    <a href="{{ route('achat.index') }}">Acheter</a>
-                    <a href="{{ route('vente.form') }}">Vendre (Particulier)</a>
-                    <a href="{{ route('client.login') }}">Vendre (Pro)</a>
+                    <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy_ae') }}</a>
+                    <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell_individual') }}</a>
+                    <a href="{{ route('client.login') }}">{{ __('messages.nav.sell_pro') }}</a>
                 @else
-                    <a href="{{ route('achat.index') }}">Achat</a>
-                    <a href="{{ route('vente.form') }}">Vente</a>
-                    <a href="{{ route('nadoautoenchere.prelogin') }}" style="color:#1459DD;">Auto-enchère</a>
-                    <a href="{{ route('reprise.form') }}">Reprise</a>
-                    <a href="{{ route('financement.index') }}">Auto-financement</a>
-                    <a href="{{ route('about.index') }}">À propos</a>
+                    <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
+                    <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
+                    <a href="{{ route('nadoautoenchere.prelogin') }}" style="color:#1459DD;">{{ __('messages.nav.auction') }}</a>
+                    <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
+                    <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
+                    <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
                 @endif
             </div>
             <div class="nv-drawer-footer">
                 @if ($client)
-                    <a href="{{ route('client.dashboard') }}" class="nv-drawer-cta" style="background-color:{{ $accentColor }};"><i data-lucide="layout-dashboard"></i> Mon espace</a>
+                    <a href="{{ route('client.dashboard') }}" class="nv-drawer-cta" style="background-color:{{ $accentColor }};"><i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}</a>
                     <form method="POST" action="{{ route('logout') }}" style="margin:10px 0 0;">
                         @csrf
-                        <button type="submit" class="nv-drawer-logout"><i data-lucide="log-out"></i> Déconnexion</button>
+                        <button type="submit" class="nv-drawer-logout"><i data-lucide="log-out"></i> {{ __('messages.nav.logout') }}</button>
                     </form>
                 @else
-                    <a href="{{ route('client.login') }}" class="nv-drawer-cta" style="background-color:{{ $accentColor }};"><i data-lucide="user"></i> Publier une annonce</a>
+                    <a href="{{ route('client.login') }}" class="nv-drawer-cta" style="background-color:{{ $accentColor }};"><i data-lucide="user"></i> {{ __('messages.nav.publish_ad') }}</a>
                 @endif
+                <div style="margin:16px 0 8px;display:flex;justify-content:center;">@include('partials.lang-switcher')</div>
                 <div class="nv-socials">
                     <a href="#"><i data-lucide="facebook"></i></a>
                     <a href="#"><i data-lucide="instagram"></i></a>
                     <a href="#"><i data-lucide="linkedin"></i></a>
                 </div>
                 <div class="nv-divider"></div>
-                <div class="nv-support"><p>Support NADO</p><a href="tel:+212520070611">+212 520 070 611</a></div>
+                <div class="nv-support"><p>{{ __('messages.nav.support') }}</p><a href="tel:+212520070611">+212 520 070 611</a></div>
             </div>
         </div>
     </div>

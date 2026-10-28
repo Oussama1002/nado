@@ -62,6 +62,16 @@ use Illuminate\Support\Facades\Auth;
 
 // Public Routes
 
+// Language switch (FR / AR). Stores the choice in session + a 1-year cookie,
+// then returns to the page the visitor came from. See App\Http\Middleware\SetLocale.
+Route::get('/locale/{locale}', function (string $locale) {
+    if (in_array($locale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {
+        session(['locale' => $locale]);
+        cookie()->queue(cookie('locale', $locale, 60 * 24 * 365));
+    }
+
+    return redirect()->back(fallback: '/');
+})->name('locale.switch');
 
 Route::get('/admin/annonces/approval', [AnnoncesController::class, 'approval'])->name('admin.annonces.approval');
 Route::get('/admin/annonces/showAnnonce/{id}', [AnnoncesController::class, 'showAnnonce'])->name('admin.annonces.showAnnonce');

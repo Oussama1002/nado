@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    @include('partials.locale-head')
     <!-- Owl Carousel CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet"
@@ -2952,24 +2953,24 @@
                     <!-- Desktop Menu -->
                     <div class="desktop-menu">
                         @if ($isAutoEnchere)
-                            <a href="{{ route('achat.index') }}" class="nav-link">Acheter</a>
+                            <a href="{{ route('achat.index') }}" class="nav-link">{{ __('messages.nav.buy_ae') }}</a>
                             <div class="nav-dropdown-wrapper">
                                 <button class="nav-link dropdown-trigger">
-                                    Vendre <i data-lucide="chevron-right" class="icon-sm"></i>
+                                    {{ __('messages.nav.sell_ae') }} <i data-lucide="chevron-right" class="icon-sm"></i>
                                 </button>
                                 <div class="nav-dropdown-menu">
-                                    <a href="{{ route('vente.form') }}">Particulier</a>
-                                    <a href="{{ route('client.login') }}">Professionnel</a>
+                                    <a href="{{ route('vente.form') }}">{{ __('messages.nav.individual') }}</a>
+                                    <a href="{{ route('client.login') }}">{{ __('messages.nav.professional') }}</a>
                                 </div>
                             </div>
                         @else
-                            <a href="{{ route('achat.index') }}" class="nav-link {{ request()->routeIs('achat.*') ? 'highlight-link' : '' }}">Achat</a>
-                            <a href="{{ route('vente.form') }}" class="nav-link {{ request()->routeIs('vente.*') ? 'highlight-link' : '' }}">Vente</a>
+                            <a href="{{ route('achat.index') }}" class="nav-link {{ request()->routeIs('achat.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.buy') }}</a>
+                            <a href="{{ route('vente.form') }}" class="nav-link {{ request()->routeIs('vente.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.sell') }}</a>
                             <a href="{{ route('nadoautoenchere.prelogin') }}"
-                                class="nav-link {{ request()->routeIs('nadoautoenchere.*') ? 'highlight-link' : '' }}">Auto-enchère</a>
-                            <a href="{{ route('reprise.form') }}" class="nav-link {{ request()->routeIs('reprise.*') ? 'highlight-link' : '' }}">Reprise</a>
-                            <a href="{{ route('financement.index') }}" class="nav-link {{ request()->routeIs('financement.*') ? 'highlight-link' : '' }}">Auto-financement</a>
-                            <a href="{{ route('about.index') }}" class="nav-link {{ request()->routeIs('about.*') ? 'highlight-link' : '' }}">À propos</a>
+                                class="nav-link {{ request()->routeIs('nadoautoenchere.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.auction') }}</a>
+                            <a href="{{ route('reprise.form') }}" class="nav-link {{ request()->routeIs('reprise.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.tradein') }}</a>
+                            <a href="{{ route('financement.index') }}" class="nav-link {{ request()->routeIs('financement.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.financing') }}</a>
+                            <a href="{{ route('about.index') }}" class="nav-link {{ request()->routeIs('about.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.about') }}</a>
                         @endif
                     </div>
                 </div>
@@ -2985,11 +2986,11 @@
                             </button>
                             <div class="user-dropdown-menu">
                                 <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i>
-                                    Mon espace</a>
+                                    {{ __('messages.nav.my_space') }}</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="logout-btn"><i data-lucide="log-out"></i>
-                                        Déconnexion</button>
+                                        {{ __('messages.nav.logout') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -3010,12 +3011,14 @@
                     @else
                         <a href="{{ route('client.login') }}" class="cta-button outline-btn cta-publish">
                             @if ($isAutoEnchere)
-                                Créez un compte
+                                {{ __('messages.nav.create_account') }}
                             @else
-                                Publier une annonce
+                                {{ __('messages.nav.publish_ad') }}
                             @endif
                         </a>
                     @endif
+
+                    @include('partials.lang-switcher')
 
                     <button id="mobileMenuBtn" class="mobile-menu-btn">
                         <i data-lucide="menu"></i>
@@ -3045,16 +3048,16 @@
 
                 <div class="drawer-links">
                     @if ($isAutoEnchere)
-                        <a href="{{ route('achat.index') }}">Acheter</a>
-                        <a href="{{ route('vente.form') }}">Vendre (Particulier)</a>
-                        <a href="{{ route('client.login') }}">Vendre (Pro)</a>
+                        <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy_ae') }}</a>
+                        <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell_individual') }}</a>
+                        <a href="{{ route('client.login') }}">{{ __('messages.nav.sell_pro') }}</a>
                     @else
-                        <a href="{{ route('achat.index') }}">Achat</a>
-                        <a href="{{ route('vente.form') }}">Vente</a>
-                        <a href="{{ route('nadoautoenchere.prelogin') }}" style="color: #1459DD;">Auto-enchère</a>
-                        <a href="{{ route('reprise.form') }}">Reprise</a>
-                        <a href="{{ route('financement.index') }}">Auto-financement</a>
-                        <a href="{{ route('about.index') }}">À propos</a>
+                        <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
+                        <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
+                        <a href="{{ route('nadoautoenchere.prelogin') }}" style="color: #1459DD;">{{ __('messages.nav.auction') }}</a>
+                        <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
+                        <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
+                        <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
                     @endif
                 </div>
 
@@ -3062,21 +3065,23 @@
                     @if ($client)
                         <a href="{{ route('client.dashboard') }}" class="drawer-cta"
                             style="background-color: {{ $accentColor }};">
-                            <i data-lucide="layout-dashboard"></i> Mon espace
+                            <i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" style="margin:10px 0 0;">
                             @csrf
                             <button type="submit" class="drawer-logout"
                                 style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 16px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;">
-                                <i data-lucide="log-out" style="width:16px;height:16px;"></i> Déconnexion
+                                <i data-lucide="log-out" style="width:16px;height:16px;"></i> {{ __('messages.nav.logout') }}
                             </button>
                         </form>
                     @else
                         <a href="{{ route('client.login') }}" class="drawer-cta"
                             style="background-color: {{ $accentColor }};">
-                            <i data-lucide="user"></i> Publier une annonce
+                            <i data-lucide="user"></i> {{ __('messages.nav.publish_ad') }}
                         </a>
                     @endif
+
+                    <div style="margin:18px 0 6px;display:flex;justify-content:center;">@include('partials.lang-switcher')</div>
 
                     <div class="drawer-socials">
                         <a href="#"><i data-lucide="facebook"></i></a>
@@ -3087,7 +3092,7 @@
                     <div class="drawer-divider"></div>
 
                     <div class="drawer-support">
-                        <p>Support NADO</p>
+                        <p>{{ __('messages.nav.support') }}</p>
                         <a href="tel:+212520070611">+212 520 070 611</a>
                     </div>
                 </div>
@@ -3919,11 +3924,10 @@
                 <div class="hero-badge">
                     <span
                         style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--secondary); display: inline-block;"></span>
-                    <span>Expérience Premium NADO</span>
+                    <span>{{ __('messages.hero.badge') }}</span>
                 </div>
-                <h1 class="hero-title">L'Auto <br /><span class="text-gradient">Redéfinie</span></h1>
-                <p class="hero-desc">Le plus grand catalogue de véhicules certifiés au Maroc. Achat, vente et enchères
-                    en un seul lieu.</p>
+                <h1 class="hero-title">{{ __('messages.hero.title_1') }} <br /><span class="text-gradient">{{ __('messages.hero.title_2') }}</span></h1>
+                <p class="hero-desc">{{ __('messages.hero.desc') }}</p>
             </div>
         </section>
 
@@ -3935,9 +3939,9 @@
                     <div class="search-item">
                         <i data-lucide="car-front" style="color: var(--primary); width: 18px; height: 18px;"></i>
                         <div style="flex: 1;">
-                            <label>Marque</label>
+                            <label>{{ __('messages.search.brand') }}</label>
                             <select id="search-brand" name="brand">
-                                <option value="" data-name="">Toutes marques</option>
+                                <option value="" data-name="">{{ __('messages.search.all_brands') }}</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}" data-name="{{ $brand->name }}">{{ $brand->name }}</option>
                                 @endforeach
@@ -3950,9 +3954,9 @@
                     <div class="search-item">
                         <i data-lucide="settings-2" style="color: var(--primary); width: 18px; height: 18px;"></i>
                         <div style="flex: 1;">
-                            <label>Modèle</label>
+                            <label>{{ __('messages.search.model') }}</label>
                             <select id="search-model" name="model">
-                                <option value="">Tous modèles</option>
+                                <option value="">{{ __('messages.search.all_models') }}</option>
                             </select>
                         </div>
                         <div class="divider"></div>

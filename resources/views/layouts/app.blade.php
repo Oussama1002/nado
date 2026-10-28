@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    @include('partials.locale-head')
 
     <!-- Owl Carousel CSS (kept for pages that still use it) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
