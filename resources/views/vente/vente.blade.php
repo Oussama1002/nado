@@ -564,23 +564,22 @@
                 <div>
                     <div class="vp-badge">
                         <i data-lucide="zap" style="width:14px;height:14px;fill:currentColor;"></i>
-                        Vendez votre voiture
+                        {{ __('messages.vente.badge') }}
                     </div>
                     <h1 class="vp-h1">
-                        NADO achète<br>
-                        <span class="vp-h1-grad">VOTRE VOITURE</span>
+                        {{ __('messages.vente.h1_1') }}<br>
+                        <span class="vp-h1-grad">{{ __('messages.vente.h1_grad') }}</span>
                     </h1>
                     <p class="vp-subtitle">
-                        Que vous soyez particulier, société ou loueur, NADO achète votre véhicule directement.
-                        Paiement rapide, processus simplifié, expertise professionnelle.
+                        {{ __('messages.vente.subtitle') }}
                     </p>
                     <div class="vp-props">
-                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> Estimation gratuite</div>
-                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> Service rapide</div>
-                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> 100% sécurisé</div>
+                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> {{ __('messages.vente.prop_free') }}</div>
+                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> {{ __('messages.vente.prop_fast') }}</div>
+                        <div class="vp-prop"><i data-lucide="check-circle" class="vp-prop-check" style="width:16px;height:16px;"></i> {{ __('messages.vente.prop_secure') }}</div>
                     </div>
                     <button class="vp-cta-btn" onclick="openVenteModal()">
-                        Publier mon annonce
+                        {{ __('messages.vente.publish') }}
                         <i data-lucide="arrow-right" class="vp-cta-arrow" style="width:18px;height:18px;"></i>
                     </button>
                 </div>
@@ -596,9 +595,9 @@
                         <div class="vp-visual-overlay">
                             <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
                                 <div>
-                                    <div style="color:white;font-size:1.2rem;font-weight:900;margin-bottom:6px;">Vendez votre voiture</div>
+                                    <div style="color:white;font-size:1.2rem;font-weight:900;margin-bottom:6px;">{{ __('messages.vente.badge') }}</div>
                                     <div style="color:var(--vp-yellow);font-size:1.6rem;font-weight:900;letter-spacing:-.02em;">
-                                        Estimation gratuite
+                                        {{ __('messages.vente.prop_free') }}
                                     </div>
                                 </div>
                                 <div style="width:64px;height:64px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -625,9 +624,9 @@
     <section class="vp-clients">
         <div class="vmkt-wrap">
             <div style="text-align:center; margin-bottom:64px;">
-                <p class="vp-section-eyebrow">Pour tous</p>
-                <h2 class="vp-section-title">QUEL EST<br>VOTRE PROFIL ?</h2>
-                <p class="vp-section-sub">Particulier, professionnel ou reprise — NADO a la solution adaptée à votre situation.</p>
+                <p class="vp-section-eyebrow">{{ __('messages.vente.eyebrow_all') }}</p>
+                <h2 class="vp-section-title">{!! __('messages.vente.profile_title') !!}</h2>
+                <p class="vp-section-sub">{{ __('messages.vente.profile_sub') }}</p>
             </div>
 
             <div class="vp-clients-grid">
@@ -639,15 +638,15 @@
                             <img src="https://img.freepik.com/photos-gratuite/homme-choisissant-voiture-dans-salon-voitures_1303-25646.jpg?t=st=1771689579~exp=1771693179~hmac=27d8b3064b0ea231c0361774f5e7d814eb92f885efea1173cd7020cef385ca73&w=1480" alt="Particulier dans un salon automobile" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
                         </div>
                         <div class="vp-card-hover-overlay">
-                            <div class="vp-hover-pill">Voir le parcours</div>
+                            <div class="vp-hover-pill">{{ __('messages.vente.see_journey') }}</div>
                         </div>
                     </div>
                     <div class="vp-card-body">
                         <span class="vp-card-badge badge-particulier">
-                            <i data-lucide="user" style="width:10px;height:10px;"></i> PARTICULIER
+                            <i data-lucide="user" style="width:10px;height:10px;"></i> {{ __('messages.vente.badge_particulier') }}
                         </span>
-                        <h3 class="vp-card-title">Je vends ma voiture</h3>
-                        <p class="vp-card-desc">Publiez votre annonce en quelques minutes et touchez des milliers d'acheteurs sérieux.</p>
+                        <h3 class="vp-card-title">{{ __('messages.vente.card1_title') }}</h3>
+                        <p class="vp-card-desc">{{ __('messages.vente.card1_desc') }}</p>
                     </div>
                 </div>
 
@@ -658,15 +657,15 @@
                             <img src="https://img.freepik.com/photos-gratuite/personne-agee-voiture-salle-exposition-choisir-voiture_1303-18966.jpg?t=st=1771689722~exp=1771693322~hmac=57a87929be4fbc40ee9588c4f3caf6c8ba6aab3d3945ffc38cb26a5621a6de25&w=1480" alt="Professionnel en salle d'exposition" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
                         </div>
                         <div class="vp-card-hover-overlay">
-                            <div class="vp-hover-pill">Voir le parcours</div>
+                            <div class="vp-hover-pill">{{ __('messages.vente.see_journey') }}</div>
                         </div>
                     </div>
                     <div class="vp-card-body">
                         <span class="vp-card-badge badge-certifie">
-                            <i data-lucide="shield-check" style="width:10px;height:10px;"></i> CERTIFIÉ
+                            <i data-lucide="shield-check" style="width:10px;height:10px;"></i> {{ __('messages.vente.badge_certified') }}
                         </span>
-                        <h3 class="vp-card-title">Concessionnaire / Pro</h3>
-                        <p class="vp-card-desc">Gérez tout votre stock depuis votre espace et profitez du badge certifié NADO.</p>
+                        <h3 class="vp-card-title">{{ __('messages.vente.card2_title') }}</h3>
+                        <p class="vp-card-desc">{{ __('messages.vente.card2_desc') }}</p>
                     </div>
                 </div>
 
@@ -677,15 +676,15 @@
                             <img src="https://img.freepik.com/photos-gratuite/gros-plan-du-directeur-ventes-costume-noir-vendant-voiture-au-client_146671-14738.jpg?uid=R175071393&ga=GA1.1.1242906354.1770722826&semt=ais_related_payload_trends&w=740&q=80" alt="Conseiller commercial avec un client" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
                         </div>
                         <div class="vp-card-hover-overlay">
-                            <div class="vp-hover-pill">Demander une reprise</div>
+                            <div class="vp-hover-pill">{{ __('messages.vente.ask_tradein') }}</div>
                         </div>
                     </div>
                     <div class="vp-card-body">
                         <span class="vp-card-badge badge-nado">
-                            <i data-lucide="refresh-cw" style="width:10px;height:10px;"></i> NADO
+                            <i data-lucide="refresh-cw" style="width:10px;height:10px;"></i> {{ __('messages.vente.badge_nado') }}
                         </span>
-                        <h3 class="vp-card-title">Reprise NADO</h3>
-                        <p class="vp-card-desc">NADO rachète directement votre véhicule. Estimation immédiate, paiement rapide, zéro contrainte.</p>
+                        <h3 class="vp-card-title">{{ __('messages.vente.card3_title') }}</h3>
+                        <p class="vp-card-desc">{{ __('messages.vente.card3_desc') }}</p>
                     </div>
                 </div>
 
@@ -704,9 +703,9 @@
     <section class="vp-how">
         <div class="vmkt-wrap">
             <div style="text-align:center; margin-bottom:80px;">
-                <p class="vp-section-eyebrow">Mode Opératoire</p>
-                <h2 class="vp-section-title">COMMENT ÇA<br>MARCHE ?</h2>
-                <p class="vp-section-sub">Deux modes de vente adaptés à votre situation, pour vendre dans les meilleures conditions.</p>
+                <p class="vp-section-eyebrow">{{ __('messages.vente.eyebrow_mode') }}</p>
+                <h2 class="vp-section-title">{!! __('messages.vente.how_title') !!}</h2>
+                <p class="vp-section-sub">{{ __('messages.vente.how_sub') }}</p>
             </div>
             <div class="vp-how-grid">
 
@@ -715,8 +714,8 @@
                     <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:28px;">
                         <div class="vp-how-canal-num">01</div>
                         <div>
-                            <h3 class="vp-how-card-title" style="margin-bottom:6px;">Service à distance</h3>
-                            <p style="font-size:13px;color:var(--vp-muted);font-weight:500;">Vendez sans vous déplacer, depuis chez vous.</p>
+                            <h3 class="vp-how-card-title" style="margin-bottom:6px;">{{ __('messages.vente.canal1_title') }}</h3>
+                            <p style="font-size:13px;color:var(--vp-muted);font-weight:500;">{{ __('messages.vente.canal1_sub') }}</p>
                         </div>
                     </div>
                     <div class="vp-how-card-media" style="overflow:hidden;">
@@ -727,20 +726,20 @@
                     <ul class="vp-how-check-list">
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Déposez vos photos et infos en ligne
+                            {{ __('messages.vente.canal1_f1') }}
                         </li>
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Nous publions et gérons les contacts acheteurs
+                            {{ __('messages.vente.canal1_f2') }}
                         </li>
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Vous vendez au meilleur prix, sans vous déplacer
+                            {{ __('messages.vente.canal1_f3') }}
                         </li>
                     </ul>
                     <button class="vp-how-cta-btn" onclick="openVenteModal()">
                         <i data-lucide="globe" style="width:16px;height:16px;"></i>
-                        Déposer mon annonce en ligne
+                        {{ __('messages.vente.canal1_cta') }}
                     </button>
                 </div>
 
@@ -749,8 +748,8 @@
                     <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:28px;">
                         <div class="vp-how-canal-num" style="background:#0f172a;">02</div>
                         <div>
-                            <h3 class="vp-how-card-title" style="margin-bottom:6px;">Venir au Showroom</h3>
-                            <p style="font-size:13px;color:var(--vp-muted);font-weight:500;">Déposez votre véhicule, on s'occupe du reste.</p>
+                            <h3 class="vp-how-card-title" style="margin-bottom:6px;">{{ __('messages.vente.canal2_title') }}</h3>
+                            <p style="font-size:13px;color:var(--vp-muted);font-weight:500;">{{ __('messages.vente.canal2_sub') }}</p>
                         </div>
                     </div>
                     <div class="vp-how-card-media" style="overflow:hidden;">
@@ -761,27 +760,27 @@
                     <ul class="vp-how-check-list">
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Dépôt du véhicule en agence avec expertise complète
+                            {{ __('messages.vente.canal2_f1') }}
                         </li>
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Vidéo YouTube professionnelle + badge Garantie NADO
+                            {{ __('messages.vente.canal2_f2') }}
                         </li>
                         <li class="vp-how-check-item">
                             <i data-lucide="check-circle-2" class="vp-how-check-icon" style="width:18px;height:18px;"></i>
-                            Vente accompagnée et transaction 100% sécurisée
+                            {{ __('messages.vente.canal2_f3') }}
                         </li>
                     </ul>
                     <div class="vp-address-card">
                         <i data-lucide="map-pin" class="vp-address-pin" style="width:20px;height:20px;"></i>
                         <div>
-                            <div style="font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--vp-slate);margin-bottom:4px;">Showroom NADO</div>
-                            <div style="font-size:13px;font-weight:500;color:var(--vp-muted);">Casablanca, Maroc — Ouvert du Lun. au Sam. 9h–18h</div>
+                            <div style="font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--vp-slate);margin-bottom:4px;">{{ __('messages.vente.showroom_label') }}</div>
+                            <div style="font-size:13px;font-weight:500;color:var(--vp-muted);">{{ __('messages.vente.showroom_addr') }}</div>
                         </div>
                     </div>
                     <button class="vp-how-cta-btn" style="background:#0f172a;" onmouseover="this.style.background='#1459DD'" onmouseout="this.style.background='#0f172a'" onclick="openVenteModal()">
                         <i data-lucide="map-pin" style="width:16px;height:16px;"></i>
-                        Prendre rendez-vous au showroom
+                        {{ __('messages.vente.canal2_cta') }}
                     </button>
                 </div>
 
@@ -793,9 +792,9 @@
     <section class="vp-solutions">
         <div class="vmkt-wrap">
             <div style="text-align:center; margin-bottom:80px;">
-                <p class="vp-section-eyebrow">Nos Solutions</p>
-                <h2 class="vp-section-title">LES PROPOSITIONS<br>NADO</h2>
-                <p class="vp-section-sub">Cinq façons de vendre ou valoriser votre véhicule — choisissez celle qui vous convient.</p>
+                <p class="vp-section-eyebrow">{{ __('messages.vente.eyebrow_solutions') }}</p>
+                <h2 class="vp-section-title">{!! __('messages.vente.propositions_title') !!}</h2>
+                <p class="vp-section-sub">{{ __('messages.vente.propositions_sub') }}</p>
             </div>
             <div class="vp-solutions-list">
 
@@ -804,19 +803,19 @@
                     <div class="vp-sol-media">
                         <img src="https://img.freepik.com/photos-gratuite/gros-plan-client-homme-affaires-chez-concessionnaire-automobile_23-2149117137.jpg?t=st=1771691293~exp=1771694893~hmac=0a859f7b4f543627103588a1670b426206883df89b96be592b1316a616d672ec&w=1480"
                              alt="Achat direct NADO" loading="lazy">
-                        <span class="vp-sol-float-badge" style="background:#1459DD;">ACHAT DIRECT</span>
+                        <span class="vp-sol-float-badge" style="background:#1459DD;">{{ __('messages.vente.sol1_title') }}</span>
                     </div>
                     <div class="vp-sol-body">
-                        <p class="vp-sol-eyebrow">Solution 01</p>
-                        <h3 class="vp-sol-title">ACHAT DIRECT</h3>
-                        <p class="vp-sol-desc">NADO rachète votre véhicule immédiatement au juste prix. Estimation en ligne, paiement le jour même, zéro contrainte.</p>
+                        <p class="vp-sol-eyebrow">{{ __('messages.vente.solution') }} 01</p>
+                        <h3 class="vp-sol-title">{{ __('messages.vente.sol1_title') }}</h3>
+                        <p class="vp-sol-desc">{{ __('messages.vente.sol1_desc') }}</p>
                         <ul class="vp-sol-feats">
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> Estimation gratuite en ligne</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> Paiement sécurisé le jour même</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> Aucune démarche administrative</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> {{ __('messages.vente.sol1_f1') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> {{ __('messages.vente.sol1_f2') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#1459DD;flex-shrink:0;"></i> {{ __('messages.vente.sol1_f3') }}</li>
                         </ul>
                         <button class="vp-sol-cta-btn" onclick="openVenteModal()">
-                            Obtenir mon offre <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
+                            {{ __('messages.vente.sol1_cta') }} <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
                         </button>
                     </div>
                 </div>
@@ -824,22 +823,22 @@
                 {{-- 2. Reprise (yellow) — image right --}}
                 <div class="vp-solution-item">
                     <div class="vp-sol-body" style="order:1;">
-                        <p class="vp-sol-eyebrow">Solution 02</p>
-                        <h3 class="vp-sol-title">REPRISE NADO</h3>
-                        <p class="vp-sol-desc">Échangez votre ancien véhicule contre un crédit pour votre prochain achat dans notre parc. La solution idéale pour changer de voiture facilement.</p>
+                        <p class="vp-sol-eyebrow">{{ __('messages.vente.solution') }} 02</p>
+                        <h3 class="vp-sol-title">{{ __('messages.vente.sol2_title') }}</h3>
+                        <p class="vp-sol-desc">{{ __('messages.vente.sol2_desc') }}</p>
                         <ul class="vp-sol-feats">
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> Reprise estimée en 24h</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> Crédit déduit sur votre prochain véhicule</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> Gestion complète du dossier</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> {{ __('messages.vente.sol2_f1') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> {{ __('messages.vente.sol2_f2') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#d97706;flex-shrink:0;"></i> {{ __('messages.vente.sol2_f3') }}</li>
                         </ul>
                         <button class="vp-sol-cta-btn" onclick="openVenteModal()">
-                            Démarrer ma reprise <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
+                            {{ __('messages.vente.sol2_cta') }} <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
                         </button>
                     </div>
                     <div class="vp-sol-media" style="order:2;">
                         <img src="https://img.freepik.com/photos-gratuite/jeune-couple-choisissant-voiture-dans-exposition-voitures_1303-22835.jpg?t=st=1771692792~exp=1771696392~hmac=68ad7274e0d7d0d7ab054019b6ab1bb64b4fcb543ca0a99200c4ea86f9da1750&w=1060"
                              alt="Reprise NADO" loading="lazy">
-                        <span class="vp-sol-float-badge badge-yellow" style="background:#FDD817;">REPRISE</span>
+                        <span class="vp-sol-float-badge badge-yellow" style="background:#FDD817;">{{ __('messages.vente.sol2_badge') }}</span>
                     </div>
                 </div>
 
@@ -848,19 +847,19 @@
                     <div class="vp-sol-media">
                         <img src="https://img.freepik.com/photos-gratuite/homme-femme-chez-concessionnaire-automobile_23-2148333017.jpg?t=st=1771691462~exp=1771695062~hmac=805c99a2054d96155f61b9bbc07fadd8f76de7108b81afac3337021021d084a7&w=1480"
                              alt="Dépôt-vente NADO" loading="lazy">
-                        <span class="vp-sol-float-badge" style="background:#16a34a;">DÉPÔT-VENTE</span>
+                        <span class="vp-sol-float-badge" style="background:#16a34a;">{{ __('messages.vente.sol3_title') }}</span>
                     </div>
                     <div class="vp-sol-body">
-                        <p class="vp-sol-eyebrow">Solution 03</p>
-                        <h3 class="vp-sol-title">DÉPÔT-VENTE</h3>
-                        <p class="vp-sol-desc">Confiez votre véhicule à NADO. Nous gérons visites, négociation et paperasse. Vous récupérez le prix net une fois vendu.</p>
+                        <p class="vp-sol-eyebrow">{{ __('messages.vente.solution') }} 03</p>
+                        <h3 class="vp-sol-title">{{ __('messages.vente.sol3_title') }}</h3>
+                        <p class="vp-sol-desc">{{ __('messages.vente.sol3_desc') }}</p>
                         <ul class="vp-sol-feats">
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> Exposition dans notre showroom</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> Gestion des visites et des appels</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> Vous touchez le prix de vente net</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> {{ __('messages.vente.sol3_f1') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> {{ __('messages.vente.sol3_f2') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#16a34a;flex-shrink:0;"></i> {{ __('messages.vente.sol3_f3') }}</li>
                         </ul>
                         <button class="vp-sol-cta-btn" onclick="openVenteModal()">
-                            Déposer mon véhicule <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
+                            {{ __('messages.vente.sol3_cta') }} <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
                         </button>
                     </div>
                 </div>
@@ -868,22 +867,22 @@
                 {{-- 4. Pack Annonces (purple) — image right --}}
                 <div class="vp-solution-item">
                     <div class="vp-sol-body" style="order:1;">
-                        <p class="vp-sol-eyebrow">Solution 04</p>
-                        <h3 class="vp-sol-title">PACK ANNONCES</h3>
-                        <p class="vp-sol-desc">Diffusion premium de votre annonce sur NADO et nos plateformes partenaires. Photos pro, vidéo YouTube, badge Certifié NADO pour maximiser la visibilité.</p>
+                        <p class="vp-sol-eyebrow">{{ __('messages.vente.solution') }} 04</p>
+                        <h3 class="vp-sol-title">{{ __('messages.vente.sol4_title') }}</h3>
+                        <p class="vp-sol-desc">{{ __('messages.vente.sol4_desc') }}</p>
                         <ul class="vp-sol-feats">
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> Diffusion NADO + Avito + partenaires</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> Vidéo YouTube professionnelle</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> Badge Certifié NADO inclus</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> {{ __('messages.vente.sol4_f1') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> {{ __('messages.vente.sol4_f2') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#7c3aed;flex-shrink:0;"></i> {{ __('messages.vente.sol4_f3') }}</li>
                         </ul>
                         <button class="vp-sol-cta-btn" onclick="openVenteModal()">
-                            Choisir mon pack <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
+                            {{ __('messages.vente.sol4_cta') }} <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
                         </button>
                     </div>
                     <div class="vp-sol-media" style="order:2;">
                         <img src="https://img.freepik.com/photos-gratuite/portrait-homme-gai-dans-vetements-base-souriant-montrant-pouces-vers-haut-camera-isole-fond-blanc_176420-45185.jpg?t=st=1771692121~exp=1771695721~hmac=ce97cd426b2a8c1de8802d203788c9db487f8bb33bee097d9870d3d36b8f53f2&w=1480"
                              alt="Pack annonces NADO" loading="lazy">
-                        <span class="vp-sol-float-badge" style="background:#7c3aed;">PACK ANNONCES</span>
+                        <span class="vp-sol-float-badge" style="background:#7c3aed;">{{ __('messages.vente.sol4_title') }}</span>
                     </div>
                 </div>
 
@@ -892,19 +891,19 @@
                     <div class="vp-sol-media">
                         <img src="https://img.freepik.com/photos-gratuite/vue-aerienne-clientele-feminine-homme-affaires-barbu-elegant-moderne-dans-salon-automobile_146671-16021.jpg?t=st=1771691824~exp=1771695424~hmac=a90a4858804a5138b7905f11697e2bea18a966fbc564872b76f90d625522ceb2&w=1480"
                              alt="Enchère auto NADO" loading="lazy">
-                        <span class="vp-sol-float-badge" style="background:#ea580c;">ENCHÈRE AUTO</span>
+                        <span class="vp-sol-float-badge" style="background:#ea580c;">{{ __('messages.vente.sol5_title') }}</span>
                     </div>
                     <div class="vp-sol-body">
-                        <p class="vp-sol-eyebrow">Solution 05</p>
-                        <h3 class="vp-sol-title">ENCHÈRE AUTO</h3>
-                        <p class="vp-sol-desc">Mettez votre véhicule aux enchères et laissez les acheteurs se disputer le meilleur prix. Transparence totale, vente rapide, meilleure valeur garantie.</p>
+                        <p class="vp-sol-eyebrow">{{ __('messages.vente.solution') }} 05</p>
+                        <h3 class="vp-sol-title">{{ __('messages.vente.sol5_title') }}</h3>
+                        <p class="vp-sol-desc">{{ __('messages.vente.sol5_desc') }}</p>
                         <ul class="vp-sol-feats">
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> Enchères ouvertes 7j/7 en ligne</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> Acheteurs vérifiés par NADO</li>
-                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> Prix de réserve à votre main</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> {{ __('messages.vente.sol5_f1') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> {{ __('messages.vente.sol5_f2') }}</li>
+                            <li class="vp-sol-feat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:#ea580c;flex-shrink:0;"></i> {{ __('messages.vente.sol5_f3') }}</li>
                         </ul>
                         <button class="vp-sol-cta-btn" onclick="openVenteModal()">
-                            Mettre aux enchères <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
+                            {{ __('messages.vente.sol5_cta') }} <i data-lucide="arrow-right" class="vp-sol-cta-arrow" style="width:16px;height:16px;"></i>
                         </button>
                     </div>
                 </div>
@@ -925,17 +924,17 @@
         <div class="vp-final-dots"></div>
         <div class="vmkt-wrap">
             <div class="vp-final-content" style="max-width:700px;margin:0 auto;">
-                <p class="vp-final-eyebrow">Commencez dès maintenant</p>
-                <h2 class="vp-final-h2">PRÊT À VENDRE<br>VOTRE VOITURE ?</h2>
-                <p class="vp-final-sub">Rejoignez les milliers de vendeurs qui font confiance à NADO pour une vente rapide au juste prix.</p>
+                <p class="vp-final-eyebrow">{{ __('messages.vente.final_eyebrow') }}</p>
+                <h2 class="vp-final-h2">{!! __('messages.vente.final_title') !!}</h2>
+                <p class="vp-final-sub">{{ __('messages.vente.final_sub') }}</p>
                 <div class="vp-final-btns">
                     <button class="vp-btn-white" onclick="openVenteModal()">
                         <i data-lucide="plus-circle" style="width:18px;height:18px;"></i>
-                        Publier mon annonce
+                        {{ __('messages.vente.publish') }}
                     </button>
                     <a href="{{ route('reprise.form') }}" class="vp-btn-outline">
                         <i data-lucide="refresh-cw" style="width:18px;height:18px;"></i>
-                        Reprise NADO
+                        {{ __('messages.vente.card3_title') }}
                     </a>
                 </div>
             </div>
