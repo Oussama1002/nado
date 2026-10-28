@@ -78,7 +78,45 @@
         toolbar_mode: 'wrap',
         branding: false,
         promotion: false,
-        content_style: 'body{font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:1.7;color:#334155;}',
+        content_style: 'body{font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:1.7;color:#334155;}'
+                     + 'img{max-width:100%;height:auto;}',
+
+        // --- Images: drag & drop / file picker upload (no URL needed) ---
+        automatic_uploads: true,
+        paste_data_images: true,            // paste a screenshot straight in
+        file_picker_types: 'image',
+        image_title: true,
+        image_dimensions: true,             // keep width/height on the <img>
+        image_advtab: true,                 // "Advanced" tab to type exact size
+        object_resizing: 'img',             // drag the corner handles, like Word
+        images_upload_handler: function (blobInfo, progress) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{{ route('admin.articles.uploadImage') }}');
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                xhr.setRequestHeader('Accept', 'application/json');
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) { progress(e.loaded / e.total * 100); }
+                };
+                xhr.onload = function () {
+                    if (xhr.status === 413) { reject('Image trop lourde (4 Mo max).'); return; }
+                    if (xhr.status < 200 || xhr.status >= 300) {
+                        reject('Échec de l\'envoi : ' + xhr.status); return;
+                    }
+                    var json;
+                    try { json = JSON.parse(xhr.responseText); } catch (e) { json = null; }
+                    if (!json || typeof json.location !== 'string') {
+                        reject('Réponse invalide du serveur.'); return;
+                    }
+                    resolve(json.location);
+                };
+                xhr.onerror = function () { reject('Erreur réseau pendant l\'envoi.'); };
+                var fd = new FormData();
+                fd.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(fd);
+            });
+        },
+
         // Keep the <textarea> in sync so normal form submit sends the HTML.
         setup: function (editor) {
             editor.on('change keyup', function () {

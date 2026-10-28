@@ -90,6 +90,23 @@ class ArticleController extends Controller
         return back()->with('success', 'Statut mis à jour.');
     }
 
+    /**
+     * Handle inline image uploads from the TinyMCE editor (drag & drop / file picker).
+     * Stores the file and returns { "location": "<public url>" } as TinyMCE expects.
+     */
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp,gif|max:4096',
+        ]);
+
+        $path = $request->file('file')->store('articles/content', 'public');
+
+        return response()->json([
+            'location' => asset('storage/' . $path),
+        ]);
+    }
+
     private function validateArticle(Request $request, $ignoreId = null): array
     {
         return $request->validate([

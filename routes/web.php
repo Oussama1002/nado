@@ -365,6 +365,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     // Blog articles management
     Route::patch('articles/{id}/toggle', [\App\Http\Controllers\Admin\ArticleController::class, 'toggleActive'])
         ->name('articles.toggle');
+    // In-editor image upload (TinyMCE drag & drop / file picker)
+    Route::post('articles/upload-image', [\App\Http\Controllers\Admin\ArticleController::class, 'uploadImage'])
+        ->name('articles.uploadImage');
     Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class)->except(['show']);
     // Archive (soft-deleted annonces) — must stay above Route::resource('annonces')
     Route::get('annonces/archive', [AnnoncesController::class, 'archive'])->name('annonces.archive');
