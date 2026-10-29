@@ -5648,7 +5648,7 @@
 </style>
 
 <!-- Floating Button -->
-<button id="nado-chat-btn" aria-label="Chat NADO" title="Discuter avec nous">
+<button id="nado-chat-btn" aria-label="Chat NADO" title="{{ __('messages.chat.tooltip') }}">
     <span id="nado-chat-badge">1</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -5661,7 +5661,7 @@
         <div class="nc-avatar">🤖</div>
         <div class="nc-header-info">
             <div class="nc-header-name">MOHSINE CHAWKI</div>
-            <div class="nc-header-status">● En ligne — répond instantanément</div>
+            <div class="nc-header-status">{{ __('messages.chat.status') }}</div>
         </div>
         <button class="nc-close" id="nc-close-btn" aria-label="Fermer">✕</button>
     </div>
@@ -5669,21 +5669,21 @@
     <div id="nc-messages"></div>
 
     <div id="nc-chips">
-        <button class="nc-chip" data-q="telephone">📞 Téléphone</button>
-        <button class="nc-chip" data-q="adresse">📍 Adresse</button>
-        <button class="nc-chip" data-q="horaires">🕐 Horaires</button>
-        <button class="nc-chip" data-q="acheter">🚗 Acheter</button>
-        <button class="nc-chip" data-q="vendre">💰 Vendre</button>
-        <button class="nc-chip" data-q="financement">🏦 Financement</button>
-        <button class="nc-chip" data-q="documents">📋 Documents</button>
-        <button class="nc-chip" data-q="reprise">🔁 Reprise</button>
-        <button class="nc-chip" data-q="estimation">📊 Estimation</button>
-        <button class="nc-chip" data-q="garantie">🛡️ Garantie</button>
-        <button class="nc-chip" data-q="whatsapp">💬 WhatsApp</button>
+        <button class="nc-chip" data-q="telephone">📞 {{ __('messages.chat.tel') }}</button>
+        <button class="nc-chip" data-q="adresse">📍 {{ __('messages.chat.addr') }}</button>
+        <button class="nc-chip" data-q="horaires">🕐 {{ __('messages.chat.hours') }}</button>
+        <button class="nc-chip" data-q="acheter">🚗 {{ __('messages.chat.buy') }}</button>
+        <button class="nc-chip" data-q="vendre">💰 {{ __('messages.chat.sell') }}</button>
+        <button class="nc-chip" data-q="financement">🏦 {{ __('messages.chat.finance') }}</button>
+        <button class="nc-chip" data-q="documents">📋 {{ __('messages.chat.docs') }}</button>
+        <button class="nc-chip" data-q="reprise">🔁 {{ __('messages.chat.tradein') }}</button>
+        <button class="nc-chip" data-q="estimation">📊 {{ __('messages.chat.estimate') }}</button>
+        <button class="nc-chip" data-q="garantie">🛡️ {{ __('messages.chat.warranty') }}</button>
+        <button class="nc-chip" data-q="whatsapp">💬 {{ __('messages.chat.whatsapp') }}</button>
     </div>
 
     <div class="nc-input-bar">
-        <input id="nc-input" type="text" placeholder="Posez votre question…" autocomplete="off" />
+        <input id="nc-input" type="text" placeholder="{{ __('messages.chat.placeholder') }}" autocomplete="off" />
         <button id="nc-send" aria-label="Envoyer">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -5704,12 +5704,14 @@
     var badge   = document.getElementById('nado-chat-badge');
     var opened  = false;
 
+    var NC_AR = @json(app()->getLocale() === 'ar'); // chatbot answers in Arabic?
+
     /* ── Contact facts (single place to update) ── */
     var TEL      = '<a href="tel:+212520070611"><strong>+212 520 070 611</strong></a>';
     var WHATSAPP = '<a href="https://wa.me/212770080009" target="_blank" rel="noopener"><strong>WhatsApp 07 70 08 00 09</strong></a>';
     var EMAIL    = '<a href="mailto:contact@nado.ma"><strong>contact@nado.ma</strong></a>';
-    var MAPS     = '<a href="https://maps.app.goo.gl/RuP9P8wv898XNAAJ9" target="_blank" rel="noopener"><strong>Voir sur Google Maps</strong></a>';
-    var HOURS    = '<strong>Lundi – Samedi : 9h00 – 20h00</strong> (fermé le dimanche)';
+    var MAPS     = '<a href="https://maps.app.goo.gl/RuP9P8wv898XNAAJ9" target="_blank" rel="noopener"><strong>' + (NC_AR ? 'عرض على خرائط جوجل' : 'Voir sur Google Maps') + '</strong></a>';
+    var HOURS    = NC_AR ? '<strong>الإثنين – السبت: 9:00 – 20:00</strong> (مغلق يوم الأحد)' : '<strong>Lundi – Samedi : 9h00 – 20h00</strong> (fermé le dimanche)';
 
     function docList(items) {
         return '<ul style="margin:6px 0 0;padding-left:18px;">' +
@@ -5722,41 +5724,57 @@
     var KB = [
         // ── Contact ──
         { keys: ['telephone','tel','phone','numero','appeler','appel','joindre','contacter','contact','fixe'],
-          answer: '📞 Téléphone : ' + TEL + '<br>💬 ' + WHATSAPP + '<br>✉️ ' + EMAIL + '<br>🕐 ' + HOURS + '.' },
+          answer: '📞 Téléphone : ' + TEL + '<br>💬 ' + WHATSAPP + '<br>✉️ ' + EMAIL + '<br>🕐 ' + HOURS + '.',
+          ar: '📞 الهاتف: ' + TEL + '<br>💬 ' + WHATSAPP + '<br>✉️ ' + EMAIL + '<br>🕐 ' + HOURS + '.' },
         { keys: ['whatsapp','whats app','wtsp','watsap','wa'],
-          answer: '💬 Écrivez-nous sur ' + WHATSAPP + ' : un conseiller vous répond pendant nos horaires (' + HOURS + ').' },
+          answer: '💬 Écrivez-nous sur ' + WHATSAPP + ' : un conseiller vous répond pendant nos horaires (' + HOURS + ').',
+          ar: '💬 راسلنا على ' + WHATSAPP + ': يرد عليك مستشار خلال أوقات العمل (' + HOURS + ').' },
         { keys: ['email','e-mail','mail','courriel','ecrire'],
-          answer: '✉️ Notre adresse email : ' + EMAIL + '<br>Nous répondons sous <strong>24h ouvrées</strong>. Pour une réponse plus rapide : ' + WHATSAPP + '.' },
+          answer: '✉️ Notre adresse email : ' + EMAIL + '<br>Nous répondons sous <strong>24h ouvrées</strong>. Pour une réponse plus rapide : ' + WHATSAPP + '.',
+          ar: '✉️ بريدنا الإلكتروني: ' + EMAIL + '<br>نرد خلال <strong>24 ساعة عمل</strong>. لرد أسرع: ' + WHATSAPP + '.' },
         { keys: ['adresse','localisation','ou etes','ou se trouve','ou vous trouver','situe','situes','agence','showroom','map','maps','carte','itineraire','venir','casablanca','jnane californie'],
-          answer: '📍 Notre agence : <strong>Casablanca – Jnane Californie</strong><br>' + MAPS + '<br>🕐 ' + HOURS + '.' },
+          answer: '📍 Notre agence : <strong>Casablanca – Jnane Californie</strong><br>' + MAPS + '<br>🕐 ' + HOURS + '.',
+          ar: '📍 وكالتنا: <strong>الدار البيضاء – جنان كاليفورنيا</strong><br>' + MAPS + '<br>🕐 ' + HOURS + '.' },
         { keys: ['horaire','horaires','heure','heures','ouvert','ouverte','ouverture','ferme','fermeture','dimanche','samedi'],
-          answer: '🕐 Nos horaires d\'ouverture :<br>' + HOURS + '.<br>En dehors de ces horaires, laissez-nous un message sur ' + WHATSAPP + '.' },
+          answer: '🕐 Nos horaires d\'ouverture :<br>' + HOURS + '.<br>En dehors de ces horaires, laissez-nous un message sur ' + WHATSAPP + '.',
+          ar: '🕐 أوقات عملنا:<br>' + HOURS + '.<br>خارج هذه الأوقات، اترك لنا رسالة على ' + WHATSAPP + '.' },
 
         // ── Acheter ──
         { keys: ['acheter','achat','achete','chercher voiture','cherche une voiture','voitures disponibles','catalogue','annonces','occasion'],
-          answer: '🚗 Parcourez nos <a href="/achat"><strong>véhicules à vendre</strong></a>.<br>Filtrez par <strong>marque, modèle, prix, année, kilométrage, carburant et boîte</strong>. Chaque annonce affiche photos, équipements, rapport d\'expertise et un <strong>simulateur de crédit</strong>.' },
+          answer: '🚗 Parcourez nos <a href="/achat"><strong>véhicules à vendre</strong></a>.<br>Filtrez par <strong>marque, modèle, prix, année, kilométrage, carburant et boîte</strong>. Chaque annonce affiche photos, équipements, rapport d\'expertise et un <strong>simulateur de crédit</strong>.',
+          ar: '🚗 تصفّح <a href="/achat"><strong>سياراتنا المعروضة للبيع</strong></a>.<br>صفِّ حسب <strong>الماركة والموديل والسعر والسنة وعدد الكيلومترات والوقود وناقل الحركة</strong>. كل إعلان يعرض الصور والتجهيزات وتقرير الفحص و<strong>محاكي القرض</strong>.' },
         { keys: ['certifie','certification','expertise','rapport','inspection','controle','fiable','etat du vehicule'],
-          answer: '✅ Les véhicules <strong>certifiés NADO</strong> sont contrôlés par nos experts avant la mise en vente.<br>Le <strong>rapport d\'expertise</strong> est consultable dans l\'onglet <strong>« Expertise NADO »</strong> de chaque annonce.' },
+          answer: '✅ Les véhicules <strong>certifiés NADO</strong> sont contrôlés par nos experts avant la mise en vente.<br>Le <strong>rapport d\'expertise</strong> est consultable dans l\'onglet <strong>« Expertise NADO »</strong> de chaque annonce.',
+          ar: '✅ السيارات <strong>المعتمدة من نادو</strong> يفحصها خبراؤنا قبل عرضها للبيع.<br>يمكن الاطلاع على <strong>تقرير الفحص</strong> في تبويب <strong>«خبرة نادو»</strong> في كل إعلان.' },
         { keys: ['garantie','garanti','panne','serenite'],
-          answer: '🛡️ <strong>Garantie NADO Sérénité</strong> : <strong>1 mois</strong> couvrant <strong>pièces et main d\'œuvre</strong>, dans la limite de <strong>1 000 km</strong>.<br>Les annonces concernées affichent le badge « Garantie incluse ».' },
+          answer: '🛡️ <strong>Garantie NADO Sérénité</strong> : <strong>1 mois</strong> couvrant <strong>pièces et main d\'œuvre</strong>, dans la limite de <strong>1 000 km</strong>.<br>Les annonces concernées affichent le badge « Garantie incluse ».',
+          ar: '🛡️ <strong>ضمان نادو سيرينيتي</strong>: <strong>شهر واحد</strong> يغطي <strong>القطع واليد العاملة</strong>، في حدود <strong>1 000 كلم</strong>.<br>الإعلانات المعنية تحمل شارة «الضمان مشمول».' },
         { keys: ['essai','essayer','visite','visiter','voir la voiture','voir le vehicule','rendez-vous','rdv'],
-          answer: '📅 Pour voir ou essayer un véhicule, contactez-nous avec la référence de l\'annonce :<br>' + WHATSAPP + ' ou ' + TEL + '.<br>📍 Agence : <strong>Casablanca – Jnane Californie</strong> (' + MAPS + ').' },
+          answer: '📅 Pour voir ou essayer un véhicule, contactez-nous avec la référence de l\'annonce :<br>' + WHATSAPP + ' ou ' + TEL + '.<br>📍 Agence : <strong>Casablanca – Jnane Californie</strong> (' + MAPS + ').',
+          ar: '📅 لمعاينة أو تجربة سيارة، تواصل معنا مع مرجع الإعلان:<br>' + WHATSAPP + ' أو ' + TEL + '.<br>📍 الوكالة: <strong>الدار البيضاء – جنان كاليفورنيا</strong> (' + MAPS + ').' },
         { keys: ['comparer','comparaison','comparateur','compare'],
-          answer: '⚖️ Comparez deux véhicules côte à côte (prix, km, carburant, boîte, équipements…) avec notre <a href="/comparison"><strong>comparateur</strong></a>.' },
+          answer: '⚖️ Comparez deux véhicules côte à côte (prix, km, carburant, boîte, équipements…) avec notre <a href="/comparison"><strong>comparateur</strong></a>.',
+          ar: '⚖️ قارن سيارتين جنبًا إلى جنب (السعر، الكيلومترات، الوقود، ناقل الحركة، التجهيزات…) عبر <a href="/comparison"><strong>أداة المقارنة</strong></a>.' },
         { keys: ['favori','favoris','sauvegarder','enregistrer','coeur'],
-          answer: '❤️ Cliquez sur le cœur d\'une annonce pour l\'ajouter à vos <a href="/favorites"><strong>favoris</strong></a> (connexion à votre compte requise).' },
+          answer: '❤️ Cliquez sur le cœur d\'une annonce pour l\'ajouter à vos <a href="/favorites"><strong>favoris</strong></a> (connexion à votre compte requise).',
+          ar: '❤️ انقر على القلب في أي إعلان لإضافته إلى <a href="/favorites"><strong>مفضّلاتك</strong></a> (يتطلب تسجيل الدخول).' },
         { keys: ['reserver','reservation','acompte','bloquer','negocier','negociation','proposer un prix','offre','remise','reduction'],
-          answer: '🤝 Pour réserver un véhicule ou faire une offre, utilisez <strong>« Proposer un prix »</strong> ou <strong>« Discussion avec le vendeur »</strong> sur l\'annonce, ou écrivez-nous sur ' + WHATSAPP + ' avec la référence du véhicule.' },
+          answer: '🤝 Pour réserver un véhicule ou faire une offre, utilisez <strong>« Proposer un prix »</strong> ou <strong>« Discussion avec le vendeur »</strong> sur l\'annonce, ou écrivez-nous sur ' + WHATSAPP + ' avec la référence du véhicule.',
+          ar: '🤝 لحجز سيارة أو تقديم عرض، استخدم <strong>«اقترح سعرًا»</strong> أو <strong>«محادثة مع البائع»</strong> في الإعلان، أو راسلنا على ' + WHATSAPP + ' مع مرجع السيارة.' },
         { keys: ['livraison','livrer','autre ville','rabat','marrakech','tanger','agadir','fes'],
-          answer: '🚚 Vous êtes hors de Casablanca ? Contactez un conseiller sur ' + WHATSAPP + ' pour étudier les modalités (visite, papiers, remise du véhicule).' },
+          answer: '🚚 Vous êtes hors de Casablanca ? Contactez un conseiller sur ' + WHATSAPP + ' pour étudier les modalités (visite, papiers, remise du véhicule).',
+          ar: '🚚 خارج الدار البيضاء؟ تواصل مع مستشار على ' + WHATSAPP + ' لدراسة الإجراءات (المعاينة، الأوراق، تسليم السيارة).' },
         { keys: ['papiers','carte grise','mutation','immatriculation','dedouane','vignette','assurance voiture'],
-          answer: '📄 Pour les démarches administratives (carte grise, mutation…), un conseiller vous accompagne : ' + WHATSAPP + ' ou ' + TEL + '.' },
+          answer: '📄 Pour les démarches administratives (carte grise, mutation…), un conseiller vous accompagne : ' + WHATSAPP + ' ou ' + TEL + '.',
+          ar: '📄 للإجراءات الإدارية (البطاقة الرمادية، نقل الملكية…)، يرافقك مستشار: ' + WHATSAPP + ' أو ' + TEL + '.' },
         { keys: ['accessoire','accessoires','pieces','equipement auto'],
-          answer: '🧰 Découvrez nos <a href="/accessoires"><strong>accessoires</strong></a> disponibles.' },
+          answer: '🧰 Découvrez nos <a href="/accessoires"><strong>accessoires</strong></a> disponibles.',
+          ar: '🧰 اكتشف <a href="/accessoires"><strong>إكسسواراتنا</strong></a> المتوفرة.' },
 
         // ── Financement ──
         { keys: ['financement','financer','credit','pret','mensualite','mensualites','simulation','simulateur','taux','apport','leasing','loa'],
-          answer: '🏦 <strong>Financement auto</strong> : chaque annonce propose un <strong>simulateur</strong> (apport, durée, mensualité). Le taux dépend de votre <strong>profil</strong> (salarié, fonctionnaire, retraité, profession libérale, commerçant, entreprise).<br>👉 <a href="/financement"><strong>Page Financement</strong></a> — offre indicative, soumise à acceptation du dossier.<br>Tapez « documents » pour la liste des pièces à fournir.' },
+          answer: '🏦 <strong>Financement auto</strong> : chaque annonce propose un <strong>simulateur</strong> (apport, durée, mensualité). Le taux dépend de votre <strong>profil</strong> (salarié, fonctionnaire, retraité, profession libérale, commerçant, entreprise).<br>👉 <a href="/financement"><strong>Page Financement</strong></a> — offre indicative, soumise à acceptation du dossier.<br>Tapez « documents » pour la liste des pièces à fournir.',
+          ar: '🏦 <strong>تمويل السيارات</strong>: كل إعلان يوفّر <strong>محاكيًا</strong> (الدفعة الأولى، المدة، القسط الشهري). تعتمد النسبة على <strong>ملفك</strong> (أجير، موظف، متقاعد، مهنة حرة، تاجر، شركة).<br>👉 <a href="/financement"><strong>صفحة التمويل</strong></a> — عرض إرشادي، رهن قبول الملف.<br>اكتب «الوثائق» للائحة المستندات المطلوبة.' },
         { keys: ['document','documents','dossier','pieces a fournir','piece','justificatif','papiers credit'],
           answer: '📋 <strong>Pièces à fournir</strong> — choisissez votre profil :'
                   + '<div class="nc-inline-chips">'
@@ -5766,54 +5784,81 @@
                   + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents profession libérale">Profession libérale</button>'
                   + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents commerçant">Commerçant</button>'
                   + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents entreprise">Entreprise</button>'
+                  + '</div>',
+          ar: '📋 <strong>المستندات المطلوبة</strong> — اختر ملفك:'
+                  + '<div class="nc-inline-chips">'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents salarié">أجير القطاع الخاص</button>'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents fonctionnaire">موظف</button>'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents retraité">متقاعد</button>'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents profession libérale">مهنة حرة</button>'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents commerçant">تاجر</button>'
+                  + '<button type="button" class="nc-chip nc-inline-chip" data-q="documents entreprise">شركة</button>'
                   + '</div>' },
         { keys: ['salarie','salariee','prive','bulletin'],
-          answer: '📋 <strong>Salarié(e) du privé</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "3 derniers bulletins de salaire", "Attestation de salaire", "Attestation de travail", "Attestation CNSS", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]) },
+          answer: '📋 <strong>Salarié(e) du privé</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "3 derniers bulletins de salaire", "Attestation de salaire", "Attestation de travail", "Attestation CNSS", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]),
+          ar: '📋 <strong>أجير القطاع الخاص</strong>:' + docList(["نسخة من بطاقة التعريف الوطنية", "نموذج شيك أو شهادة RIB", "آخر 3 كشوف أجور", "شهادة أجر", "شهادة عمل", "شهادة CNSS", "إثبات السكن (أقل من 3 أشهر)", "آخر 3 كشوف بنكية"]) },
         { keys: ['fonctionnaire','etat d engagement'],
-          answer: '📋 <strong>Fonctionnaire</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires", "État d'engagement récent ou attestation de salaire"]) },
+          answer: '📋 <strong>Fonctionnaire</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires", "État d'engagement récent ou attestation de salaire"]),
+          ar: '📋 <strong>موظف</strong>:' + docList(["نسخة من بطاقة التعريف الوطنية", "نموذج شيك أو شهادة RIB", "إثبات السكن (أقل من 3 أشهر)", "آخر 3 كشوف بنكية", "بيان التزام حديث أو شهادة أجر"]) },
         { keys: ['retraite','retraitee','pension'],
-          answer: '📋 <strong>Retraité(e)</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Dernière attestation de pension", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]) },
+          answer: '📋 <strong>Retraité(e)</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Dernière attestation de pension", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]),
+          ar: '📋 <strong>متقاعد</strong>:' + docList(["نسخة من بطاقة التعريف الوطنية", "نموذج شيك أو شهادة RIB", "آخر شهادة معاش", "إثبات السكن (أقل من 3 أشهر)", "آخر 3 كشوف بنكية"]) },
         { keys: ['profession liberale','liberal','liberale','medecin','avocat','architecte'],
-          answer: '📋 <strong>Profession libérale</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Copie de la carte professionnelle", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]) },
+          answer: '📋 <strong>Profession libérale</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Copie de la carte professionnelle", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]),
+          ar: '📋 <strong>مهنة حرة</strong>:' + docList(["نسخة من بطاقة التعريف الوطنية", "نموذج شيك أو شهادة RIB", "نسخة من البطاقة المهنية", "إثبات السكن (أقل من 3 أشهر)", "آخر 3 كشوف بنكية"]) },
         { keys: ['commercant','commerce','registre de commerce','modele j'],
-          answer: '📋 <strong>Commerçant</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Registre du commerce (Modèle J)", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]) },
+          answer: '📋 <strong>Commerçant</strong> :' + docList(["Copie de la CIN", "Spécimen de chèque ou attestation de RIB", "Registre du commerce (Modèle J)", "Justificatif d'adresse (moins de 3 mois)", "3 derniers relevés bancaires"]),
+          ar: '📋 <strong>تاجر</strong>:' + docList(["نسخة من بطاقة التعريف الوطنية", "نموذج شيك أو شهادة RIB", "السجل التجاري (نموذج J)", "إثبات السكن (أقل من 3 أشهر)", "آخر 3 كشوف بنكية"]) },
         { keys: ['entreprise','societe','sarl','gerant','statuts'],
-          answer: '📋 <strong>Entreprise</strong> :' + docList(["Copie de la CIN du gérant", "Spécimen de chèque ou attestation de RIB de l'entreprise", "Statuts de l'entreprise", "Justificatif d'adresse du/des gérant(s) (moins de 3 mois)", "3 derniers relevés bancaires de l'entreprise", "Registre du commerce (Modèle J) de moins de 3 mois"]) },
+          answer: '📋 <strong>Entreprise</strong> :' + docList(["Copie de la CIN du gérant", "Spécimen de chèque ou attestation de RIB de l'entreprise", "Statuts de l'entreprise", "Justificatif d'adresse du/des gérant(s) (moins de 3 mois)", "3 derniers relevés bancaires de l'entreprise", "Registre du commerce (Modèle J) de moins de 3 mois"]),
+          ar: '📋 <strong>شركة</strong>:' + docList(["نسخة من بطاقة تعريف المسيّر", "نموذج شيك أو شهادة RIB للشركة", "النظام الأساسي للشركة", "إثبات سكن المسيّر(ين) (أقل من 3 أشهر)", "آخر 3 كشوف بنكية للشركة", "السجل التجاري (نموذج J) أقل من 3 أشهر"]) },
 
         // ── Vendre / reprise / estimation ──
         { keys: ['vendre','vente','vends','vend','publier','deposer','mettre en vente','deposer une annonce'],
-          answer: '💰 <strong>Vendre votre voiture</strong> :<br>• Particulier : <a href="/vente/particulier"><strong>déposer une annonce</strong></a><br>• Professionnel : <a href="/vente/pro"><strong>espace pro</strong></a><br>• Ou remplissez le <a href="/vente/formulaire"><strong>formulaire de vente</strong></a> et nous vous rappelons.<br>Votre annonce est publiée après validation par notre équipe.' },
+          answer: '💰 <strong>Vendre votre voiture</strong> :<br>• Particulier : <a href="/vente/particulier"><strong>déposer une annonce</strong></a><br>• Professionnel : <a href="/vente/pro"><strong>espace pro</strong></a><br>• Ou remplissez le <a href="/vente/formulaire"><strong>formulaire de vente</strong></a> et nous vous rappelons.<br>Votre annonce est publiée après validation par notre équipe.',
+          ar: '💰 <strong>بيع سيارتك</strong>:<br>• فرد: <a href="/vente/particulier"><strong>انشر إعلانًا</strong></a><br>• محترف: <a href="/vente/pro"><strong>مساحة المحترفين</strong></a><br>• أو املأ <a href="/vente/formulaire"><strong>استمارة البيع</strong></a> وسنعاود الاتصال بك.<br>يُنشر إعلانك بعد مصادقة فريقنا.' },
         { keys: ['reprise','reprendre','rachat','racheter','echange','echanger','troquer'],
-          answer: '🔁 <strong>NADO Reprise</strong> : nous reprenons votre véhicule, y compris en échange d\'une voiture de notre stock.<br>👉 Remplissez le <a href="/reprise/formulaire"><strong>formulaire de reprise</strong></a> (marque, modèle, année, km, photos).' },
+          answer: '🔁 <strong>NADO Reprise</strong> : nous reprenons votre véhicule, y compris en échange d\'une voiture de notre stock.<br>👉 Remplissez le <a href="/reprise/formulaire"><strong>formulaire de reprise</strong></a> (marque, modèle, année, km, photos).',
+          ar: '🔁 <strong>استرجاع نادو</strong>: نشتري سيارتك، بما في ذلك مقابل سيارة من مخزوننا.<br>👉 املأ <a href="/reprise/formulaire"><strong>استمارة الاسترجاع</strong></a> (الماركة، الموديل، السنة، الكيلومترات، الصور).' },
         { keys: ['estimation','estimer','valeur','cote','combien vaut','combien ca vaut','argus'],
-          answer: '📊 <strong>Estimation gratuite</strong> de votre voiture en quelques clics :<br>👉 <a href="/estimate-value"><strong>Estimer mon véhicule</strong></a> (marque, modèle, année, km, carburant, boîte).' },
+          answer: '📊 <strong>Estimation gratuite</strong> de votre voiture en quelques clics :<br>👉 <a href="/estimate-value"><strong>Estimer mon véhicule</strong></a> (marque, modèle, année, km, carburant, boîte).',
+          ar: '📊 <strong>تقدير مجاني</strong> لسيارتك في بضع نقرات:<br>👉 <a href="/estimate-value"><strong>قدّر سيارتي</strong></a> (الماركة، الموديل، السنة، الكيلومترات، الوقود، ناقل الحركة).' },
 
         // ── Enchères ──
         { keys: ['enchere','encheres','auction','miser','mise','enchérir','encherir'],
-          answer: '🔨 <strong>NADO Auto Enchère</strong> :<br>• Voir les <a href="/nadoautoenchere"><strong>ventes aux enchères</strong></a><br>• <a href="/nadoautoenchere/register"><strong>S\'inscrire</strong></a> pour enchérir<br>• <a href="/nadoautoenchere/vendre"><strong>Vendre aux enchères</strong></a>' },
+          answer: '🔨 <strong>NADO Auto Enchère</strong> :<br>• Voir les <a href="/nadoautoenchere"><strong>ventes aux enchères</strong></a><br>• <a href="/nadoautoenchere/register"><strong>S\'inscrire</strong></a> pour enchérir<br>• <a href="/nadoautoenchere/vendre"><strong>Vendre aux enchères</strong></a>',
+          ar: '🔨 <strong>مزاد نادو للسيارات</strong>:<br>• شاهد <a href="/nadoautoenchere"><strong>المزادات</strong></a><br>• <a href="/nadoautoenchere/register"><strong>سجّل</strong></a> للمزايدة<br>• <a href="/nadoautoenchere/vendre"><strong>بِع في المزاد</strong></a>' },
 
         // ── Compte ──
         { keys: ['compte','inscription','inscrire','connexion','connecter','login','mot de passe','profil'],
-          answer: '👤 Gérez vos annonces, favoris et discussions depuis <a href="/profil"><strong>votre profil</strong></a>.<br>Un souci de connexion ? Écrivez-nous sur ' + WHATSAPP + '.' },
+          answer: '👤 Gérez vos annonces, favoris et discussions depuis <a href="/profil"><strong>votre profil</strong></a>.<br>Un souci de connexion ? Écrivez-nous sur ' + WHATSAPP + '.',
+          ar: '👤 أدِر إعلاناتك ومفضّلاتك ومحادثاتك من <a href="/profil"><strong>ملفك</strong></a>.<br>مشكلة في الدخول؟ راسلنا على ' + WHATSAPP + '.' },
 
         // ── Prix d'une annonce ──
         { keys: ['prix','tarif','combien','cout','cher','pas cher','budget'],
-          answer: '💶 Le prix de chaque véhicule est affiché sur son annonce, avec une <strong>mensualité estimée</strong>.<br>Filtrez par budget sur la page <a href="/achat"><strong>Acheter</strong></a>.<br>Vous voulez connaître la valeur de <em>votre</em> voiture ? Tapez « estimation ».' },
+          answer: '💶 Le prix de chaque véhicule est affiché sur son annonce, avec une <strong>mensualité estimée</strong>.<br>Filtrez par budget sur la page <a href="/achat"><strong>Acheter</strong></a>.<br>Vous voulez connaître la valeur de <em>votre</em> voiture ? Tapez « estimation ».',
+          ar: '💶 سعر كل سيارة معروض في إعلانها، مع <strong>قسط شهري تقديري</strong>.<br>صفِّ حسب الميزانية في صفحة <a href="/achat"><strong>الشراء</strong></a>.<br>تريد معرفة قيمة <em>سيارتك</em>؟ اكتب «تقدير».' },
 
         // ── À propos / services ──
         { keys: ['nado','qui etes','a propos','entreprise nado','societe nado','confiance'],
-          answer: 'ℹ️ <strong>NADO</strong> : achat, vente, reprise, financement et enchères de véhicules d\'occasion, basé à <strong>Casablanca</strong>.<br>👉 <a href="/a-propos"><strong>En savoir plus</strong></a> · <a href="/services"><strong>Nos services</strong></a>' },
+          answer: 'ℹ️ <strong>NADO</strong> : achat, vente, reprise, financement et enchères de véhicules d\'occasion, basé à <strong>Casablanca</strong>.<br>👉 <a href="/a-propos"><strong>En savoir plus</strong></a> · <a href="/services"><strong>Nos services</strong></a>',
+          ar: 'ℹ️ <strong>نادو</strong>: شراء وبيع واسترجاع وتمويل ومزادات السيارات المستعملة، مقرّها <strong>الدار البيضاء</strong>.<br>👉 <a href="/a-propos"><strong>اعرف المزيد</strong></a> · <a href="/services"><strong>خدماتنا</strong></a>' },
 
         // ── Politesse ──
         { keys: ['bonjour','salut','hello','bonsoir','salam','bjr','slt','cc','coucou','hey'],
-          answer: 'Bonjour ! 👋 Bienvenue chez <strong>NADO</strong>.<br>Je peux vous aider à <strong>acheter</strong>, <strong>vendre</strong>, faire <strong>reprendre</strong> ou <strong>financer</strong> une voiture, et vous donner nos <strong>coordonnées</strong>.' },
+          answer: 'Bonjour ! 👋 Bienvenue chez <strong>NADO</strong>.<br>Je peux vous aider à <strong>acheter</strong>, <strong>vendre</strong>, faire <strong>reprendre</strong> ou <strong>financer</strong> une voiture, et vous donner nos <strong>coordonnées</strong>.',
+          ar: 'مرحبًا! 👋 أهلًا بك في <strong>نادو</strong>.<br>يمكنني مساعدتك على <strong>الشراء</strong> أو <strong>البيع</strong> أو <strong>الاسترجاع</strong> أو <strong>التمويل</strong>، وإعطائك <strong>معلومات الاتصال</strong>.' },
         { keys: ['merci','thanks','thank you','shukran','choukran','top','parfait'],
-          answer: 'Avec plaisir ! 😊 N\'hésitez pas si vous avez d\'autres questions.' },
+          answer: 'Avec plaisir ! 😊 N\'hésitez pas si vous avez d\'autres questions.',
+          ar: 'بكل سرور! 😊 لا تتردد إن كانت لديك أسئلة أخرى.' },
         { keys: ['au revoir','bye','bonne journee','bonne soiree','a bientot'],
-          answer: 'À bientôt chez <strong>NADO</strong> ! 👋' },
+          answer: 'À bientôt chez <strong>NADO</strong> ! 👋',
+          ar: 'إلى اللقاء في <strong>نادو</strong>! 👋' },
     ];
 
-    var DEFAULT = 'Je n\'ai pas trouvé de réponse précise 🤔<br>Essayez par exemple : <strong>acheter</strong>, <strong>vendre</strong>, <strong>reprise</strong>, <strong>estimation</strong>, <strong>financement</strong>, <strong>documents</strong>, <strong>garantie</strong>, <strong>enchères</strong>, <strong>adresse</strong>, <strong>horaires</strong>.<br>Ou parlez à un conseiller : ' + WHATSAPP + ' · ' + TEL + '.';
+    var DEFAULT = NC_AR
+        ? 'لم أجد إجابة دقيقة 🤔<br>جرّب مثلًا: <strong>شراء</strong>، <strong>بيع</strong>، <strong>استرجاع</strong>، <strong>تقدير</strong>، <strong>تمويل</strong>، <strong>وثائق</strong>، <strong>ضمان</strong>، <strong>مزادات</strong>، <strong>العنوان</strong>، <strong>الأوقات</strong>.<br>أو تحدّث إلى مستشار: ' + WHATSAPP + ' · ' + TEL + '.'
+        : 'Je n\'ai pas trouvé de réponse précise 🤔<br>Essayez par exemple : <strong>acheter</strong>, <strong>vendre</strong>, <strong>reprise</strong>, <strong>estimation</strong>, <strong>financement</strong>, <strong>documents</strong>, <strong>garantie</strong>, <strong>enchères</strong>, <strong>adresse</strong>, <strong>horaires</strong>.<br>Ou parlez à un conseiller : ' + WHATSAPP + ' · ' + TEL + '.';
 
     /* ── Helpers ── */
     function addMsg(text, who) {
@@ -5856,7 +5901,7 @@
             if (score && SPECIFIC.indexOf(KB[i].norm[0]) !== -1) score += 20;
             if (score > bestScore) { best = KB[i]; bestScore = score; }
         }
-        return best ? best.answer : DEFAULT;
+        return best ? (NC_AR && best.ar ? best.ar : best.answer) : DEFAULT;
     }
 
     function respond(q) {
@@ -5879,7 +5924,7 @@
         if (!opened) {
             opened = true;
             badge.style.display = 'none';
-            addMsg('Bonjour ! 👋 Je suis l\'assistant <strong>NADO</strong>.<br>Posez vos questions ou choisissez un sujet ci-dessous.', 'bot');
+            addMsg(@json(__('messages.chat.greeting')), 'bot');
         }
         panel.classList.add('open');
     }
@@ -5892,6 +5937,8 @@
     closeBtn.addEventListener('click', closeChat);
 
     /* ── Chip questions ── */
+    // French questions are kept for keyword matching; the user bubble shows the
+    // Arabic version when the site is in Arabic.
     var chipAnswers = {
         telephone: 'Quel est votre numéro de téléphone ?',
         adresse:   'Où êtes-vous situés ?',
@@ -5905,9 +5952,27 @@
         garantie:  'Quelle garantie proposez-vous ?',
         whatsapp:  'Je veux parler à un conseiller sur WhatsApp',
     };
+    var chipAnswersAr = {
+        telephone: 'ما هو رقم هاتفكم؟',
+        adresse:   'أين تقعون؟',
+        horaires:  'ما هي أوقات عملكم؟',
+        acheter:   'أريد شراء سيارة',
+        vendre:    'أريد بيع سيارتي',
+        financement: 'كيف أموّل سيارة بالتقسيط؟',
+        documents: 'ما الوثائق اللازمة لملف التمويل؟',
+        reprise:   'هل يمكنكم استرجاع سيارتي؟',
+        estimation: 'أريد تقدير قيمة سيارتي',
+        garantie:  'ما هو الضمان الذي تقدمونه؟',
+        whatsapp:  'أريد التحدث إلى مستشار عبر واتساب',
+    };
     chips.forEach(function (chip) {
         chip.addEventListener('click', function () {
-            respond(chipAnswers[chip.dataset.q] || chip.textContent);
+            var id = chip.dataset.q;
+            var frQ = chipAnswers[id] || chip.textContent;      // used for matching
+            var display = NC_AR ? (chipAnswersAr[id] || frQ) : frQ;
+            addMsg(display, 'user');
+            var ans = getAnswer(frQ);
+            setTimeout(function () { addMsg(ans, 'bot'); }, 420);
         });
     });
 

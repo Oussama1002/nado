@@ -68,31 +68,31 @@
 <div class="dmd-wrap">
     <div class="dmd-hero">
         <div>
-            <h1>Forum des demandes</h1>
-            <p>Des acheteurs recherchent une voiture. Si vous l’avez, répondez-leur.</p>
+            <h1>{{ __('messages.demandes.title') }}</h1>
+            <p>{{ __('messages.demandes.subtitle') }}</p>
         </div>
         <a href="{{ route('demandes.create') }}" class="dmd-cta">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            Publier ma demande
+            {{ __('messages.demandes.publish') }}
         </a>
     </div>
 
     <form method="GET" class="dmd-filters">
         <select name="brand_id">
-            <option value="">Marque</option>
+            <option value="">{{ __('messages.demandes.brand') }}</option>
             @foreach($brands as $b)
                 <option value="{{ $b->id }}" @selected(($filters['brand_id'] ?? null) == $b->id)>{{ $b->name }}</option>
             @endforeach
         </select>
         <select name="ville_id">
-            <option value="">Ville</option>
+            <option value="">{{ __('messages.demandes.city') }}</option>
             @foreach($villes as $v)
                 <option value="{{ $v->id }}" @selected(($filters['ville_id'] ?? null) == $v->id)>{{ $v->name }}</option>
             @endforeach
         </select>
-        <input type="number" name="price_min" placeholder="Prix min (DH)" value="{{ $filters['price_min'] ?? '' }}">
-        <input type="number" name="price_max" placeholder="Prix max (DH)" value="{{ $filters['price_max'] ?? '' }}">
-        <button type="submit">Filtrer</button>
+        <input type="number" name="price_min" placeholder="{{ __('messages.demandes.price_min') }}" value="{{ $filters['price_min'] ?? '' }}">
+        <input type="number" name="price_max" placeholder="{{ __('messages.demandes.price_max') }}" value="{{ $filters['price_max'] ?? '' }}">
+        <button type="submit">{{ __('messages.demandes.filter') }}</button>
     </form>
 
     @if($demandes->count())
@@ -109,56 +109,56 @@
                     <div class="dmd-card-head">
                         <span class="dmd-badge">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
-                            Recherche
+                            {{ __('messages.demandes.badge') }}
                         </span>
-                        <span class="dmd-date">{{ $d->created_at->locale('fr')->diffForHumans() }}</span>
+                        <span class="dmd-date">{{ $d->created_at->locale(app()->getLocale())->diffForHumans() }}</span>
                     </div>
 
                     <a href="{{ route('demandes.show', $d->id) }}" class="dmd-title">
-                        {{ $d->brand?->name ?? 'Toute marque' }} {{ $d->modele?->name }}
+                        {{ $d->brand?->name ?? __('messages.demandes.any_brand') }} {{ $d->modele?->name }}
                         @if($d->ville) · {{ $d->ville->name }} @endif
                     </a>
                     <div class="dmd-by">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
-                        Par <strong>{{ $d->nom }}</strong>
+                        {{ __('messages.demandes.by') }} <strong>{{ $d->nom }}</strong>
                     </div>
 
                     @php
                         if ($d->price_min && $d->price_max) {
                             $priceLabel = number_format($d->price_min, 0, ',', ' ') . ' – ' . number_format($d->price_max, 0, ',', ' ') . ' DH';
                         } elseif ($d->price_max) {
-                            $priceLabel = 'Jusqu’à ' . number_format($d->price_max, 0, ',', ' ') . ' DH';
+                            $priceLabel = __('messages.demandes.up_to') . ' ' . number_format($d->price_max, 0, ',', ' ') . ' DH';
                         } elseif ($d->price_min) {
-                            $priceLabel = 'À partir de ' . number_format($d->price_min, 0, ',', ' ') . ' DH';
+                            $priceLabel = __('messages.demandes.from') . ' ' . number_format($d->price_min, 0, ',', ' ') . ' DH';
                         } else {
-                            $priceLabel = 'Non précisé';
+                            $priceLabel = __('messages.demandes.not_specified');
                         }
 
                         if ($d->year_min && $d->year_max) {
                             $yearLabel = $d->year_min . ' – ' . $d->year_max;
                         } elseif ($d->year_max) {
-                            $yearLabel = 'Jusqu’à ' . $d->year_max;
+                            $yearLabel = __('messages.demandes.up_to') . ' ' . $d->year_max;
                         } elseif ($d->year_min) {
-                            $yearLabel = 'À partir de ' . $d->year_min;
+                            $yearLabel = __('messages.demandes.from') . ' ' . $d->year_min;
                         } else {
-                            $yearLabel = 'Toutes années';
+                            $yearLabel = __('messages.demandes.all_years');
                         }
 
                         $kmLabel = $d->km_max
                             ? '≤ ' . number_format($d->km_max, 0, ',', ' ') . ' km'
-                            : 'Non précisé';
+                            : __('messages.demandes.not_specified');
 
-                        $boiteMap = ['auto' => 'Automatique', 'manuelle' => 'Manuelle'];
+                        $boiteMap = ['auto' => __('messages.demandes.auto'), 'manuelle' => __('messages.demandes.manual')];
                         $boiteKey = strtolower(trim((string) $d->boite));
                         if ($boiteKey === '' || $boiteKey === 'any' || $boiteKey === 'toutes') {
-                            $boiteLabel = 'Toutes';
+                            $boiteLabel = __('messages.demandes.all_box');
                         } else {
                             $boiteLabel = $boiteMap[$boiteKey] ?? ucfirst($boiteKey);
                         }
 
-                        $carburantLabel = $d->carburant ?: 'Non précisé';
+                        $carburantLabel = $d->carburant ?: __('messages.demandes.not_specified');
                     @endphp
 
                     <div class="dmd-meta">
@@ -193,9 +193,9 @@
         <div class="dmd-pagination">{{ $demandes->links() }}</div>
     @else
         <div class="dmd-empty">
-            <h3>Aucune demande publiée pour le moment.</h3>
-            <p>Soyez le premier à publier votre recherche.</p>
-            <a href="{{ route('demandes.create') }}" class="dmd-cta" style="margin-top:14px;">Publier ma demande</a>
+            <h3>{{ __('messages.demandes.empty_title') }}</h3>
+            <p>{{ __('messages.demandes.empty_sub') }}</p>
+            <a href="{{ route('demandes.create') }}" class="dmd-cta" style="margin-top:14px;">{{ __('messages.demandes.publish') }}</a>
         </div>
     @endif
 </div>

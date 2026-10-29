@@ -35,6 +35,9 @@
     html[dir="rtl"] .slider-value,
     html[dir="rtl"] .stat-item-num,
     html[dir="rtl"] .hero-float-num,
+    html[dir="rtl"] .dmd-meta span,
+    html[dir="rtl"] .dmd-phone,
+    html[dir="rtl"] .result-amount,
     html[dir="rtl"] .nv-info,
     html[dir="rtl"] .info-item,
     html[dir="rtl"] a[href^="tel:"] {
