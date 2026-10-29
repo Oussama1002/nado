@@ -20,5 +20,26 @@
 
     /* The FR | AR switch reads left-to-right in any layout. */
     html[dir="rtl"] .lang-switch { direction: ltr !important; }
+
+    /* Numbers, prices, km and phone numbers must stay left-to-right even in
+       RTL, otherwise the digit groups bidi-reorder (e.g. "163 000" -> "000 163").
+       Isolating keeps them LTR without affecting the surrounding Arabic flow. */
+    html[dir="rtl"] .pp-price-overlay,
+    html[dir="rtl"] .pp-monthly-val,
+    html[dir="rtl"] .pp-spec,
+    html[dir="rtl"] .pp-status,
+    html[dir="rtl"] .pp-slider-val,
+    html[dir="rtl"] .pp-slider-ticks,
+    html[dir="rtl"] .pp-results-count,
+    html[dir="rtl"] .result-amount,
+    html[dir="rtl"] .slider-value,
+    html[dir="rtl"] .stat-item-num,
+    html[dir="rtl"] .hero-float-num,
+    html[dir="rtl"] .nv-info,
+    html[dir="rtl"] .info-item,
+    html[dir="rtl"] a[href^="tel:"] {
+        direction: ltr !important;
+        unicode-bidi: isolate;
+    }
 </style>
 @endif
