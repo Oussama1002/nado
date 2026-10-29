@@ -358,4 +358,47 @@ return [
         'js_select_brand' => 'Sélectionnez une marque d’abord',
     ],
 
+    'financement' => [
+        'badge'    => 'Partenaire Financement Officiel',
+        'h1'       => 'Financez votre <br><span class="hero-title-blue">VOITURE</span> <span class="hero-title-yellow">SANS ATTENDRE.</span>',
+        'desc'     => "NADO Connect s'associe aux plus grandes banques du Royaume pour vous offrir un crédit automobile souple, rapide et transparent.",
+
+        'config_title'  => 'Configurez votre crédit',
+        'profile_type'  => 'Type de profil',
+        'vehicle_value' => 'Valeur du véhicule (MAD)',
+        'apport'        => 'Apport initial (MAD)',
+        'duration'      => 'Durée du crédit (Mois)',
+        'result_label'  => 'Votre Mensualité Estimée',
+        'result_info'   => 'Offre indicative calculée sur un taux annuel de 7,5%. Réponse de principe immédiate.',
+        'cta_accord'    => 'Demander un accord de principe',
+
+        'doc_badge'    => 'Votre Dossier',
+        'doc_title'    => 'Pièces à <br>fournir.',
+        'doc_subtitle' => 'Les documents demandés varient selon votre <span style="font-weight: 900; color: #0f172a;">profil emprunteur</span>. Vous avez sélectionné :',
+        'profile_label'=> 'Profil :',
+        'note_label'   => 'Note :',
+        'note_text'    => 'Votre dossier complet nous permet de vous donner un accord définitif en moins de 24 heures. Tous les documents originaux doivent être présentés au moment de la signature.',
+
+        'journey_title' => 'Le parcours <span style="color: #1459DD;">Digital.</span>',
+        'step1_t' => 'Simulation',
+        'step1_d' => 'Choisissez votre véhicule et simulez vos mensualités.',
+        'step2_t' => 'Appel Expert',
+        'step2_d' => 'Un conseiller financier vous contacte sous 2 heures.',
+        'step3_t' => 'Dossier',
+        'step3_d' => 'Envoyez vos justificatifs via notre plateforme sécurisée.',
+        'step4_t' => 'Accord & Livraison',
+        'step4_d' => 'Virement immédiat et livraison de votre voiture.',
+
+        'b1_t' => 'Taux Compétitifs',
+        'b1_d' => 'Accédez aux meilleurs taux négociés auprès de nos partenaires.',
+        'b2_t' => 'Réponse en 2h',
+        'b2_d' => 'Évaluation ultra-rapide de votre solvabilité par nos experts.',
+        'b3_t' => 'Transparence Totale',
+        'b3_d' => 'Zéro frais caché. Vous connaissez le coût réel de votre crédit.',
+
+        'cta_title' => "Besoin d'un <br><span style=\"color: #FDD817;\">Conseil Pro</span> ?",
+        'cta_desc'  => 'Nos conseillers en financement sont disponibles du Lundi au Vendredi pour vous accompagner.',
+        'back'      => 'Retour au site',
+    ],
+
 ];
