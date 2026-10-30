@@ -14,7 +14,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Charge les helpers globaux settings()/feature_on() même sans
+        // "composer dump-autoload" (certains hébergements n'ont pas composer).
+        // Les fonctions sont protégées par function_exists → pas de double
+        // définition si l'autoload composer les a déjà chargées.
+        $helpers = base_path('app/helpers.php');
+        if (is_file($helpers)) {
+            require_once $helpers;
+        }
     }
 
     /**
