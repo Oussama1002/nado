@@ -4696,7 +4696,7 @@
                         </button>
                     </div>
                     <div class="whatsapp-image">
-                        <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1200"
+                        <img src="{{ asset('assets/images/expert-nado.jpg') }}"
                             alt="Expert NADO" />
                     </div>
                 </div>
