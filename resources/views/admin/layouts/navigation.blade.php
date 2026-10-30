@@ -40,6 +40,13 @@
                         </a>
                     </li>
 
+                    <li @class(['sidebar-item', 'active' => request()->routeIs('admin.nadoautoenchere.clients')])>
+                        <a href="{{ route('admin.nadoautoenchere.clients') }}" class="sidebar-link">
+                            <i class="bi bi-people"></i>
+                            <span>Clients Enchère</span>
+                        </a>
+                    </li>
+
                 {{-- ✅ Otherwise: show the normal full admin sidebar --}}
                 @else
                     @role('admin')

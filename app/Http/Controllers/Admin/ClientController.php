@@ -20,8 +20,21 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::where('is_approved', true)->latest()->get();
+        // Les clients "flotte&enchere" ont leur propre liste côté Auto Enchère.
+        $clients = Client::where('is_approved', true)
+            ->where('type', '!=', 'flotte&enchere')
+            ->latest()
+            ->get();
         return view('admin.clients.index', compact('clients'));
+    }
+
+    /** Liste dédiée des clients Auto Enchère (type flotte&enchere). */
+    public function encheresClients()
+    {
+        $clients = Client::where('type', 'flotte&enchere')
+            ->latest()
+            ->get();
+        return view('admin.clients.encheres', compact('clients'));
     }
     public function approval()
     {
