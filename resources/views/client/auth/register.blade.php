@@ -282,8 +282,8 @@
             <div class="auth-main-inner">
 
                 <div class="auth-title-block">
-                    <h1>Créer un compte</h1>
-                    <p>Inscrivez-vous pour commencer à publier vos annonces</p>
+                    <h1>{{ __('messages.auth.create_account') }}</h1>
+                    <p>{{ __('messages.auth.register_subtitle') }}</p>
                 </div>
 
                 @if(session('success'))
@@ -311,8 +311,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2>Bienvenue sur NADO</h2>
-                                    <p>Remplissez le formulaire pour vous inscrire.</p>
+                                    <h2>{{ __('messages.auth.welcome') }}</h2>
+                                    <p>{{ __('messages.auth.fill_form') }}</p>
                                 </div>
                             </div>
 
@@ -321,7 +321,7 @@
 
                                 {{-- Type de compte --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="clientType">Type de compte</label>
+                                    <label class="auth-label" for="clientType">{{ __('messages.auth.account_type') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -330,10 +330,10 @@
                                             </svg>
                                         </span>
                                         <select id="clientType" name="type" class="auth-input" required style="color:#0f172a;">
-                                            <option value="" disabled {{ old('type') ? '' : 'selected' }}>Type de client</option>
-                                            <option value="particulier" {{ old('type') === 'particulier' ? 'selected' : '' }}>Particulier</option>
-                                            <option value="pro" {{ old('type') === 'pro' ? 'selected' : '' }}>Professionnel</option>
-                                            <option value="flotte&enchere" {{ old('type') === 'flotte&enchere' ? 'selected' : '' }}>Flotte & Enchère</option>
+                                            <option value="" disabled {{ old('type') ? '' : 'selected' }}>{{ __('messages.auth.client_type') }}</option>
+                                            <option value="particulier" {{ old('type') === 'particulier' ? 'selected' : '' }}>{{ __('messages.auth.individual') }}</option>
+                                            <option value="pro" {{ old('type') === 'pro' ? 'selected' : '' }}>{{ __('messages.auth.professional') }}</option>
+                                            <option value="flotte&enchere" {{ old('type') === 'flotte&enchere' ? 'selected' : '' }}>{{ __('messages.auth.fleet_auction') }}</option>
                                         </select>
                                     </div>
                                     @error('type')<span class="auth-field-error">{{ $message }}</span>@enderror
@@ -341,7 +341,7 @@
 
                                 {{-- Nom complet --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="reg_name">Nom complet</label>
+                                    <label class="auth-label" for="reg_name">{{ __('messages.auth.full_name') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -349,28 +349,28 @@
                                                 <circle cx="12" cy="7" r="4"/>
                                             </svg>
                                         </span>
-                                        <input type="text" id="reg_name" name="name" class="auth-input" placeholder="Votre nom complet" value="{{ old('name') }}" autocomplete="name" required>
+                                        <input type="text" id="reg_name" name="name" class="auth-input" placeholder="{{ __('messages.auth.name_full_ph') }}" value="{{ old('name') }}" autocomplete="name" required>
                                     </div>
                                     @error('name')<span class="auth-field-error">{{ $message }}</span>@enderror
                                 </div>
 
                                 {{-- Entreprise --}}
                                 <div class="auth-field entreprise-field">
-                                    <label class="auth-label" for="reg_company">Nom de l'entreprise</label>
+                                    <label class="auth-label" for="reg_company">{{ __('messages.auth.company_name') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/>
                                             </svg>
                                         </span>
-                                        <input type="text" id="reg_company" name="company" class="auth-input" placeholder="Nom de l'entreprise" value="{{ old('company') }}">
+                                        <input type="text" id="reg_company" name="company" class="auth-input" placeholder="{{ __('messages.auth.company_name') }}" value="{{ old('company') }}">
                                     </div>
                                     @error('company')<span class="auth-field-error">{{ $message }}</span>@enderror
                                 </div>
 
                                 {{-- Email --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="reg_email">Email</label>
+                                    <label class="auth-label" for="reg_email">{{ __('messages.auth.email') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -385,7 +385,7 @@
 
                                 {{-- Téléphone --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="reg_phone">Téléphone</label>
+                                    <label class="auth-label" for="reg_phone">{{ __('messages.auth.phone') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -399,7 +399,7 @@
 
                                 {{-- Mot de passe --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="password">Mot de passe</label>
+                                    <label class="auth-label" for="password">{{ __('messages.auth.password') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -407,8 +407,8 @@
                                                 <path d="M7 11V7a5 5 0 0110 0v4"/>
                                             </svg>
                                         </span>
-                                        <input type="password" id="password" name="password" class="auth-input has-toggle" placeholder="Mot de passe" autocomplete="new-password" required>
-                                        <button type="button" class="auth-toggle-password" data-target="#password" aria-label="Afficher / Masquer">
+                                        <input type="password" id="password" name="password" class="auth-input has-toggle" placeholder="{{ __('messages.auth.password') }}" autocomplete="new-password" required>
+                                        <button type="button" class="auth-toggle-password" data-target="#password" aria-label="{{ __('messages.auth.show_password') }}">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                                 <circle cx="12" cy="12" r="3"/>
@@ -420,15 +420,15 @@
 
                                 {{-- Confirmer mot de passe --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="password_confirmation">Confirmer le mot de passe</label>
+                                    <label class="auth-label" for="password_confirmation">{{ __('messages.auth.confirm_password') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
                                             </svg>
                                         </span>
-                                        <input type="password" id="password_confirmation" name="password_confirmation" class="auth-input has-toggle" placeholder="Confirmer le mot de passe" autocomplete="new-password" required>
-                                        <button type="button" class="auth-toggle-password" data-target="#password_confirmation" aria-label="Afficher / Masquer">
+                                        <input type="password" id="password_confirmation" name="password_confirmation" class="auth-input has-toggle" placeholder="{{ __('messages.auth.confirm_password') }}" autocomplete="new-password" required>
+                                        <button type="button" class="auth-toggle-password" data-target="#password_confirmation" aria-label="{{ __('messages.auth.show_password') }}">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                                 <circle cx="12" cy="12" r="3"/>
@@ -438,12 +438,12 @@
                                 </div>
 
                                 <div class="auth-submit-area">
-                                    <button type="submit" class="auth-btn-register">S'inscrire</button>
+                                    <button type="submit" class="auth-btn-register">{{ __('messages.auth.register_btn') }}</button>
                                 </div>
 
                                 <p style="text-align:center;margin-top:16px;font-size:14px;color:#475569;font-weight:500;">
-                                    Déjà inscrit ?
-                                    <a href="{{ route('client.login') }}" style="color:#1459DD;font-weight:700;text-decoration:none;">Se connecter</a>
+                                    {{ __('messages.auth.already_registered') }}
+                                    <a href="{{ route('client.login') }}" style="color:#1459DD;font-weight:700;text-decoration:none;">{{ __('messages.auth.login_btn') }}</a>
                                 </p>
                             </form>
                         </div>
@@ -452,10 +452,7 @@
                 </div>
 
                 <p class="auth-footer-note">
-                    En créant un compte, vous acceptez nos
-                    <strong>Conditions Générales d'Utilisation</strong> et notre
-                    <strong>Politique de Confidentialité</strong>.
-                    Vos données sont traitées conformément à la réglementation en vigueur.
+                    {!! __('messages.auth.legal_note') !!}
                 </p>
 
             </div>

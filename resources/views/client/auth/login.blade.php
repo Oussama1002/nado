@@ -501,8 +501,8 @@
 
                 {{-- Title --}}
                 <div class="auth-title-block">
-                    <h1>Connexion ou Inscription</h1>
-                    <p>Accédez à votre compte pour publier votre annonce</p>
+                    <h1>{{ __('messages.auth.page_title') }}</h1>
+                    <p>{{ __('messages.auth.page_subtitle') }}</p>
                 </div>
 
                 {{-- Flash messages --}}
@@ -535,8 +535,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2>Connexion</h2>
-                                    <p>Déjà inscrit ? Entrez vos identifiants.</p>
+                                    <h2>{{ __('messages.auth.login_heading') }}</h2>
+                                    <p>{{ __('messages.auth.login_sub') }}</p>
                                 </div>
                             </div>
 
@@ -546,7 +546,7 @@
 
                                 {{-- Email --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="login_email">Email</label>
+                                    <label class="auth-label" for="login_email">{{ __('messages.auth.email') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -572,7 +572,7 @@
 
                                 {{-- Mot de passe --}}
                                 <div class="auth-field">
-                                    <label class="auth-label" for="login_password">Mot de passe</label>
+                                    <label class="auth-label" for="login_password">{{ __('messages.auth.password') }}</label>
                                     <div class="auth-input-wrap">
                                         <span class="auth-input-icon">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -585,7 +585,7 @@
                                             id="login_password"
                                             name="password"
                                             class="auth-input"
-                                            placeholder="Votre mot de passe"
+                                            placeholder="{{ __('messages.auth.password_ph') }}"
                                             autocomplete="current-password"
                                             required
                                         >
@@ -604,22 +604,22 @@
                                         </button>
                                     </div>
                                     <div style="text-align:right;margin-top:8px;">
-                                        <a href="{{ route('client.password.request') }}" style="font-size:13px;color:#1459DD;font-weight:600;text-decoration:none;">Mot de passe oublié ?</a>
+                                        <a href="{{ route('client.password.request') }}" style="font-size:13px;color:#1459DD;font-weight:600;text-decoration:none;">{{ __('messages.auth.forgot') }}</a>
                                     </div>
                                 </div>
 
                                 <div class="auth-submit-area">
-                                    <button type="submit" class="auth-btn-login">Se connecter</button>
+                                    <button type="submit" class="auth-btn-login">{{ __('messages.auth.login_btn') }}</button>
                                 </div>
 
                                 <p style="text-align:center;margin-top:16px;font-size:14px;color:#475569;font-weight:500;">
-                                    Pas encore inscrit ?
-                                    <a href="{{ route('client.register') }}" style="color:#1459DD;font-weight:700;text-decoration:none;">Créer un compte</a>
+                                    {{ __('messages.auth.not_registered') }}
+                                    <a href="{{ route('client.register') }}" style="color:#1459DD;font-weight:700;text-decoration:none;">{{ __('messages.auth.create_account') }}</a>
                                 </p>
 
                                 <p style="text-align:center;margin-top:8px;font-size:14px;color:#475569;font-weight:500;">
-                                    Vous n'avez pas de mail ?
-                                    <a href="#" id="openPhoneRegister" style="color:#1459DD;font-weight:700;text-decoration:none;">Cliquez ici</a>
+                                    {{ __('messages.auth.no_email') }}
+                                    <a href="#" id="openPhoneRegister" style="color:#1459DD;font-weight:700;text-decoration:none;">{{ __('messages.auth.click_here') }}</a>
                                 </p>
                             </form>
                         </div>
@@ -630,10 +630,7 @@
 
                 {{-- Legal footer --}}
                 <p class="auth-footer-note">
-                    En créant un compte, vous acceptez nos
-                    <strong>Conditions Générales d'Utilisation</strong> et notre
-                    <strong>Politique de Confidentialité</strong>.
-                    Vos données sont traitées conformément à la réglementation en vigueur.
+                    {!! __('messages.auth.legal_note') !!}
                 </p>
 
             </div>
@@ -646,8 +643,8 @@
 <div class="pr-modal-backdrop" id="phoneRegisterModal" aria-hidden="true">
     <div class="pr-modal" role="dialog" aria-modal="true" aria-labelledby="prModalTitle">
         <div class="pr-modal-head">
-            <h3 id="prModalTitle">Créer un compte sans email</h3>
-            <button type="button" class="pr-modal-close" id="closePhoneRegister" aria-label="Fermer">
+            <h3 id="prModalTitle">{{ __('messages.auth.phone_title') }}</h3>
+            <button type="button" class="pr-modal-close" id="closePhoneRegister" aria-label="{{ __('messages.auth.close') }}">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
@@ -670,20 +667,20 @@
 
                 {{-- Nom --}}
                 <div class="auth-field">
-                    <label class="auth-label" for="pr_name">Nom complet</label>
+                    <label class="auth-label" for="pr_name">{{ __('messages.auth.full_name') }}</label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
                             </svg>
                         </span>
-                        <input type="text" id="pr_name" name="name" class="auth-input" placeholder="Votre nom" value="{{ old('name') }}" required>
+                        <input type="text" id="pr_name" name="name" class="auth-input" placeholder="{{ __('messages.auth.name_ph') }}" value="{{ old('name') }}" required>
                     </div>
                 </div>
 
                 {{-- Téléphone --}}
                 <div class="auth-field">
-                    <label class="auth-label" for="pr_phone">Téléphone</label>
+                    <label class="auth-label" for="pr_phone">{{ __('messages.auth.phone') }}</label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -696,15 +693,15 @@
 
                 {{-- Mot de passe --}}
                 <div class="auth-field">
-                    <label class="auth-label" for="pr_password">Mot de passe</label>
+                    <label class="auth-label" for="pr_password">{{ __('messages.auth.password') }}</label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
                             </svg>
                         </span>
-                        <input type="password" id="pr_password" name="password" class="auth-input" placeholder="Au moins 6 caractères" autocomplete="new-password" required>
-                        <button type="button" class="pw-toggle" data-target="pr_password" aria-label="Afficher le mot de passe">
+                        <input type="password" id="pr_password" name="password" class="auth-input" placeholder="{{ __('messages.auth.min_chars') }}" autocomplete="new-password" required>
+                        <button type="button" class="pw-toggle" data-target="pr_password" aria-label="{{ __('messages.auth.show_password') }}">
                             <svg class="pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
@@ -718,15 +715,15 @@
 
                 {{-- Confirmation --}}
                 <div class="auth-field">
-                    <label class="auth-label" for="pr_password_confirmation">Confirmer le mot de passe</label>
+                    <label class="auth-label" for="pr_password_confirmation">{{ __('messages.auth.confirm_password') }}</label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
                             </svg>
                         </span>
-                        <input type="password" id="pr_password_confirmation" name="password_confirmation" class="auth-input" placeholder="Retapez le mot de passe" autocomplete="new-password" required>
-                        <button type="button" class="pw-toggle" data-target="pr_password_confirmation" aria-label="Afficher le mot de passe">
+                        <input type="password" id="pr_password_confirmation" name="password_confirmation" class="auth-input" placeholder="{{ __('messages.auth.retype_password') }}" autocomplete="new-password" required>
+                        <button type="button" class="pw-toggle" data-target="pr_password_confirmation" aria-label="{{ __('messages.auth.show_password') }}">
                             <svg class="pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
@@ -739,7 +736,7 @@
                 </div>
 
                 <div class="auth-submit-area">
-                    <button type="submit" class="auth-btn-login">Créer mon compte</button>
+                    <button type="submit" class="auth-btn-login">{{ __('messages.auth.create_my_account') }}</button>
                 </div>
             </form>
         </div>
