@@ -21,6 +21,24 @@
     /* The FR | AR switch reads left-to-right in any layout. */
     html[dir="rtl"] .lang-switch { direction: ltr !important; }
 
+    /* Arabic (Cairo) renders visually smaller than Latin at the same px,
+       so enlarge the navbar links/buttons in RTL for readability. */
+    html[dir="rtl"] .nav-link,
+    html[dir="rtl"] .nv-nav-link,
+    html[dir="rtl"] .desktop-menu a,
+    html[dir="rtl"] .nv-desktop-menu a,
+    html[dir="rtl"] .drawer-links a,
+    html[dir="rtl"] .nv-drawer-links a,
+    html[dir="rtl"] .nav-dropdown-menu a,
+    html[dir="rtl"] .nv-user-dropdown-menu a,
+    html[dir="rtl"] .user-dropdown-menu a,
+    html[dir="rtl"] .main-nav .nav-item > a,
+    html[dir="rtl"] .cta-button,
+    html[dir="rtl"] .nv-cta-button {
+        font-size: 16.5px !important;
+        font-weight: 700;
+    }
+
     /* Numbers, prices, km and phone numbers must stay left-to-right even in
        RTL, otherwise the digit groups bidi-reorder (e.g. "163 000" -> "000 163").
        Isolating keeps them LTR without affecting the surrounding Arabic flow. */
