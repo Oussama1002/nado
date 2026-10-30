@@ -485,7 +485,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin/settings')->name('admin.settings.')
-    ->middleware(['auth:admin', 'role:admin', 'permission:manage-settings'])
+    ->middleware(['auth:admin', 'role:admin'])
     ->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
