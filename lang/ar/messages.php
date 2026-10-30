@@ -429,6 +429,15 @@ return [
         'manual'   => 'يدوي',
         'empty_title' => 'لا توجد طلبات منشورة حاليًا.',
         'empty_sub'   => 'كن أول من ينشر بحثه.',
+        // Live demande toast (homepage, bottom-left)
+        'a_buyer'         => 'مشترٍ',
+        'a_car'           => 'سيارة',
+        'live_banner_q'   => 'هل لديك سيارة للبيع؟',
+        'live_banner_cta' => 'عرض كل الطلبات',
+        'live_new'        => 'طلب جديد',
+        'live_seeking'    => 'يبحث عن',
+        'live_in'         => 'في',
+        'live_view'       => 'عرض الطلب',
     ],
 
     'chat' => [

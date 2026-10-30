@@ -2673,14 +2673,15 @@
             ->limit(8)
             ->get()
             ->map(function ($d) {
-                $firstName = trim(explode(' ', (string) $d->nom)[0]) ?: 'Un acheteur';
+                $firstName = trim(explode(' ', (string) $d->nom)[0]) ?: __('messages.demandes.a_buyer');
                 $car = trim(($d->brand?->name ?? '') . ' ' . ($d->modele?->name ?? ''));
                 return [
                     'name' => $firstName,
-                    'car'  => $car !== '' ? $car : 'une voiture',
+                    'car'  => $car !== '' ? $car : __('messages.demandes.a_car'),
                     'ville'=> $d->ville?->name,
                     'url'  => route('demandes.show', $d->id),
-                    'ago'  => $d->created_at->locale('fr')->diffForHumans(),
+                    // Honour the active locale so the time reads in Arabic too.
+                    'ago'  => $d->created_at->locale(app()->getLocale())->diffForHumans(),
                 ];
             })
             ->values()
@@ -2699,8 +2700,8 @@
                     </svg>
                 </div>
                 <div style="min-width:0;flex:1;">
-                    <div style="font-size:14px;opacity:.95;font-weight:600;line-height:1.3;">Vous avez une voiture à vendre ?</div>
-                    <div style="font-size:18px;font-weight:800;letter-spacing:-0.01em;margin-top:3px;">Voir toutes les demandes →</div>
+                    <div style="font-size:14px;opacity:.95;font-weight:600;line-height:1.3;">{{ __('messages.demandes.live_banner_q') }}</div>
+                    <div style="font-size:18px;font-weight:800;letter-spacing:-0.01em;margin-top:3px;">{{ __('messages.demandes.live_banner_cta') }} →</div>
                 </div>
                 <button type="button" id="dmdLiveClose" aria-label="Fermer"
                         onclick="event.preventDefault();event.stopPropagation();document.getElementById('dmdLive').style.display='none';"
@@ -2861,9 +2862,9 @@
                     card.innerHTML =
                         '<div class="dmd-live-av">' + escapeHtml((d.name.charAt(0) || '?').toUpperCase()) + '</div>' +
                         '<div style="min-width:0;flex:1;">' +
-                            '<div class="dmd-live-tag"><span class="dmd-live-dot"></span>Nouvelle demande</div>' +
-                            '<div class="dmd-live-text"><strong>' + escapeHtml(d.name) + '</strong> cherche ' + escapeHtml(d.car) + (d.ville ? ' à ' + escapeHtml(d.ville) : '') + '</div>' +
-                            '<a class="dmd-live-link" href="' + d.url + '">Voir la demande →</a>' +
+                            '<div class="dmd-live-tag"><span class="dmd-live-dot"></span>{{ __('messages.demandes.live_new') }}</div>' +
+                            '<div class="dmd-live-text"><strong>' + escapeHtml(d.name) + '</strong> {{ __('messages.demandes.live_seeking') }} ' + escapeHtml(d.car) + (d.ville ? ' {{ __('messages.demandes.live_in') }} ' + escapeHtml(d.ville) : '') + '</div>' +
+                            '<a class="dmd-live-link" href="' + d.url + '">{{ __('messages.demandes.live_view') }} →</a>' +
                             '<div class="dmd-live-ago">' + escapeHtml(d.ago) + '</div>' +
                         '</div>';
                     // column-reverse → prepending puts the new card at the BOTTOM of the visual stack

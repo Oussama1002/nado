@@ -430,6 +430,15 @@ return [
         'manual'   => 'Manuelle',
         'empty_title' => 'Aucune demande publiée pour le moment.',
         'empty_sub'   => 'Soyez le premier à publier votre recherche.',
+        // Live demande toast (homepage, bottom-left)
+        'a_buyer'         => 'Un acheteur',
+        'a_car'           => 'une voiture',
+        'live_banner_q'   => 'Vous avez une voiture à vendre ?',
+        'live_banner_cta' => 'Voir toutes les demandes',
+        'live_new'        => 'Nouvelle demande',
+        'live_seeking'    => 'cherche',
+        'live_in'         => 'à',
+        'live_view'       => 'Voir la demande',
     ],
 
     'chat' => [
