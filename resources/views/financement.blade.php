@@ -964,10 +964,13 @@
                     </div>
                 </div>
 
-                <div class="social-links">
-                    <a href="#"><i data-lucide="facebook"></i></a>
-                    <a href="#"><i data-lucide="instagram"></i></a>
-                    <a href="#"><i data-lucide="linkedin"></i></a>
+                <div style="display:flex;align-items:center;gap:16px;">
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="facebook"></i></a>
+                        <a href="#"><i data-lucide="instagram"></i></a>
+                        <a href="#"><i data-lucide="linkedin"></i></a>
+                    </div>
+                    @include('partials.lang-switcher')
                 </div>
             </div>
         </div>
@@ -1057,8 +1060,6 @@
                             @endif
                         </a>
                     @endif
-
-                    @include('partials.lang-switcher')
 
                     <button id="mobileMenuBtn" class="mobile-menu-btn">
                         <i data-lucide="menu"></i>

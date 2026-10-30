@@ -20,7 +20,6 @@
     </style>
 </head>
 <body>
-    <div class="auth-lang-switch">@include('partials.lang-switcher')</div>
     @yield('content')
 </body>
 </html>

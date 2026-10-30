@@ -21,6 +21,7 @@
                 <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="facebook" class="w-5 h-5" stroke-width="1.5"></i></a>
                 <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="instagram" class="w-5 h-5" stroke-width="1.5"></i></a>
                 <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="linkedin" class="w-5 h-5" stroke-width="1.5"></i></a>
+                @include('partials.lang-switcher')
             </div>
         </div>
     </div>
@@ -90,7 +91,6 @@
                         <span class="whitespace-nowrap">{{ __('messages.nav.create_account') }}</span>
                     </a>
                 @endif
-                @include('partials.lang-switcher')
             </div>
         </div>
     </nav>
