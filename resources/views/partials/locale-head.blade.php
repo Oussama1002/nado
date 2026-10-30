@@ -8,15 +8,19 @@
     html[dir="rtl"] section,
     html[dir="rtl"] footer { text-align: right; }
 
-    /* The two custom navbars hard-set direction:ltr — let them follow RTL. */
+    /* Navbars keep their natural LTR structure in Arabic too: logo always on
+       the LEFT and the action cluster on the right (same as the login navbar).
+       Only the link text is Arabic — bidi renders the Arabic glyphs correctly
+       inside the LTR-ordered bar. */
     html[dir="rtl"] .nado-navbar,
     html[dir="rtl"] .nado-navbar *,
     html[dir="rtl"] .main-nav,
-    html[dir="rtl"] .main-nav * { direction: rtl !important; }
+    html[dir="rtl"] .main-nav * { direction: ltr !important; }
 
-    /* Keep the right-side action cluster on the inline-end edge after flipping. */
-    html[dir="rtl"] .nado-navbar .nv-right { margin-left: 0 !important; margin-right: auto !important; }
-    html[dir="rtl"] .main-nav .right-section { margin-left: 0 !important; margin-right: auto !important; }
+    /* Keep the right-side action cluster pinned to the right edge (LTR). */
+    html[dir="rtl"] .nado-navbar .nv-right-section,
+    html[dir="rtl"] .nado-navbar .nv-right,
+    html[dir="rtl"] .main-nav .right-section { margin-left: auto !important; margin-right: 0 !important; }
 
     /* The FR | AR switch reads left-to-right in any layout. */
     html[dir="rtl"] .lang-switch { direction: ltr !important; }
