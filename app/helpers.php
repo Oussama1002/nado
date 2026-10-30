@@ -28,3 +28,23 @@ if (! function_exists('feature_on')) {
         return Setting::enabled($key);
     }
 }
+
+if (! function_exists('client_type_label')) {
+    /**
+     * Libellé traduit d'un type de client (stocké en français en base).
+     * Cherche messages.client_types.<nom> et retombe sur le nom brut si absent,
+     * pour que les types ajoutés en admin restent affichés.
+     */
+    function client_type_label(?string $name): string
+    {
+        $name = trim((string) $name);
+        if ($name === '') {
+            return '';
+        }
+
+        $key = 'messages.client_types.' . $name;
+        $translated = __($key);
+
+        return $translated === $key ? $name : $translated;
+    }
+}

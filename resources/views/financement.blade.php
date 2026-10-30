@@ -1873,7 +1873,7 @@
                         <div class="profile-grid" id="profileButtons">
                             @foreach ($clientTypes ?? [] as $type)
                                 <button class="profile-btn"
-                                    data-taux="{{ $type->taux_interet }}">{{ $type->name }}</button>
+                                    data-taux="{{ $type->taux_interet }}">{{ client_type_label($type->name) }}</button>
                             @endforeach
                         </div>
                     </div>

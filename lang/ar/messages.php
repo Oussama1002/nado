@@ -441,6 +441,17 @@ return [
         'whatsapp' => 'واتساب',
     ],
 
+    // Types de client (financement) — clés = nom stocké en base (français).
+    'client_types' => [
+        'Profession libérale'     => 'مهنة حرة',
+        'Commerçant / Entreprise' => 'تاجر / شركة',
+        'Autres professions'      => 'مهن أخرى',
+        'Retraité / Salarié'      => 'متقاعد / أجير',
+        'Salarié'                 => 'أجير',
+        'Salarie'                 => 'أجير',
+        'Fonctionnaire'           => 'موظف',
+    ],
+
     // Car detail page (resources/views/annonces/detail.blade.php)
     'detail' => [
         'ref'                => 'المرجع:',

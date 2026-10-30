@@ -442,6 +442,17 @@ return [
         'whatsapp' => 'WhatsApp',
     ],
 
+    // Types de client (financement) — clés = nom stocké en base (français).
+    'client_types' => [
+        'Profession libérale'     => 'Profession libérale',
+        'Commerçant / Entreprise' => 'Commerçant / Entreprise',
+        'Autres professions'      => 'Autres professions',
+        'Retraité / Salarié'      => 'Retraité / Salarié',
+        'Salarié'                 => 'Salarié',
+        'Salarie'                 => 'Salarié',
+        'Fonctionnaire'           => 'Fonctionnaire',
+    ],
+
     // Car detail page (resources/views/annonces/detail.blade.php)
     'detail' => [
         'ref'                => 'Réf:',
