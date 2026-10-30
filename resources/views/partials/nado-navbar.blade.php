@@ -207,7 +207,7 @@
         .text-dark { color: var(--slate-900); }
         .desktop-menu { display: none; align-items: center; gap: 12px; }
         @media (min-width: 1024px) { .desktop-menu { display: flex; } }
-        .nav-link { font-size: 14.4px; font-weight: 700; text-transform: uppercase; letter-spacing: .025em; padding: 8px 12px; border-radius: 16px; color: var(--slate-700); text-decoration: none; transition: all .2s; background: transparent; border: none; cursor: pointer; }
+        .nav-link { font-size: 14.4px; font-weight: 700; text-transform: uppercase; letter-spacing: .025em; padding: 8px 12px; border-radius: 16px; color: var(--slate-700); text-decoration: none; transition: all .2s; background: transparent; border: none; cursor: pointer; white-space: nowrap; word-break: keep-all; hyphens: none; }
         .nav-link:hover { background-color: #f1f5f9; color: var(--primary-blue); }
         .highlight-link { color: var(--primary-blue); background-color: #dbeafe; }
         .highlight-link:hover { background-color: #bfdbfe; }

@@ -2156,7 +2156,7 @@
 
             .nv-desktop-menu { display: none; align-items: center; gap: 12px; }
             @media (min-width: 1024px) { .nv-desktop-menu { display: flex; } }
-            .nv-nav-link { font-size: 14.4px; font-weight: 700; text-transform: uppercase; letter-spacing: .025em; padding: 8px 12px; border-radius: 16px; color: #334155; text-decoration: none; transition: .2s; background: transparent; border: none; cursor: pointer; }
+            .nv-nav-link { font-size: 14.4px; font-weight: 700; text-transform: uppercase; letter-spacing: .025em; padding: 8px 12px; border-radius: 16px; color: #334155; text-decoration: none; transition: .2s; background: transparent; border: none; cursor: pointer; white-space: nowrap; word-break: keep-all; hyphens: none; }
             .nv-nav-link:hover { background-color: #f1f5f9; color: #1459DD; }
             .nv-highlight-link { color: #1459DD; background-color: #dbeafe; }
             .nv-highlight-link:hover { background-color: #bfdbfe; }
