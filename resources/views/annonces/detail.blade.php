@@ -2407,7 +2407,7 @@
                             </div>
                             <div class="finance-badge">
                                 <i class="fas fa-calendar-alt"></i>
-                                <span>{{ __('messages.detail.from') }} {{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD {{ __('messages.detail.per_month') }}</span>
+                                <span>{{ __('messages.detail.from') }} <span style="unicode-bidi:isolate;direction:ltr;">{{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD</span> {{ __('messages.detail.per_month') }}</span>
                             </div>
 
                             <div class="action-buttons">
