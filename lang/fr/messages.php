@@ -48,6 +48,9 @@ return [
         'all_brands'  => 'Toutes marques',
         'all_models'  => 'Tous modèles',
         'search'      => 'Rechercher',
+        'budget_max'  => 'Budget Max',
+        'any'         => 'Indifférent',
+        'find'        => 'Trouver',
     ],
 
     // Section headings keep their two-tone spans, so they are rendered with {!! !!}.

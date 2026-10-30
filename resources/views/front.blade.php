@@ -3966,9 +3966,9 @@
                     <div class="search-item">
                         <i data-lucide="tags" style="color: var(--primary); width: 18px; height: 18px;"></i>
                         <div style="flex: 1;">
-                            <label>Budget Max</label>
+                            <label>{{ __('messages.search.budget_max') }}</label>
                             <select id="search-budget">
-                                <option value="">Indifférent</option>
+                                <option value="">{{ __('messages.search.any') }}</option>
                                 <option value="100000">100 000 MAD</option>
                                 <option value="200000">200 000 MAD</option>
                                 <option value="300000">300 000 MAD</option>
@@ -3982,7 +3982,7 @@
 
                     <button class="btn-find" id="btn-search-find">
                         <i data-lucide="search" style="width: 18px; height: 18px; stroke-width: 3;"></i>
-                        <span>Trouver</span>
+                        <span>{{ __('messages.search.find') }}</span>
                     </button>
                 </div>
             </div>

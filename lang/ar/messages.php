@@ -47,6 +47,9 @@ return [
         'all_brands' => 'كل الماركات',
         'all_models' => 'كل الموديلات',
         'search'     => 'بحث',
+        'budget_max' => 'الميزانية القصوى',
+        'any'        => 'بلا تحديد',
+        'find'       => 'ابحث',
     ],
 
     // Section headings keep their two-tone spans, so they are rendered with {!! !!}.
