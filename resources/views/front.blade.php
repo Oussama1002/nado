@@ -2221,8 +2221,8 @@
             }
 
             .finance-image {
-                width: 33.333%;
-                max-width: 24rem;
+                width: 42%;
+                max-width: 32rem;
             }
         }
 
