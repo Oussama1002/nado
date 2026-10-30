@@ -20,12 +20,12 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::where('is_approved', true)->get();
+        $clients = Client::where('is_approved', true)->latest()->get();
         return view('admin.clients.index', compact('clients'));
     }
     public function approval()
     {
-        $unapprovedClients = Client::where('is_approved', false)->get();
+        $unapprovedClients = Client::where('is_approved', false)->latest()->get();
         return view('admin.clients.approval', compact('unapprovedClients'));
     }
     public function verify($id)
