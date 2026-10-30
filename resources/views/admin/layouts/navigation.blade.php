@@ -388,6 +388,14 @@
         </ul>
     </li>
 
+    {{-- Configuration du marketplace (prix, taux, modules) --}}
+    <li @class(['sidebar-item', 'active' => str_contains($current_route, 'settings.')])>
+        <a href="{{ route('admin.settings.index') }}" class="sidebar-link">
+            <i class="bi bi-gear-fill"></i>
+            <span>Configuration</span>
+        </a>
+    </li>
+
     {{-- 🔹 End of Admin Sidebar --}}
     @endrole
 @endif

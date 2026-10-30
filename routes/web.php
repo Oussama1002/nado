@@ -54,7 +54,8 @@ use App\Http\Controllers\{
     Admin\VideoAdsController,
     Admin\VilleController,
     Admin\AutoEnchereController,
-    Admin\NadoAutoEnchereBidController
+    Admin\NadoAutoEnchereBidController,
+    Admin\SettingsController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -477,6 +478,21 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::patch('discussions/{discussion}/close', [\App\Http\Controllers\Admin\DiscussionController::class, 'close'])->name('discussions.close');
     Route::patch('discussions/{discussion}/reopen', [\App\Http\Controllers\Admin\DiscussionController::class, 'reopen'])->name('discussions.reopen');
 });
+/*
+|--------------------------------------------------------------------------
+| Configuration marketplace (doc 02 — §6.bis)
+| Panneau admin : prix, taux, durées, feature-flags. Zéro valeur en dur.
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin/settings')->name('admin.settings.')
+    ->middleware(['auth:admin', 'role:admin', 'permission:manage-settings'])
+    ->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
+        Route::get('/{group}', [SettingsController::class, 'group'])->name('group');
+        Route::post('/{group}', [SettingsController::class, 'update'])->name('update');
+    });
+
 /*
 |--------------------------------------------------------------------------
 | Demandes (saved search → public forum)
