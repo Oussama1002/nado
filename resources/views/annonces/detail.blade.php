@@ -2043,7 +2043,6 @@
                 </div>
 
                 <div class="nv-right-section">
-                    @include('partials.lang-switcher')
                     @if ($navClient)
                         <div class="nv-user-dropdown-wrapper" id="nvUserDropdownWrapper">
                             <button class="nv-cta-button nv-outline-btn" type="button" aria-label="{{ __('messages.nav.account') }}">
@@ -2078,6 +2077,9 @@
                             {{ __('messages.nav.publish_ad') }}
                         </a>
                     @endif
+
+                    {{-- Language switch on the far (right) edge --}}
+                    @include('partials.lang-switcher')
 
                     <button id="nvMobileMenuBtn" class="nv-mobile-menu-btn">
                         <i data-lucide="menu"></i>

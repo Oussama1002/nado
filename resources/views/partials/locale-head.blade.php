@@ -67,6 +67,10 @@
     html[dir="rtl"] .listing-spec-label,
     html[dir="rtl"] .monthly-amount,
     html[dir="rtl"] .bid-amount,
+    /* Car detail page pricing card — keep "163 000 MAD" in order. */
+    html[dir="rtl"] .price-row,
+    html[dir="rtl"] .price-amount,
+    html[dir="rtl"] .price-currency,
     html[dir="rtl"] a[href^="tel:"] {
         direction: ltr !important;
         unicode-bidi: isolate;
