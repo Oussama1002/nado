@@ -2925,10 +2925,13 @@
                     </div>
                 </div>
 
-                <div class="social-links">
-                    <a href="#"><i data-lucide="facebook"></i></a>
-                    <a href="#"><i data-lucide="instagram"></i></a>
-                    <a href="#"><i data-lucide="linkedin"></i></a>
+                <div style="display:flex;align-items:center;gap:16px;">
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="facebook"></i></a>
+                        <a href="#"><i data-lucide="instagram"></i></a>
+                        <a href="#"><i data-lucide="linkedin"></i></a>
+                    </div>
+                    @include('partials.lang-switcher')
                 </div>
             </div>
         </div>
@@ -3018,8 +3021,6 @@
                             @endif
                         </a>
                     @endif
-
-                    @include('partials.lang-switcher')
 
                     <button id="mobileMenuBtn" class="mobile-menu-btn">
                         <i data-lucide="menu"></i>
@@ -3212,12 +3213,14 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                flex-wrap: nowrap;
             }
 
             .left-section {
                 display: flex;
                 align-items: center;
-                gap: 64px;
+                gap: 40px;
+                flex-wrap: nowrap;
             }
 
             .logo-link {
@@ -3247,6 +3250,7 @@
                 display: none;
                 align-items: center;
                 gap: 12px;
+                flex-wrap: nowrap;
             }
 
             @media (min-width: 1024px) {
@@ -3268,6 +3272,9 @@
                 background: transparent;
                 border: none;
                 cursor: pointer;
+                white-space: nowrap;
+                word-break: keep-all;
+                hyphens: none;
             }
 
             .nav-link:hover {
