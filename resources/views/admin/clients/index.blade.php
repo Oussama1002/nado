@@ -18,7 +18,6 @@
                                 <th>Type</th>
 
                 <th>Entreprise</th>
-                <th>Logo</th>
 
                 <th>Vérifié</th>
                 <th>Date d’inscription</th>
@@ -35,7 +34,6 @@
                     <td>{{ $client->type ?? '-' }}</td>
 
                     <td>{{ $client->company }}</td>
-                    <td>{{ $client->logo }}</td>
                    <td>
     <input type="checkbox" 
            class="verify-toggle" 
