@@ -4478,8 +4478,8 @@
                         </a>
                     </div>
                     <div class="finance-image"><img
-                            src="https://images.unsplash.com/photo-1554224155-169641357599?auto=format&fit=crop&q=80&w=800"
-                            alt="Finance" /></div>
+                            src="{{ asset('assets/images/financement-nado.jpg') }}"
+                            alt="Financement NADO" /></div>
                 </div>
             </div>
         </section>
