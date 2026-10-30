@@ -5,6 +5,7 @@
     <p><strong>ID:</strong> {{ $client->id }}</p>
     <p><strong>Nom:</strong> {{ $client->name }}</p>
     <p><strong>Email:</strong> {{ $client->email }}</p>
+    <p><strong>Rôle Auto Enchère:</strong> {{ $client->ae_role ? ucfirst($client->ae_role) : '—' }}</p>
 <p><strong>Type de client:</strong></p>
 
 <select id="client-type" class="form-control" style="width:200px;">

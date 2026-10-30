@@ -16,6 +16,7 @@
                 <th>Email</th>
                 <th>Téléphone</th>
                                 <th>Type</th>
+                <th>Rôle enchère</th>
 
                 <th>Entreprise</th>
 
@@ -32,6 +33,7 @@
                     <td>{{ $client->email }}</td>
                                         <td>{{ $client->phone ?? '-' }}</td>
                     <td>{{ $client->type ?? '-' }}</td>
+                    <td>{{ $client->ae_role ? ucfirst($client->ae_role) : '-' }}</td>
 
                     <td>{{ $client->company }}</td>
                    <td>

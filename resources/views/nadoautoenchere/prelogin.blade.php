@@ -91,15 +91,19 @@
     @section('na_nav_links')
         @php
             $navClient = Auth::guard('client')->user();
-            $acheterUrl = ($navClient && ($navClient->type ?? '') === 'flotte&enchere')
+            $isAeClient = $navClient && ($navClient->type ?? '') === 'flotte&enchere';
+            $acheterUrl = $isAeClient
                 ? route('nadoautoenchere.categories')
-                : route('nadoautoenchere.register');
+                : route('nadoautoenchere.register', ['role' => 'acheteur']);
+            $vendreUrl = $isAeClient
+                ? route('nadoautoenchere.vendre')
+                : route('nadoautoenchere.register', ['role' => 'vendeur']);
         @endphp
         <a href="{{ $acheterUrl }}"
            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#1459DD] hover:bg-slate-100">
             {{ __('messages.ae.buy') }}
         </a>
-        <a href="{{ route('nadoautoenchere.vendre') }}"
+        <a href="{{ $vendreUrl }}"
            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#F37021] hover:bg-orange-50">
             {{ __('messages.ae.sell') }}
         </a>
@@ -146,7 +150,7 @@
                     if ($authClient && $authClient->type === 'flotte&enchere') {
                         $participerUrl = route('nadoautoenchere.categories');
                     } else {
-                        $participerUrl = route('nadoautoenchere.register');
+                        $participerUrl = route('nadoautoenchere.register', ['role' => 'acheteur']);
                     }
                 @endphp
                 <a href="{{ $participerUrl }}"
@@ -158,7 +162,7 @@
                 @php
                     $voirVehiculesUrl = ($authClient && $authClient->type === 'flotte&enchere')
                         ? route('nadoautoenchere.index')
-                        : route('nadoautoenchere.register');
+                        : route('nadoautoenchere.register', ['role' => 'acheteur']);
                 @endphp
                 <a href="{{ $voirVehiculesUrl }}"
                    class="px-10 py-5 bg-white/90 backdrop-blur-sm text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all flex items-center gap-3 cursor-pointer border-none decoration-transparent active:scale-95">

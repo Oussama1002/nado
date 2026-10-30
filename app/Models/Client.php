@@ -28,6 +28,7 @@ class Client extends Authenticatable
         'email',
         'password',
         'type',
+        'ae_role',
         'phone',
         'logo',
         'company',

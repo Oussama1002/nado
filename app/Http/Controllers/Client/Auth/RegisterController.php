@@ -27,6 +27,7 @@ class RegisterController extends Controller
             'type'     => 'required|in:pro,particulier,flotte&enchere',
             'phone'    => 'required|string|max:20',
             'company'  => 'nullable|string|max:255',
+            'ae_role'  => 'nullable|in:vendeur,acheteur',
         ]);
 
         // Création du compte, inactif jusqu'à la confirmation de l'email
@@ -37,6 +38,8 @@ class RegisterController extends Controller
             'email'       => $request->email,
             'password'    => Hash::make($request->password),
             'type'        => $request->type,
+            // Rôle Auto Enchère (vendeur/acheteur) — pertinent pour flotte&enchere.
+            'ae_role'     => $request->type === 'flotte&enchere' ? $request->ae_role : null,
             'phone'       => $request->phone,
             'company'     => $request->company,
             'logo'        => null,

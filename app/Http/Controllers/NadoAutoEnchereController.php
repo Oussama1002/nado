@@ -191,7 +191,10 @@ public function register()
         return redirect()->route('nadoautoenchere.categories');
     }
     $profile = request('profile') ?: 'entreprise';
-    return view('nadoautoenchere.register', compact('profile'));
+    // Rôle transmis par le bouton Vendre/Acheter de la prelogin ; sinon
+    // l'utilisateur le choisit dans le formulaire (vendeur/acheteur).
+    $role = in_array(request('role'), ['vendeur', 'acheteur'], true) ? request('role') : null;
+    return view('nadoautoenchere.register', compact('profile', 'role'));
 }
 
 

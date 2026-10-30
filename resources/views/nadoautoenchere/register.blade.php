@@ -15,6 +15,33 @@
             <input type="hidden" name="type" value="flotte&enchere">
             <input type="hidden" name="profile" value="{{ $profile }}">
 
+            {{-- Rôle Auto Enchère : préréglé si l'utilisateur a cliqué
+                 Vendre/Acheter, sinon il le choisit ici. --}}
+            @php $roleSel = old('ae_role', $role ?? null); @endphp
+            @if($role)
+                <input type="hidden" name="ae_role" value="{{ $role }}">
+                <div class="form-group" style="background:#fff7ed;border:1px solid #F37021;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+                    <i class="fa-solid {{ $role === 'vendeur' ? 'fa-tag' : 'fa-cart-shopping' }}" style="color:#F37021"></i>
+                    <span style="font-weight:700;color:#0f172a;">
+                        {{ $role === 'vendeur' ? __('messages.ae.role_as_seller') : __('messages.ae.role_as_buyer') }}
+                    </span>
+                </div>
+            @else
+                <div class="form-group" style="display:block;">
+                    <label style="display:block;font-weight:700;color:#0f172a;margin-bottom:8px;">{{ __('messages.ae.role_label') }}</label>
+                    <div style="display:flex;gap:10px;">
+                        <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;cursor:pointer;font-weight:700;">
+                            <input type="radio" name="ae_role" value="acheteur" {{ $roleSel === 'acheteur' ? 'checked' : '' }} required>
+                            <i class="fa-solid fa-cart-shopping" style="color:#1459DD"></i> {{ __('messages.ae.role_buyer') }}
+                        </label>
+                        <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;cursor:pointer;font-weight:700;">
+                            <input type="radio" name="ae_role" value="vendeur" {{ $roleSel === 'vendeur' ? 'checked' : '' }} required>
+                            <i class="fa-solid fa-tag" style="color:#F37021"></i> {{ __('messages.ae.role_seller') }}
+                        </label>
+                    </div>
+                </div>
+            @endif
+
             <div class="form-group">
                 <i class="fa-solid fa-user form-icon" aria-hidden="true"></i>
                 <input type="text" name="name" placeholder="Nom complet" value="{{ old("name") }}" required>
