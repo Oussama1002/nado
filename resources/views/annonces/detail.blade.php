@@ -14,7 +14,7 @@
     }
 @endphp
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -37,6 +37,9 @@
 
     {{-- SweetAlert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- Arabic font + RTL base styles (adds dir="rtl" support in AR). --}}
+    @include('partials.locale-head')
 </head>
 <style>
     :root {
@@ -2030,28 +2033,29 @@
                     </a>
 
                     <div class="nv-desktop-menu">
-                        <a href="{{ route('achat.index') }}" class="nv-nav-link">Achat</a>
-                        <a href="{{ route('vente.form') }}" class="nv-nav-link">Vente</a>
-                        <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-nav-link nv-highlight-link">Auto-enchère</a>
-                        <a href="{{ route('reprise.form') }}" class="nv-nav-link">Reprise</a>
-                        <a href="{{ route('financement.index') }}" class="nv-nav-link">Auto-financement</a>
-                        <a href="{{ route('about.index') }}" class="nv-nav-link">À propos</a>
+                        <a href="{{ route('achat.index') }}" class="nv-nav-link">{{ __('messages.nav.buy') }}</a>
+                        <a href="{{ route('vente.form') }}" class="nv-nav-link">{{ __('messages.nav.sell') }}</a>
+                        <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-nav-link nv-highlight-link">{{ __('messages.nav.auction') }}</a>
+                        <a href="{{ route('reprise.form') }}" class="nv-nav-link">{{ __('messages.nav.tradein') }}</a>
+                        <a href="{{ route('financement.index') }}" class="nv-nav-link">{{ __('messages.nav.financing') }}</a>
+                        <a href="{{ route('about.index') }}" class="nv-nav-link">{{ __('messages.nav.about') }}</a>
                     </div>
                 </div>
 
                 <div class="nv-right-section">
+                    @include('partials.lang-switcher')
                     @if ($navClient)
                         <div class="nv-user-dropdown-wrapper" id="nvUserDropdownWrapper">
-                            <button class="nv-cta-button nv-outline-btn" type="button" aria-label="Mon compte">
+                            <button class="nv-cta-button nv-outline-btn" type="button" aria-label="{{ __('messages.nav.account') }}">
                                 <i data-lucide="user"></i>
                                 <span class="nv-user-name" title="{{ $navClient->name }}">{{ $navClient->name }}</span>
                                 <i data-lucide="chevron-down" class="nv-icon-sm"></i>
                             </button>
                             <div class="nv-user-dropdown-menu">
-                                <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i> Mon espace</a>
+                                <a href="{{ route('client.dashboard') }}"><i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="nv-logout-btn"><i data-lucide="log-out"></i> Déconnexion</button>
+                                    <button type="submit" class="nv-logout-btn"><i data-lucide="log-out"></i> {{ __('messages.nav.logout') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -2071,7 +2075,7 @@
                         </script>
                     @else
                         <a href="{{ route('client.login') }}" class="nv-cta-button nv-outline-btn">
-                            Publier une annonce
+                            {{ __('messages.nav.publish_ad') }}
                         </a>
                     @endif
 
@@ -2092,28 +2096,29 @@
                     <button id="nvCloseDrawerBtn" class="nv-close-btn"><i data-lucide="x"></i></button>
                 </div>
                 <div class="nv-drawer-links">
-                    <a href="{{ route('achat.index') }}">Achat</a>
-                    <a href="{{ route('vente.form') }}">Vente</a>
-                    <a href="{{ route('nadoautoenchere.prelogin') }}" style="color:#1459DD;">Auto-enchère</a>
-                    <a href="{{ route('reprise.form') }}">Reprise</a>
-                    <a href="{{ route('financement.index') }}">Auto-financement</a>
-                    <a href="{{ route('about.index') }}">À propos</a>
+                    <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
+                    <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
+                    <a href="{{ route('nadoautoenchere.prelogin') }}" style="color:#1459DD;">{{ __('messages.nav.auction') }}</a>
+                    <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
+                    <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
+                    <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
+                    <div style="margin-top:12px;">@include('partials.lang-switcher')</div>
                 </div>
                 <div class="nv-drawer-footer">
                     @if ($navClient)
                         <a href="{{ route('client.dashboard') }}" class="nv-drawer-cta" style="background-color:#FDD817;">
-                            <i data-lucide="layout-dashboard"></i> Mon espace
+                            <i data-lucide="layout-dashboard"></i> {{ __('messages.nav.my_space') }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" style="margin:10px 0 0;">
                             @csrf
                             <button type="submit"
                                 style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 16px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;">
-                                <i data-lucide="log-out" style="width:16px;height:16px;"></i> Déconnexion
+                                <i data-lucide="log-out" style="width:16px;height:16px;"></i> {{ __('messages.nav.logout') }}
                             </button>
                         </form>
                     @else
                         <a href="{{ route('client.login') }}" class="nv-drawer-cta" style="background-color:#FDD817;">
-                            <i data-lucide="user"></i> Publier une annonce
+                            <i data-lucide="user"></i> {{ __('messages.nav.publish_ad') }}
                         </a>
                     @endif
                     <div class="nv-drawer-socials">
@@ -2284,13 +2289,13 @@
                 {{-- Header Section --}}
                 <div class="header-section">
                     <div class="badge-row">
-                        <span class="badge id-badge">Réf: VC{{ $annonce->id }}</span>
+                        <span class="badge id-badge">{{ __('messages.detail.ref') }} VC{{ $annonce->id }}</span>
                         @if(!empty($annonce->certifie))
-                            <span class="badge certified-badge">Certifié NADO Expert</span>
+                            <span class="badge certified-badge">{{ __('messages.detail.badge_certified') }}</span>
                         @elseif(!empty($annonce->particulie))
-                            <span class="badge particulier-badge">Vendeur Particulier</span>
+                            <span class="badge particulier-badge">{{ __('messages.detail.badge_particulier') }}</span>
                         @elseif(!empty($annonce->pro))
-                            <span class="badge pro-badge">Vendeur Pro</span>
+                            <span class="badge pro-badge">{{ __('messages.detail.badge_pro') }}</span>
                         @endif
                     </div>
                     <h1 class="main-title">
@@ -2304,8 +2309,8 @@
                         @endif
                     </h1>
                     <p class="specs-subtitle">
-                        {{ $annonce->year ?? 'Année' }} • {{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM •
-                        {{ $annonce->carburant ?? 'Carburant' }} • {{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'Boîte' }}
+                        {{ $annonce->year ?? __('messages.detail.spec_year') }} • {{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM •
+                        {{ $annonce->carburant ?? __('messages.detail.spec_fuel') }} • {{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: __('messages.detail.spec_gearbox') }}
                     </p>
 
 
@@ -2400,12 +2405,12 @@
                             </div>
                             <div class="finance-badge">
                                 <i class="fas fa-calendar-alt"></i>
-                                <span>Dès {{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD / mois</span>
+                                <span>{{ __('messages.detail.from') }} {{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD {{ __('messages.detail.per_month') }}</span>
                             </div>
 
                             <div class="action-buttons">
                                 <button onclick="openFinanceChat()" class="btn-chat-new">
-                                    <i class="fas fa-comment-dots"></i> Discussion avec le vendeur
+                                    <i class="fas fa-comment-dots"></i> {{ __('messages.detail.chat_with_seller') }}
                                 </button>
                                 @if ($annonce->phone)
                                     <a href="tel:{{ $annonce->phone }}" class="btn-primary btn-call">
@@ -2417,7 +2422,7 @@
                                     </a>
                                 @endif
                                 <button class="btn-offer" id="offerToggleBtn" onclick="toggleOfferPanel()" type="button">
-                                    <i class="fas fa-tag"></i> Faire une offre
+                                    <i class="fas fa-tag"></i> {{ __('messages.detail.make_offer') }}
                                 </button>
                             </div>
 
@@ -2448,28 +2453,28 @@
                                 </style>
 
                                 @auth('client')
-                                <p class="op-label"><i class="fas fa-tag" style="color:#1459DD;margin-right:5px;"></i>Proposer votre prix</p>
-                                <p class="op-ref">Prix affiché : <strong>{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</strong></p>
+                                <p class="op-label"><i class="fas fa-tag" style="color:#1459DD;margin-right:5px;"></i>{{ __('messages.detail.propose_price') }}</p>
+                                <p class="op-ref">{{ __('messages.detail.displayed_price') }} <strong>{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</strong></p>
                                 <form id="offerForm" method="POST" action="{{ route('annonces.proposerPrix', $annonce->id) }}" style="width:100%;">
                                     @csrf
                                     <div class="op-row">
-                                        <input type="number" name="proposition" id="offerInput" class="op-input" placeholder="Votre offre (min 1 000)…" min="1000" step="1" required />
+                                        <input type="number" name="proposition" id="offerInput" class="op-input" placeholder="{{ __('messages.detail.offer_placeholder') }}" min="1000" step="1" required />
                                         <span class="op-currency">MAD</span>
                                     </div>
                                     {{-- Envoyer + Annuler share one row --}}
                                     <div class="op-actions">
-                                        <button type="submit" class="op-submit"><i class="fas fa-paper-plane"></i> Envoyer</button>
-                                        <span class="op-cancel" onclick="toggleOfferPanel()">✕ Annuler</span>
+                                        <button type="submit" class="op-submit"><i class="fas fa-paper-plane"></i> {{ __('messages.detail.send') }}</button>
+                                        <span class="op-cancel" onclick="toggleOfferPanel()">✕ {{ __('messages.detail.cancel') }}</span>
                                     </div>
                                 </form>
                                 <div class="op-error" id="offerError"></div>
                                 @else
                                 <div style="text-align:center; padding:8px 0;">
-                                    <p style="font-size:13px; color:#475569; margin-bottom:12px;">Connectez-vous pour proposer un prix.</p>
+                                    <p style="font-size:13px; color:#475569; margin-bottom:12px;">{{ __('messages.detail.login_to_offer') }}</p>
                                     <a href="{{ route('client.login') }}?redirect={{ urlencode(url()->current()) }}" class="op-submit" style="text-decoration:none; display:inline-block; background:#1459DD; color:#fff; border-radius:9px; padding:9px 20px; font-size:14px; font-weight:600;">
-                                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                                        <i class="fas fa-sign-in-alt"></i> {{ __('messages.detail.login') }}
                                     </a>
-                                    <p class="op-cancel" onclick="toggleOfferPanel()">✕ Annuler</p>
+                                    <p class="op-cancel" onclick="toggleOfferPanel()">✕ {{ __('messages.detail.cancel') }}</p>
                                 </div>
                                 @endauth
                             </div>
@@ -2477,12 +2482,12 @@
                             <div class="pricing-footer-info">
                                 <div class="info-item">
                                     <i class="fas fa-check-circle text-green"></i>
-                                    <span>Disponibilité immédiate à Casablanca</span>
+                                    <span>{{ __('messages.detail.availability') }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="trust-badge-footer">
-                            <span>PROGRAMME DE CONFIANCE NADO</span>
+                            <span>{{ __('messages.detail.trust_program') }}</span>
                         </div>
                     </div>
                 </div>
@@ -2494,7 +2499,7 @@
                 <section class="about-section">
                     <h2 class="section-title">
                         <span class="blue-line"></span>
-                        À propos de ce véhicule
+                        {{ __('messages.detail.about_vehicle') }}
                     </h2>
                     <div class="description-card">
                         @php
@@ -2504,6 +2509,25 @@
                         @endphp
                         @if ($sellerDescription !== '')
                             <p class="description-text" style="white-space: pre-line;">{{ $sellerDescription }}</p>
+                        @elseif (app()->getLocale() === 'ar')
+                        <p class="description-text">
+                            هذه <strong class="desc-hl">{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'السيارة' }}</strong>
+                            المستعملة،
+                            @if ($annonce->origine)
+                                ذات الأصل <strong class="desc-hl">{{ $annonce->origine }}</strong>،
+                            @endif
+                            موديل <strong class="desc-hl">{{ $annonce->year ?? 'غير متوفر' }}</strong>، فرصة ممتازة
+                            @if ($isPremiereMain)
+                                <strong class="desc-hl">أول يد</strong>
+                            @endif يجب اغتنامها.
+                            تتميّز بلمسة أنيقة بلون <strong class="desc-hl">{{ $annonce->colors ?? 'غير متوفر' }}</strong>،
+                            وقد قطعت <strong class="desc-hl">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} كلم</strong>.
+                            وهي مزوّدة بعلبة سرعة <strong class="desc-hl">{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'غير متوفر' }}</strong>
+                            وبقوة جبائية تبلغ <strong class="desc-hl">{{ $annonce->cv ?? 'غير متوفر' }} حصان</strong>.
+                            هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong> <strong class="desc-hl">معتمدة من نادو</strong>@if ($annonce->garantie ?? false)، وتتوفّر على <strong class="desc-hl">ضمان</strong>@endif.
+                            وهي متوفرة بـ<strong class="desc-hl">الدار البيضاء</strong>، ومعروضة بسعر
+                            <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} درهم</strong>.
+                        </p>
                         @else
                         <p class="description-text">
                             Ce <strong class="desc-hl">{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'véhicule' }}</strong>
@@ -2526,12 +2550,12 @@
                         @endif
                         <div class="tag-group">
                             @if ($isPremiereMain)
-                                <span class="info-tag">Première main</span>
+                                <span class="info-tag">{{ __('messages.detail.tag_first_hand') }}</span>
                             @endif
-                            <span class="info-tag">Carnet d'entretien</span>
-                            <span class="info-tag">Non accidenté</span>
+                            <span class="info-tag">{{ __('messages.detail.tag_service_book') }}</span>
+                            <span class="info-tag">{{ __('messages.detail.tag_no_accident') }}</span>
                             @if ($annonce->garantie ?? false)
-                                <span class="info-tag">Garantie incluse</span>
+                                <span class="info-tag">{{ __('messages.detail.tag_warranty_incl') }}</span>
                             @endif
                         </div>
                     </div>
@@ -2541,13 +2565,13 @@
                 <div class="tabs-container">
                     <div class="tabs-header">
                         <button class="tab-btn active" data-tab="details"><i class="fas fa-info-circle"></i>
-                            Détails techniques</button>
-                        <button class="tab-btn" data-tab="equipment"><i class="fas fa-list"></i> Équipements</button>
+                            {{ __('messages.detail.tab_details') }}</button>
+                        <button class="tab-btn" data-tab="equipment"><i class="fas fa-list"></i> {{ __('messages.detail.tab_equipment') }}</button>
                         <button class="tab-btn" data-tab="expertise"><i class="fas fa-file-alt"></i>
-                            Expertise NADO</button>
-                        <button class="tab-btn" data-tab="history"><i class="fas fa-history"></i> Historique</button>
+                            {{ __('messages.detail.tab_expertise') }}</button>
+                        <button class="tab-btn" data-tab="history"><i class="fas fa-history"></i> {{ __('messages.detail.tab_history') }}</button>
                         <button class="tab-btn" data-tab="warranty"><i class="fas fa-shield-alt"></i>
-                            Garantie</button>
+                            {{ __('messages.detail.tab_warranty') }}</button>
                     </div>
 
                     <div class="tabs-content">
@@ -2555,35 +2579,33 @@
                         <div class="tab-pane active" id="details">
                             <div class="specs-grid">
                                 <div class="spec-item">
-                                    <span>Prix</span><strong>{{ number_format($annonce->prix, 0, ',', ' ') }}
+                                    <span>{{ __('messages.detail.spec_price') }}</span><strong>{{ number_format($annonce->prix, 0, ',', ' ') }}
                                         DH</strong>
                                 </div>
-                                <div class="spec-item"><span>Marque &
-                                        Modèle</span><strong>{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'N/A' }}</strong>
+                                <div class="spec-item"><span>{{ __('messages.detail.spec_brand_model') }}</span><strong>{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Kilométrage</span><strong>{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}
+                                    <span>{{ __('messages.detail.spec_mileage') }}</span><strong>{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}
                                         KM</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Carburant</span><strong>{{ $annonce->carburant ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_fuel') }}</span><strong>{{ $annonce->carburant ?? 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Année</span><strong>{{ $annonce->year ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_year') }}</span><strong>{{ $annonce->year ?? 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Origine</span><strong>{{ $annonce->origine ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_origin') }}</span><strong>{{ $annonce->origine ?? 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Couleur</span><strong>{{ $annonce->colors ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_color') }}</span><strong>{{ $annonce->colors ?? 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>Nombres de portes</span><strong>{{ $annonce->nb_Door ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_doors') }}</span><strong>{{ $annonce->nb_Door ?? 'N/A' }}</strong>
                                 </div>
-                                <div class="spec-item"><span>Puissance
-                                        (CV)</span><strong>{{ $annonce->cv ?? 'N/A' }}</strong></div>
+                                <div class="spec-item"><span>{{ __('messages.detail.spec_power') }}</span><strong>{{ $annonce->cv ?? 'N/A' }}</strong></div>
                                 <div class="spec-item">
-                                    <span>Boîte</span><strong>{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_gearbox') }}</span><strong>{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'N/A' }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -2693,7 +2715,7 @@
                                     @endforeach
                                 </div>
                             @else
-                                <p style="color:var(--slate-500);">Aucun équipement listé.</p>
+                                <p style="color:var(--slate-500);">{{ __('messages.detail.no_equipment') }}</p>
                             @endif
                         </div>
 
@@ -2721,13 +2743,13 @@
                                         <div id="rapportPdfViewer" data-url="{{ $rapportUrl }}"
                                             style="max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f1f5f9;">
                                             <p class="rapport-pdf-status" style="padding:2rem;text-align:center;color:var(--slate-500);font-size:0.875rem;margin:0;">
-                                                Chargement du rapport…
+                                                {{ __('messages.detail.loading_report') }}
                                             </p>
                                         </div>
                                     @endif
                                 </div>
                             @else
-                                <p style="color:var(--slate-500);font-size:0.875rem;">Aucun rapport d'expertise disponible.</p>
+                                <p style="color:var(--slate-500);font-size:0.875rem;">{{ __('messages.detail.no_report') }}</p>
                             @endif
                         </div>
 
@@ -2747,8 +2769,7 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <p style="color:var(--slate-500);font-size:0.875rem;">Aucune donnée d'historique
-                                        disponible.</p>
+                                    <p style="color:var(--slate-500);font-size:0.875rem;">{{ __('messages.detail.no_history') }}</p>
                                 @endforelse
                             </div>
                         </div>
@@ -2759,10 +2780,9 @@
                                 <div class="shield-icon-circle">
                                     <i class="fas fa-shield-alt" style="font-size:3rem;"></i>
                                 </div>
-                                <h3 style="font-size:1.5rem;font-weight:800;color:var(--slate-900);margin-bottom:0.5rem;">Garantie NADO Sérénité</h3>
-                                <p style="color:var(--slate-500);font-size:0.875rem;margin-bottom:1.5rem;">Garantie de 1
-                                    mois couvrant pièces et main d'œuvre, dans la limite de 1 000 km.</p>
-                                <button class="secondary-button">Consulter les conditions</button>
+                                <h3 style="font-size:1.5rem;font-weight:800;color:var(--slate-900);margin-bottom:0.5rem;">{{ __('messages.detail.warranty_title') }}</h3>
+                                <p style="color:var(--slate-500);font-size:0.875rem;margin-bottom:1.5rem;">{{ __('messages.detail.warranty_desc') }}</p>
+                                <button class="secondary-button">{{ __('messages.detail.warranty_conditions') }}</button>
                             </div>
                         </div>
                     </div>
@@ -2774,8 +2794,8 @@
                         <div class="header-content">
                             <div class="finance-icon"><i class="fas fa-border-all"></i></div>
                             <div>
-                                <h2 class="finance-title">Simulateur de Financement</h2>
-                                <p class="finance-subtitle">Personnalisez votre plan de financement.</p>
+                                <h2 class="finance-title">{{ __('messages.detail.fin_title') }}</h2>
+                                <p class="finance-subtitle">{{ __('messages.detail.fin_subtitle') }}</p>
                             </div>
                         </div>
                     </div>
@@ -2788,7 +2808,7 @@
                             {{-- 1. Profil --}}
                             <div class="input-group">
                                 <div class="label-row" style="margin-bottom:0.75rem;">
-                                    <label><i class="fas fa-fingerprint"></i> VOTRE PROFIL</label>
+                                    <label><i class="fas fa-fingerprint"></i> {{ __('messages.detail.fin_profile') }}</label>
                                 </div>
                                 <div class="profile-grid">
                                     @foreach ($clientTypes ?? [] as $type)
@@ -2801,7 +2821,7 @@
                             {{-- 2. Apport --}}
                             <div class="input-group">
                                 <div class="label-row">
-                                    <label><i class="fas fa-coins"></i> APPORT INITIAL (MAD)</label>
+                                    <label><i class="fas fa-coins"></i> {{ __('messages.detail.fin_down_payment') }}</label>
                                     <span id="apport-val" class="val-highlight">0</span>
                                 </div>
                                 <input type="range" id="apport-range" min="0" max="{{ $annonce->prix }}"
@@ -2811,8 +2831,8 @@
                             {{-- 3. Durée --}}
                             <div class="input-group">
                                 <div class="label-row">
-                                    <label><i class="fas fa-clock"></i> DURÉE DU CRÉDIT</label>
-                                    <span id="duree-val" class="val-highlight">60 mois</span>
+                                    <label><i class="fas fa-clock"></i> {{ __('messages.detail.fin_duration') }}</label>
+                                    <span id="duree-val" class="val-highlight">60 {{ __('messages.detail.fin_months') }}</span>
                                 </div>
                                 <div class="duration-grid">
                                     <button class="duration-btn" data-months="12">12m</button>
@@ -2827,14 +2847,13 @@
                         </div>
 
                         <div class="finance-result">
-                            <span class="result-label">MENSUALITÉ ESTIMÉE</span>
+                            <span class="result-label">{{ __('messages.detail.fin_monthly_est') }}</span>
                             <div class="result-amount">
                                 <span id="monthly-payment">0</span><small>MAD</small>
                             </div>
-                            <p class="disclaimer">Offre indicative soumise à acceptation du dossier par nos partenaires
-                                financiers.</p>
+                            <p class="disclaimer">{{ __('messages.detail.fin_disclaimer') }}</p>
                             <button type="button" class="chat-btn" onclick="startFinanceDiscussion()">
-                                <i class="fas fa-comment"></i> Discuter de cette offre
+                                <i class="fas fa-comment"></i> {{ __('messages.detail.fin_discuss') }}
                             </button>
                         </div>
                     </div>
@@ -2843,34 +2862,29 @@
                 {{-- Trust Section --}}
                 <section class="trust-section">
                     <div class="trust-header">
-                        <h2 class="trust-main-title">POURQUOI FAIRE CONFIANCE À NADO ?</h2>
-                        <p class="trust-subtitle">Plus de 20 ans d'expertise dans l'automobile premium au Maroc. Nous
-                            ne vendons pas seulement des voitures, nous offrons la tranquillité d'esprit.</p>
+                        <h2 class="trust-main-title">{{ __('messages.detail.trust_title') }}</h2>
+                        <p class="trust-subtitle">{{ __('messages.detail.trust_subtitle') }}</p>
                     </div>
                     <div class="trust-grid">
                         <div class="trust-item">
                             <div class="trust-icon-box"><i class="fas fa-check-circle"></i></div>
-                            <h3 class="trust-item-title">CONTRÔLE EXPERT</h3>
-                            <p class="trust-item-desc">Chaque véhicule est soumis à une inspection rigoureuse de 110
-                                points par nos techniciens certifiés.</p>
+                            <h3 class="trust-item-title">{{ __('messages.detail.trust_1_title') }}</h3>
+                            <p class="trust-item-desc">{{ __('messages.detail.trust_1_desc') }}</p>
                         </div>
                         <div class="trust-item">
                             <div class="trust-icon-box"><i class="fas fa-ban"></i></div>
-                            <h3 class="trust-item-title">TRANSPARENCE TOTALE</h3>
-                            <p class="trust-item-desc">Historique d'entretien vérifié et rapport d'expertise complet
-                                disponible pour chaque annonce.</p>
+                            <h3 class="trust-item-title">{{ __('messages.detail.trust_2_title') }}</h3>
+                            <p class="trust-item-desc">{{ __('messages.detail.trust_2_desc') }}</p>
                         </div>
                         <div class="trust-item">
                             <div class="trust-icon-box"><i class="fas fa-trophy"></i></div>
-                            <h3 class="trust-item-title">GARANTIE INCLUSE</h3>
-                            <p class="trust-item-desc">Roulez serein avec notre garantie NADO Sérénité couvrant pièces
-                                et main d'œuvre pendant 12 mois.</p>
+                            <h3 class="trust-item-title">{{ __('messages.detail.trust_3_title') }}</h3>
+                            <p class="trust-item-desc">{{ __('messages.detail.trust_3_desc') }}</p>
                         </div>
                         <div class="trust-item">
                             <div class="trust-icon-box"><i class="fas fa-star"></i></div>
-                            <h3 class="trust-item-title">ACCOMPAGNEMENT</h3>
-                            <p class="trust-item-desc">Un conseiller dédié vous accompagne de l'essai routier jusqu'à
-                                la signature finale.</p>
+                            <h3 class="trust-item-title">{{ __('messages.detail.trust_4_title') }}</h3>
+                            <p class="trust-item-desc">{{ __('messages.detail.trust_4_desc') }}</p>
                         </div>
                     </div>
                     @php
@@ -2946,8 +2960,8 @@
         <div class="finance-chat-modal">
             <div class="chat-header">
                 <div class="chat-title-group">
-                    <p>Réf: VC{{ $annonce->id }}</p>
-                    <h3>Discussion avec le vendeur</h3>
+                    <p>{{ __('messages.detail.ref') }} VC{{ $annonce->id }}</p>
+                    <h3>{{ __('messages.detail.chat_with_seller') }}</h3>
                 </div>
                 <button class="chat-close-btn" onclick="closeFinanceChat()">
                     <i class="fas fa-times"></i>
@@ -2956,25 +2970,25 @@
             {{-- Auth gate shown before chat loads --}}
             <div id="chatAuthGate" style="display:none; padding:2rem; text-align:center;">
                 <i class="fas fa-lock" style="font-size:2.5rem; color:#003b87; margin-bottom:1rem; display:block;"></i>
-                <p style="margin-bottom:1.25rem; color:#555;">Connectez-vous pour discuter avec le vendeur.</p>
+                <p style="margin-bottom:1.25rem; color:#555;">{{ __('messages.detail.chat_login') }}</p>
                 <a href="{{ route('client.login') }}?redirect={{ urlencode(request()->fullUrl()) }}"
                    style="background:#003b87; color:#fff; padding:0.6rem 1.5rem; border-radius:8px; text-decoration:none; font-weight:600;">
-                    Se connecter
+                    {{ __('messages.detail.login') }}
                 </a>
             </div>
             {{-- Loading state --}}
             <div id="chatLoading" style="display:none; padding:2rem; text-align:center; color:#888;">
                 <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
-                <p style="margin-top:0.75rem;">Chargement de la discussion…</p>
+                <p style="margin-top:0.75rem;">{{ __('messages.detail.chat_loading') }}</p>
             </div>
             {{-- Real chat UI --}}
             <div id="chatBody" class="chat-body" style="display:none;"></div>
             <div id="chatClosedNote" style="display:none; text-align:center; color:#94a3b8; padding:1rem; border-top:1px solid #e2e8f0; font-size:0.85rem;">
-                <i class="fas fa-lock"></i> Cette discussion est clôturée.
+                <i class="fas fa-lock"></i> {{ __('messages.detail.chat_closed') }}
             </div>
             <div class="chat-footer" id="chatFooter" style="display:none;">
-                <input type="text" class="chat-input" placeholder="Écrire un message…" id="chatInput" autocomplete="off">
-                <button class="chat-send-btn" id="chatMicBtn" title="Message vocal" style="background:#e2e8f0; color:#475569; margin-right:4px;">
+                <input type="text" class="chat-input" placeholder="{{ __('messages.detail.chat_placeholder') }}" id="chatInput" autocomplete="off">
+                <button class="chat-send-btn" id="chatMicBtn" title="{{ __('messages.detail.chat_voice') }}" style="background:#e2e8f0; color:#475569; margin-right:4px;">
                     <i class="fas fa-microphone"></i>
                 </button>
                 <button class="chat-send-btn" id="chatSendBtn">
