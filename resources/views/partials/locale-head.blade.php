@@ -40,6 +40,11 @@
     html[dir="rtl"] .result-amount,
     html[dir="rtl"] .nv-info,
     html[dir="rtl"] .info-item,
+    /* Front homepage listing & auction cards (price, year, km, monthly, bid). */
+    html[dir="rtl"] .listing-price-text,
+    html[dir="rtl"] .listing-spec-label,
+    html[dir="rtl"] .monthly-amount,
+    html[dir="rtl"] .bid-amount,
     html[dir="rtl"] a[href^="tel:"] {
         direction: ltr !important;
         unicode-bidi: isolate;
