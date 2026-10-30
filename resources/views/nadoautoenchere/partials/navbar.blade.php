@@ -2,7 +2,9 @@
     $authClient = Auth::guard('client')->user();
 @endphp
 
-<header class="sticky top-0 z-50">
+{{-- dir=ltr keeps the bar laid out like the main NADO navbar (logo on the
+     left, actions on the right) even in Arabic; the labels still render RTL. --}}
+<header class="sticky top-0 z-50" dir="ltr">
     <div class="bg-[#F37021] text-slate-900 py-2.5 px-4 border-b border-black/5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
