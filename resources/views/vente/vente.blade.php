@@ -1088,18 +1088,21 @@
                         <p class="cg-sub">{{ __('messages.ai.subtitle') }}</p>
 
                         <div class="cg-slots">
-                            <div class="cg-slot" id="cg-slot-recto" onclick="document.getElementById('cg-recto').click()">
+                            {{-- label + for = ouverture native du sélecteur (Prendre une photo / Photothèque),
+                                 plus fiable que input caché + click() JS sur mobile. --}}
+                            <label class="cg-slot" id="cg-slot-recto" for="cg-recto">
                                 <i data-lucide="credit-card" class="cg-slot-ic"></i>
                                 <div class="cg-slot-title">{{ __('messages.ai.recto') }}</div>
                                 <div class="cg-slot-sub" id="cg-recto-name">{{ __('messages.ai.recto_hint') }}</div>
-                                <input type="file" id="cg-recto" accept="image/*,application/pdf" capture="environment" style="display:none">
-                            </div>
-                            <div class="cg-slot" id="cg-slot-verso" onclick="document.getElementById('cg-verso').click()">
+                            </label>
+                            <input type="file" id="cg-recto" accept="image/*,application/pdf" class="cg-file-input">
+
+                            <label class="cg-slot" id="cg-slot-verso" for="cg-verso">
                                 <i data-lucide="credit-card" class="cg-slot-ic" style="transform:scaleX(-1);"></i>
                                 <div class="cg-slot-title">{{ __('messages.ai.verso') }}</div>
                                 <div class="cg-slot-sub" id="cg-verso-name">{{ __('messages.ai.verso_hint') }}</div>
-                                <input type="file" id="cg-verso" accept="image/*,application/pdf" capture="environment" style="display:none">
-                            </div>
+                            </label>
+                            <input type="file" id="cg-verso" accept="image/*,application/pdf" class="cg-file-input">
                         </div>
 
                         <button type="button" class="cg-analyze" id="cg-analyze" disabled>
@@ -1855,6 +1858,8 @@ function vmShowConfirmPage(packId) {
     .cg-head { display: flex; align-items: center; justify-content: space-between; }
     .cg-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #1459DD; }
     .cg-sub { font-size: 12.5px; color: #5b6b86; margin: 6px 0 12px; }
+    /* Input réellement présent (pas display:none) mais invisible → ouverture caméra fiable. */
+    .cg-file-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; opacity: 0; }
     .cg-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 480px) { .cg-slots { grid-template-columns: 1fr; } }
     .cg-slot { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; padding: 16px 10px; border: 2px dashed #bcd0f5; border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
