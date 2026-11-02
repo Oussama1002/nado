@@ -536,53 +536,53 @@ table.dash-table tr:hover td { background: #fafbfd; }
 
         <nav class="dash-nav">
             <div class="dash-nav-section">
-                <div class="dash-nav-label">Tableau de bord</div>
+                <div class="dash-nav-label">{{ __('messages.dashboard.overview_label') }}</div>
                 <a href="{{ route('client.dashboard') }}" class="dash-nav-link active">
-                    <i class="fa fa-th-large"></i> Vue d'ensemble
+                    <i class="fa fa-th-large"></i> {{ __('messages.dashboard.overview') }}
                 </a>
             </div>
 
             @if($isFlotte)
             <div class="dash-nav-section">
-                <div class="dash-nav-label">Mes Véhicules</div>
+                <div class="dash-nav-label">{{ __('messages.dashboard.my_vehicles') }}</div>
                 <a href="javascript:void(0)" class="dash-nav-link" onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1]) }}')">
-                    <i class="fa fa-plus-circle"></i> Publier une annonce
+                    <i class="fa fa-plus-circle"></i> {{ __('messages.dashboard.publish_ad') }}
                 </a>
                 <a href="{{ route('client.nadoautoencheres.index') }}" class="dash-nav-link">
-                    <i class="fa fa-car"></i> Mes Véhicules
+                    <i class="fa fa-car"></i> {{ __('messages.dashboard.my_vehicles') }}
                 </a>
                 <a href="{{ route('client.nadoautoencheresbid.mybids') }}" class="dash-nav-link">
-                    <i class="fa fa-gavel"></i> Mes Offres
+                    <i class="fa fa-gavel"></i> {{ __('messages.dashboard.my_bids') }}
                 </a>
                 <a href="{{ route('client.nadoautoencheresbid.index') }}" class="dash-nav-link">
-                    <i class="fa fa-list"></i> Offres reçues
+                    <i class="fa fa-list"></i> {{ __('messages.dashboard.bids_received') }}
                 </a>
                 <a href="{{ route('client.equipe.index') }}" class="dash-nav-link">
-                    <i class="fa fa-users"></i> Mon Équipe
+                    <i class="fa fa-users"></i> {{ __('messages.dashboard.my_team') }}
                 </a>
             </div>
             @else
             <div class="dash-nav-section">
-                <div class="dash-nav-label">Mes Annonces</div>
+                <div class="dash-nav-label">{{ __('messages.dashboard.my_ads') }}</div>
                 <a href="javascript:void(0)" class="dash-nav-link" onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1]) }}')">
-                    <i class="fa fa-plus-circle"></i> Publier une annonce
+                    <i class="fa fa-plus-circle"></i> {{ __('messages.dashboard.publish_ad') }}
                 </a>
                 <a href="{{ route('client.annonces.index') }}" class="dash-nav-link">
-                    <i class="fa fa-car"></i> Mes Annonces
+                    <i class="fa fa-car"></i> {{ __('messages.dashboard.my_ads') }}
                 </a>
             </div>
             @endif
 
             <div class="dash-nav-section">
-                <div class="dash-nav-label">Compte</div>
+                <div class="dash-nav-label">{{ __('messages.dashboard.account') }}</div>
                 <a href="{{ route('client.profile.edit') }}" class="dash-nav-link">
-                    <i class="fa fa-user"></i> Mon Profil
+                    <i class="fa fa-user"></i> {{ __('messages.dashboard.my_profile') }}
                 </a>
                 <a href="{{ route('client.favorites') }}" class="dash-nav-link">
-                    <i class="fa fa-heart"></i> Mes Favoris
+                    <i class="fa fa-heart"></i> {{ __('messages.dashboard.my_favorites') }}
                 </a>
                 <a href="{{ route('client.discussions.index') }}" class="dash-nav-link">
-                    <i class="fa fa-comments"></i> Discussions
+                    <i class="fa fa-comments"></i> {{ __('messages.dashboard.discussions') }}
                 </a>
             </div>
 
@@ -590,7 +590,7 @@ table.dash-table tr:hover td { background: #fafbfd; }
                 <div class="dash-nav-link danger">
                     <form method="POST" action="{{ route('logout') }}" style="width:100%">
                         @csrf
-                        <button type="submit"><i class="fa fa-sign-out"></i> Déconnexion</button>
+                        <button type="submit"><i class="fa fa-sign-out"></i> {{ __('messages.dashboard.logout') }}</button>
                     </form>
                 </div>
             </div>
@@ -607,16 +607,16 @@ table.dash-table tr:hover td { background: #fafbfd; }
         <div class="dash-topbar">
             <div style="display:flex;align-items:center;gap:12px;">
                 <button class="dash-mobile-toggle" onclick="toggleSidebar()">
-                    <i class="fa fa-bars"></i> Menu
+                    <i class="fa fa-bars"></i> {{ __('messages.dashboard.menu') }}
                 </button>
-                <span class="dash-topbar-title">Tableau de bord</span>
+                <span class="dash-topbar-title">{{ __('messages.dashboard.overview_label') }}</span>
             </div>
             <div class="dash-topbar-actions">
                 <a href="javascript:void(0)" class="btn-primary-dash" onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1]) }}')">
-                    <i class="fa fa-plus"></i> Publier une annonce
+                    <i class="fa fa-plus"></i> {{ __('messages.dashboard.publish_ad') }}
                 </a>
                 <a href="{{ route('index') }}" class="btn-outline-dash">
-                    <i class="fa fa-home"></i> Site
+                    <i class="fa fa-home"></i> {{ __('messages.dashboard.site') }}
                 </a>
             </div>
         </div>
@@ -641,28 +641,28 @@ table.dash-table tr:hover td { background: #fafbfd; }
                 <div class="stat-card">
                     <div class="stat-icon blue"><i class="fa fa-car"></i></div>
                     <div>
-                        <div class="stat-label">{{ $isFlotte ? 'Véhicules publiés' : 'Annonces publiées' }}</div>
+                        <div class="stat-label">{{ $isFlotte ? __('messages.dashboard.vehicles_published') : __('messages.dashboard.ads_published') }}</div>
                         <div class="stat-value">{{ $publiees }}</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon yellow"><i class="fa fa-clock-o"></i></div>
                     <div>
-                        <div class="stat-label">En attente</div>
+                        <div class="stat-label">{{ __('messages.dashboard.pending') }}</div>
                         <div class="stat-value">{{ $enAttente }}</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green"><i class="fa fa-heart"></i></div>
                     <div>
-                        <div class="stat-label">Favoris</div>
+                        <div class="stat-label">{{ __('messages.dashboard.favorites') }}</div>
                         <div class="stat-value">{{ count($favoris) }}</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon red"><i class="fa fa-eye"></i></div>
                     <div>
-                        <div class="stat-label">Vues totales</div>
+                        <div class="stat-label">{{ __('messages.dashboard.total_views') }}</div>
                         <div class="stat-value">{{ collect($isFlotte ? $vehicules : $annonces)->sum('views') }}</div>
                     </div>
                 </div>
@@ -670,10 +670,10 @@ table.dash-table tr:hover td { background: #fafbfd; }
 
             {{-- ── Annonces table ──────────────────────────── --}}
             <div class="section-header">
-                <span class="section-title">{{ $isFlotte ? 'Mes Véhicules' : 'Mes Annonces' }}</span>
+                <span class="section-title">{{ $isFlotte ? __('messages.dashboard.my_vehicles') : __('messages.dashboard.my_ads') }}</span>
                 <a href="javascript:void(0)" class="btn-primary-dash" style="padding:8px 14px;font-size:12px;"
                    onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1]) }}')">
-                    <i class="fa fa-plus"></i> Publier une annonce
+                    <i class="fa fa-plus"></i> {{ __('messages.dashboard.publish_ad') }}
                 </a>
             </div>
 
@@ -681,18 +681,18 @@ table.dash-table tr:hover td { background: #fafbfd; }
                 @if(($isFlotte ? $vehicules : $annonces)->isEmpty())
                     <div class="empty-state">
                         <div class="empty-icon">🚗</div>
-                        <p>Aucune annonce pour le moment.</p>
+                        <p>{{ __('messages.dashboard.no_ads') }}</p>
                     </div>
                 @else
                     <div class="table-wrap">
                         <table class="dash-table">
                             <thead>
                                 <tr>
-                                    <th>Titre</th>
-                                    <th>Date</th>
-                                    <th>Statut</th>
-                                    <th>Vues</th>
-                                    <th style="text-align:right;">Actions</th>
+                                    <th>{{ __('messages.dashboard.title') }}</th>
+                                    <th>{{ __('messages.dashboard.date') }}</th>
+                                    <th>{{ __('messages.dashboard.status') }}</th>
+                                    <th>{{ __('messages.dashboard.views') }}</th>
+                                    <th style="text-align:right;">{{ __('messages.dashboard.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -714,24 +714,24 @@ table.dash-table tr:hover td { background: #fafbfd; }
                                         <td style="font-weight:700;color:var(--slate-900);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                             {{ $item->titre }}
                                         </td>
-                                        <td data-label="Date" style="white-space:nowrap;font-size:12px;color:var(--slate-500);">
+                                        <td data-label="{{ __('messages.dashboard.date') }}" style="white-space:nowrap;font-size:12px;color:var(--slate-500);">
                                             {{ $item->created_at->format('d/m/Y') }}
                                         </td>
-                                        <td data-label="Statut">
+                                        <td data-label="{{ __('messages.dashboard.status') }}">
                                             <span class="badge {{ $badgeClass }}">
-                                                {{ $badgeDot }} {{ ucfirst($item->status ?? 'En attente') }}
+                                                {{ $badgeDot }} {{ $item->status ? ucfirst($item->status) : __('messages.dashboard.pending') }}
                                             </span>
                                         </td>
-                                        <td data-label="Vues" style="font-weight:700;">{{ $item->views ?? 0 }}</td>
+                                        <td data-label="{{ __('messages.dashboard.views') }}" style="font-weight:700;">{{ $item->views ?? 0 }}</td>
                                         <td class="td-actions" style="text-align:right;white-space:nowrap;">
                                             <a href="{{ $isFlotte ? route('client.nadoautoencheres.edit', $item->id) : 'javascript:void(0)' }}"
                                                class="tbl-btn tbl-btn-edit"
                                                @if(!$isFlotte) onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1, 'annonce_id' => $item->id]) }}')" @endif>
-                                                <i class="fa fa-pencil"></i> Modifier
+                                                <i class="fa fa-pencil"></i> {{ __('messages.dashboard.edit') }}
                                             </a>
                                             <form action="{{ $isFlotte ? route('client.nadoautoencheres.destroy', $item->id) : route('client.annonces.destroy', $item->id) }}"
                                                   method="POST" style="display:inline-block;margin-left:6px;"
-                                                  onsubmit="return confirm('Supprimer cette annonce ?');">
+                                                  onsubmit="return confirm('{{ __('messages.dashboard.confirm_delete') }}');">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="tbl-btn tbl-btn-del">
                                                     <i class="fa fa-trash"></i>
@@ -749,7 +749,7 @@ table.dash-table tr:hover td { background: #fafbfd; }
             {{-- ── Vehicle cards (visual preview) ─────────── --}}
             @if(!($isFlotte ? $vehicules : $annonces)->isEmpty())
             <div class="section-header" style="margin-top:8px;">
-                <span class="section-title">Aperçu visuel</span>
+                <span class="section-title">{{ __('messages.dashboard.visual_preview') }}</span>
             </div>
             <div class="car-grid">
                 @foreach($isFlotte ? $vehicules : $annonces as $item)
@@ -780,12 +780,12 @@ table.dash-table tr:hover td { background: #fafbfd; }
                             </div>
                             <div class="car-card-footer">
                                 <span class="badge {{ $badgeClass ?? 'badge-pending' }}">
-                                    {{ ucfirst($item->status ?? 'En attente') }}
+                                    {{ $item->status ? ucfirst($item->status) : __('messages.dashboard.pending') }}
                                 </span>
                                 <a href="{{ $isFlotte ? route('client.nadoautoencheres.edit', $item->id) : 'javascript:void(0)' }}"
                                    class="tbl-btn tbl-btn-edit"
                                    @if(!$isFlotte) onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1, 'annonce_id' => $item->id]) }}')" @endif>
-                                    <i class="fa fa-pencil"></i> Modifier
+                                    <i class="fa fa-pencil"></i> {{ __('messages.dashboard.edit') }}
                                 </a>
                             </div>
                         </div>
@@ -797,35 +797,35 @@ table.dash-table tr:hover td { background: #fafbfd; }
             {{-- ── Charts ──────────────────────────────────── --}}
             @if($isFlotte)
             <div class="chart-card">
-                <div class="chart-title">📈 Offres par Véhicule</div>
+                <div class="chart-title">📈 {{ __('messages.dashboard.chart_offers') }}</div>
                 <div class="chart-box"><canvas id="offersChart"></canvas></div>
             </div>
             @endif
 
             <div class="chart-card">
-                <div class="chart-title">📊 Vues par Annonce</div>
+                <div class="chart-title">📊 {{ __('messages.dashboard.chart_views') }}</div>
                 <div class="chart-box"><canvas id="viewsChart"></canvas></div>
             </div>
 
             {{-- ── Favoris ─────────────────────────────────── --}}
             <div class="section-header" style="margin-top:4px;">
-                <span class="section-title">Mes Favoris</span>
-                <a href="{{ route('client.favorites') }}" class="btn-outline-dash" style="padding:7px 12px;font-size:12px;">Voir tout</a>
+                <span class="section-title">{{ __('messages.dashboard.my_favorites') }}</span>
+                <a href="{{ route('client.favorites') }}" class="btn-outline-dash" style="padding:7px 12px;font-size:12px;">{{ __('messages.dashboard.see_all') }}</a>
             </div>
 
             <div class="table-card">
                 @if($favoris->isEmpty())
                     <div class="empty-state">
                         <div class="empty-icon">❤️</div>
-                        <p>Aucun favori enregistré.</p>
+                        <p>{{ __('messages.dashboard.no_favorites') }}</p>
                     </div>
                 @else
                     <div class="table-wrap">
                         <table class="dash-table">
                             <thead>
                                 <tr>
-                                    <th>Titre</th>
-                                    <th>Ajouté le</th>
+                                    <th>{{ __('messages.dashboard.title') }}</th>
+                                    <th>{{ __('messages.dashboard.added_on') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -833,11 +833,11 @@ table.dash-table tr:hover td { background: #fafbfd; }
                                 @foreach($favoris as $fav)
                                     <tr>
                                         <td style="font-weight:700;">{{ $fav->titre ?? 'N/A' }}</td>
-                                        <td data-label="Ajouté le" style="font-size:12px;color:var(--slate-500);">{{ optional($fav->pivot->created_at)->format('d/m/Y') ?? '—' }}</td>
+                                        <td data-label="{{ __('messages.dashboard.added_on') }}" style="font-size:12px;color:var(--slate-500);">{{ optional($fav->pivot->created_at)->format('d/m/Y') ?? '—' }}</td>
                                         <td class="td-actions" style="text-align:right;">
                                             <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $fav->mark), 'modele' => str_replace(' ', '', $fav->modele), 'id' => $fav['id']]) }}"
                                                class="tbl-btn tbl-btn-edit">
-                                                <i class="fa fa-eye"></i> Voir
+                                                <i class="fa fa-eye"></i> {{ __('messages.dashboard.view') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -859,7 +859,7 @@ table.dash-table tr:hover td { background: #fafbfd; }
     <div class="vente-frame-loading" id="venteFrameLoading" onclick="closeVenteFrame()">
         <span class="vente-frame-spinner"></span>
     </div>
-    <iframe class="vente-frame-iframe" id="venteFrame" src="about:blank" title="Publier une annonce"></iframe>
+    <iframe class="vente-frame-iframe" id="venteFrame" src="about:blank" title="{{ __('messages.dashboard.publish_ad') }}"></iframe>
 </div>
 
 {{-- ── Scripts ──────────────────────────────────────────────── --}}
