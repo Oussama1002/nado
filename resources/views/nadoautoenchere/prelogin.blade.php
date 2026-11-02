@@ -18,14 +18,6 @@
     </div>
 @endif
 
-@if (session('ae_pending'))
-    <div class="fixed top-4 right-4 z-[100] max-w-sm bg-amber-100 border border-amber-400 text-amber-800 px-4 py-3 rounded" role="alert">
-        <strong class="font-bold">En attente de validation</strong>
-        <p class="mt-1 text-sm">{{ session('ae_pending') }}</p>
-        <span class="absolute top-0 right-0 px-3 py-2 cursor-pointer" onclick="this.parentElement.style.display='none';">×</span>
-    </div>
-@endif
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
@@ -94,6 +86,23 @@
 </head>
 
 <body class="min-h-screen bg-white text-slate-900">
+
+    {{-- Popup caution après demande d'accès enchères (en attente de validation) --}}
+    @if (session('ae_pending'))
+    <div id="aeCautionModal" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 px-4" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+        <div class="bg-white rounded-2xl max-w-md w-full p-7 text-center shadow-2xl">
+            <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900">Déposez la caution</h3>
+            <p class="mt-2 text-slate-600">Lisez les conditions et déposez <strong>5 000 DH</strong> par chèque, espèce, virement ou TPE.</p>
+            <p class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">{{ session('ae_pending') }}</p>
+            <button type="button" onclick="document.getElementById('aeCautionModal').remove()" class="mt-6 w-full bg-[#F37021] hover:bg-[#d95f16] text-white font-bold py-3 rounded-xl transition-colors">J'ai compris</button>
+        </div>
+    </div>
+    @endif
 
     {{-- NAVBAR (shared) --}}
     @section('na_nav_links')
