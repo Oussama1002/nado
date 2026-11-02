@@ -12,6 +12,15 @@
     if ($vehicleName === '') {
         $vehicleName = $annonce->titre ?: 'Véhicule';
     }
+
+    // Photo principale pour l'aperçu de partage (WhatsApp/Facebook) — même logique
+    // que la galerie : images[0] sinon la 1re photo de la relation media.
+    $ogImageName = (is_array($annonce->images) && count($annonce->images) > 0)
+        ? $annonce->images[0]
+        : optional($annonce->media->first())->name;
+    $ogImage = $ogImageName
+        ? asset('storage/ads/' . $ogImageName)
+        : asset('storage/logos/UAfjepY72Xe7grWDva9cqSlRFsRKNZPV3HBDbBP1.png');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
@@ -24,12 +33,22 @@
         | Nado.ma
     </title>
 
-    {{-- Open Graph Meta Tags --}}
+    {{-- Open Graph Meta Tags (aperçu de partage WhatsApp / Facebook) --}}
     <meta property="og:title" content="{{ $annonce->titre ?: $vehicleName }}">
     <meta property="og:description" content="{{ Str::limit(strip_tags($annonce->description), 120) }}">
-    <meta property="og:image" content="{{ asset('storage/ads/' . ($annonce->images[0] ?? 'default.jpg')) }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:secure_url" content="{{ $ogImage }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $vehicleName }}">
     <meta property="og:url" content="{{ request()->fullUrl() }}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NADO.ma">
+    {{-- Twitter / X --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $annonce->titre ?: $vehicleName }}">
+    <meta name="twitter:description" content="{{ Str::limit(strip_tags($annonce->description), 120) }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
 
     {{-- Fonts & Icons --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
