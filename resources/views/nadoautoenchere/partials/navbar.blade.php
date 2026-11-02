@@ -26,8 +26,8 @@
                     <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="linkedin" class="w-5 h-5" stroke-width="1.5"></i></a>
                 </div>
                 @if(feature_on('radio.enabled'))
-                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0 ml-2 sm:ml-0">
-                        <i data-lucide="radio" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
+                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0 ml-6 sm:ml-0">
+                        <i data-lucide="radio-receiver" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
                     </a>
                 @endif
                 @include('partials.lang-switcher')

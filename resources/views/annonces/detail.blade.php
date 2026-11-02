@@ -2043,7 +2043,7 @@
                     </div>
                     @if(feature_on('radio.enabled'))
                         <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
-                            <i data-lucide="radio" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
+                            <i data-lucide="radio-receiver" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
                         </a>
                     @endif
                     @include('partials.lang-switcher')
@@ -2182,7 +2182,7 @@
                 .nv-info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 4px !important; }
                 .nv-info-item i { width: 10px !important; height: 10px !important; }
                 .nv-top-bar .nd-radio-txt { font-size: 9px !important; }
-                .nv-top-bar .nd-radio-link { margin-left: 14px !important; }
+                .nv-top-bar .nd-radio-link { margin-left: 28px !important; }
                 .nv-top-bar [style*="gap:16px"] { gap: 8px !important; }
             }
             @media (max-width: 380px) {

@@ -15,7 +15,7 @@
 <section class="radio-page">
     <div class="radio-wrap">
         <header class="radio-head">
-            <div class="radio-badge"><i data-lucide="radio"></i> {{ __('messages.radio.badge') }}</div>
+            <div class="radio-badge"><i data-lucide="radio-receiver"></i> {{ __('messages.radio.badge') }}</div>
             <h1>{{ $title ?: 'Nado Radio' }}</h1>
             @if($tagline)
                 <p class="radio-tagline">{{ $tagline }}</p>

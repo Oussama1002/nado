@@ -22,7 +22,7 @@
 @if($miniOn && $miniTracks->isNotEmpty())
 <div id="nadoMini" class="nado-mini" dir="ltr">
     <button type="button" id="nadoMiniToggle" class="nado-mini-fab" aria-label="Nado Radio">
-        <i data-lucide="radio"></i>
+        <i data-lucide="radio-receiver"></i>
     </button>
 
     <div class="nado-mini-panel" id="nadoMiniPanel">
