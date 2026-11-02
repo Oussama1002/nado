@@ -50,7 +50,12 @@ class RegisterController extends Controller
             'is_verified' => false,
         ]);
 
-        $this->notifyAdminNewClient($client);
+        if ($client->type === 'flotte&enchere') {
+            // Compte enchères → l'admin doit valider l'accès.
+            \App\Services\EnchereNotifier::adminPending($client);
+        } else {
+            $this->notifyAdminNewClient($client);
+        }
         $this->sendVerificationEmail($client);
 
         return redirect()->route('client.verify.pending')

@@ -225,6 +225,8 @@ public function upgrade(Request $request)
     }
     $client->save();
 
+    \App\Services\EnchereNotifier::adminPending($client);
+
     return redirect()->route('nadoautoenchere.prelogin')
         ->with('ae_pending', "Votre demande d'accès aux enchères a bien été enregistrée. Elle sera active après validation par l'administrateur.");
 }
