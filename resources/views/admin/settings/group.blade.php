@@ -35,7 +35,6 @@
                             @if($setting->description)
                                 <div class="text-muted small">{{ $setting->description }}</div>
                             @endif
-                            <code class="small text-muted">{{ $setting->key }}</code>
                         </div>
                         <div class="col-12 col-md-6">
                             @switch($setting->type)
