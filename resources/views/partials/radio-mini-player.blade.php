@@ -22,7 +22,8 @@
 @if($miniOn && $miniTracks->isNotEmpty())
 <div id="nadoMini" class="nado-mini" dir="ltr">
     <button type="button" id="nadoMiniToggle" class="nado-mini-fab" aria-label="Nado Radio">
-        <i data-lucide="boom-box"></i>
+        {{-- Radio classique en SVG inline (fiable même sans Font Awesome/Lucide sur la page) --}}
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5"/><path d="M7 12h5M7 16h4"/></svg>
     </button>
 
     <div class="nado-mini-panel" id="nadoMiniPanel">
