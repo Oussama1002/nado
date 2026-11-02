@@ -96,9 +96,12 @@
                     <rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line>
                 </svg>
             </div>
-            <h3 class="text-xl font-extrabold text-slate-900">Déposez la caution</h3>
-            <p class="mt-2 text-slate-600">Lisez les conditions et déposez <strong>5 000 DH</strong> par chèque, espèce, virement ou TPE.</p>
-            <p class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">{{ session('ae_pending') }}</p>
+            <h3 class="text-xl font-extrabold text-slate-900">En attente de validation</h3>
+            <p class="mt-3 text-slate-600">
+                Votre demande d'accès aux enchères a bien été enregistrée.
+                Déposez la caution de <strong>5 000 DH</strong> par chèque, espèce, virement ou TPE
+                et lisez les conditions. Votre accès sera activé après validation par l'administrateur.
+            </p>
             <button type="button" onclick="document.getElementById('aeCautionModal').remove()" class="mt-6 w-full bg-[#F37021] hover:bg-[#d95f16] text-white font-bold py-3 rounded-xl transition-colors">J'ai compris</button>
         </div>
     </div>
