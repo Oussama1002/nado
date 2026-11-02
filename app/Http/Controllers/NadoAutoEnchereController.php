@@ -212,11 +212,13 @@ public function upgrade(Request $request)
 
     $data = $request->validate([
         'ae_role' => 'required|in:vendeur,acheteur',
+        'phone'   => 'required|string|max:20',
         'company' => 'nullable|string|max:255',
     ]);
 
     $client->type    = 'flotte&enchere';
     $client->ae_role = $data['ae_role'];
+    $client->phone   = $data['phone']; // l'Auto-Enchère identifie le client par téléphone
     if (! empty($data['company'])) {
         $client->company = $data['company'];
     }

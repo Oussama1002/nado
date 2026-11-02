@@ -66,12 +66,13 @@
 
             <div class="form-group">
                 <i class="fa-solid fa-envelope form-icon" aria-hidden="true"></i>
-                <input type="email" name="email" placeholder="Adresse e-mail" value="{{ old('email', $isUpgrade ? $authClient->email : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
+                <input type="email" name="email" placeholder="Adresse e-mail" value="{{ old('email', $isUpgrade ? $authClient->email : '') }}" {{ $isUpgrade ? 'readonly' : 'required' }}>
             </div>
 
             <div class="form-group">
+                {{-- Téléphone éditable aussi en upgrade : l'Auto-Enchère s'appuie dessus. --}}
                 <i class="fa-solid fa-phone form-icon" aria-hidden="true"></i>
-                <input type="number" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
+                <input type="number" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" required>
             </div>
 
             @unless($isUpgrade)
