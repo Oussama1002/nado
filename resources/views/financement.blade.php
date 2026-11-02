@@ -970,6 +970,11 @@
                         <a href="#"><i data-lucide="instagram"></i></a>
                         <a href="#"><i data-lucide="linkedin"></i></a>
                     </div>
+                    @if(feature_on('radio.enabled'))
+                        <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
+                            <i data-lucide="headphones" style="width:16px;height:16px;"></i><span>Nado Radio</span>
+                        </a>
+                    @endif
                     @include('partials.lang-switcher')
                 </div>
             </div>

@@ -280,6 +280,22 @@
     </li>
 
 
+    <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "songs.")]) >
+        <a href="#" class='sidebar-link'>
+            <i class="bi bi-broadcast"></i>
+            <span>Nado Radio</span>
+        </a>
+        <ul @class(['submenu', 'active' => str_contains( $current_route , "songs.")]) >
+            <li  @class(['submenu-item', 'active' => request()->routeIs('admin.songs.index')])>
+                <a href="{{ route("admin.songs.index") }}">List</a>
+            </li>
+            <li @class(['submenu-item', 'active' => request()->routeIs('admin.songs.create')])>
+                <a href="{{ route("admin.songs.create") }}">New</a>
+            </li>
+        </ul>
+    </li>
+
+
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "entretiens.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>

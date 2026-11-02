@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\RadioController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\Admin\DemandeAdminController;
 use App\Http\Controllers\Admin\StoriesController;
@@ -55,7 +56,8 @@ use App\Http\Controllers\{
     Admin\VilleController,
     Admin\AutoEnchereController,
     Admin\NadoAutoEnchereBidController,
-    Admin\SettingsController
+    Admin\SettingsController,
+    Admin\SongController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -262,6 +264,9 @@ Route::get('/a-propos', function () {
     return view('about', compact('stories'));
 })->name('about.index');
 Route::get('/accessoires', [AccessoiresController::class, 'index'])->name('accessoires.index');
+
+// Nado Radio — page lifestyle opt-in, gated par le flag radio.enabled (OFF → 404).
+Route::get('/nado-radio', [RadioController::class, 'index'])->name('nado-radio.index');
 Route::get('/annonces/{id}', [AnnoncesController::class, 'show'])->name('annonces.show');
 
 Route::resource('/services', ServicesController::class);
@@ -396,6 +401,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 
     Route::resource('videoads', VideoAdsController::class); // <-- this line
     Route::resource('imgslider', ImgSlideController::class); // <-- this line
+    Route::resource('songs', SongController::class); // Nado Radio catalogue
     Route::resource('models', ModelsController::class); // <-- this line
     Route::resource('avistext', AvisTextController::class); // <-- this line
     Route::resource('avis-vd', AvisVdController::class); // legacy slug

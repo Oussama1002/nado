@@ -583,4 +583,14 @@ return [
         'register_btn'       => 'S\'inscrire',
     ],
 
+    'radio' => [
+        'nav'   => 'Nado Radio',
+        'badge' => 'Nado Radio',
+        'empty' => 'Aucun titre pour le moment. Revenez bientôt !',
+        'play'  => 'Lecture',
+        'prev'  => 'Précédent',
+        'next'  => 'Suivant',
+        'seek'  => 'Position',
+    ],
+
 ];

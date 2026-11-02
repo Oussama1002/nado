@@ -27,6 +27,7 @@ class SettingsController extends Controller
         'ads'        => ['label' => 'Publicité',               'icon' => 'bi-megaphone'],
         'estimation' => ['label' => 'Estimation payante',      'icon' => 'bi-file-earmark-text'],
         'partners'   => ['label' => 'Partenaires & commissions', 'icon' => 'bi-people'],
+        'radio'      => ['label' => 'Nado Radio',               'icon' => 'bi-broadcast'],
         'global'     => ['label' => 'Modules & Kill-switches',  'icon' => 'bi-toggles'],
     ];
 

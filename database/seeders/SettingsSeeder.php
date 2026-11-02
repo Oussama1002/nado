@@ -198,6 +198,14 @@ class SettingsSeeder extends Seeder
                 ['immat.commission_rate', 'percent', 30, 'Immat — commission (%)'],
             ],
 
+            // ───────────────────────── radio ────────────────────────────
+            'radio' => [
+                ['enabled', 'bool', false, 'Nado Radio activé (master on/off)'],
+                ['mini_player', 'bool', false, 'Mini-player flottant site-wide'],
+                ['title', 'string', 'Nado Radio', 'Titre affiché sur la page', false],
+                ['tagline', 'string', 'La bande-son de NADO', 'Sous-titre affiché sur la page', false],
+            ],
+
             // ───────────────────────── global ───────────────────────────
             'global' => [
                 ['marketplace_enabled', 'bool', true, 'Marketplace ouvert'],

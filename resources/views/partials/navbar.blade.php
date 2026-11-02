@@ -24,6 +24,9 @@
 							<li> <a href="{{ route('financement.index') }}" style="color: #1f519b !important">Auto finance</a></li>
 							<li> <a href="{{ route('about.index') }}" style="color: #1f519b !important" >à-propos</a></li>
                             <li> <a href="{{ route('contactez-nous.index') }}" style="color: #1f519b !important" >Contactez-nous</a></li>
+                            @if(feature_on('radio.enabled'))
+                                <li> <a href="{{ route('nado-radio.index') }}" style="color: #1f519b !important" ><i class="fa fa-headphones"></i> Nado Radio</a></li>
+                            @endif
 
 							<!-- <li> <a href="{{ route('services.index') }}" class="hide" >Services <i class="fa fa-chevron-down"></i></a>
 								<ul class="sub-menu"> 
