@@ -106,9 +106,9 @@
           @csrf
           <button type="submit" class="w-11 h-11 rounded-xl border border-slate-200 bg-white hover:border-[#F37021] hover:text-[#F37021] transition flex items-center justify-center" title="Favori">
             @if(Auth::guard('client')->check() && Auth::guard('client')->user()->favorites->contains($enchere->id))
-              <i class="fas fa-heart text-[#F37021]"></i>
+              <i data-lucide="heart" class="w-5 h-5 fill-[#F37021] text-[#F37021]"></i>
             @else
-              <i class="far fa-heart"></i>
+              <i data-lucide="heart" class="w-5 h-5"></i>
             @endif
           </button>
         </form>
