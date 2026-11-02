@@ -25,7 +25,7 @@
         <i data-lucide="headphones"></i>
     </button>
 
-    <div class="nado-mini-panel" id="nadoMiniPanel" hidden>
+    <div class="nado-mini-panel" id="nadoMiniPanel">
         <div class="nado-mini-cover" id="nadoMiniCover"><i data-lucide="music"></i></div>
         <div class="nado-mini-meta">
             <div class="nado-mini-title" id="nadoMiniTitle">Nado Radio</div>
@@ -46,7 +46,10 @@
     .nado-mini-fab:hover { transform: scale(1.06); }
     .nado-mini-fab i { width: 24px; height: 24px; }
     .nado-mini.open .nado-mini-fab { display: none; }
-    .nado-mini-panel { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px 12px; box-shadow: 0 16px 40px -16px rgba(15,23,42,.4); max-width: min(92vw, 380px); }
+    /* Visibility is driven by the .open class, NOT the [hidden] attr (which an
+       author display rule would override). */
+    .nado-mini-panel { display: none; align-items: center; gap: 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px 12px; box-shadow: 0 16px 40px -16px rgba(15,23,42,.4); max-width: min(92vw, 380px); }
+    .nado-mini.open .nado-mini-panel { display: flex; }
     .nado-mini-cover { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 10px; background: linear-gradient(135deg,#1459DD,#0b3fa0); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.85); }
     .nado-mini-cover i { width: 20px; height: 20px; }
     .nado-mini-cover.has-img i { display: none; }
@@ -114,8 +117,8 @@
             }
         }
 
-        function openPanel()  { wrap.classList.add('open'); panel.hidden = false; saveState(); }
-        function closePanel() { wrap.classList.remove('open'); panel.hidden = true; audio.pause(); saveState(); }
+        function openPanel()  { wrap.classList.add('open'); saveState(); }
+        function closePanel() { wrap.classList.remove('open'); audio.pause(); saveState(); }
 
         fab.addEventListener('click', openPanel);
         closeB.addEventListener('click', closePanel);
