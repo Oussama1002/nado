@@ -82,9 +82,9 @@ class RegisterController extends Controller
                 'ID interne : #' . $client->id,
             ];
 
-            Mail::raw(implode("\n", $lines), function ($m) use ($client) {
+            Mail::raw(implode("\n", $lines), function ($m) use ($client, $typeLabel) {
                 $m->to('contact@nado.ma')
-                  ->subject('Nouveau compte client — ' . ($client->name ?: ('#' . $client->id)));
+                  ->subject('Nouveau compte client ' . ($typeLabel ?: '') . ' — ' . ($client->name ?: ('#' . $client->id)));
                 if ($client->email) {
                     $m->replyTo($client->email, $client->name ?: '');
                 }
