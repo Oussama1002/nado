@@ -1,7 +1,13 @@
-loo<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nado Reprise | nado.ma</title>
+</head>
 
 <body id="bg" class="font-poppins home-2" style="background-color: #0f172a;">
 @include('partials.locale-head')
@@ -161,8 +167,7 @@ loo<!DOCTYPE html>
                         @else
                             <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
                             <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
-                            <a href="{{ route('nadoautoenchere.prelogin') }}"
-                                style="color: #1459DD;">{{ __('messages.nav.auction') }}</a>
+                            <a href="{{ route('nadoautoenchere.prelogin') }}">{{ __('messages.nav.auction') }}</a>
                             <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
                             <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
                             <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>

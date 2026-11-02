@@ -142,7 +142,7 @@
                 @else
                     <a href="{{ route('achat.index') }}">{{ __('messages.nav.buy') }}</a>
                     <a href="{{ route('vente.form') }}">{{ __('messages.nav.sell') }}</a>
-                    <a href="{{ route('nadoautoenchere.prelogin') }}" style="color:#1459DD;">{{ __('messages.nav.auction') }}</a>
+                    <a href="{{ route('nadoautoenchere.prelogin') }}">{{ __('messages.nav.auction') }}</a>
                     <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
                     <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
                     <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
