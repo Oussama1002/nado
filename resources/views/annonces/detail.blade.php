@@ -2042,7 +2042,6 @@
                         <a href="#"><i data-lucide="linkedin"></i></a>
                     </div>
                     @if(feature_on('radio.enabled'))
-                        <style>@media (max-width:600px){.nd-radio-txt{display:inline !important;font-size:9px !important;}.nv-info-item i{width:10px !important;height:10px !important;}}</style>
                         <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
                             <i data-lucide="radio" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
                         </a>
@@ -2171,6 +2170,23 @@
             .nv-social-links a { color: #0f172a; opacity: .6; transition: .2s; }
             .nv-social-links a:hover { color: #1459DD; opacity: 1; }
             .nv-social-links i { width: 20px; height: 20px; }
+            .nv-top-bar-content, .nv-top-bar .nv-container { gap: 10px; }
+            .nv-contact-info, .nv-info-item, .nv-info-item a { white-space: nowrap; }
+            .nv-info-item i { flex-shrink: 0; }
+            /* ── Mobile : barre du haut compacte (évite le débordement) ── */
+            @media (max-width: 600px) {
+                .nv-top-bar { padding: 8px 0 !important; }
+                .nv-top-bar .nv-container { padding: 0 10px !important; gap: 8px !important; }
+                .nv-social-links { display: none !important; }
+                .nv-contact-info { gap: 8px !important; min-width: 0; }
+                .nv-info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 4px !important; }
+                .nv-info-item i { width: 10px !important; height: 10px !important; }
+                .nv-top-bar .nd-radio-txt { font-size: 9px !important; }
+                .nv-top-bar [style*="gap:16px"] { gap: 8px !important; }
+            }
+            @media (max-width: 380px) {
+                .nv-contact-info .nv-info-item:first-child { display: none !important; } /* garde le téléphone */
+            }
 
             .nv-main-nav { background: #fff; border-bottom: 1px solid #e2e8f0; height: 96px; display: flex; align-items: center; }
             .nv-nav-content { height: 100%; width: 100%; display: flex; justify-content: space-between; align-items: center; }
