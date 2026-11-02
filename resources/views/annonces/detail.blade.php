@@ -2315,6 +2315,20 @@
                         {{ $annonce->carburant ?? __('messages.detail.spec_fuel') }} • {{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: __('messages.detail.spec_gearbox') }}
                     </p>
 
+                    @php
+                        $isFav = Auth::guard('client')->check() && Auth::guard('client')->user()->favorites->contains($annonce->id);
+                    @endphp
+                    <div class="action-icons">
+                        <form action="{{ route('favorite.toggle', ['id' => $annonce->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="icon-btn {{ $isFav ? 'favorited' : '' }}" title="Favori" aria-label="Favori">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="{{ $isFav ? '#ef4444' : 'none' }}" stroke="{{ $isFav ? '#ef4444' : '#64748b' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                            </button>
+                        </form>
+                        <button type="button" class="icon-btn" onclick="openSharePopup('{{ urlencode(request()->fullUrl()) }}')" title="Partager" aria-label="Partager">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                        </button>
+                    </div>
 
                 </div>
 
