@@ -10,11 +10,11 @@
             <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                 {{-- Email : masqué sur très petits écrans (le téléphone suffit) --}}
                 <div class="hidden min-[420px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
-                    <i data-lucide="mail" class="w-3 h-3 text-[#1459DD] flex-shrink-0"></i>
+                    <i data-lucide="mail" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="mailto:contact@nado.ma" class="hover:text-[#1459DD] transition-colors">contact@nado.ma</a>
                 </div>
                 <div class="flex items-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
-                    <i data-lucide="phone-call" class="w-3 h-3 text-[#1459DD] flex-shrink-0"></i>
+                    <i data-lucide="phone-call" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="tel:+212520070611" class="hover:text-[#1459DD] transition-colors">+212 520 070 611</a>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 </div>
                 @if(feature_on('radio.enabled'))
                     <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0">
-                        <i data-lucide="radio" class="w-4 h-4 flex-shrink-0"></i><span class="hidden sm:inline">Nado Radio</span>
+                        <i data-lucide="radio" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
                     </a>
                 @endif
                 @include('partials.lang-switcher')

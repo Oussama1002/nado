@@ -299,7 +299,8 @@
         .info-item i { flex-shrink: 0 !important; }
         @media (max-width: 600px) {
             .top-bar .social-links { display: none !important; }
-            .nd-radio-txt { display: none !important; } /* icône seule sur mobile pour gagner de la place */
+            .info-item i { width: 10px !important; height: 10px !important; } /* icônes mail/téléphone plus petites */
+            .nd-radio-txt { display: inline !important; font-size: 9px !important; } /* "Nado Radio" affiché sur mobile */
             .top-bar { padding: 8px 0 !important; }
             .top-bar .custom-container { padding: 0 10px !important; }
             .contact-info { gap: 10px !important; }
