@@ -18,6 +18,14 @@
     </div>
 @endif
 
+@if (session('ae_pending'))
+    <div class="fixed top-4 right-4 z-[100] max-w-sm bg-amber-100 border border-amber-400 text-amber-800 px-4 py-3 rounded" role="alert">
+        <strong class="font-bold">En attente de validation</strong>
+        <p class="mt-1 text-sm">{{ session('ae_pending') }}</p>
+        <span class="absolute top-0 right-0 px-3 py-2 cursor-pointer" onclick="this.parentElement.style.display='none';">×</span>
+    </div>
+@endif
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 

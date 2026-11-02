@@ -216,16 +216,17 @@ public function upgrade(Request $request)
         'company' => 'nullable|string|max:255',
     ]);
 
-    $client->type    = 'flotte&enchere';
-    $client->ae_role = $data['ae_role'];
-    $client->phone   = $data['phone']; // l'Auto-Enchère identifie le client par téléphone
+    $client->type        = 'flotte&enchere';
+    $client->ae_role     = $data['ae_role'];
+    $client->phone       = $data['phone']; // l'Auto-Enchère identifie le client par téléphone
+    $client->ae_approved = false;          // en attente de validation admin
     if (! empty($data['company'])) {
         $client->company = $data['company'];
     }
     $client->save();
 
-    return redirect()->route('nadoautoenchere.categories')
-        ->with('success', 'Votre compte a maintenant accès aux enchères NADO.');
+    return redirect()->route('nadoautoenchere.prelogin')
+        ->with('ae_pending', "Votre demande d'accès aux enchères a bien été enregistrée. Elle sera active après validation par l'administrateur.");
 }
 
 

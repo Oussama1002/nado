@@ -17,6 +17,7 @@
                 <th>Email</th>
                 <th>Téléphone</th>
                 <th>Rôle</th>
+                <th>Accès enchères</th>
                 <th>Vérifié</th>
                 <th>Date d’inscription</th>
                 <th>Action</th>
@@ -40,6 +41,19 @@
                         @endif
                     </td>
                     <td>
+                        @if ($client->ae_approved)
+                            <span class="badge" style="background:#16a34a;color:#fff;">Validé</span>
+                        @else
+                            <span class="badge" style="background:#f59e0b;color:#fff;">En attente</span>
+                        @endif
+                        <form action="{{ route('admin.nadoautoenchere.clients.approve', $client->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button class="btn btn-sm {{ $client->ae_approved ? 'btn-outline-secondary' : 'btn-success' }}">
+                                {{ $client->ae_approved ? 'Retirer' : 'Valider' }}
+                            </button>
+                        </form>
+                    </td>
+                    <td>
                         <input type="checkbox"
                                class="verify-toggle"
                                data-id="{{ $client->id }}"
@@ -58,7 +72,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
+                    <td colspan="10" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
                 </tr>
             @endforelse
         </tbody>

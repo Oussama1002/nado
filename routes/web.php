@@ -435,6 +435,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::get('clients', [ClientController::class, 'index'])->name('clients.index');
     // Clients Auto Enchère (type flotte&enchere) — liste dédiée côté enchère.
     Route::get('enchere-clients', [ClientController::class, 'encheresClients'])->name('nadoautoenchere.clients');
+    Route::post('enchere-clients/{id}/approve', [ClientController::class, 'approveEnchere'])->name('nadoautoenchere.clients.approve');
     Route::get('clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::get('clients/store', [ClientController::class, 'store'])->name('clients.store');
     Route::resource('clients', \App\Http\Controllers\Admin\ClientController::class)->except(['edit', 'update']);

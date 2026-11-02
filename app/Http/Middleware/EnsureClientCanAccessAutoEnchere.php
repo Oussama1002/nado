@@ -20,6 +20,13 @@ class EnsureClientCanAccessAutoEnchere
                 ->with('flotte_enchere_blocked', 'Votre compte doit être de type Flotte & Enchère pour accéder aux enchères.');
         }
 
+        // Compte Auto Enchère en attente de validation admin → pas d'accès direct.
+        if (! $client->ae_approved) {
+            return redirect()
+                ->route('nadoautoenchere.prelogin')
+                ->with('ae_pending', "Votre compte Auto Enchère est en attente de validation par l'administrateur.");
+        }
+
         return $next($request);
     }
 }

@@ -78,6 +78,10 @@ public function updateType(Request $request, $id)
     ]);
 
     $client->type = $request->type;
+    // Changement de type fait par l'admin → l'accès enchères est validé d'office.
+    if ($request->type === 'flotte&enchere') {
+        $client->ae_approved = true;
+    }
     $client->save();
 
     return response()->json(['success' => true, 'type' => $client->type]);
@@ -88,8 +92,20 @@ public function updateType(Request $request, $id)
         $client = Client::findOrFail($id);
         $client->is_approved = true;
         $client->save();
-    
+
         return back()->with('success', 'Client approuvé avec succès.');
+    }
+
+    /** Valide (ou retire) l'accès Auto Enchère d'un client flotte&enchere. */
+    public function approveEnchere(Request $request, $id)
+    {
+        $client = Client::findOrFail($id);
+        $client->ae_approved = ! $client->ae_approved;
+        $client->save();
+
+        return back()->with('success', $client->ae_approved
+            ? 'Accès Auto Enchère validé.'
+            : 'Accès Auto Enchère retiré.');
     }
     public function show($id)
     {
