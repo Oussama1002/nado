@@ -11,12 +11,13 @@ use Symfony\Component\Process\Process;
 
 /**
  * Extraction des champs VÉHICULE d'une carte grise marocaine — 100 % local,
- * sans API payante : OCR via Tesseract puis analyse par étiquettes/MRZ du
- * gabarit standard (le modèle de carte est toujours le même).
+ * sans API ni service externe : OCR via Tesseract (binaire sur le serveur)
+ * puis analyse par étiquettes/MRZ du gabarit standard.
  *
- * RÈGLE VIE PRIVÉE : on n'extrait QUE des champs véhicule. Le nom du
- * propriétaire, l'adresse, l'immatriculation antérieure et le nom présent dans
- * la MRZ ne sont jamais capturés (on ne lit de la MRZ que le matricule + la date).
+ * RÈGLE VIE PRIVÉE : tout reste sur le serveur. On n'extrait QUE des champs
+ * véhicule. Le nom du propriétaire, l'adresse, l'immatriculation antérieure et
+ * le nom présent dans la MRZ ne sont jamais capturés (de la MRZ on ne lit que
+ * le matricule + la date).
  */
 class CarteGriseExtractor
 {
@@ -36,7 +37,7 @@ class CarteGriseExtractor
         foreach ($files as $file) {
             $text = $this->ocr($file);
             if ($text === null) {
-                return ['ok' => false, 'error' => 'ocr_unavailable'];
+                return ['ok' => false, 'error' => 'ocr_unavailable']; // binaire Tesseract introuvable
             }
             if (trim($text) !== '') {
                 $texts[] = $text;
@@ -52,8 +53,8 @@ class CarteGriseExtractor
     }
 
     /**
-     * OCR d'une image via Tesseract. Retourne le texte, '' si rien,
-     * ou null si Tesseract est introuvable sur le serveur.
+     * OCR d'une image via Tesseract local. Retourne le texte, '' si rien,
+     * ou null si le binaire Tesseract est introuvable.
      */
     private function ocr(UploadedFile $file): ?string
     {
@@ -67,13 +68,14 @@ class CarteGriseExtractor
             return '';
         }
 
-        $bin  = (string) settings('ai.tesseract_path', 'tesseract');
-        $lang = (string) settings('ai.ocr_lang', 'fra+eng');
+        $bin      = (string) config('services.tesseract.path', 'tesseract');
+        $lang     = (string) config('services.tesseract.lang', 'fra+eng');
+        $tessdata = config('services.tesseract.tessdata'); // dossier des .traineddata (optionnel)
 
-        $text = $this->runTesseract($bin, $prepared, $lang);
+        $text = $this->runTesseract($bin, $prepared, $lang, $tessdata);
         if ($text === null && $lang !== 'eng') {
             // Pack de langue 'fra' peut-être absent → on retente en anglais (texte latin).
-            $text = $this->runTesseract($bin, $prepared, 'eng');
+            $text = $this->runTesseract($bin, $prepared, 'eng', $tessdata);
         }
 
         @unlink($prepared);
@@ -82,14 +84,20 @@ class CarteGriseExtractor
     }
 
     /** Lance Tesseract ; null si le binaire est introuvable, '' si échec d'exécution. */
-    private function runTesseract(string $bin, string $imagePath, string $lang): ?string
+    private function runTesseract(string $bin, string $imagePath, string $lang, ?string $tessdata): ?string
     {
+        $cmd = [$bin, $imagePath, 'stdout', '-l', $lang, '--psm', '6'];
+        if (! empty($tessdata)) {
+            $cmd[] = '--tessdata-dir';
+            $cmd[] = $tessdata;
+        }
+
         try {
-            $process = new Process([$bin, $imagePath, 'stdout', '-l', $lang, '--psm', '6']);
+            $process = new Process($cmd);
             $process->setTimeout(60);
             $process->run();
         } catch (RuntimeException $e) {
-            Log::error('CarteGriseExtractor: tesseract introuvable', ['error' => $e->getMessage()]);
+            Log::error('CarteGriseExtractor: tesseract introuvable', ['bin' => $bin, 'error' => $e->getMessage()]);
 
             return null;
         }
@@ -139,7 +147,7 @@ class CarteGriseExtractor
 
         $data = [
             'marque'                    => $this->afterLabel($lines, ['marque']),
-            'modele'                    => $this->afterLabel($lines, ['modele', 'modele', 'modèle']),
+            'modele'                    => $this->afterLabel($lines, ['modele', 'modèle']),
             'carburant'                 => $this->carburant($clean, $lines),
             'puissance_fiscale'         => $this->intAfterLabel($lines, ['puissance fiscale', 'fiscale']),
             'nombre_places'             => $this->intAfterLabel($lines, ['nombre de places', 'places']),
@@ -191,7 +199,6 @@ class CarteGriseExtractor
                 if ($pos !== false) {
                     $value = trim(substr($line, $pos + strlen($label)));
                     $value = trim($value, " :.-\t•|");
-                    // Nettoie d'éventuels résidus (étiquette collée, ponctuation).
                     if ($value !== '' && mb_strlen($value) <= 60) {
                         return $value;
                     }

@@ -38,4 +38,13 @@ return [
         'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
     ],
 
+    // OCR local de la carte grise (Tesseract). 100 % sur le serveur.
+    // Sur hébergement sans root, pointer TESSERACT_PATH vers un binaire installé
+    // dans le home (ex. ~/tess/bin/tesseract) et TESSDATA_PREFIX vers ses .traineddata.
+    'tesseract' => [
+        'path'     => env('TESSERACT_PATH', 'tesseract'),
+        'lang'     => env('TESSERACT_LANG', 'fra+eng'),
+        'tessdata' => env('TESSDATA_PREFIX'), // dossier des fichiers .traineddata (optionnel)
+    ],
+
 ];
