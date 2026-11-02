@@ -16,12 +16,16 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        // ?lang= en priorité (iframes/liens qui doivent forcer la langue),
-        // puis session, cookie, défaut.
+        // ?lang= en priorité (iframes/liens qui forcent la langue), puis le choix
+        // explicite du visiteur (session/cookie).
         $locale = $request->query('lang')
             ?? $request->session()->get('locale')
-            ?? $request->cookie('locale')
-            ?? config('app.locale');
+            ?? $request->cookie('locale');
+
+        // Première visite (aucun choix) → langue du navigateur/téléphone (ar sinon fr).
+        if (! $locale) {
+            $locale = $request->getPreferredLanguage(self::SUPPORTED); // 'fr' | 'ar'
+        }
 
         if (! in_array($locale, self::SUPPORTED, true)) {
             $locale = config('app.locale');
