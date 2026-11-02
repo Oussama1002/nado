@@ -60,9 +60,17 @@ class CarteGriseController extends Controller
         $result = $extractor->extract($files);
 
         if (! ($result['ok'] ?? false)) {
+            $reason = $result['error'] ?? 'unknown';
+            $message = match ($reason) {
+                'config'          => "Extraction IA non configurée (clé API manquante côté serveur).",
+                'api', 'request'  => "Service d'extraction indisponible pour le moment, réessayez.",
+                default           => "Nous n'avons pas pu lire la carte grise, remplissez manuellement.",
+            };
+
             return response()->json([
                 'success' => false,
-                'message' => "Nous n'avons pas pu lire la carte grise, remplissez manuellement.",
+                'reason'  => $reason,   // diagnostic (config / api / request / parse / no_image)
+                'message' => $message,
             ], 200);
         }
 

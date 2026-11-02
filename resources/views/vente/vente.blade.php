@@ -1080,18 +1080,32 @@
                 <div id="vm-step-1" class="vm-step-content active">
 
                     @if(feature_on('ai.cartegrise_enabled'))
-                    {{-- ══════════ Remplir avec la carte grise (IA) — en premier ══════════ --}}
+                    {{-- ══════════ Remplir avec la carte grise (IA) — recto + verso ══════════ --}}
                     <div class="cg-box" id="cg-box">
                         <div class="cg-head">
                             <span class="cg-badge"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> {{ __('messages.ai.title') }}</span>
                         </div>
                         <p class="cg-sub">{{ __('messages.ai.subtitle') }}</p>
-                        <div class="cg-zone" id="cg-zone" onclick="document.getElementById('cg-input').click()">
-                            <i data-lucide="scan-line" style="width:26px;height:26px;color:var(--vp-primary,#1459DD);"></i>
-                            <div class="cg-zone-title">{{ __('messages.ai.dropzone') }}</div>
-                            <div class="cg-zone-sub">{{ __('messages.ai.formats') }}</div>
-                            <input type="file" id="cg-input" accept=".jpg,.jpeg,.png,.pdf,image/*" multiple style="display:none">
+
+                        <div class="cg-slots">
+                            <div class="cg-slot" id="cg-slot-recto" onclick="document.getElementById('cg-recto').click()">
+                                <i data-lucide="credit-card" class="cg-slot-ic"></i>
+                                <div class="cg-slot-title">{{ __('messages.ai.recto') }}</div>
+                                <div class="cg-slot-sub" id="cg-recto-name">{{ __('messages.ai.recto_hint') }}</div>
+                                <input type="file" id="cg-recto" accept=".jpg,.jpeg,.png,.pdf,image/*" style="display:none">
+                            </div>
+                            <div class="cg-slot" id="cg-slot-verso" onclick="document.getElementById('cg-verso').click()">
+                                <i data-lucide="credit-card" class="cg-slot-ic" style="transform:scaleX(-1);"></i>
+                                <div class="cg-slot-title">{{ __('messages.ai.verso') }}</div>
+                                <div class="cg-slot-sub" id="cg-verso-name">{{ __('messages.ai.verso_hint') }}</div>
+                                <input type="file" id="cg-verso" accept=".jpg,.jpeg,.png,.pdf,image/*" style="display:none">
+                            </div>
                         </div>
+
+                        <button type="button" class="cg-analyze" id="cg-analyze" disabled>
+                            <i data-lucide="scan-line" style="width:16px;height:16px;"></i> {{ __('messages.ai.analyze') }}
+                        </button>
+
                         <div class="cg-status" id="cg-status" hidden></div>
                         <p class="cg-consent"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> {{ __('messages.ai.consent') }}</p>
                     </div>
@@ -1841,10 +1855,18 @@ function vmShowConfirmPage(packId) {
     .cg-head { display: flex; align-items: center; justify-content: space-between; }
     .cg-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #1459DD; }
     .cg-sub { font-size: 12.5px; color: #5b6b86; margin: 6px 0 12px; }
-    .cg-zone { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 18px; border: 2px dashed #bcd0f5; border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
-    .cg-zone:hover, .cg-zone.drag { background: #eef4ff; border-color: #1459DD; }
-    .cg-zone-title { font-weight: 800; font-size: 13.5px; color: #0f172a; }
-    .cg-zone-sub { font-size: 11.5px; color: #8595ad; }
+    .cg-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 480px) { .cg-slots { grid-template-columns: 1fr; } }
+    .cg-slot { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; padding: 16px 10px; border: 2px dashed #bcd0f5; border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
+    .cg-slot:hover, .cg-slot.drag { background: #eef4ff; border-color: #1459DD; }
+    .cg-slot.filled { border-style: solid; border-color: #34d399; background: #f0fdf9; }
+    .cg-slot-ic { width: 24px; height: 24px; color: #1459DD; }
+    .cg-slot.filled .cg-slot-ic { color: #059669; }
+    .cg-slot-title { font-weight: 800; font-size: 13px; color: #0f172a; }
+    .cg-slot-sub { font-size: 11px; color: #8595ad; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cg-analyze { margin-top: 12px; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: 12px; background: #1459DD; color: #fff; font-weight: 800; font-size: 13.5px; cursor: pointer; transition: .15s; }
+    .cg-analyze:hover:not(:disabled) { background: #0b3fa0; }
+    .cg-analyze:disabled { opacity: .5; cursor: not-allowed; }
     .cg-status { margin-top: 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; border-radius: 10px; padding: 10px 12px; }
     .cg-status.loading { background: #eff6ff; color: #1d4ed8; }
     .cg-status.ok { background: #ecfdf5; color: #047857; }
@@ -1859,10 +1881,11 @@ function vmShowConfirmPage(packId) {
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var input  = document.getElementById('cg-input');
-    var zone   = document.getElementById('cg-zone');
-    var status = document.getElementById('cg-status');
-    if (!input || !zone) return;
+    var recto   = document.getElementById('cg-recto');
+    var verso   = document.getElementById('cg-verso');
+    var analyze = document.getElementById('cg-analyze');
+    var status  = document.getElementById('cg-status');
+    if (!recto || !verso || !analyze) return;
 
     function showStatus(kind, html) {
         status.hidden = false;
@@ -1927,14 +1950,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function handleFiles(files) {
-        if (!files || !files.length) return;
-        if (files.length > 2) { showStatus('err', '{{ __('messages.ai.max_two') }}'); return; }
+    // Affiche le nom du fichier choisi et marque le slot comme rempli.
+    function bindSlot(input, slotId, nameId, hint) {
+        var slot = document.getElementById(slotId);
+        var name = document.getElementById(nameId);
+        input.addEventListener('change', function () {
+            if (input.files && input.files.length) {
+                slot.classList.add('filled');
+                name.textContent = input.files[0].name;
+            } else {
+                slot.classList.remove('filled');
+                name.textContent = hint;
+            }
+            refreshBtn();
+        });
+    }
+    function refreshBtn() {
+        var n = (recto.files && recto.files.length ? 1 : 0) + (verso.files && verso.files.length ? 1 : 0);
+        analyze.disabled = (n === 0);
+    }
+    bindSlot(recto, 'cg-slot-recto', 'cg-recto-name', @json(__('messages.ai.recto_hint')));
+    bindSlot(verso, 'cg-slot-verso', 'cg-verso-name', @json(__('messages.ai.verso_hint')));
 
+    analyze.addEventListener('click', function () {
         var fd = new FormData();
-        for (var i = 0; i < files.length; i++) fd.append('images[]', files[i]);
+        if (recto.files && recto.files.length) fd.append('images[]', recto.files[0]);
+        if (verso.files && verso.files.length) fd.append('images[]', verso.files[0]);
         fd.append('_token', (document.querySelector('input[name=_token]') || {}).value || '{{ csrf_token() }}');
 
+        analyze.disabled = true;
         showStatus('loading', '<span class="cg-spin"></span> {{ __('messages.ai.loading') }}');
 
         fetch("{{ route('cartegrise.extract') }}", {
@@ -1947,14 +1991,13 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (data) {
             if (data && data.success) { applyFields(data); }
             else { showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> ' + (data && data.message ? data.message : '{{ __('messages.ai.failed') }}')); }
+            refreshBtn();
         })
-        .catch(function () { showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> {{ __('messages.ai.failed') }}'); });
-    }
-
-    input.addEventListener('change', function () { handleFiles(this.files); });
-    ['dragover', 'dragenter'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('drag'); }); });
-    ['dragleave', 'drop'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('drag'); }); });
-    zone.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+        .catch(function () {
+            showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> {{ __('messages.ai.failed') }}');
+            refreshBtn();
+        });
+    });
 });
 </script>
 @endif
