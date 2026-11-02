@@ -22,7 +22,7 @@
 @if($miniOn && $miniTracks->isNotEmpty())
 <div id="nadoMini" class="nado-mini" dir="ltr">
     <button type="button" id="nadoMiniToggle" class="nado-mini-fab" aria-label="Nado Radio">
-        <i data-lucide="headphones"></i>
+        <i data-lucide="radio"></i>
     </button>
 
     <div class="nado-mini-panel" id="nadoMiniPanel">
@@ -142,7 +142,7 @@
         icon(playB, 'play');
         if (st.open) openPanel();
 
-        // Rend les icônes (headphones, contrôles) même si la page n'a pas encore appelé lucide.
+        // Rend les icônes (radio, contrôles) même si la page n'a pas encore appelé lucide.
         function drawIcons() { if (typeof lucide !== 'undefined') lucide.createIcons(); }
         drawIcons();
         document.addEventListener('DOMContentLoaded', drawIcons);
