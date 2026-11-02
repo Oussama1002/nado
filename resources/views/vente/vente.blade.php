@@ -1092,13 +1092,13 @@
                                 <i data-lucide="credit-card" class="cg-slot-ic"></i>
                                 <div class="cg-slot-title">{{ __('messages.ai.recto') }}</div>
                                 <div class="cg-slot-sub" id="cg-recto-name">{{ __('messages.ai.recto_hint') }}</div>
-                                <input type="file" id="cg-recto" accept=".jpg,.jpeg,.png,.pdf,image/*" style="display:none">
+                                <input type="file" id="cg-recto" accept="image/*,application/pdf" capture="environment" style="display:none">
                             </div>
                             <div class="cg-slot" id="cg-slot-verso" onclick="document.getElementById('cg-verso').click()">
                                 <i data-lucide="credit-card" class="cg-slot-ic" style="transform:scaleX(-1);"></i>
                                 <div class="cg-slot-title">{{ __('messages.ai.verso') }}</div>
                                 <div class="cg-slot-sub" id="cg-verso-name">{{ __('messages.ai.verso_hint') }}</div>
-                                <input type="file" id="cg-verso" accept=".jpg,.jpeg,.png,.pdf,image/*" style="display:none">
+                                <input type="file" id="cg-verso" accept="image/*,application/pdf" capture="environment" style="display:none">
                             </div>
                         </div>
 
