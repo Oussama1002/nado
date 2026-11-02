@@ -3,14 +3,24 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+@php
+    // Client déjà connecté (particulier/pro) → formulaire pré-rempli + "upgrade"
+    // (pas de ressaisie, pas de mot de passe), sinon inscription classique.
+    $authClient = $client ?? null;
+    $isUpgrade  = $authClient && $authClient->type !== 'flotte&enchere';
+@endphp
 <div class="register-page">
     <div class="register-container">
         <div class="form-header">
             <h2><i class="fa-solid fa-gavel" style="color:#F37021"></i> Rejoindre les enchères NADO</h2>
-            <p>Créez votre compte <strong>Flotte &amp; Enchère</strong> pour participer aux ventes aux enchères.</p>
+            @if($isUpgrade)
+                <p>Vos informations sont déjà enregistrées — choisissez simplement votre rôle pour accéder aux enchères.</p>
+            @else
+                <p>Créez votre compte <strong>Flotte &amp; Enchère</strong> pour participer aux ventes aux enchères.</p>
+            @endif
         </div>
 
-        <form method="POST" action="{{ route("client.register") }}" class="register-form" enctype="multipart/form-data">
+        <form method="POST" action="{{ $isUpgrade ? route('nadoautoenchere.upgrade') : route('client.register') }}" class="register-form" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="type" value="flotte&enchere">
             <input type="hidden" name="profile" value="{{ $profile }}">
@@ -44,26 +54,27 @@
 
             <div class="form-group">
                 <i class="fa-solid fa-user form-icon" aria-hidden="true"></i>
-                <input type="text" name="name" placeholder="Nom complet" value="{{ old("name") }}" required>
+                <input type="text" name="name" placeholder="Nom complet" value="{{ old('name', $isUpgrade ? $authClient->name : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
             </div>
 
             @if($profile !== "particulier")
             <div class="form-group">
                 <i class="fa-solid fa-building form-icon" aria-hidden="true"></i>
-                <input type="text" name="company" placeholder="Nom de l'entreprise" value="{{ old("company") }}">
+                <input type="text" name="company" placeholder="Nom de l'entreprise" value="{{ old('company', $isUpgrade ? $authClient->company : '') }}">
             </div>
             @endif
 
             <div class="form-group">
                 <i class="fa-solid fa-envelope form-icon" aria-hidden="true"></i>
-                <input type="email" name="email" placeholder="Adresse e-mail" value="{{ old("email") }}" required>
+                <input type="email" name="email" placeholder="Adresse e-mail" value="{{ old('email', $isUpgrade ? $authClient->email : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
             </div>
 
             <div class="form-group">
                 <i class="fa-solid fa-phone form-icon" aria-hidden="true"></i>
-                <input type="number" name="phone" placeholder="Téléphone" value="{{ old("phone") }}" required>
+                <input type="number" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
             </div>
 
+            @unless($isUpgrade)
             <div class="form-group password-group">
                 <i class="fa-solid fa-lock form-icon" aria-hidden="true"></i>
                 <input type="password" name="password" id="password" placeholder="Mot de passe" required>
@@ -79,6 +90,7 @@
                     <i class="fa-solid fa-eye"></i>
                 </button>
             </div>
+            @endunless
 
             @if ($errors->any())
                 <div class="error-box">
@@ -88,11 +100,13 @@
                 </div>
             @endif
 
-            <button type="submit" class="btn-register">Créer mon compte enchères</button>
+            <button type="submit" class="btn-register">{{ $isUpgrade ? 'Accéder aux enchères' : 'Créer mon compte enchères' }}</button>
 
+            @unless($isUpgrade)
             <div class="register-link">
                 Déjà inscrit ? <a href="{{ route("nadoautoenchere.login") }}">Se connecter</a>
             </div>
+            @endunless
         </form>
     </div>
 </div>

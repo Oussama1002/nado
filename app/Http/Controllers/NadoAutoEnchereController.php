@@ -194,7 +194,36 @@ public function register()
     // Rôle transmis par le bouton Vendre/Acheter de la prelogin ; sinon
     // l'utilisateur le choisit dans le formulaire (vendeur/acheteur).
     $role = in_array(request('role'), ['vendeur', 'acheteur'], true) ? request('role') : null;
-    return view('nadoautoenchere.register', compact('profile', 'role'));
+    // $client (particulier/pro déjà connecté) → le formulaire se pré-remplit et
+    // bascule en "upgrade" (pas de ressaisie, pas de mot de passe).
+    return view('nadoautoenchere.register', compact('profile', 'role', 'client'));
+}
+
+/**
+ * Un client déjà connecté (particulier/pro) accède aux enchères sans se
+ * réinscrire : on bascule son compte existant en flotte&enchere + rôle.
+ */
+public function upgrade(Request $request)
+{
+    $client = Auth::guard('client')->user();
+    if (! $client) {
+        return redirect()->route('client.login');
+    }
+
+    $data = $request->validate([
+        'ae_role' => 'required|in:vendeur,acheteur',
+        'company' => 'nullable|string|max:255',
+    ]);
+
+    $client->type    = 'flotte&enchere';
+    $client->ae_role = $data['ae_role'];
+    if (! empty($data['company'])) {
+        $client->company = $data['company'];
+    }
+    $client->save();
+
+    return redirect()->route('nadoautoenchere.categories')
+        ->with('success', 'Votre compte a maintenant accès aux enchères NADO.');
 }
 
 

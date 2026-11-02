@@ -170,6 +170,11 @@ Route::get('/nadoautoenchere/prelogin', [NadoAutoEnchereController::class, 'prel
 Route::get('/nadoautoenchere/register', [NadoAutoEnchereController::class, 'register'])
     ->name('nadoautoenchere.register');
 
+// Client déjà connecté → accès enchères sans réinscription (upgrade du compte).
+Route::post('/nadoautoenchere/upgrade', [NadoAutoEnchereController::class, 'upgrade'])
+    ->middleware('auth:client')
+    ->name('nadoautoenchere.upgrade');
+
 Route::get('/nadoautoenchere/login', function () {
     // ensure clean session when switching to enchere login
     if (Auth::guard('client')->check()) {
