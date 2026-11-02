@@ -21,6 +21,7 @@ protected $fillable = [
 
     'modele',
     'matricule',
+    'vin',
     'year',
     'km',
     'carburant',

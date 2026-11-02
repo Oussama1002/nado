@@ -247,6 +247,11 @@ Route::post('/vente/pro/store', [VenteController::class, 'storePro'])->name('ven
 Route::get('/get-models', [App\Http\Controllers\VenteController::class, 'getModels'])->name('get.models');
 Route::post('/vente/store', [VenteController::class, 'store'])->name('vente.store')->middleware('auth:client');
 
+// Pré-remplissage IA depuis la carte grise (gated : flag + auth + rate-limit).
+Route::post('/vente/carte-grise/extract', [\App\Http\Controllers\CarteGriseController::class, 'extract'])
+    ->middleware(['auth:client', 'throttle:20,60'])
+    ->name('cartegrise.extract');
+
 // Fresh CSRF token for long-lived forms (vente modal) — avoids 419 when the
 // session was regenerated in another tab (login/logout) or has expired
 Route::get('/csrf-token', function () {

@@ -1065,6 +1065,9 @@
                 @csrf
                 <input type="hidden" name="jeveux" value="vendre ma voiture">
                 <input type="hidden" name="mode" id="vm-mode" value="">
+                {{-- Carte grise (pré-remplissage IA) — champs véhicule uniquement, jamais publiés tels quels --}}
+                <input type="hidden" name="matricule" id="vm-matricule" value="{{ $prefill['matricule'] ?? '' }}">
+                <input type="hidden" name="vin" id="vm-vin" value="">
                 @isset($prefill)
                     <input type="hidden" name="annonce_id" value="{{ $prefill['annonce_id'] ?? '' }}">
                 @endisset
@@ -1076,6 +1079,24 @@
                 ═════════════════════════════════════════ --}}
                 <div id="vm-step-1" class="vm-step-content active">
                     <h2 class="vm-step-h2">1. Véhicule &amp; détails</h2>
+
+                    @if(feature_on('ai.cartegrise_enabled'))
+                    {{-- ══════════ Remplir avec la carte grise (IA) ══════════ --}}
+                    <div class="cg-box" id="cg-box">
+                        <div class="cg-head">
+                            <span class="cg-badge"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> {{ __('messages.ai.title') }}</span>
+                        </div>
+                        <p class="cg-sub">{{ __('messages.ai.subtitle') }}</p>
+                        <div class="cg-zone" id="cg-zone" onclick="document.getElementById('cg-input').click()">
+                            <i data-lucide="scan-line" style="width:26px;height:26px;color:var(--vp-primary,#1459DD);"></i>
+                            <div class="cg-zone-title">{{ __('messages.ai.dropzone') }}</div>
+                            <div class="cg-zone-sub">{{ __('messages.ai.formats') }}</div>
+                            <input type="file" id="cg-input" accept=".jpg,.jpeg,.png,.pdf,image/*" multiple style="display:none">
+                        </div>
+                        <div class="cg-status" id="cg-status" hidden></div>
+                        <p class="cg-consent"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> {{ __('messages.ai.consent') }}</p>
+                    </div>
+                    @endif
 
                     {{-- Row 1: identité --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
@@ -1812,4 +1833,128 @@ function vmShowConfirmPage(packId) {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 </script>
+
+@if(feature_on('ai.cartegrise_enabled'))
+<style>
+    .cg-box { border: 1px dashed #c7d6f5; background: linear-gradient(180deg,#f5f9ff,#ffffff); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+    .cg-head { display: flex; align-items: center; justify-content: space-between; }
+    .cg-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #1459DD; }
+    .cg-sub { font-size: 12.5px; color: #5b6b86; margin: 6px 0 12px; }
+    .cg-zone { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 18px; border: 2px dashed #bcd0f5; border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
+    .cg-zone:hover, .cg-zone.drag { background: #eef4ff; border-color: #1459DD; }
+    .cg-zone-title { font-weight: 800; font-size: 13.5px; color: #0f172a; }
+    .cg-zone-sub { font-size: 11.5px; color: #8595ad; }
+    .cg-status { margin-top: 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; border-radius: 10px; padding: 10px 12px; }
+    .cg-status.loading { background: #eff6ff; color: #1d4ed8; }
+    .cg-status.ok { background: #ecfdf5; color: #047857; }
+    .cg-status.err { background: #fef2f2; color: #b91c1c; }
+    .cg-spin { width: 16px; height: 16px; border: 2px solid #bfdbfe; border-top-color: #1d4ed8; border-radius: 50%; animation: cgspin .7s linear infinite; }
+    @keyframes cgspin { to { transform: rotate(360deg); } }
+    .cg-consent { font-size: 11px; color: #7a889e; margin-top: 10px; display: flex; align-items: center; gap: 6px; line-height: 1.4; }
+    /* Champs pré-remplis par l'IA (toujours éditables) */
+    .vm-input.cg-filled { border-color: #34d399 !important; background: #f0fdf9 !important; }
+    .vm-input.cg-low { border-color: #f59e0b !important; background: #fffbeb !important; }
+    html[dir=rtl] .cg-zone, html[dir=rtl] .cg-status, html[dir=rtl] .cg-consent { text-align: right; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var input  = document.getElementById('cg-input');
+    var zone   = document.getElementById('cg-zone');
+    var status = document.getElementById('cg-status');
+    if (!input || !zone) return;
+
+    function showStatus(kind, html) {
+        status.hidden = false;
+        status.className = 'cg-status ' + kind;
+        status.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function markField(el, low) {
+        if (!el) return;
+        el.classList.remove('cg-filled', 'cg-low');
+        el.classList.add(low ? 'cg-low' : 'cg-filled');
+    }
+
+    // Sélectionne une valeur dans un <select> (insensible à la casse) → true si trouvé
+    function setSelect(el, value) {
+        if (!el || value == null) return false;
+        var target = String(value).toLowerCase();
+        for (var i = 0; i < el.options.length; i++) {
+            if (el.options[i].value.toLowerCase() === target || el.options[i].text.trim().toLowerCase() === target) {
+                el.selectedIndex = i; return true;
+            }
+        }
+        return false;
+    }
+
+    function applyFields(data) {
+        var f = data.fields || {};
+        var low = data.low_confidence || [];
+        var isLow = function (k) { return low.indexOf(k) !== -1; };
+
+        // Champs simples
+        if (f.cv != null) { var cv = document.querySelector('input[name="cv"]'); if (cv) { cv.value = f.cv; markField(cv, isLow('cv')); } }
+        if (f.year != null) { var y = document.querySelector('select[name="year"]'); if (setSelect(y, f.year)) markField(y, isLow('year')); }
+        if (f.carburant != null) { var c = document.querySelector('select[name="carburant"]'); if (setSelect(c, f.carburant)) markField(c, isLow('carburant')); }
+
+        // Champs cachés (non publiés tels quels)
+        if (f.matricule != null) { var mt = document.getElementById('vm-matricule'); if (mt) mt.value = f.matricule; }
+        if (f.vin != null) { var vn = document.getElementById('vm-vin'); if (vn) vn.value = f.vin; }
+
+        // Marque → déclenche le chargement AJAX des modèles, puis sélectionne le modèle
+        var markSel = document.getElementById('vm-mark');
+        var modeleSel = document.getElementById('vm-modele');
+        if (f.mark && markSel && setSelect(markSel, f.mark)) {
+            markField(markSel, isLow('mark'));
+            markSel.dispatchEvent(new Event('change')); // charge les modèles de la marque
+            if (f.modele && modeleSel) {
+                var tries = 0;
+                var timer = setInterval(function () {
+                    tries++;
+                    if (setSelect(modeleSel, f.modele)) { markField(modeleSel, isLow('modele')); clearInterval(timer); }
+                    if (tries > 25) clearInterval(timer);
+                }, 150);
+            }
+        }
+
+        var n = Object.keys(f).length;
+        if (n === 0) {
+            showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> {{ __('messages.ai.nofields') }}');
+        } else {
+            showStatus('ok', '<i data-lucide="check-circle" style="width:16px;height:16px;"></i> {{ __('messages.ai.done') }}');
+        }
+    }
+
+    function handleFiles(files) {
+        if (!files || !files.length) return;
+        if (files.length > 2) { showStatus('err', '{{ __('messages.ai.max_two') }}'); return; }
+
+        var fd = new FormData();
+        for (var i = 0; i < files.length; i++) fd.append('images[]', files[i]);
+        fd.append('_token', (document.querySelector('input[name=_token]') || {}).value || '{{ csrf_token() }}');
+
+        showStatus('loading', '<span class="cg-spin"></span> {{ __('messages.ai.loading') }}');
+
+        fetch("{{ route('cartegrise.extract') }}", {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            credentials: 'same-origin',
+            body: fd
+        })
+        .then(function (r) { return r.json().catch(function () { return { success: false }; }); })
+        .then(function (data) {
+            if (data && data.success) { applyFields(data); }
+            else { showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> ' + (data && data.message ? data.message : '{{ __('messages.ai.failed') }}')); }
+        })
+        .catch(function () { showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> {{ __('messages.ai.failed') }}'); });
+    }
+
+    input.addEventListener('change', function () { handleFiles(this.files); });
+    ['dragover', 'dragenter'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('drag'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('drag'); }); });
+    zone.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+});
+</script>
+@endif
 @endsection

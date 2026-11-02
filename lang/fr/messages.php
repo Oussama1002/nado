@@ -583,6 +583,19 @@ return [
         'register_btn'       => 'S\'inscrire',
     ],
 
+    'ai' => [
+        'title'    => 'Remplir avec la carte grise',
+        'subtitle' => 'Prenez en photo votre carte grise : nous pré-remplissons les champs du véhicule. Vous vérifiez et modifiez avant de publier.',
+        'dropzone' => 'Déposez ou cliquez pour ajouter la carte grise',
+        'formats'  => 'JPG, PNG ou PDF — recto et/ou verso (2 images max)',
+        'consent'  => "La carte grise sert uniquement à remplir les champs du véhicule et n'est pas publiée.",
+        'loading'  => 'Lecture de la carte grise…',
+        'done'     => 'Champs pré-remplis. Vérifiez puis complétez le reste.',
+        'nofields' => "Aucun champ exploitable n'a été trouvé, remplissez manuellement.",
+        'failed'   => "Nous n'avons pas pu lire la carte grise, remplissez manuellement.",
+        'max_two'  => '2 images maximum (recto / verso).',
+    ],
+
     'radio' => [
         'nav'   => 'Nado Radio',
         'badge' => 'Nado Radio',

@@ -124,6 +124,9 @@ class VenteController extends Controller
             'type'       => 'nullable|string|max:50',
             'origine'    => 'nullable|string|max:100',
             'description'=> 'nullable|string|max:5000',
+            // Carte grise (pré-remplissage IA) — champs véhicule uniquement
+            'matricule'  => 'nullable|string|max:50',
+            'vin'        => 'nullable|string|max:50',
             'mode'       => 'required|string|max:100',
             'photos'     => 'nullable|array|max:20',
             'photos.*'   => 'image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -171,6 +174,7 @@ class VenteController extends Controller
                 'etat'      => $validated['etat'] ?? null,
                 'origine'   => $validated['origine'] ?? null,
                 'description'=> $validated['description'] ?? null,
+                'matricule' => $validated['matricule'] ?? null,
                 'city'      => $validated['city'],
                 'pack_id'   => $packId,
                 // Pending admin approval — also after a Modifier, so the admin
@@ -180,6 +184,9 @@ class VenteController extends Controller
                 // Occasion / Neuf — column added by 2026_09_21_000001_add_type_to_annonces_table
                 // (skipped until that migration has run, instead of failing the insert)
                 Schema::hasColumn('annonces', 'type') ? ['type' => $validated['type'] ?? null] : []
+            ) + (
+                // VIN / châssis — colonne ajoutée par 2026_11_02_000002_add_vin_to_annonces_table
+                Schema::hasColumn('annonces', 'vin') ? ['vin' => $validated['vin'] ?? null] : []
             );
 
             if ($existing) {
