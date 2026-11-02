@@ -70,9 +70,10 @@
             </div>
 
             <div class="form-group">
-                {{-- Téléphone éditable aussi en upgrade : l'Auto-Enchère s'appuie dessus. --}}
+                {{-- Téléphone éditable aussi en upgrade : l'Auto-Enchère s'appuie dessus.
+                     type=tel (pas number) pour afficher les formats avec + et espaces. --}}
                 <i class="fa-solid fa-phone form-icon" aria-hidden="true"></i>
-                <input type="number" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" required>
+                <input type="tel" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" required>
             </div>
 
             @unless($isUpgrade)
