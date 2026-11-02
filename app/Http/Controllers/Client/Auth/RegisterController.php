@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
 class RegisterController extends Controller
@@ -49,10 +50,48 @@ class RegisterController extends Controller
             'is_verified' => false,
         ]);
 
+        $this->notifyAdminNewClient($client);
         $this->sendVerificationEmail($client);
 
         return redirect()->route('client.verify.pending')
             ->with('verify_email_sent', 'Un email de confirmation a été envoyé à ' . $client->email . '.');
+    }
+
+    /**
+     * Notifie contact@nado.ma qu'un nouveau client vient de créer un compte.
+     * N'interrompt jamais l'inscription si l'envoi échoue.
+     */
+    protected function notifyAdminNewClient(Client $client): void
+    {
+        try {
+            $typeLabel = $client->type === 'flotte&enchere'
+                ? 'Flotte & Enchère'
+                : ucfirst((string) $client->type);
+
+            $lines = [
+                'Un nouveau client vient de créer un compte sur NADO.',
+                '',
+                'Nom      : ' . ($client->name ?: '—'),
+                'Email    : ' . ($client->email ?: '—'),
+                'Téléphone: ' . ($client->phone ?: '—'),
+                'Type     : ' . ($typeLabel ?: '—'),
+                'Société  : ' . ($client->company ?: '—'),
+                '',
+                '---',
+                'Créé le ' . now()->format('d/m/Y H:i'),
+                'ID interne : #' . $client->id,
+            ];
+
+            Mail::raw(implode("\n", $lines), function ($m) use ($client) {
+                $m->to('contact@nado.ma')
+                  ->subject('Nouveau compte client — ' . ($client->name ?: ('#' . $client->id)));
+                if ($client->email) {
+                    $m->replyTo($client->email, $client->name ?: '');
+                }
+            });
+        } catch (\Throwable $e) {
+            Log::error('Notification nouveau client échouée: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -155,6 +194,8 @@ class RegisterController extends Controller
             'is_approved' => true,
             'is_verified' => true,
         ]);
+
+        $this->notifyAdminNewClient($client);
 
         Auth::guard('client')->login($client);
 
