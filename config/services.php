@@ -38,11 +38,4 @@ return [
         'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
     ],
 
-    // Anthropic Claude — vision extraction for the AI-assisted listing (carte grise).
-    // The API key lives in .env only, never as a DB setting.
-    'anthropic' => [
-        'key'     => env('ANTHROPIC_API_KEY'),
-        'version' => env('ANTHROPIC_VERSION', '2023-06-01'),
-    ],
-
 ];

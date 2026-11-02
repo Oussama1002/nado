@@ -62,8 +62,7 @@ class CarteGriseController extends Controller
         if (! ($result['ok'] ?? false)) {
             $reason = $result['error'] ?? 'unknown';
             $message = match ($reason) {
-                'config'          => "Extraction IA non configurée (clé API manquante côté serveur).",
-                'api', 'request'  => "Service d'extraction indisponible pour le moment, réessayez.",
+                'ocr_unavailable' => "OCR indisponible sur le serveur (Tesseract non installé).",
                 default           => "Nous n'avons pas pu lire la carte grise, remplissez manuellement.",
             };
 

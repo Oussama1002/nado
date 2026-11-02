@@ -3,23 +3,23 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use Symfony\Component\Process\Exception\RuntimeException;
+use Symfony\Component\Process\Process;
 
 /**
- * Extraction des champs VÉHICULE d'une carte grise marocaine via un modèle
- * de vision Claude (Anthropic Messages API, appel HTTP direct — pas de SDK).
+ * Extraction des champs VÉHICULE d'une carte grise marocaine — 100 % local,
+ * sans API payante : OCR via Tesseract puis analyse par étiquettes/MRZ du
+ * gabarit standard (le modèle de carte est toujours le même).
  *
- * RÈGLE VIE PRIVÉE : on n'extrait JAMAIS le nom du propriétaire, l'adresse,
- * l'immatriculation antérieure ni la ligne MRZ. Le prompt l'interdit
- * explicitement et le schéma de sortie ne contient aucun champ PII.
+ * RÈGLE VIE PRIVÉE : on n'extrait QUE des champs véhicule. Le nom du
+ * propriétaire, l'adresse, l'immatriculation antérieure et le nom présent dans
+ * la MRZ ne sont jamais capturés (on ne lit de la MRZ que le matricule + la date).
  */
 class CarteGriseExtractor
 {
-    private const ENDPOINT = 'https://api.anthropic.com/v1/messages';
-
     /** Clés véhicule renvoyées (aucune donnée personnelle). */
     public const FIELDS = [
         'marque', 'modele', 'carburant', 'annee', 'date_premiere_circulation',
@@ -27,102 +27,101 @@ class CarteGriseExtractor
     ];
 
     /**
-     * @param  UploadedFile[]  $files  1 ou 2 images (recto / verso) ou PDF
+     * @param  UploadedFile[]  $files  1 ou 2 images (recto / verso)
      * @return array{ok:bool, data?:array, confidence?:array, error?:string}
      */
     public function extract(array $files): array
     {
-        $apiKey = config('services.anthropic.key');
-        if (empty($apiKey)) {
-            Log::error('CarteGriseExtractor: ANTHROPIC_API_KEY manquante');
-
-            return ['ok' => false, 'error' => 'config'];
-        }
-
-        $blocks = [];
+        $texts = [];
         foreach ($files as $file) {
-            $block = $this->toContentBlock($file);
-            if ($block) {
-                $blocks[] = $block;
+            $text = $this->ocr($file);
+            if ($text === null) {
+                return ['ok' => false, 'error' => 'ocr_unavailable'];
+            }
+            if (trim($text) !== '') {
+                $texts[] = $text;
             }
         }
-        if (empty($blocks)) {
-            return ['ok' => false, 'error' => 'no_image'];
-        }
 
-        $blocks[] = ['type' => 'text', 'text' => $this->userPrompt()];
-
-        try {
-            $response = Http::withHeaders([
-                'x-api-key'         => $apiKey,
-                'anthropic-version' => config('services.anthropic.version', '2023-06-01'),
-                'content-type'      => 'application/json',
-            ])->timeout(60)->post(self::ENDPOINT, [
-                'model'      => settings('ai.model', 'claude-haiku-5-5'),
-                'max_tokens' => 1024,
-                'system'     => $this->systemPrompt(),
-                'messages'   => [[
-                    'role'    => 'user',
-                    'content' => $blocks,
-                ]],
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('CarteGriseExtractor: appel API échoué', ['error' => $e->getMessage()]);
-
-            return ['ok' => false, 'error' => 'request'];
-        }
-
-        if (! $response->successful()) {
-            Log::error('CarteGriseExtractor: réponse API non-OK', [
-                'status' => $response->status(),
-                'body'   => $response->body(),
-            ]);
-
-            return ['ok' => false, 'error' => 'api'];
-        }
-
-        $text = $this->firstText($response->json());
-        $parsed = $this->parseJson($text);
-        if ($parsed === null) {
-            Log::warning('CarteGriseExtractor: JSON illisible', ['text' => $text]);
-
+        $full = trim(implode("\n", $texts));
+        if ($full === '') {
             return ['ok' => false, 'error' => 'parse'];
         }
 
-        return $this->normalize($parsed);
+        return $this->parse($full);
     }
 
-    /** Construit le bloc de contenu (image compressée ou PDF) pour l'API. */
-    private function toContentBlock(UploadedFile $file): ?array
+    /**
+     * OCR d'une image via Tesseract. Retourne le texte, '' si rien,
+     * ou null si Tesseract est introuvable sur le serveur.
+     */
+    private function ocr(UploadedFile $file): ?string
     {
-        $mime = $file->getMimeType();
-
-        if ($mime === 'application/pdf') {
-            return [
-                'type'   => 'document',
-                'source' => [
-                    'type'       => 'base64',
-                    'media_type' => 'application/pdf',
-                    'data'       => base64_encode(file_get_contents($file->getRealPath())),
-                ],
-            ];
+        // Tesseract ne lit pas les PDF nativement — on se concentre sur les images.
+        if ($file->getMimeType() === 'application/pdf') {
+            return '';
         }
 
-        // Image : on redimensionne + ré-encode en JPEG pour contrôler le coût en tokens.
+        $prepared = $this->preprocess($file);
+        if ($prepared === null) {
+            return '';
+        }
+
+        $bin  = (string) settings('ai.tesseract_path', 'tesseract');
+        $lang = (string) settings('ai.ocr_lang', 'fra+eng');
+
+        $text = $this->runTesseract($bin, $prepared, $lang);
+        if ($text === null && $lang !== 'eng') {
+            // Pack de langue 'fra' peut-être absent → on retente en anglais (texte latin).
+            $text = $this->runTesseract($bin, $prepared, 'eng');
+        }
+
+        @unlink($prepared);
+
+        return $text; // null = binaire introuvable
+    }
+
+    /** Lance Tesseract ; null si le binaire est introuvable, '' si échec d'exécution. */
+    private function runTesseract(string $bin, string $imagePath, string $lang): ?string
+    {
+        try {
+            $process = new Process([$bin, $imagePath, 'stdout', '-l', $lang, '--psm', '6']);
+            $process->setTimeout(60);
+            $process->run();
+        } catch (RuntimeException $e) {
+            Log::error('CarteGriseExtractor: tesseract introuvable', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+
+        if (! $process->isSuccessful()) {
+            Log::warning('CarteGriseExtractor: tesseract a échoué', [
+                'exit' => $process->getExitCode(),
+                'err'  => $process->getErrorOutput(),
+            ]);
+
+            return '';
+        }
+
+        return $process->getOutput();
+    }
+
+    /** Pré-traitement : agrandir + niveaux de gris + contraste → PNG temporaire. */
+    private function preprocess(UploadedFile $file): ?string
+    {
         try {
             $manager = new ImageManager(new Driver);
             $img = $manager->read($file->getRealPath());
-            $img->scaleDown(width: 1500);
-            $data = (string) $img->toJpeg(quality: 75);
+            if ($img->width() < 1700) {
+                $img->scale(width: 1700); // les photos basse résolution lisent mal
+            }
+            $img->greyscale();
+            $img->contrast(8);
 
-            return [
-                'type'   => 'image',
-                'source' => [
-                    'type'       => 'base64',
-                    'media_type' => 'image/jpeg',
-                    'data'       => base64_encode($data),
-                ],
-            ];
+            $tmp = tempnam(sys_get_temp_dir(), 'cg_') . '.png';
+            $img->toPng()->save($tmp);
+
+            return $tmp;
         } catch (\Throwable $e) {
             Log::warning('CarteGriseExtractor: image illisible', ['error' => $e->getMessage()]);
 
@@ -130,94 +129,170 @@ class CarteGriseExtractor
         }
     }
 
-    private function systemPrompt(): string
+    // ───────────────────────── Analyse du texte OCR ─────────────────────────
+
+    private function parse(string $text): array
     {
-        return <<<'TXT'
-You extract VEHICLE data from a Moroccan vehicle registration card ("Certificat d'Immatriculation" / "شهادة التسجيل"). The document is bilingual (French + Arabic); read the French values.
+        // On enlève l'arabe (étiquettes de droite) pour isoler les valeurs françaises.
+        $clean = $this->stripArabic($text);
+        $lines = array_values(array_filter(array_map('trim', preg_split('/\r?\n/', $clean))));
 
-PRIVACY — ABSOLUTE RULES:
-- NEVER extract or output the owner's name ("Propriétaire"), the owner's address ("Adresse"), the previous registration ("Immatriculation antérieure"), or the machine-readable zone (the long MRZ line like "D1VMA...<<<"). Ignore them completely.
-- Output ONLY the vehicle fields defined below.
+        $data = [
+            'marque'                    => $this->afterLabel($lines, ['marque']),
+            'modele'                    => $this->afterLabel($lines, ['modele', 'modele', 'modèle']),
+            'carburant'                 => $this->carburant($clean, $lines),
+            'puissance_fiscale'         => $this->intAfterLabel($lines, ['puissance fiscale', 'fiscale']),
+            'nombre_places'             => $this->intAfterLabel($lines, ['nombre de places', 'places']),
+            'genre'                     => $this->afterLabel($lines, ['genre']),
+            'vin'                       => $this->vin($clean),
+            'matricule'                 => null,
+            'date_premiere_circulation' => null,
+            'annee'                     => null,
+        ];
 
-Return ONLY a single JSON object, no prose, no markdown fences, with EXACTLY these keys (use null when a value is absent or unreadable):
-{
-  "marque": string|null,                      // back: "Marque", e.g. "AUDI"
-  "modele": string|null,                      // back: "Modèle", e.g. "A4 TDI 2.0L EXCLUSIVE"
-  "carburant": string|null,                   // back: "Type carburant", e.g. "Diesel"
-  "annee": integer|null,                       // YEAR from "Première mise en circulation"
-  "date_premiere_circulation": string|null,    // "YYYY-MM-DD" from "Première mise en circulation"
-  "puissance_fiscale": integer|null,           // back: "Puissance fiscale"
-  "matricule": string|null,                    // front: "Numéro d'immatriculation"
-  "vin": string|null,                          // back: "N° du chassis"
-  "nombre_places": integer|null,               // back: "Nombre de places"
-  "genre": string|null,                        // back: "Genre", e.g. "CONDUITE INTERIEURE"
-  "confidence": {                              // per-field confidence 0..1
-    "marque": number, "modele": number, "carburant": number, "annee": number,
-    "date_premiere_circulation": number, "puissance_fiscale": number,
-    "matricule": number, "vin": number, "nombre_places": number, "genre": number
-  }
-}
-Do not output owner name, address, previous registration, or MRZ under any key.
-TXT;
-    }
+        // Matricule + date : d'abord la MRZ (fiable), sinon le texte imprimé.
+        [$mrzMatricule, $mrzDate] = $this->fromMrz($text);
+        $data['matricule'] = $this->matricule($lines) ?? $mrzMatricule;
 
-    private function userPrompt(): string
-    {
-        return "Extract the vehicle fields from this Moroccan carte grise. Respond with the JSON object only.";
-    }
-
-    /** Récupère le premier bloc texte de la réponse Messages API. */
-    private function firstText(?array $json): string
-    {
-        foreach ($json['content'] ?? [] as $block) {
-            if (($block['type'] ?? null) === 'text' && isset($block['text'])) {
-                return $block['text'];
-            }
+        $date = $this->premiereCirculation($lines) ?? $mrzDate;
+        if ($date) {
+            $data['date_premiere_circulation'] = $date;
+            $data['annee'] = (int) substr($date, 0, 4);
         }
 
-        return '';
-    }
-
-    /** Tolère d'éventuelles fences ```json ... ``` autour du JSON. */
-    private function parseJson(string $text): ?array
-    {
-        $text = trim($text);
-        if ($text === '') {
-            return null;
-        }
-        // Isole le premier objet { ... }
-        $start = strpos($text, '{');
-        $end   = strrpos($text, '}');
-        if ($start === false || $end === false || $end <= $start) {
-            return null;
-        }
-        $json = substr($text, $start, $end - $start + 1);
-        $data = json_decode($json, true);
-
-        return is_array($data) ? $data : null;
-    }
-
-    /** Sépare les valeurs des confidences, en ne gardant QUE les champs véhicule. */
-    private function normalize(array $parsed): array
-    {
-        $confidence = is_array($parsed['confidence'] ?? null) ? $parsed['confidence'] : [];
-        $data = [];
-        foreach (self::FIELDS as $key) {
-            $data[$key] = $parsed[$key] ?? null;
-        }
-
-        // Normalisation légère des types numériques.
-        foreach (['annee', 'puissance_fiscale', 'nombre_places'] as $int) {
-            $data[$int] = is_numeric($data[$int]) ? (int) $data[$int] : null;
-        }
-
+        // Confiance heuristique : trouvé via MRZ/VIN = très fiable, via étiquette = fiable.
         $conf = [];
         foreach (self::FIELDS as $key) {
-            $conf[$key] = isset($confidence[$key]) && is_numeric($confidence[$key])
-                ? max(0, min(1, (float) $confidence[$key]))
-                : 0.0;
+            $conf[$key] = ($data[$key] === null || $data[$key] === '') ? 0.0 : 0.85;
+        }
+        if ($data['vin'] !== null) {
+            $conf['vin'] = 0.95;
+        }
+        if ($mrzMatricule !== null && $data['matricule'] === $mrzMatricule) {
+            $conf['matricule'] = 0.95;
         }
 
         return ['ok' => true, 'data' => $data, 'confidence' => $conf];
+    }
+
+    private function stripArabic(string $s): string
+    {
+        return preg_replace('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]+/u', ' ', $s);
+    }
+
+    /** Valeur située après une étiquette (sur la même ligne). */
+    private function afterLabel(array $lines, array $labels): ?string
+    {
+        foreach ($lines as $line) {
+            $low = $this->deaccent(mb_strtolower($line));
+            foreach ($labels as $label) {
+                $l = $this->deaccent(mb_strtolower($label));
+                $pos = strpos($low, $l);
+                if ($pos !== false) {
+                    $value = trim(substr($line, $pos + strlen($label)));
+                    $value = trim($value, " :.-\t•|");
+                    // Nettoie d'éventuels résidus (étiquette collée, ponctuation).
+                    if ($value !== '' && mb_strlen($value) <= 60) {
+                        return $value;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function intAfterLabel(array $lines, array $labels): ?int
+    {
+        $raw = $this->afterLabel($lines, $labels);
+        if ($raw !== null && preg_match('/(\d{1,3})/', $raw, $m)) {
+            return (int) $m[1];
+        }
+
+        return null;
+    }
+
+    /** Carburant : étiquette puis repli par mots-clés. */
+    private function carburant(string $text, array $lines): ?string
+    {
+        $raw = $this->afterLabel($lines, ['type carburant', 'carburant', 'energie', 'énergie']);
+        $hay = mb_strtolower(($raw ?? '') . ' ' . $text);
+
+        return match (true) {
+            str_contains($hay, 'diesel') || str_contains($hay, 'gasoil') || str_contains($hay, 'gazole') => 'Diesel',
+            str_contains($hay, 'essence') || str_contains($hay, 'petrol') => 'Essence',
+            str_contains($hay, 'electri') => 'Electrique',
+            str_contains($hay, 'hybrid') => 'Hybride',
+            default => null,
+        };
+    }
+
+    /** N° de châssis : un VIN est 17 caractères alphanum sans I, O, Q. */
+    private function vin(string $text): ?string
+    {
+        if (preg_match('/\b([A-HJ-NPR-Z0-9]{17})\b/', strtoupper($text), $m)) {
+            return $m[1];
+        }
+
+        return null;
+    }
+
+    /** Matricule imprimé : NNNNN-L-NN (lettre latine après OCR de l'arabe). */
+    private function matricule(array $lines): ?string
+    {
+        foreach ($lines as $line) {
+            $low = $this->deaccent(mb_strtolower($line));
+            if (str_contains($low, 'immatriculation') && ! str_contains($low, 'anterieure')) {
+                if (preg_match('/(\d{2,6})\s*[-ـ]?\s*([A-Za-z]{1,3})\s*[-ـ]?\s*(\d{1,3})/', $line, $m)) {
+                    return strtoupper($m[1] . '-' . $m[2] . '-' . $m[3]);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /** Date de 1re mise en circulation (dd/mm/yyyy) → YYYY-MM-DD. */
+    private function premiereCirculation(array $lines): ?string
+    {
+        foreach ($lines as $line) {
+            $low = $this->deaccent(mb_strtolower($line));
+            if (str_contains($low, 'circulation') && preg_match('#(\d{2})/(\d{2})/(\d{4})#', $line, $m)) {
+                return "{$m[3]}-{$m[2]}-{$m[1]}";
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * MRZ (3e ligne) : on ne lit QUE le matricule et la date (DDMMYY),
+     * jamais le nom qui suit. Ex. D1VMA27314B72<221119ELHADI<<<3.
+     *
+     * @return array{0:?string,1:?string}  [matricule, date YYYY-MM-DD]
+     */
+    private function fromMrz(string $text): array
+    {
+        $compact = str_replace(' ', '', strtoupper($text));
+        if (preg_match('/(\d{2,6})([A-Z]{1,3})(\d{1,3})<(\d{6})/', $compact, $m)) {
+            $matricule = "{$m[1]}-{$m[2]}-{$m[3]}";
+            $dd = substr($m[4], 0, 2);
+            $mm = substr($m[4], 2, 2);
+            $yy = (int) substr($m[4], 4, 2);
+            $year = $yy <= ((int) date('y') + 1) ? 2000 + $yy : 1900 + $yy;
+            $date = checkdate((int) $mm, (int) $dd, $year) ? sprintf('%04d-%s-%s', $year, $mm, $dd) : null;
+
+            return [$matricule, $date];
+        }
+
+        return [null, null];
+    }
+
+    private function deaccent(string $s): string
+    {
+        return strtr($s, [
+            'à' => 'a', 'â' => 'a', 'ä' => 'a', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'î' => 'i', 'ï' => 'i', 'ô' => 'o', 'ö' => 'o', 'ù' => 'u', 'û' => 'u', 'ü' => 'u', 'ç' => 'c',
+        ]);
     }
 }

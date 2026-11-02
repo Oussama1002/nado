@@ -208,8 +208,9 @@ class SettingsSeeder extends Seeder
 
             // ───────────────────────── ai (carte grise) ─────────────────
             'ai' => [
-                ['cartegrise_enabled', 'bool', false, 'Pré-remplissage IA via carte grise (master on/off)'],
-                ['model', 'string', 'claude-haiku-5-5', 'Modèle Claude (vision)', false],
+                ['cartegrise_enabled', 'bool', false, 'Pré-remplissage carte grise (master on/off)'],
+                ['tesseract_path', 'string', 'tesseract', 'Chemin du binaire Tesseract', false],
+                ['ocr_lang', 'string', 'fra+eng', 'Langues OCR Tesseract', false],
                 ['max_upload_mb', 'int', 8, 'Taille max par image (Mo)'],
                 ['rate_limit_per_hour', 'int', 10, 'Limite d\'extractions / client / heure'],
                 ['min_confidence', 'percent', 50, 'Confiance minimale pour pré-remplir (%)'],
