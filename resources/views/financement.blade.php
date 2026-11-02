@@ -973,7 +973,7 @@
                     @if(feature_on('radio.enabled'))
                         <style>@media (max-width:600px){.nd-radio-txt{display:inline !important;font-size:9px !important;}.info-item i{width:10px !important;height:10px !important;}.nd-radio-link{margin-left:28px !important;}}</style>
                         <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
-                            <i data-lucide="radio-receiver" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
+                            <i data-lucide="boom-box" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
                         </a>
                     @endif
                     @include('partials.lang-switcher')
