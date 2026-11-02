@@ -41,6 +41,8 @@ class EnchereNotifier
                     $m->replyTo($client->email, $client->name ?: '');
                 }
             });
+
+            Log::info('Notification validation enchère envoyée à contact@nado.ma (client #' . $client->id . ')');
         } catch (\Throwable $e) {
             Log::error('Notification validation enchère échouée: ' . $e->getMessage());
         }
