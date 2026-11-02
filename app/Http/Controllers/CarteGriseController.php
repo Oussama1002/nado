@@ -13,15 +13,14 @@ use Illuminate\Support\Str;
 
 /**
  * Endpoint de pré-remplissage IA depuis une carte grise.
- * Gated : auth:client (route) + feature-flag ai.cartegrise_enabled + rate-limit.
+ * Gated : auth:client (route) + rate-limit. Active par défaut (pas de feature-flag).
  * Ne renvoie QUE des champs véhicule — aucune donnée personnelle.
  */
 class CarteGriseController extends Controller
 {
     public function extract(Request $request, CarteGriseExtractor $extractor)
     {
-        abort_unless(feature_on('ai.cartegrise_enabled'), 404);
-
+        // Fonctionnalité active par défaut (plus de feature-flag) ; réservée aux clients connectés.
         $client = Auth::guard('client')->user();
         abort_unless($client, 403);
 

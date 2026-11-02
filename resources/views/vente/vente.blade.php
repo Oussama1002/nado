@@ -1079,8 +1079,8 @@
                 ═════════════════════════════════════════ --}}
                 <div id="vm-step-1" class="vm-step-content active">
 
-                    @if(feature_on('ai.cartegrise_enabled'))
-                    {{-- ══════════ Remplir avec la carte grise (IA) — recto + verso ══════════ --}}
+                    @auth('client')
+                    {{-- ══════════ Remplir avec la carte grise (OCR) — recto + verso ══════════ --}}
                     <div class="cg-box" id="cg-box">
                         <div class="cg-head">
                             <span class="cg-badge"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> {{ __('messages.ai.title') }}</span>
@@ -1109,7 +1109,7 @@
                         <div class="cg-status" id="cg-status" hidden></div>
                         <p class="cg-consent"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> {{ __('messages.ai.consent') }}</p>
                     </div>
-                    @endif
+                    @endauth
 
                     <h2 class="vm-step-h2">1. Véhicule &amp; détails</h2>
 
@@ -1849,7 +1849,7 @@ function vmShowConfirmPage(packId) {
 }
 </script>
 
-@if(feature_on('ai.cartegrise_enabled'))
+@auth('client')
 <style>
     .cg-box { border: 1px dashed #c7d6f5; background: linear-gradient(180deg,#f5f9ff,#ffffff); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
     .cg-head { display: flex; align-items: center; justify-content: space-between; }
@@ -2000,5 +2000,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-@endif
+@endauth
 @endsection
