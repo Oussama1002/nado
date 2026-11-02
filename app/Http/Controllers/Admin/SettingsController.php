@@ -27,7 +27,7 @@ class SettingsController extends Controller
         'ads'        => ['label' => 'Publicité',               'icon' => 'bi-megaphone'],
         'estimation' => ['label' => 'Estimation payante',      'icon' => 'bi-file-earmark-text'],
         'partners'   => ['label' => 'Partenaires & commissions', 'icon' => 'bi-people'],
-        'radio'      => ['label' => 'Nado Radio',               'icon' => 'bi-broadcast'],
+        // 'radio' est géré directement depuis le module Nado Radio (sidebar), pas ici.
         'ai'         => ['label' => 'IA — Carte grise',         'icon' => 'bi-robot'],
         'global'     => ['label' => 'Modules & Kill-switches',  'icon' => 'bi-toggles'],
     ];

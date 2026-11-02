@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +27,32 @@ class SongController extends Controller
     {
         $songs = Song::orderBy('sort_order')->orderBy('id')->get();
 
-        return view('admin.songs.index', ['songs' => $songs]);
+        return view('admin.songs.index', [
+            'songs'    => $songs,
+            // Réglages Nado Radio gérés directement ici (plus dans le panneau Configuration).
+            'settings' => [
+                'enabled'     => (bool) settings('radio.enabled', false),
+                'mini_player' => (bool) settings('radio.mini_player', false),
+                'title'       => settings('radio.title', 'Nado Radio'),
+                'tagline'     => settings('radio.tagline', ''),
+            ],
+        ]);
+    }
+
+    /** Enregistre les réglages Nado Radio (flag, mini-player, titre, tagline). */
+    public function updateSettings(Request $request)
+    {
+        $data = $request->validate([
+            'title'   => ['nullable', 'string', 'max:255'],
+            'tagline' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        Setting::set('radio.enabled', $request->has('enabled'));
+        Setting::set('radio.mini_player', $request->has('mini_player'));
+        Setting::set('radio.title', $data['title'] ?? '');
+        Setting::set('radio.tagline', $data['tagline'] ?? '');
+
+        return to_route('admin.songs.index')->with('success', 'Réglages Nado Radio mis à jour.');
     }
 
     /**

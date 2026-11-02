@@ -406,6 +406,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 
     Route::resource('videoads', VideoAdsController::class); // <-- this line
     Route::resource('imgslider', ImgSlideController::class); // <-- this line
+    Route::post('songs/settings', [SongController::class, 'updateSettings'])->name('songs.settings'); // réglages Nado Radio
     Route::resource('songs', SongController::class); // Nado Radio catalogue
     Route::resource('models', ModelsController::class); // <-- this line
     Route::resource('avistext', AvisTextController::class); // <-- this line
