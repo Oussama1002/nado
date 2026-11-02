@@ -6138,9 +6138,7 @@
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     })();
 </script>
-
-{{-- Nado Radio floating mini-player (self-guards via feature flag + setting) --}}
-@include('partials.radio-mini-player')
+{{-- Nado Radio mini-player is injected site-wide by InjectRadioMiniPlayer middleware --}}
 </body>
 
 </html>

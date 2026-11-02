@@ -1,19 +1,11 @@
 @php
     /*
-     | Site-wide floating mini-player for Nado Radio.
-     | Rendered only when BOTH flags are on AND we are NOT inside a
-     | transactional flow (listing/achat, vente, auction, financement) or on
-     | the full radio page itself — per the brand "never interfere" rule.
-     | Muted + paused by default: nothing plays until the user clicks play.
+     | Site-wide floating mini-player for Nado Radio — rendered on every public
+     | page via the InjectRadioMiniPlayer middleware (except the full radio page,
+     | which has its own player). Muted + paused by default: nothing plays until
+     | the user clicks play.
      */
-    $miniExcluded = request()->routeIs('achat.*')
-        || request()->routeIs('annonces.*')
-        || request()->routeIs('vente.*')
-        || request()->routeIs('nadoautoenchere.*')
-        || request()->routeIs('financement.*')
-        || request()->routeIs('nado-radio.*');
-
-    $miniOn = ! $miniExcluded
+    $miniOn = ! request()->routeIs('nado-radio.*')
         && feature_on('radio.enabled')
         && (bool) settings('radio.mini_player', false);
 
@@ -48,7 +40,8 @@
 </div>
 
 <style>
-    .nado-mini { position: fixed; bottom: 20px; right: 20px; z-index: 1200; font-family: 'Inter', sans-serif; }
+    /* Bottom-LEFT so it never collides with the bottom-right chat widget; very high z-index. */
+    .nado-mini { position: fixed; bottom: 20px; left: 20px; right: auto; z-index: 2147483000; font-family: 'Inter', sans-serif; }
     .nado-mini-fab { width: 56px; height: 56px; border-radius: 50%; background: #1459DD; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px -8px rgba(20,89,221,.7); cursor: pointer; transition: transform .2s; }
     .nado-mini-fab:hover { transform: scale(1.06); }
     .nado-mini-fab i { width: 24px; height: 24px; }
@@ -145,6 +138,11 @@
         load(st.index || 0, st.time || 0);
         icon(playB, 'play');
         if (st.open) openPanel();
+
+        // Rend les icônes (headphones, contrôles) même si la page n'a pas encore appelé lucide.
+        function drawIcons() { if (typeof lucide !== 'undefined') lucide.createIcons(); }
+        drawIcons();
+        document.addEventListener('DOMContentLoaded', drawIcons);
     })();
 </script>
 @endif

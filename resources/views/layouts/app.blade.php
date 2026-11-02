@@ -68,9 +68,7 @@
         @yield('content')
     </main>
 
-    {{-- Nado Radio floating mini-player (self-guards: feature flag + setting + not in transactional flows) --}}
-    @include('partials.radio-mini-player')
-
+    {{-- Nado Radio mini-player is injected site-wide by InjectRadioMiniPlayer middleware --}}
     @yield('script')
 </body>
 </html>
