@@ -1078,10 +1078,9 @@
                      STEP 1 — Véhicule & Détails
                 ═════════════════════════════════════════ --}}
                 <div id="vm-step-1" class="vm-step-content active">
-                    <h2 class="vm-step-h2">1. Véhicule &amp; détails</h2>
 
                     @if(feature_on('ai.cartegrise_enabled'))
-                    {{-- ══════════ Remplir avec la carte grise (IA) ══════════ --}}
+                    {{-- ══════════ Remplir avec la carte grise (IA) — en premier ══════════ --}}
                     <div class="cg-box" id="cg-box">
                         <div class="cg-head">
                             <span class="cg-badge"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> {{ __('messages.ai.title') }}</span>
@@ -1097,6 +1096,8 @@
                         <p class="cg-consent"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> {{ __('messages.ai.consent') }}</p>
                     </div>
                     @endif
+
+                    <h2 class="vm-step-h2">1. Véhicule &amp; détails</h2>
 
                     {{-- Row 1: identité --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
