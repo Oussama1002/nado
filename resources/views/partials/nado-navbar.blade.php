@@ -301,6 +301,7 @@
             .top-bar .social-links { display: none !important; }
             .info-item i { width: 10px !important; height: 10px !important; } /* icônes mail/téléphone plus petites */
             .nd-radio-txt { display: inline !important; font-size: 9px !important; } /* "Nado Radio" affiché sur mobile */
+            .nd-radio-link { margin-left: 14px !important; } /* espace avec le téléphone */
             .top-bar { padding: 8px 0 !important; }
             .top-bar .custom-container { padding: 0 10px !important; }
             .contact-info { gap: 10px !important; }

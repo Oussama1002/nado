@@ -2182,6 +2182,7 @@
                 .nv-info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 4px !important; }
                 .nv-info-item i { width: 10px !important; height: 10px !important; }
                 .nv-top-bar .nd-radio-txt { font-size: 9px !important; }
+                .nv-top-bar .nd-radio-link { margin-left: 14px !important; }
                 .nv-top-bar [style*="gap:16px"] { gap: 8px !important; }
             }
             @media (max-width: 380px) {
