@@ -781,6 +781,8 @@
             animation: infinite-scroll 15s linear infinite;
             cursor: grab;
             user-select: none;
+            /* La bande défile toujours de la même façon (le translateX casse en RTL). */
+            direction: ltr;
         }
 
 

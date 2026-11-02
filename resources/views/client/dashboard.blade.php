@@ -934,8 +934,9 @@ function openVenteFrame(url) {
     frame.onload = function () {
         if (frame.src !== 'about:blank') loading.classList.add('hidden');
     };
-    // embed=1 → the page renders only the vente modal
-    frame.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'embed=1';
+    // embed=1 → the page renders only the vente modal ; lang= pour garder la langue dans l'iframe
+    var lang = (document.documentElement.getAttribute('lang') || 'fr').slice(0, 2);
+    frame.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'embed=1&lang=' + lang;
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';

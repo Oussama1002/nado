@@ -16,7 +16,10 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->session()->get('locale')
+        // ?lang= en priorité (iframes/liens qui doivent forcer la langue),
+        // puis session, cookie, défaut.
+        $locale = $request->query('lang')
+            ?? $request->session()->get('locale')
             ?? $request->cookie('locale')
             ?? config('app.locale');
 
