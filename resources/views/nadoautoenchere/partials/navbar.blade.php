@@ -5,24 +5,28 @@
 {{-- dir=ltr keeps the bar laid out like the main NADO navbar (logo on the
      left, actions on the right) even in Arabic; the labels still render RTL. --}}
 <header class="sticky top-0 z-50" dir="ltr">
-    <div class="bg-[#F37021] text-slate-900 py-2.5 px-4 border-b border-black/5">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80">
-                    <i data-lucide="mail" class="w-3 h-3 text-[#1459DD]"></i>
+    <div class="bg-[#F37021] text-slate-900 py-2.5 px-3 sm:px-4 border-b border-black/5">
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
+            <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+                {{-- Email : masqué sur très petits écrans (le téléphone suffit) --}}
+                <div class="hidden min-[420px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
+                    <i data-lucide="mail" class="w-3 h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="mailto:contact@nado.ma" class="hover:text-[#1459DD] transition-colors">contact@nado.ma</a>
                 </div>
-                <div class="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80">
-                    <i data-lucide="phone-call" class="w-3 h-3 text-[#1459DD]"></i>
+                <div class="flex items-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
+                    <i data-lucide="phone-call" class="w-3 h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="tel:+212520070611" class="hover:text-[#1459DD] transition-colors">+212 520 070 611</a>
                 </div>
             </div>
-            <div class="flex items-center gap-5">
-                <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="facebook" class="w-5 h-5" stroke-width="1.5"></i></a>
-                <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="instagram" class="w-5 h-5" stroke-width="1.5"></i></a>
-                <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="linkedin" class="w-5 h-5" stroke-width="1.5"></i></a>
+            <div class="flex items-center gap-3 sm:gap-5 flex-shrink-0">
+                {{-- Réseaux sociaux : masqués sur mobile pour libérer de la place --}}
+                <div class="hidden sm:flex items-center gap-5">
+                    <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="facebook" class="w-5 h-5" stroke-width="1.5"></i></a>
+                    <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="instagram" class="w-5 h-5" stroke-width="1.5"></i></a>
+                    <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="linkedin" class="w-5 h-5" stroke-width="1.5"></i></a>
+                </div>
                 @if(feature_on('radio.enabled'))
-                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors">
+                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0">
                         <i data-lucide="radio" class="w-4 h-4 flex-shrink-0"></i><span class="hidden sm:inline">Nado Radio</span>
                     </a>
                 @endif
