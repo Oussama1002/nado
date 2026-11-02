@@ -1958,24 +1958,36 @@ document.addEventListener('DOMContentLoaded', function () {
             if (input.files && input.files.length) {
                 slot.classList.add('filled');
                 name.textContent = input.files[0].name;
+                refreshBtn();
+                scheduleAuto(); // lancement automatique après sélection
             } else {
                 slot.classList.remove('filled');
                 name.textContent = hint;
+                refreshBtn();
             }
-            refreshBtn();
         });
     }
     function refreshBtn() {
         var n = (recto.files && recto.files.length ? 1 : 0) + (verso.files && verso.files.length ? 1 : 0);
         analyze.disabled = (n === 0);
     }
-    bindSlot(recto, 'cg-slot-recto', 'cg-recto-name', @json(__('messages.ai.recto_hint')));
-    bindSlot(verso, 'cg-slot-verso', 'cg-verso-name', @json(__('messages.ai.verso_hint')));
 
-    analyze.addEventListener('click', function () {
+    var autoTimer = null;
+    // Débounce : laisse le temps d'ajouter le 2e côté, puis analyse une seule fois.
+    function scheduleAuto() {
+        if (autoTimer) clearTimeout(autoTimer);
+        autoTimer = setTimeout(runExtract, 1000);
+    }
+
+    function runExtract() {
+        if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+        var hasRecto = recto.files && recto.files.length;
+        var hasVerso = verso.files && verso.files.length;
+        if (!hasRecto && !hasVerso) return;
+
         var fd = new FormData();
-        if (recto.files && recto.files.length) fd.append('images[]', recto.files[0]);
-        if (verso.files && verso.files.length) fd.append('images[]', verso.files[0]);
+        if (hasRecto) fd.append('images[]', recto.files[0]);
+        if (hasVerso) fd.append('images[]', verso.files[0]);
         fd.append('_token', (document.querySelector('input[name=_token]') || {}).value || '{{ csrf_token() }}');
 
         analyze.disabled = true;
@@ -1997,7 +2009,12 @@ document.addEventListener('DOMContentLoaded', function () {
             showStatus('err', '<i data-lucide="alert-triangle" style="width:16px;height:16px;"></i> {{ __('messages.ai.failed') }}');
             refreshBtn();
         });
-    });
+    }
+
+    bindSlot(recto, 'cg-slot-recto', 'cg-recto-name', @json(__('messages.ai.recto_hint')));
+    bindSlot(verso, 'cg-slot-verso', 'cg-verso-name', @json(__('messages.ai.verso_hint')));
+
+    analyze.addEventListener('click', runExtract); // bouton = re-analyser (optionnel)
 });
 </script>
 @endauth

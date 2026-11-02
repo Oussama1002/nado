@@ -150,7 +150,13 @@ class CarteGriseController extends Controller
         return $brand ? [$brand->name, (float) $conf] : [null, 0.0];
     }
 
-    /** Fuzzy-match modèle (token de tête) → Modele de la marque, ou null. */
+    /**
+     * Fuzzy-match modèle → Modele de la marque.
+     * La carte grise est verbeuse ("A4 TDI 2.0L EXCLUSIVE", "E-TRON SLINE QUATTRO")
+     * et l'OCR peut couper les tirets ("e tron"). On compare en version "compacte"
+     * (minuscules, sans accents ni séparateurs) et on garde le modèle le PLUS LONG
+     * contenu dans la chaîne extraite — sinon null (le vendeur choisit lui-même).
+     */
     private function matchModele(?string $markName, ?string $raw, $conf): array
     {
         $raw = trim((string) $raw);
@@ -162,22 +168,51 @@ class CarteGriseController extends Controller
             return [null, 0.0];
         }
 
-        // La carte grise est verbeuse ("A4 TDI 2.0L EXCLUSIVE") → on matche sur le 1er token.
-        $token = Str::lower(preg_split('/\s+/', $raw)[0] ?? '');
-        if ($token === '') {
+        $haystack = $this->compact($raw);
+        if ($haystack === '') {
             return [null, 0.0];
         }
 
-        $modele = Modele::where('brand_id', $brand->id)
-            ->where(function ($q) use ($token) {
-                $q->whereRaw('LOWER(name) = ?', [$token])
-                  ->orWhereRaw('LOWER(name) LIKE ?', [$token . '%'])
-                  ->orWhereRaw('? LIKE CONCAT(LOWER(name), \'%\')', [$token]);
-            })
-            ->orderByRaw('CHAR_LENGTH(name)')
-            ->first();
+        $models = Modele::where('brand_id', $brand->id)->get(['name']);
 
-        return $modele ? [$modele->name, (float) $conf] : [null, 0.0];
+        // 1) Le modèle dont le nom (compacté) apparaît dans la chaîne — le plus long gagne.
+        $best = null;
+        $bestLen = 0;
+        foreach ($models as $m) {
+            $c = $this->compact($m->name);
+            if (strlen($c) >= 2 && str_contains($haystack, $c) && strlen($c) > $bestLen) {
+                $best = $m->name;
+                $bestLen = strlen($c);
+            }
+        }
+        if ($best !== null) {
+            return [$best, (float) $conf];
+        }
+
+        // 2) Repli : 1er token (ex. "A4 …") comme préfixe d'un modèle.
+        $token = $this->compact(preg_split('/\s+/', $raw)[0] ?? '');
+        if (strlen($token) >= 2) {
+            foreach ($models as $m) {
+                $c = $this->compact($m->name);
+                if ($c !== '' && (str_starts_with($c, $token) || str_starts_with($token, $c))) {
+                    return [$m->name, (float) $conf * 0.8];
+                }
+            }
+        }
+
+        return [null, 0.0];
+    }
+
+    /** Minuscules, sans accents ni séparateurs : "E-TRON Sline" → "etronsline". */
+    private function compact(string $s): string
+    {
+        $s = Str::lower($s);
+        $s = strtr($s, [
+            'à' => 'a', 'â' => 'a', 'ä' => 'a', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'î' => 'i', 'ï' => 'i', 'ô' => 'o', 'ö' => 'o', 'ù' => 'u', 'û' => 'u', 'ü' => 'u', 'ç' => 'c',
+        ]);
+
+        return preg_replace('/[^a-z0-9]/', '', $s);
     }
 
     /** Année depuis l'entier annee ou l'année de la date de 1re circulation. */
