@@ -29,8 +29,8 @@
                     <a href="#"><i data-lucide="linkedin"></i></a>
                 </div>
                 @if(feature_on('radio.enabled'))
-                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
-                        <i data-lucide="headphones" style="width:16px;height:16px;"></i><span>Nado Radio</span>
+                    <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
+                        <i data-lucide="headphones" style="width:16px;height:16px;flex-shrink:0;"></i><span class="nd-radio-txt">Nado Radio</span>
                     </a>
                 @endif
                 @include('partials.lang-switcher')
@@ -299,6 +299,7 @@
         .info-item i { flex-shrink: 0 !important; }
         @media (max-width: 600px) {
             .top-bar .social-links { display: none !important; }
+            .nd-radio-txt { display: none !important; } /* icône seule sur mobile pour gagner de la place */
             .top-bar { padding: 8px 0 !important; }
             .top-bar .custom-container { padding: 0 10px !important; }
             .contact-info { gap: 10px !important; }
