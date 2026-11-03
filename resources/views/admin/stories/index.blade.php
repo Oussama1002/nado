@@ -14,8 +14,10 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4 class="card-title">List Stories</h4>
-                                <a href="{{ route('admin.stories.create') }}" class="btn btn-primary float-right">Add New
-                                    Story</a>
+                                <div class="d-flex" style="gap:8px;">
+                                    <a href="{{ route('admin.export', 'stories') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
+                                    <a href="{{ route('admin.stories.create') }}" class="btn btn-primary">Add New Story</a>
+                                </div>
                             </div>
                             <div class="card-content">
                                 <div class="card-body">

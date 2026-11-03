@@ -16,6 +16,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h4 class="card-title mb-0">Toutes les demandes</h4>
+                        <a href="{{ route('admin.export', 'demandes') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
 
                         <form method="GET" class="d-flex gap-2">
                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">

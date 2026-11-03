@@ -15,6 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List finance</h4>
+                      <a href="{{ route('admin.export', 'finances') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
                   </div>
                   <div class="card-content">
                       <div class="card-body">

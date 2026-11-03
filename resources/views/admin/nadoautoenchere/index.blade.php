@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h4 class="card-title">List Auto Encheres</h4>
-            <a href="{{ route('admin.nadoautoenchere.create')}}" class="btn btn-primary float-right">New Auto Encheres</a>
+            <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'nadoautoenchere') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.nadoautoenchere.create')}}" class="btn btn-primary">New Auto Encheres</a></div>
         </div>
           <div class="card-body">
             <div class="table-responsive">

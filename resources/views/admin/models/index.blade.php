@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Model</h4>
-                      <a href="{{ route('admin.models.create')}}" class="btn btn-primary float-right">New model</a>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'models') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.models.create')}}" class="btn btn-primary">New model</a></div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">

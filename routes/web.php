@@ -57,7 +57,8 @@ use App\Http\Controllers\{
     Admin\AutoEnchereController,
     Admin\NadoAutoEnchereBidController,
     Admin\SettingsController,
-    Admin\SongController
+    Admin\SongController,
+    Admin\ExportController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -413,6 +414,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::resource('imgslider', ImgSlideController::class); // <-- this line
     Route::post('songs/settings', [SongController::class, 'updateSettings'])->name('songs.settings'); // réglages Nado Radio
     Route::resource('songs', SongController::class); // Nado Radio catalogue
+    Route::get('export/{module}', [ExportController::class, 'export'])->name('export'); // export Excel générique
     Route::resource('models', ModelsController::class); // <-- this line
     Route::resource('avistext', AvisTextController::class); // <-- this line
     Route::resource('avis-vd', AvisVdController::class); // legacy slug

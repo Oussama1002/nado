@@ -15,7 +15,7 @@
             <h4 class="card-title">List Annonces</h4>
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.annonces.archive') }}" class="btn btn-secondary"><i class="bi bi-archive"></i> Archive</a>
-                <a href="{{ route('admin.annonces.create')}}" class="btn btn-primary float-right">New Annonce</a>
+                <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'annonces') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.annonces.create')}}" class="btn btn-primary">New Annonce</a></div>
             </div>
         </div>
           <div class="card-body">

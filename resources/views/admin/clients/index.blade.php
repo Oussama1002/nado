@@ -2,7 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Liste des Clients</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Liste des Clients</h1>
+        <a href="{{ route('admin.export', 'clients') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

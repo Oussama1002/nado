@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Avis videos</h4>
-                      <a href="{{ route('admin.avisvideos.create')}}" class="btn btn-primary float-right">New Avis videos</a>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'avisvideos') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.avisvideos.create')}}" class="btn btn-primary">New Avis videos</a></div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">

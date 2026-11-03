@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Couleur</h4>
-                      <a href="{{ route('admin.colors.create')}}" class="btn btn-primary float-right">New Couleur</a>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'colors') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.colors.create')}}" class="btn btn-primary">New Couleur</a></div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">

@@ -60,7 +60,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">Titres Nado Radio</h4>
-                      <a href="{{ route('admin.songs.create')}}" class="btn btn-primary float-right">Nouveau titre</a>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'songs') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.songs.create')}}" class="btn btn-primary">Nouveau titre</a></div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">

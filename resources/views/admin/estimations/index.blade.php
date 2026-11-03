@@ -4,7 +4,10 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Estimations clients</h1>
-        <span class="text-muted">{{ $estimations->total() }} estimation(s)</span>
+        <div class="d-flex align-items-center" style="gap:10px;">
+            <span class="text-muted">{{ $estimations->total() }} estimation(s)</span>
+            <a href="{{ route('admin.export', 'estimations') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
+        </div>
     </div>
 
     @if (session('success'))
