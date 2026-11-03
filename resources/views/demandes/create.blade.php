@@ -1,7 +1,7 @@
 {{-- NADO-DEMANDE-CREATE-V5 --}}
 @extends('layouts.app')
 
-@section('title', 'Publier ma demande')
+@section('title', __('messages.demande_form.page_title'))
 
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -68,10 +68,9 @@
 </style>
 
 <div class="dmd-form-wrap">
-    <h1>Publier ma demande</h1>
+    <h1>{{ __('messages.demande_form.page_title') }}</h1>
     <p class="intro">
-        Dites-nous quelles voitures vous recherchez — vous pouvez en ajouter plusieurs (ex. BMW Série 5, Audi A4, Mercedes Classe A).
-        Un agent NADO vous contactera rapidement.
+        {{ __('messages.demande_form.intro') }}
     </p>
 
     @if ($errors->any())
@@ -97,37 +96,44 @@
         <input type="text" name="website" value="" style="display:none;" tabindex="-1" autocomplete="off">
 
         <div>
-            <label for="dmdNom">Nom complet</label>
+            <label for="dmdNom">{{ __('messages.demande_form.fullname') }}</label>
             <input id="dmdNom" type="text" name="nom" required
                    value="{{ old('nom', auth('client')->user()?->name) }}"
-                   placeholder="Votre nom et prénom">
+                   placeholder="{{ __('messages.demande_form.fullname_ph') }}">
         </div>
 
         <div>
-            <label for="dmdTel">Téléphone</label>
+            <label for="dmdTel">{{ __('messages.ventemodal.phone') }}</label>
             <input id="dmdTel" type="tel" name="telephone" required
                    value="{{ old('telephone', auth('client')->user()?->phone) }}"
                    placeholder="06XXXXXXXX">
         </div>
 
         <div>
-            <label>Voitures recherchées</label>
+            <label>{{ __('messages.demande_form.cars_label') }}</label>
             <div class="dmd-cars" id="dmdCars">
                 {{-- initial row rendered by JS so brand + model stay in sync --}}
             </div>
             <button type="button" class="dmd-add-car" id="dmdAddCar" style="margin-top:12px;">
-                + Ajouter une autre voiture
+                {{ __('messages.demande_form.add_car') }}
             </button>
         </div>
 
-        <button type="submit" class="dmd-btn">Envoyer ma demande</button>
+        <button type="submit" class="dmd-btn">{{ __('messages.demande_form.submit') }}</button>
 
-        <p class="dmd-note">Un administrateur vous contactera rapidement.</p>
+        <p class="dmd-note">{{ __('messages.demande_form.note') }}</p>
     </form>
 </div>
 
 <script>
     (function () {
+        var DMD_I18N = {
+            chooseBrand: @json(__('messages.demande_form.choose_brand')),
+            chooseModel: @json(__('messages.demande_form.choose_model')),
+            marque:      @json(__('messages.ventemodal.marque')),
+            modele:      @json(__('messages.ventemodal.modele')),
+            remove:      @json(__('messages.ventemodal.remove')),
+        };
         var brandsData = @json($brands->map(fn($b) => ['id' => $b->id, 'name' => $b->name])->values());
         var prefillBrandId  = @json((string)($prefill['brand_id']  ?? ''));
         var prefillModeleId = @json((string)($prefill['modele_id'] ?? ''));
@@ -140,7 +146,7 @@
         var rowId = 0;
 
         function brandOptions(selectedId) {
-            var html = '<option value="">— Choisir une marque —</option>';
+            var html = '<option value="">' + DMD_I18N.chooseBrand + '</option>';
             brandsData.forEach(function (b) {
                 html += '<option value="' + b.id + '"' + (String(b.id) === String(selectedId) ? ' selected' : '') + '>' + b.name + '</option>';
             });
@@ -155,14 +161,14 @@
             row.dataset.rowId = id;
             row.innerHTML =
                 '<div>'
-                 + '<label>Marque</label>'
+                 + '<label>' + DMD_I18N.marque + '</label>'
                  + '<select class="dmd-brand">' + brandOptions(preBrandId || '') + '</select>'
                 + '</div>'
                 + '<div>'
-                 + '<label>Modèle</label>'
-                 + '<select class="dmd-modele"><option value="">— Choisir un modèle —</option></select>'
+                 + '<label>' + DMD_I18N.modele + '</label>'
+                 + '<select class="dmd-modele"><option value="">' + DMD_I18N.chooseModel + '</option></select>'
                 + '</div>'
-                + '<button type="button" class="dmd-car-remove" title="Supprimer">×</button>';
+                + '<button type="button" class="dmd-car-remove" title="' + DMD_I18N.remove + '">×</button>';
 
             container.appendChild(row);
 
@@ -182,7 +188,7 @@
         }
 
         function loadModels(brandId, modeleSel, preselectId) {
-            modeleSel.innerHTML = '<option value="">— Choisir un modèle —</option>';
+            modeleSel.innerHTML = '<option value="">' + DMD_I18N.chooseModel + '</option>';
             if (!brandId) return;
             fetch(MODELS_URL + '/' + encodeURIComponent(brandId), { headers: { 'Accept': 'application/json' } })
                 .then(function (r) { return r.ok ? r.json() : []; })

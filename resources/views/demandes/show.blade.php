@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Demande #' . $demande->id . ' — NADO')
+@section('title', __('messages.demande_show.title_prefix') . ' #' . $demande->id . ' — NADO')
 
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -117,42 +117,42 @@
     <div class="dmd-main">
         <div class="dmd-top">
             <div>
-                <h1>Cherche {{ $demande->brand?->name ?? 'une voiture' }} {{ $demande->modele?->name }}
-                    @if($demande->ville) <span style="color:#64748b;font-weight:500;">à {{ $demande->ville->name }}</span>@endif
+                <h1>{{ __('messages.demande_show.seek') }} {{ $demande->brand?->name ?? __('messages.demande_show.a_car') }} {{ $demande->modele?->name }}
+                    @if($demande->ville) <span style="color:#64748b;font-weight:500;">{{ __('messages.demande_show.at') }} {{ $demande->ville->name }}</span>@endif
                 </h1>
-                <div class="dmd-sub">Publiée {{ $demande->created_at->locale('fr')->diffForHumans() }}</div>
+                <div class="dmd-sub">{{ __('messages.demande_show.published') }} {{ $demande->created_at->locale(app()->getLocale())->diffForHumans() }}</div>
             </div>
             <span class="dmd-badge">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
-                Recherche active
+                {{ __('messages.demande_show.active') }}
             </span>
         </div>
 
         <dl class="dmd-specs">
             @if($demande->price_min || $demande->price_max)
-                <div class="dmd-spec"><dt>Budget</dt>
+                <div class="dmd-spec"><dt>{{ __('messages.demande_show.budget') }}</dt>
                     <dd>{{ number_format($demande->price_min ?? 0, 0, ',', ' ') }} – {{ number_format($demande->price_max ?? 0, 0, ',', ' ') }} DH</dd></div>
             @endif
             @if($demande->year_min || $demande->year_max)
-                <div class="dmd-spec"><dt>Année</dt>
+                <div class="dmd-spec"><dt>{{ __('messages.demande_show.year') }}</dt>
                     <dd>{{ $demande->year_min ?? '…' }} – {{ $demande->year_max ?? '…' }}</dd></div>
             @endif
             @if($demande->km_max)
-                <div class="dmd-spec"><dt>Km max</dt>
+                <div class="dmd-spec"><dt>{{ __('messages.demande_show.km_max') }}</dt>
                     <dd>{{ number_format($demande->km_max, 0, ',', ' ') }}</dd></div>
             @endif
             @if($demande->boite && $demande->boite !== 'any')
-                <div class="dmd-spec"><dt>Boîte</dt>
-                    <dd>{{ ['auto' => 'Automatique', 'manuelle' => 'Manuelle'][$demande->boite] ?? $demande->boite }}</dd></div>
+                <div class="dmd-spec"><dt>{{ __('messages.demande_show.gearbox') }}</dt>
+                    <dd>{{ $demande->boite === 'auto' ? __('messages.ventemodal.box_auto') : ($demande->boite === 'manuelle' ? __('messages.ventemodal.box_manual') : $demande->boite) }}</dd></div>
             @endif
             @if($demande->carburant)
-                <div class="dmd-spec"><dt>Carburant</dt><dd>{{ $demande->carburant }}</dd></div>
+                <div class="dmd-spec"><dt>{{ __('messages.ventemodal.fuel') }}</dt><dd>{{ $demande->carburant }}</dd></div>
             @endif
         </dl>
 
         @if($demande->comment)
             <div class="dmd-note">
-                <strong>Note du demandeur :</strong><br>
+                <strong>{{ __('messages.demande_show.note_label') }}</strong><br>
                 {{ $demande->comment }}
             </div>
         @endif
@@ -161,21 +161,21 @@
             <div class="dmd-user">
                 <div class="dmd-avatar">{{ $initials ?: '?' }}</div>
                 <div class="dmd-user-info">
-                    <div class="lbl">Demandeur</div>
+                    <div class="lbl">{{ __('messages.demande_show.requester') }}</div>
                     <div class="nm">{{ $demande->nom }}</div>
                     <div class="ph" id="dmdPhone" data-full="{{ $demande->telephone }}">📞 {{ $maskedPhone }}</div>
                 </div>
             </div>
             <button type="button" class="dmd-reveal-btn" onclick="document.getElementById('proposeModal').style.display='flex';">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                Proposer votre véhicule
+                {{ __('messages.demande_show.propose') }}
             </button>
         </div>
     </div>
 
     @if($matches->count())
         <div class="dmd-section">
-            <h2>Peut-être ces annonces vous intéressent</h2>
+            <h2>{{ __('messages.demande_show.matches_title') }}</h2>
             <div class="dmd-matches">
                 @foreach($matches as $a)
                     <a href="{{ route('achat.detail', ['marque' => $a->mark, 'modele' => $a->modele, 'id' => $a->id]) }}" class="dmd-match">
@@ -188,33 +188,33 @@
     @endif
 
     <div class="dmd-section">
-        <h2>Réponses ({{ $demande->replies_count }})</h2>
+        <h2>{{ __('messages.demande_show.replies') }} ({{ $demande->replies_count }})</h2>
         <div class="dmd-reply-form" style="text-align:center;">
             <p style="margin:0 0 12px;color:#334155;font-size:14px;">
-                Vous avez cette voiture ou pouvez la proposer ? Soumettez-la et nous mettrons l’acheteur en relation avec vous.
+                {{ __('messages.demande_show.reply_cta') }}
             </p>
             <button type="button" class="dmd-reveal-btn" style="text-decoration:none;" onclick="document.getElementById('proposeModal').style.display='flex';">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                Proposer votre véhicule
+                {{ __('messages.demande_show.propose') }}
             </button>
         </div>
 
         @forelse($demande->replies->where('status','visible') as $r)
             <div class="dmd-reply">
-                <div class="meta">{{ $r->created_at->locale('fr')->diffForHumans() }} · {{ $r->client?->name ?? 'Membre' }}</div>
+                <div class="meta">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }} · {{ $r->client?->name ?? __('messages.demande_show.member') }}</div>
                 <p>{{ $r->message }}</p>
                 @if($r->annonce)
-                    <a href="{{ route('achat.detail', ['marque' => $r->annonce->mark, 'modele' => $r->annonce->modele, 'id' => $r->annonce->id]) }}" style="font-size:13px;color:#1459DD;">Voir l’annonce proposée →</a>
+                    <a href="{{ route('achat.detail', ['marque' => $r->annonce->mark, 'modele' => $r->annonce->modele, 'id' => $r->annonce->id]) }}" style="font-size:13px;color:#1459DD;">{{ __('messages.demande_show.see_ad') }}</a>
                 @endif
             </div>
         @empty
-            <p style="color:#64748b;">Aucune réponse pour l’instant. Soyez le premier à proposer une voiture.</p>
+            <p style="color:#64748b;">{{ __('messages.demande_show.no_replies') }}</p>
         @endforelse
     </div>
 
     <form method="POST" action="{{ route('demandes.report', $demande->id) }}" class="dmd-report">
         @csrf
-        <button type="submit">⚑ Signaler cette demande</button>
+        <button type="submit">{{ __('messages.demande_show.report') }}</button>
     </form>
 </div>
 
@@ -223,8 +223,8 @@
     <div style="background:#fff;max-width:620px;width:100%;border-radius:16px;box-shadow:0 30px 60px -20px rgba(15,23,42,.4);">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #e2e8f0;">
             <div>
-                <h2 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;">Proposer votre véhicule</h2>
-                <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Remplissez les détails. Un agent vous contactera.</p>
+                <h2 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;">{{ __('messages.demande_show.propose') }}</h2>
+                <p style="margin:4px 0 0;font-size:13px;color:#64748b;">{{ __('messages.demande_show.modal_sub') }}</p>
             </div>
             <button type="button" onclick="document.getElementById('proposeModal').style.display='none';"
                     style="background:none;border:0;color:#94a3b8;font-size:24px;cursor:pointer;line-height:1;">×</button>
@@ -248,13 +248,13 @@
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Nom complet *
+                    {{ __('messages.demande_show.fullname') }} *
                     <input type="text" name="proposer_name" required
                            value="{{ old('proposer_name', auth('client')->user()?->name) }}"
                            style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;">
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Téléphone *
+                    {{ __('messages.ventemodal.phone') }} *
                     <input type="tel" name="proposer_phone" required
                            value="{{ old('proposer_phone', auth('client')->user()?->phone) }}"
                            placeholder="06XXXXXXXX"
@@ -264,7 +264,7 @@
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Marque *
+                    {{ __('messages.ventemodal.marque') }} *
                     <select name="mark" id="proposeBrand" required
                             style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;background:#fff;">
                         <option value="">—</option>
@@ -274,7 +274,7 @@
                     </select>
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Modèle *
+                    {{ __('messages.ventemodal.modele') }} *
                     <select name="modele" id="proposeModele" required
                             style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;background:#fff;">
                         <option value="">—</option>
@@ -306,17 +306,17 @@
 
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Année *
+                    {{ __('messages.demande_show.year') }} *
                     <input type="number" name="year" required min="1980" max="{{ date('Y')+1 }}" value="{{ old('year') }}"
                            style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;">
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Km *
+                    {{ __('messages.demande_show.km') }} *
                     <input type="number" name="km" required min="0" value="{{ old('km') }}"
                            style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;">
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Prix (DH) *
+                    {{ __('messages.demande_show.price') }} *
                     <input type="number" name="prix" required min="0" value="{{ old('prix') }}"
                            style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;">
                 </label>
@@ -324,7 +324,7 @@
 
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Ville
+                    {{ __('messages.ventemodal.city') }}
                     <select name="city" style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;background:#fff;">
                         <option value="">—</option>
                         @foreach($villes as $v)
@@ -333,34 +333,34 @@
                     </select>
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Carburant
+                    {{ __('messages.ventemodal.fuel') }}
                     <select name="carburant" style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;background:#fff;">
                         <option value="">—</option>
-                        <option value="Essence"  @selected(old('carburant')==='Essence')>Essence</option>
-                        <option value="Diesel"   @selected(old('carburant')==='Diesel')>Diesel</option>
-                        <option value="Hybride"  @selected(old('carburant')==='Hybride')>Hybride</option>
-                        <option value="Électrique" @selected(old('carburant')==='Électrique')>Électrique</option>
+                        <option value="Essence"  @selected(old('carburant')==='Essence')>{{ __('messages.ventemodal.fuel_essence') }}</option>
+                        <option value="Diesel"   @selected(old('carburant')==='Diesel')>{{ __('messages.ventemodal.fuel_diesel') }}</option>
+                        <option value="Hybride"  @selected(old('carburant')==='Hybride')>{{ __('messages.ventemodal.fuel_hybrid') }}</option>
+                        <option value="Électrique" @selected(old('carburant')==='Électrique')>{{ __('messages.ventemodal.fuel_electric') }}</option>
                     </select>
                 </label>
                 <label style="font-size:13px;font-weight:600;color:#334155;">
-                    Boîte
+                    {{ __('messages.demande_show.gearbox') }}
                     <select name="box" style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;background:#fff;">
                         <option value="">—</option>
-                        <option value="Automatique" @selected(old('box')==='Automatique')>Automatique</option>
-                        <option value="Manuelle"    @selected(old('box')==='Manuelle')>Manuelle</option>
+                        <option value="Automatique" @selected(old('box')==='Automatique')>{{ __('messages.ventemodal.box_auto') }}</option>
+                        <option value="Manuelle"    @selected(old('box')==='Manuelle')>{{ __('messages.ventemodal.box_manual') }}</option>
                     </select>
                 </label>
             </div>
 
             <label style="font-size:13px;font-weight:600;color:#334155;">
-                Description (facultatif)
+                {{ __('messages.demande_show.description') }}
                 <textarea name="description" rows="3"
                           style="width:100%;margin-top:4px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-family:inherit;font-size:14px;">{{ old('description') }}</textarea>
             </label>
 
             <div>
                 <label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:6px;">
-                    Photos du véhicule <span style="color:#94a3b8;font-weight:500;">(jusqu’à 8, max 4 Mo chacune)</span>
+                    {{ __('messages.demande_show.photos_label') }} <span style="color:#94a3b8;font-weight:500;">{{ __('messages.demande_show.photos_hint') }}</span>
                 </label>
 
                 <div id="proposeDropzone" style="position:relative;border:2px dashed #cbd5e1;border-radius:12px;background:#f8fafc;padding:26px 20px;text-align:center;cursor:pointer;transition:border-color .15s, background .15s;">
@@ -372,10 +372,10 @@
                         <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
                     <div style="font-size:14px;font-weight:600;color:#0f172a;">
-                        Glissez-déposez vos photos ici
+                        {{ __('messages.demande_show.dropzone_title') }}
                     </div>
                     <div style="font-size:12px;color:#64748b;margin-top:2px;">
-                        ou <span style="color:#1459DD;font-weight:600;text-decoration:underline;">cliquez pour parcourir</span>
+                        {{ __('messages.demande_show.or') }} <span style="color:#1459DD;font-weight:600;text-decoration:underline;">{{ __('messages.demande_show.browse') }}</span>
                     </div>
                     <div id="proposeCount" style="font-size:11px;color:#94a3b8;margin-top:6px;"></div>
                 </div>
@@ -384,7 +384,7 @@
             </div>
 
             <button type="submit" class="dmd-reveal-btn" style="justify-content:center;">
-                Envoyer ma proposition
+                {{ __('messages.demande_show.submit') }}
             </button>
         </form>
 
@@ -426,7 +426,7 @@
                         preview.appendChild(wrap);
                     });
                     counter.textContent = files.length
-                        ? files.length + ' / ' + MAX + ' photo' + (files.length > 1 ? 's' : '') + ' sélectionnée' + (files.length > 1 ? 's' : '')
+                        ? files.length + ' / ' + MAX + ' ' + @json(__('messages.demande_show.photos_selected'))
                         : '';
                 }
                 function sync() {
