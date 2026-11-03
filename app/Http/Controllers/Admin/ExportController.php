@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\GenericExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
@@ -57,6 +59,36 @@ class ExportController extends Controller
         'enchere-clients' => ['type', 'flotte&enchere'],
     ];
 
+    /** En-têtes en français (colonne => libellé). Les colonnes absentes sont « humanisées ». */
+    private const LABELS = [
+        'id' => 'ID', 'client_id' => 'Client', 'user_id' => 'Utilisateur',
+        'name' => 'Nom', 'nom' => 'Nom', 'email' => 'E-mail',
+        'phone' => 'Téléphone', 'telephone' => 'Téléphone', 'company' => 'Société',
+        'type' => 'Type', 'logo' => 'Logo',
+        'mark' => 'Marque', 'brand_id' => 'Marque', 'modele' => 'Modèle', 'modele_id' => 'Modèle',
+        'city' => 'Ville', 'ville_id' => 'Ville', 'color_id' => 'Couleur', 'colors' => 'Couleur',
+        'year' => 'Année', 'year_min' => 'Année min', 'year_max' => 'Année max',
+        'prix' => 'Prix', 'price_min' => 'Prix min', 'price_max' => 'Prix max',
+        'km' => 'Kilométrage', 'km_max' => 'Km max',
+        'boite' => 'Boîte', 'box' => 'Boîte', 'carburant' => 'Carburant',
+        'etat' => 'État', 'origine' => 'Origine', 'cv' => 'CV fiscaux',
+        'matricule' => 'Matricule', 'vin' => 'VIN / Châssis', 'pack_id' => 'Pack',
+        'titre' => 'Titre', 'title' => 'Titre', 'description' => 'Description',
+        'comment' => 'Commentaire', 'raw_query' => 'Recherche', 'source' => 'Source',
+        'status' => 'Statut', 'active' => 'Actif', 'verified' => 'Vérifié',
+        'is_approved' => 'Approuvé', 'is_verified' => 'Vérifié',
+        'ae_approved' => 'Accès enchères', 'ae_role' => 'Rôle enchères',
+        'certifie' => 'Certifié', 'pro' => 'Pro', 'particulie' => 'Particulier',
+        'views' => 'Vues', 'views_count' => 'Vues', 'replies_count' => 'Réponses',
+        'image' => 'Image', 'images' => 'Images', 'video' => 'Vidéo', 'link' => 'Lien',
+        'sort_order' => 'Ordre', 'duration' => 'Durée', 'artist' => 'Artiste',
+        'file_path' => 'Fichier', 'cover_path' => 'Pochette', 'video_key' => 'Vidéo',
+        'ip' => 'IP', 'ip_hash' => 'IP', 'proposition' => 'Proposition',
+        'expires_at' => 'Expire le', 'ends_at' => 'Fin le',
+        'created_at' => 'Créé le', 'updated_at' => 'Mis à jour le', 'deleted_at' => 'Supprimé le',
+        'email_verified_at' => 'E-mail vérifié le',
+    ];
+
     /**
      * Colonnes clé-étrangère à remplacer par la vraie valeur :
      * colonne => [relation Eloquent, attribut affiché].
@@ -90,6 +122,7 @@ class ExportController extends Controller
         /** @var class-string<\Illuminate\Database\Eloquent\Model> $cls */
         $cls = self::MODULES[$module];
         $resolve = self::RESOLVE[$module] ?? [];
+        $boolCols = $this->booleanColumns((new $cls)->getTable());
 
         $query = $cls::query();
         if (isset(self::FILTER[$module])) {
@@ -119,6 +152,14 @@ class ExportController extends Controller
                 }
             }
 
+            // Booléens (tinyint(1)) → Oui / Non (sauf colonnes déjà résolues en nom).
+            foreach ($boolCols as $bc) {
+                if (array_key_exists($bc, $arr) && ! isset($resolve[$bc])) {
+                    $v = $arr[$bc];
+                    $arr[$bc] = ($v === null || $v === '') ? '' : ((int) $v === 1 || $v === true ? 'Oui' : 'Non');
+                }
+            }
+
             // Les valeurs tableau (JSON castés) ne tiennent pas dans une cellule.
             foreach ($arr as $k => $v) {
                 if (is_array($v)) {
@@ -128,11 +169,28 @@ class ExportController extends Controller
             $rows[] = $arr;
         }
 
-        $headings = $rows ? array_keys($rows[0]) : [];
+        $columns = $rows ? array_keys($rows[0]) : [];
+        $headings = array_map(fn ($c) => self::LABELS[$c] ?? Str::ucfirst(str_replace('_', ' ', $c)), $columns);
         $data = array_map('array_values', $rows);
 
         $filename = $module . '_' . date('Y-m-d') . '.xlsx';
 
         return Excel::download(new GenericExport($headings, $data), $filename);
+    }
+
+    /** Colonnes booléennes (tinyint(1)) de la table, pour l'affichage Oui/Non. */
+    private function booleanColumns(string $table): array
+    {
+        try {
+            $cols = DB::select(
+                "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_TYPE LIKE 'tinyint(1)%'",
+                [$table]
+            );
+
+            return array_map(fn ($c) => $c->COLUMN_NAME, $cols);
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
