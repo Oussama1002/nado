@@ -9,7 +9,7 @@
         <div class="dlab-bnr-inrs overlay-black-middles" style="height: 100px;width:100%;text-align:center;background-image:url({{ asset('assets/images/banner/achat-voiture.jpg')}});">
             <div class="container">
                 <div class="dlab-bnr-inr-entrys">
-                    <h1 class="text-secondry">Comparison</h1>
+                    <h1 class="text-secondry">{{ __('messages.compare.title') }}</h1>
                 </div>
             </div>
         </div>
@@ -18,8 +18,8 @@
         <div class="breadcrumb-row">
             <div class="container">
                 <ul class="list-inline">
-                <li><a href="{{ route('index') }}">Accueil</a></li>
-                <li class="text-secondry">Comparison</li>
+                <li><a href="{{ route('index') }}">{{ __('messages.common.home') }}</a></li>
+                <li class="text-secondry">{{ __('messages.compare.title') }}</li>
                 </ul>
             </div>
         </div>
@@ -34,7 +34,7 @@
                         @csrf
 						<div class="input-group m-b30">
 							<select class="form-control car1" id="car1" data-nb="1">
-								<option>Sélectionne une voiture</option>
+								<option>{{ __('messages.compare.select_car') }}</option>
 								@foreach($ads as $ad)
 								<option value="{{ $ad->id }}">{{ $ad->mark }} {{ $ad->modele }} {{ $ad->year }}</option>
 								@endforeach
@@ -53,7 +53,7 @@
 					<div class="col-md-4 col-lg-4 col-md-4 col-sm-4">
 						<div class="input-group m-b30">
 							<select class="form-control car2" id="car2" data-nb="2">
-								<option>Sélectionne une voiture</option>
+								<option>{{ __('messages.compare.select_car') }}</option>
 								@foreach($ads as $ad)
 								<option value="{{ $ad->id }}">{{ $ad->mark }} {{ $ad->modele }} {{ $ad->year }}</option>
 								@endforeach
@@ -75,62 +75,62 @@
 						<div class="icon-bx-wraper bx-style-1 m-b30">
 							<ul class="table-dl table-col3 clearfix ">
 								<li class="table-head">
-									<div class="leftview compare-list-1">Caractéristiques techniques</div>
-									<div class="rightviewss compare-list-2 titlecar1">  Voiture 1 </div>
-									<div class="rightviewss compare-list-3 titlecar2">  Voiture 2 </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.tech_specs') }}</div>
+									<div class="rightviewss compare-list-2 titlecar1">  {{ __('messages.compare.car1') }} </div>
+									<div class="rightviewss compare-list-3 titlecar2">  {{ __('messages.compare.car2') }} </div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Marque</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.marque') }}</div>
 									<div class="rightviewss compare-list-2 markcar1"> —</div>
 									<div class="rightviewss compare-list-3 markcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Modele </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.modele') }}</div>
 									<div class="rightviewss compare-list-2 modelecar1"> —</div>
 									<div class="rightviewss compare-list-3 modelecar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Année </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.year') }}</div>
 									<div class="rightviewss compare-list-2 yearcar1"> —</div>
 									<div class="rightviewss compare-list-3 yearcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Carburant</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.fuel') }}</div>
 									<div class="rightviewss compare-list-2 fuelcar1"> —</div>
 									<div class="rightviewss compare-list-3 fuelcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Boite de vitesses</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.gearbox') }}</div>
 									<div class="rightviewss compare-list-2 boxcar1"> —</div>
 									<div class="rightviewss compare-list-3 boxcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">kilométrage</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.mileage') }}</div>
 									<div class="rightviewss compare-list-2 kmcar1"> —</div>
 									<div class="rightviewss compare-list-3 kmcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Puissance fiscale</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.fiscal_power') }}</div>
 									<div class="rightviewss compare-list-2 cvcar1"> —</div>
 									<div class="rightviewss compare-list-3 cvcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Nombre de portes</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.doors') }}</div>
 									<div class="rightviewss compare-list-2 nbpocar1"> —</div>
 									<div class="rightviewss compare-list-3 nbpocar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Carrosserie</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.body') }}</div>
 									<div class="rightviewss compare-list-2 caroscar1"> —</div>
 									<div class="rightviewss compare-list-3 caroscar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Origine</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.origin') }}</div>
 									<div class="rightviewss compare-list-2 originecar1"> —</div>
 									<div class="rightviewss compare-list-3 originecar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Etat</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.state') }}</div>
 									<div class="rightviewss compare-list-2 etatcar1"> —</div>
 									<div class="rightviewss compare-list-3 etatcar2"> —</div>
 								</li>
@@ -140,92 +140,92 @@
 						<div class="icon-bx-wraper bx-style-1 m-b30">	
 							<ul class="table-dl table-col3 clearfix">
 								<li class="table-head">
-									<div class="leftview compare-list-1">Équipement et options</div>
-									<div class="rightviewss compare-list-2 titlecar1"> Voiture 1 </div>
-									<div class="rightviewss compare-list-3 titlecar2"> Voiture 2 </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.equipment') }}</div>
+									<div class="rightviewss compare-list-2 titlecar1"> {{ __('messages.compare.car1') }} </div>
+									<div class="rightviewss compare-list-3 titlecar2"> {{ __('messages.compare.car2') }} </div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Jantes aluminium</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.alloy_wheels') }}</div>
 									<div class="rightviewss compare-list-2 jantescar1"> —</div>
 									<div class="rightviewss compare-list-3 jantescar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Airbags </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.airbags') }}</div>
 									<div class="rightviewss compare-list-2 airbagscar1"> —</div>
 									<div class="rightviewss compare-list-3 airbagscar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Climatisation</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.ac') }}</div>
 									<div class="rightviewss compare-list-2 climatisationcar1"> —</div>
 									<div class="rightviewss compare-list-3 climatisationcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Système de navigation</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.navigation') }}</div>
 									<div class="rightviewss compare-list-2 gpscar1"> —</div>
 									<div class="rightviewss compare-list-3 gpscar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Toit ouvrant</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.sunroof') }}</div>
 									<div class="rightviewss compare-list-2 toit_ouvrantcar1"> —</div>
 									<div class="rightviewss compare-list-3 toit_ouvrantcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Double toit ouvrant</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.double_sunroof') }}</div>
 									<div class="rightviewss compare-list-2 double_toit_ouvrantcar1"> —</div>
 									<div class="rightviewss compare-list-3 double_toit_ouvrantcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Siège cuir</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.leather_seats') }}</div>
 									<div class="rightviewss compare-list-2 siege_cuircar1"> —</div>
 									<div class="rightviewss compare-list-3 siege_cuircar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Radar de recul </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.rear_radar') }}</div>
 									<div class="rightviewss compare-list-2 radar_reculcar1"> —</div>
 									<div class="rightviewss compare-list-3 radar_reculcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Caméra de recul</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.rear_camera') }}</div>
 									<div class="rightviewss compare-list-2 camera_reculcar1"> —</div>
 									<div class="rightviewss compare-list-3 camera_reculcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Vitres éléctriques</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.electric_windows') }}</div>
 									<div class="rightviewss compare-list-2 vitreseleccar1"> —</div>
 									<div class="rightviewss compare-list-3 vitreseleccar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">ABS</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.abs') }}</div>
 									<div class="rightviewss compare-list-2 abscar1"> —</div>
 									<div class="rightviewss compare-list-3 abscar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">EPS</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.eps') }}</div>
 									<div class="rightviewss compare-list-2 epscar1"> —</div>
 									<div class="rightviewss compare-list-3 epscar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Régulateur de vitesse</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.cruise') }}</div>
 									<div class="rightviewss compare-list-2 rvcar1"> —</div>
 									<div class="rightviewss compare-list-3 rvcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Limiteur de vitesse</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.speed_limiter') }}</div>
 									<div class="rightviewss compare-list-2 lvcar1"> —</div>
 									<div class="rightviewss compare-list-3 lvcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Cd/mp3/bluetooth</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.cd') }}</div>
 									<div class="rightviewss compare-list-2 cdcar1"> —</div>
 									<div class="rightviewss compare-list-3 cdcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Ordinateur de bord</div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.onboard_computer') }}</div>
 									<div class="rightviewss compare-list-2 ordinateurcar1"> —</div>
 									<div class="rightviewss compare-list-3 ordinateurcar2"> —</div>
 								</li>
 								<li>
-									<div class="leftview compare-list-1">Verrouillage centralisé à distance </div>
+									<div class="leftview compare-list-1">{{ __('messages.compare.central_locking') }}</div>
 									<div class="rightviewss compare-list-2 verrouillagecar1"> —</div>
 									<div class="rightviewss compare-list-3 verrouillagecar2"> —</div>
 								</li>
@@ -240,7 +240,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="section-head">
-							<h3 class="h4 text-uppercase">Dernières annonces</h3>
+							<h3 class="h4 text-uppercase">{{ __('messages.common.latest_ads') }}</h3>
 
 						</div>
 						<div class="clearfix owl-carousel owl-btn-style-2 quick-look">
@@ -257,35 +257,35 @@
                                                         <b>{{$ad['prix']}} Dh</b>
                                                     </div>
                                                     <div class="bg-secondry text-center text-primary p-a5" style="font-size: 8px;">
-                                                         {{ number_format(($ad['prix']) / 72, 2, '.', '') }} Dhs/ 72 mois
+                                                         {{ number_format(($ad['prix']) / 72, 2, '.', '') }} {{ __('messages.compare.months_suffix') }}
                                                     </div>
                                                 </div>
                                             </a>
                                         </div>
                                         <div class="dlab-info block-detail-list text-left border-blr" style="text-align: left !important;">
                                             <h4 class="dlab-title m-b0" ><a href="{{ route('achat.detail', [ 'marque' => str_replace(' ', '', $ad->mark),  'modele' =>  str_replace(' ', '', $ad->modele),  'id' => $ad['id'] ]) }}" style="color:#333 !important;font-weight: normal;">{{$ad['mark']}} {{$ad['modele']}} - {{$ad['year']}}</a></h4>
-                                            <span class="text-muted font-14">Voitures d'occasion NADO.MA</span>
+                                            <span class="text-muted font-14">{{ __('messages.compare.used_cars') }}</span>
                                             <img src="{{ asset('assets/images/icons/icon-car.png')}}" class="icon-image-list" style="width: 60px;display: inline-block;">
                                             <ul class="used-car-dl-info" style="font-size: 10px;">
                 								<li><i class="fa fa-map-marker"></i> {{$ad->city}}</li>
-                								<li><i class="fa fa-car"></i> Réf: vh00{{$ad->id}}</li>
+                								<li><i class="fa fa-car"></i> {{ __('messages.compare.ref') }} vh00{{$ad->id}}</li>
                 								<li class="hide"><i class="fa fa-calendar"></i> {{$formatDate($ad->created_at)}}</li>
                 							</ul>
                 						    <div class="site-filters btn-list m-t10">
                                 				<ul class="filters clearfix" data-toggle="buttons">
                                 				    @if($ad['showroom'] == 1)
                                 					<li data-filter="" class="btn active">
-                                						<a href="#" class="btn btn-sm bg-primary text-white"><span><i class="far fa-check-square"></i> In Showroom</span></a> 
+                                						<a href="#" class="btn btn-sm bg-primary text-white"><span><i class="far fa-check-square"></i> {{ __('messages.compare.in_showroom') }}</span></a> 
                                 					</li>
                                 					@endif
                                 					@if($ad['finance'] == 1)
                                 					<li data-filter="interior" class="btn">
-                                						<a href="#" class="btn btn-sm btn-finance text-white"><span><i class="far fa-check-square"></i> Finance</span></a> 
+                                						<a href="#" class="btn btn-sm btn-finance text-white"><span><i class="far fa-check-square"></i> {{ __('messages.compare.finance') }}</span></a> 
                                 					</li>
                                 					@endif
                                 					@if($ad['certifie'] == 1)
                                 					<li data-filter="exterior" class="btn">
-                                						<a href="#" class="btn btn-sm btn-success text-white"><span><i class="far fa-check-square"></i> Certifié</span></a> 
+                                						<a href="#" class="btn btn-sm btn-success text-white"><span><i class="far fa-check-square"></i> {{ __('messages.compare.certified') }}</span></a> 
                                 					</li>
                                 					@endif
                                 				</ul>
