@@ -68,6 +68,13 @@ class ExportController extends Controller
         'models' => [
             'brand_id' => ['brand', 'name'],
         ],
+        'demandes' => [
+            'client_id' => ['client', 'name'],
+            'brand_id'  => ['brand', 'name'],
+            'modele_id' => ['modele', 'name'],
+            'ville_id'  => ['ville', 'name'],
+            'color_id'  => ['color', 'name'],
+        ],
     ];
 
     public function export(string $module)
