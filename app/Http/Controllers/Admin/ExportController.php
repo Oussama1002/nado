@@ -20,6 +20,7 @@ class ExportController extends Controller
     /** Slug du module → modèle Eloquent exporté. */
     private const MODULES = [
         'clients'          => \App\Models\Client::class,
+        'enchere-clients'  => \App\Models\Client::class,
         'annonces'         => \App\Models\Annonces::class,
         'brands'           => \App\Models\Brand::class,
         'models'           => \App\Models\Modele::class,
@@ -50,6 +51,11 @@ class ExportController extends Controller
 
     /** Colonnes jamais exportées (sensibles / inutiles). */
     private const EXCLUDE = ['password', 'remember_token', 'otp_code', 'otp_expires_at'];
+
+    /** Filtres par module : module => [colonne, valeur]. */
+    private const FILTER = [
+        'enchere-clients' => ['type', 'flotte&enchere'],
+    ];
 
     /**
      * Colonnes clé-étrangère à remplacer par la vraie valeur :
@@ -86,6 +92,10 @@ class ExportController extends Controller
         $resolve = self::RESOLVE[$module] ?? [];
 
         $query = $cls::query();
+        if (isset(self::FILTER[$module])) {
+            [$col, $val] = self::FILTER[$module];
+            $query->where($col, $val);
+        }
         if ($resolve) {
             // Charge les relations nécessaires pour afficher les noms.
             $query->with(array_values(array_unique(array_map(fn ($r) => $r[0], $resolve))));
