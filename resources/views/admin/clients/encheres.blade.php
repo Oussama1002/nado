@@ -49,12 +49,11 @@
                         @else
                             <span class="badge" style="background:#f59e0b;color:#fff;">En attente</span>
                         @endif
-                        <form action="{{ route('admin.nadoautoenchere.clients.approve', $client->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            <button class="btn btn-sm {{ $client->ae_approved ? 'btn-outline-secondary' : 'btn-success' }}">
-                                {{ $client->ae_approved ? 'Retirer' : 'Valider' }}
-                            </button>
-                        </form>
+                        <button type="button"
+                                onclick="aeApprove('{{ route('admin.nadoautoenchere.clients.approve', $client->id) }}')"
+                                class="btn btn-sm {{ $client->ae_approved ? 'btn-outline-secondary' : 'btn-success' }}">
+                            {{ $client->ae_approved ? 'Retirer' : 'Valider' }}
+                        </button>
                     </td>
                     <td>
                         <input type="checkbox"
@@ -82,6 +81,26 @@
     </table>
 </div>
 <script>
+// Valider/retirer l'accès enchères : récupère un jeton CSRF frais avant de
+// soumettre (évite le 419 « page expirée » quand le jeton de la page est périmé).
+function aeApprove(url) {
+    fetch('{{ route('csrf.token') }}', { credentials: 'same-origin', cache: 'no-store' })
+        .then(r => r.json())
+        .then(d => {
+            const f = document.createElement('form');
+            f.method = 'POST';
+            f.action = url;
+            const t = document.createElement('input');
+            t.type = 'hidden';
+            t.name = '_token';
+            t.value = d.token;
+            f.appendChild(t);
+            document.body.appendChild(f);
+            f.submit();
+        })
+        .catch(() => { alert('Erreur réseau, réessayez.'); });
+}
+
 document.querySelectorAll('.verify-toggle').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         const clientId = this.dataset.id;
