@@ -43,29 +43,29 @@
             <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F37021]/10 rounded-full mb-4">
                     <i data-lucide="car" class="w-[14px] h-[14px] text-[#F37021]"></i>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-[#F37021]">Véhicules aux enchères</span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-[#F37021]">{{ __('messages.nadoae.hero_badge') }}</span>
                 </div>
                 <h1 class="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter">
                     @if($company)
-                        Flotte de <span class="text-[#1459DD]">{{ $company->name }}</span>
+                        {{ __('messages.nadoae.fleet_of') }} <span class="text-[#1459DD]">{{ $company->name }}</span>
                     @else
-                        Tous les <span class="text-[#1459DD]">véhicules</span>
+                        {{ __('messages.nadoae.all_prefix') }} <span class="text-[#1459DD]">{{ __('messages.nadoae.vehicles') }}</span>
                     @endif
                 </h1>
                 @if($company)
                     <p class="mt-4 text-slate-600 font-medium max-w-xl text-lg flex items-center gap-2">
                         <i data-lucide="map-pin" class="w-[18px] h-[18px] text-slate-400"></i>
-                        Basé à <span class="text-slate-900 font-bold">{{ $company->city }}</span>
+                        {{ __('messages.nadoae.based_in') }} <span class="text-slate-900 font-bold">{{ $company->city }}</span>
                     </p>
                 @else
                     <p class="mt-4 text-slate-600 font-medium max-w-xl text-lg">
-                        Parcourez l'ensemble des véhicules disponibles aux enchères, toutes entreprises confondues.
+                        {{ __('messages.nadoae.all_vehicles_desc') }}
                     </p>
                 @endif
             </div>
             <a href="{{ route('nadoautoenchere.categories') }}"
                class="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 border border-slate-200 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-slate-50 transition-all self-start md:self-end">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour aux catégories
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> {{ __('messages.nadoae.back_categories') }}
             </a>
         </header>
 
@@ -85,25 +85,25 @@
                         <div class="w-9 h-9 rounded-xl bg-[#1459DD]/10 flex items-center justify-center">
                             <i data-lucide="filter" class="w-4 h-4 text-[#1459DD]"></i>
                         </div>
-                        <h2 class="text-lg font-black uppercase tracking-tight text-slate-900">Recherche avancée</h2>
+                        <h2 class="text-lg font-black uppercase tracking-tight text-slate-900">{{ __('messages.nadoae.adv_search') }}</h2>
                     </div>
 
                     <div class="space-y-5">
                         {{-- Search (q — optional, non-breaking) --}}
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Recherche</label>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{{ __('messages.nadoae.search') }}</label>
                             <div class="relative">
                                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                                <input type="text" name="q" value="{{ request('q') }}" placeholder="Marque, modèle…"
+                                <input type="text" name="q" value="{{ request('q') }}" placeholder="{{ __('messages.nadoae.search_ph') }}"
                                     class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none">
                             </div>
                         </div>
 
                         {{-- Marque --}}
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Marque</label>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{{ __('messages.ventemodal.marque') }}</label>
                             <select name="mark" class="select-reset nado-marks w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Toutes les marques</option>
+                                <option value="">{{ __('messages.nadoae.all_marks') }}</option>
                                 @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}" data-id="{{ $brand->id }}" {{ request('mark') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
@@ -112,9 +112,9 @@
 
                         {{-- Modèle --}}
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Modèle</label>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{{ __('messages.ventemodal.modele') }}</label>
                             <select name="modele" class="select-reset nado-models w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Tous les modèles</option>
+                                <option value="">{{ __('messages.nadoae.all_models') }}</option>
                                 @foreach($modeles as $model)
                                     <option value="{{ $model->id }}" {{ request('modele') == $model->id ? 'selected' : '' }}>{{ $model->name }}</option>
                                 @endforeach
@@ -124,10 +124,10 @@
                         {{-- Année --}}
                         <div>
                             <label class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                                <i data-lucide="calendar" class="w-3 h-3"></i> Année
+                                <i data-lucide="calendar" class="w-3 h-3"></i> {{ __('messages.nadoae.year') }}
                             </label>
                             <select name="year" class="select-reset w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Toutes les années</option>
+                                <option value="">{{ __('messages.nadoae.all_years') }}</option>
                                 @for ($i = date('Y'); $i >= 1992; $i--)
                                     <option value="{{ $i }}" {{ request('year') == $i ? 'selected' : '' }}>{{ $i }}</option>
                                 @endfor
@@ -137,12 +137,13 @@
                         {{-- Carburant --}}
                         <div>
                             <label class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                                <i data-lucide="fuel" class="w-3 h-3"></i> Carburant
+                                <i data-lucide="fuel" class="w-3 h-3"></i> {{ __('messages.ventemodal.fuel') }}
                             </label>
                             <select name="carburant" class="select-reset w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Tous</option>
+                                <option value="">{{ __('messages.nadoae.all_m') }}</option>
+                                @php $fuelLabels = ['Essence'=>'fuel_essence','Diesel'=>'fuel_diesel','Hybride'=>'fuel_hybrid','Electrique'=>'fuel_electric']; @endphp
                                 @foreach(['Essence','Diesel','Hybride','Electrique'] as $fuel)
-                                    <option value="{{ $fuel }}" {{ request('carburant') == $fuel ? 'selected' : '' }}>{{ $fuel }}</option>
+                                    <option value="{{ $fuel }}" {{ request('carburant') == $fuel ? 'selected' : '' }}>{{ __('messages.ventemodal.'.$fuelLabels[$fuel]) }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -150,34 +151,34 @@
                         {{-- Boîte --}}
                         <div>
                             <label class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                                <i data-lucide="settings" class="w-3 h-3"></i> Boîte de vitesse
+                                <i data-lucide="settings" class="w-3 h-3"></i> {{ __('messages.nadoae.gearbox') }}
                             </label>
                             <select name="box" class="select-reset w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Toutes</option>
-                                <option value="Manuelle"    {{ request('box') == 'Manuelle' ? 'selected' : '' }}>Manuelle</option>
-                                <option value="Automatique" {{ request('box') == 'Automatique' ? 'selected' : '' }}>Automatique</option>
+                                <option value="">{{ __('messages.nadoae.all_f') }}</option>
+                                <option value="Manuelle"    {{ request('box') == 'Manuelle' ? 'selected' : '' }}>{{ __('messages.ventemodal.box_manual') }}</option>
+                                <option value="Automatique" {{ request('box') == 'Automatique' ? 'selected' : '' }}>{{ __('messages.ventemodal.box_auto') }}</option>
                             </select>
                         </div>
 
                         {{-- État --}}
                         <div>
                             <label class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                                <i data-lucide="alert-circle" class="w-3 h-3"></i> État
+                                <i data-lucide="alert-circle" class="w-3 h-3"></i> {{ __('messages.nadoae.state') }}
                             </label>
                             <select name="etat" class="select-reset w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Tous</option>
-                                <option value="Neuf"     {{ request('etat') == 'Neuf' ? 'selected' : '' }}>Neuf</option>
-                                <option value="Occasion" {{ request('etat') == 'Occasion' ? 'selected' : '' }}>Occasion</option>
+                                <option value="">{{ __('messages.nadoae.all_m') }}</option>
+                                <option value="Neuf"     {{ request('etat') == 'Neuf' ? 'selected' : '' }}>{{ __('messages.nadoae.neuf') }}</option>
+                                <option value="Occasion" {{ request('etat') == 'Occasion' ? 'selected' : '' }}>{{ __('messages.nadoae.occasion') }}</option>
                             </select>
                         </div>
 
                         {{-- Ville --}}
                         <div>
                             <label class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                                <i data-lucide="map-pin" class="w-3 h-3"></i> Ville
+                                <i data-lucide="map-pin" class="w-3 h-3"></i> {{ __('messages.ventemodal.city') }}
                             </label>
                             <select name="city" class="select-reset w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-[#1459DD]/20 focus:border-[#1459DD] transition-all outline-none cursor-pointer">
-                                <option value="">Toutes les villes</option>
+                                <option value="">{{ __('messages.nadoae.all_cities') }}</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
                                 @endforeach
@@ -187,11 +188,11 @@
                         <div class="pt-2 flex flex-col gap-2">
                             <button type="submit"
                                 class="w-full py-3 rounded-xl bg-[#1459DD] hover:bg-[#0f47b3] text-white text-[11px] font-black uppercase tracking-widest transition-all active:scale-95">
-                                Rechercher
+                                {{ __('messages.nadoae.search_btn') }}
                             </button>
                             <a href="{{ route('nadoautoenchere.index', $currentCategory ? ['category' => $currentCategory] : []) }}"
                                 class="w-full py-3 text-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 text-[11px] font-black uppercase tracking-widest transition-all">
-                                Réinitialiser
+                                {{ __('messages.nadoae.reset') }}
                             </a>
                         </div>
                     </div>
@@ -203,8 +204,8 @@
                 <div class="flex items-center justify-between mb-8" role="status" aria-live="polite">
                     <p class="text-slate-500 font-medium">
                         <strong class="text-slate-900 font-black">{{ $encheres->count() }}</strong>
-                        véhicule{{ $encheres->count() > 1 ? 's' : '' }} disponible{{ $encheres->count() > 1 ? 's' : '' }}
-                        @if($company) dans cette catégorie @endif
+                        {{ __('messages.nadoae.vehicles_available') }}
+                        @if($company) {{ __('messages.nadoae.in_category') }} @endif
                     </p>
                 </div>
 
@@ -227,7 +228,7 @@
                         @if($isExpired)
                             {{-- Enchère expirée : plus de lien, carte désaturée --}}
                             <div class="{{ $cardBase }} {{ $cardDead }}"
-                                 aria-disabled="true" title="Enchère expirée">
+                                 aria-disabled="true" title="{{ __('messages.nadoae.expired_title') }}">
                         @else
                             <a href="{{ route('nadoautoenchere.show', $enchere->id) }}"
                                class="{{ $cardBase }} {{ $cardLive }}">
@@ -239,7 +240,7 @@
                                      class="w-full h-full object-cover transition-transform duration-500 {{ $isExpired ? '' : 'group-hover:scale-105' }}">
 
                                 @if($certified && !$isExpired)
-                                    <span aria-label="Certifié NADO Expert"
+                                    <span aria-label="{{ __('messages.nadoae.nado_expert_aria') }}"
                                           class="absolute top-4 left-4 px-3 py-1.5 bg-white/95 backdrop-blur-sm text-[#1459DD] rounded-lg text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1">
                                         <i data-lucide="alert-circle" class="w-3 h-3"></i> NADO Expert
                                     </span>
@@ -247,7 +248,7 @@
 
                                 @if($isExpired)
                                     <span class="absolute top-4 left-4 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-black uppercase tracking-wider shadow-sm">
-                                        Expiré
+                                        {{ __('messages.nadoae.expired') }}
                                     </span>
                                     <div class="absolute inset-0 bg-slate-900/10"></div>
                                 @elseif($endTs)
@@ -263,7 +264,7 @@
                                         {{ $brandName ?: '—' }}
                                     </div>
                                     <h3 class="text-lg font-black text-slate-900 leading-tight group-hover:text-[#1459DD] transition-colors line-clamp-2">
-                                        {{ $modelName ?: ($enchere->titre ?? 'Véhicule') }}
+                                        {{ $modelName ?: ($enchere->titre ?? __('messages.nadoae.vehicle')) }}
                                     </h3>
                                 </div>
 
@@ -288,9 +289,9 @@
 
                                 <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                                     <div>
-                                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Mise à prix</div>
+                                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{{ __('messages.nadoae.mise_a_prix') }}</div>
                                         <div class="text-xl font-black text-[#F37021]">
-                                            <span class="sr-only">Prix&nbsp;:</span>
+                                            <span class="sr-only">{{ __('messages.nadoae.price_sr') }}&nbsp;</span>
                                             {{ number_format($enchere->prix ?? 0, 0, ',', ' ') }}
                                             <span class="text-sm">DH</span>
                                         </div>
@@ -310,9 +311,9 @@
                             <div class="w-16 h-16 bg-slate-50 rounded-full mx-auto flex items-center justify-center mb-4">
                                 <i data-lucide="search" class="w-7 h-7 text-slate-400"></i>
                             </div>
-                            <h3 class="text-xl font-black text-slate-900 mb-2">Aucun véhicule trouvé</h3>
+                            <h3 class="text-xl font-black text-slate-900 mb-2">{{ __('messages.nadoae.no_vehicle') }}</h3>
                             <p class="text-slate-500 font-medium max-w-md mx-auto">
-                                Aucune enchère ne correspond à vos critères. Essayez de réinitialiser les filtres.
+                                {{ __('messages.nadoae.no_vehicle_desc') }}
                             </p>
                         </div>
                     @endforelse
@@ -331,11 +332,11 @@
                 const modelSelect = this.closest('form').querySelector('select.nado-models');
                 if (!modelSelect) return;
                 modelSelect.innerHTML = '<option value="">Chargement…</option>';
-                if (!brandId) { modelSelect.innerHTML = '<option value="">Tous les modèles</option>'; return; }
+                if (!brandId) { modelSelect.innerHTML = '<option value="">' + @json(__('messages.nadoae.all_models')) + '</option>'; return; }
                 fetch(`/client/models-by-brand/${brandId}`)
                     .then(r => r.json())
                     .then(data => {
-                        modelSelect.innerHTML = '<option value="">Tous les modèles</option>';
+                        modelSelect.innerHTML = '<option value="">' + @json(__('messages.nadoae.all_models')) + '</option>';
                         data.forEach(m => {
                             modelSelect.insertAdjacentHTML('beforeend',
                                 `<option value="${m.id}">${m.name}</option>`);

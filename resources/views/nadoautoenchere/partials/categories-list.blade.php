@@ -63,7 +63,7 @@
 
     <a href="{{ $href }}"
        data-ends="{{ $remaining }}"
-       aria-label="Voir les enchères de {{ $companyName }}"
+       aria-label="{{ __('messages.nadoae.view_auctions_of') }} {{ $companyName }}"
        class="group bg-white rounded-3xl overflow-hidden border border-slate-100 card-shadow hover:card-shadow-hover hover:border-[#1459DD]/20 transition-all duration-300 flex flex-col no-underline {{ $ended ? 'pointer-events-none opacity-60' : 'cursor-pointer' }}">
 
         {{-- Image / logo header --}}
@@ -85,11 +85,11 @@
         <div class="p-6 flex-1 flex flex-col">
             <div class="flex items-center justify-between gap-3 mb-5">
                 <span class="w-fit px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest {{ $pillClasses }}">
-                    {{ $status }}
+                    {{ ['En cours' => __('messages.nadoae.status_ongoing'), 'À venir' => __('messages.nadoae.status_upcoming'), 'Terminé' => __('messages.nadoae.status_ended')][$status] ?? $status }}
                 </span>
                 <div class="flex items-center gap-1.5 text-slate-500 text-[11px] font-bold uppercase tracking-wide">
                     <i data-lucide="clock" class="w-3 h-3 {{ $clockColor }}"></i>
-                    <span>Termine le:</span>
+                    <span>{{ __('messages.nadoae.ends_on') }}</span>
                     <span class="text-slate-700">{{ $endsAtFormatted }}</span>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                     </div>
                     <span class="text-sm font-medium text-slate-600">
                         <span class="text-slate-900 font-bold">{{ $openCount }}</span>
-                        véhicule{{ $openCount > 1 ? 's' : '' }} disponible{{ $openCount > 1 ? 's' : '' }}
+                        {{ __('messages.nadoae.vehicles_available') }}
                     </span>
                 </div>
             </div>
@@ -115,10 +115,10 @@
             @if(!$ended)
                 <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                     <span class="remaining-time text-xs font-black uppercase tracking-widest {{ $status === 'En cours' ? 'text-green-600' : 'text-[#1459DD]' }}">
-                        @if($status === 'À venir') Démarre bientôt @else Chargement… @endif
+                        @if($status === 'À venir') {{ __('messages.nadoae.starts_soon') }} @else {{ __('messages.nadoae.loading') }} @endif
                     </span>
                     <span class="text-[11px] font-bold uppercase tracking-widest text-[#F37021] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                        Voir véhicules <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                        {{ __('messages.nadoae.see_vehicles') }} <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
                     </span>
                 </div>
             @endif
@@ -129,7 +129,7 @@
         <div class="w-16 h-16 bg-slate-50 rounded-full mx-auto flex items-center justify-center mb-4">
             <i data-lucide="search" class="w-7 h-7 text-slate-400"></i>
         </div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">Aucun résultat trouvé</h3>
-        <p class="text-slate-500 font-medium">Essayez de modifier vos critères de recherche.</p>
+        <h3 class="text-xl font-black text-slate-900 mb-2">{{ __('messages.nadoae.no_results') }}</h3>
+        <p class="text-slate-500 font-medium">{{ __('messages.nadoae.no_results_desc') }}</p>
     </div>
 @endforelse
