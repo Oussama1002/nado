@@ -3,7 +3,7 @@
 @section('content')
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h5 class="fw-bold text-primary display-5">Nos <span class="text-dark">PACKs</span></h5>
+        <h5 class="fw-bold text-primary display-5">{{ __('messages.plans.heading_1') }} <span class="text-dark">PACKs</span></h5>
     </div>
 
     <div class="row text-center justify-content-center mb-5">
@@ -14,45 +14,45 @@
                 switch($pack->name) {
                     case 'Pack 2':
                         $title = 'BASIC';
-                        $duration = 'Visibilité 7 Jours';
+                        $duration = __('messages.plans.duration_7');
                         $price = '199 DH';
                         $features = [
-                            'Renouvellement 1 fois/jour',
-                            'Réseaux sociaux & sites de vente',
-                            'Vitrine Nado.ma',
-                            'Afficher votre numéro',
+                            __('messages.plans.feat_renew_1'),
+                            __('messages.plans.feat_social'),
+                            __('messages.plans.feat_vitrine'),
+                            __('messages.plans.feat_show_number'),
                         ];
                         break;
                     case 'Pack 3':
                         $title = 'MEDIUM';
-                        $duration = 'Visibilité 15 Jours';
+                        $duration = __('messages.plans.duration_15');
                         $price = '299 DH';
                         $features = [
-                            'Renouvellement 1 fois/jour',
-                            'Réseaux sociaux & sites de vente',
-                            'Vitrine Nado.ma',
-                            'Afficher votre numéro',
+                            __('messages.plans.feat_renew_1'),
+                            __('messages.plans.feat_social'),
+                            __('messages.plans.feat_vitrine'),
+                            __('messages.plans.feat_show_number'),
                         ];
                         break;
                     case 'Pack 4':
                         $title = 'PREMIUM';
-                        $duration = 'Visibilité 30 Jours';
+                        $duration = __('messages.plans.duration_30');
                         $price = '499 DH';
                         $features = [
-                            'Renouvellement 2 fois/jour',
-                            'Réseaux sociaux & sites de vente',
-                            'Vitrine Nado.ma',
-                            'Reels Instagram / TikTok',
-                            'Vidéo / Short YouTube',
-                            'Qualifications des appels',
-                            'Gestion des rendez-vous',
+                            __('messages.plans.feat_renew_2'),
+                            __('messages.plans.feat_social'),
+                            __('messages.plans.feat_vitrine'),
+                            __('messages.plans.feat_reels'),
+                            __('messages.plans.feat_youtube'),
+                            __('messages.plans.feat_calls'),
+                            __('messages.plans.feat_appointments'),
                         ];
                         break;
                     default:
                         $title = $pack->name;
                         $duration = '';
                         $price = $pack->price . ' DH';
-                        $features = ['Aucun détail disponible'];
+                        $features = [__('messages.plans.no_detail')];
                 }
                 @endphp
 
@@ -70,7 +70,7 @@
                         <div class="mt-4">
                             <div class="fw-bold fs-1 text-primary mb-4">{{ $price }}</div>
                             <a href="{{ route('client.register') }}" class="btn btn-primary btn-lg w-100 fw-bold py-4 fs-4" style="border-radius: 35px;">
-                                S'inscrire
+                                {{ __('messages.plans.register') }}
                             </a>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
     @if($pack1)
     <div class="text-center mt-5 pt-5">
         <a href="{{ route('client.register') }}" class="btn btn-outline-primary fw-bold fs-3 py-4 px-5" style="border-radius: 40px;">
-            Publiez gratuitement vos annonces sur Nado.ma
+            {{ __('messages.plans.publish_free') }}
         </a>
     </div>
     @endif

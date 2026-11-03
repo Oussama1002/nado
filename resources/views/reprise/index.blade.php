@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reprise de véhicule')
+@section('title', __('messages.reprise_intro.page_title'))
 
 @section('content')
 <style>
@@ -56,30 +56,28 @@
 
 <div class="reprise-container">
     <div class="box">
-        <h3>Reprise de votre véhicule avec Nado.ma :<br>Simple, Rapide, Transparent !</h3>
+        <h3>{{ __('messages.reprise_intro.box1_title_1') }}<br>{{ __('messages.reprise_intro.box1_title_2') }}</h3>
         <p>
-            Vous envisagez d’acheter un nouveau véhicule et souhaitez vous séparer de votre voiture actuelle sans traces ?<br>
-            Chez Nado.ma, nous vous facilitons la vie grâce à notre service de reprise simple, rapide et entièrement transparent.<br>
-            Oubliez les annonces, les rendez-vous avec des inconnus et les négociations interminables !
+            {!! __('messages.reprise_intro.box1_p') !!}
         </p>
     </div>
 
     <div class="box right">
-        <h3>Rendez-vous dans notre show-room<br>pour une expertise détaillée</h3>
+        <h3>{{ __('messages.reprise_intro.box2_title_1') }}<br>{{ __('messages.reprise_intro.box2_title_2') }}</h3>
         <p>
-            Un expert Nado.ma procédera à une inspection approfondie et gratuite de votre véhicule :
+            {{ __('messages.reprise_intro.box2_intro') }}
             <ul>
-                <li>✔️ Vérification technique (moteur, boîte, freins, pneus, etc.)</li>
-                <li>✔️ Examen de la carrosserie et de l’intérieur</li>
-                <li>✔️ Test routier pour évaluer le comportement du véhicule</li>
-                <li>✔️ Vérification des documents (carte grise, carnet d’entretien, contrôle technique, etc.)</li>
+                <li>{{ __('messages.reprise_intro.li1') }}</li>
+                <li>{{ __('messages.reprise_intro.li2') }}</li>
+                <li>{{ __('messages.reprise_intro.li3') }}</li>
+                <li>{{ __('messages.reprise_intro.li4') }}</li>
             </ul>
-            Cette expertise nous permet de confirmer l’état réel de votre véhicule et d’affiner notre offre de reprise.
+            {{ __('messages.reprise_intro.box2_outro') }}
         </p>
     </div>
 </div>
 
 <div style="text-align:center;">
-    <a href="{{ route('reprise.form') }}" class="reprise-btn">Reprise ></a>
+    <a href="{{ route('reprise.form') }}" class="reprise-btn">{{ __('messages.reprise_intro.btn') }} ></a>
 </div>
 @endsection
