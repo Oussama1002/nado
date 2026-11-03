@@ -151,30 +151,30 @@
       {{-- Tabs --}}
       <div class="bg-white rounded-3xl border border-slate-100 card-shadow">
         <div class="border-b border-slate-100 px-6 flex gap-1 overflow-x-auto">
-          <button data-tab="details" class="tab-btn active py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">Détails</button>
-          <button data-tab="equip" class="tab-btn py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">Équipements</button>
-          <button data-tab="expertise" class="tab-btn py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">Expertise</button>
+          <button data-tab="details" class="tab-btn active py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">{{ __('messages.nadoae.tab_details') }}</button>
+          <button data-tab="equip" class="tab-btn py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">{{ __('messages.nadoae.tab_equip') }}</button>
+          <button data-tab="expertise" class="tab-btn py-4 px-4 text-xs font-black uppercase tracking-widest text-slate-400 border-b-2 border-transparent hover:text-[#1459DD] whitespace-nowrap">{{ __('messages.nadoae.tab_expertise') }}</button>
         </div>
 
         <div class="p-6 md:p-8">
           {{-- Détails --}}
           <div class="tab-panel active" id="panel-details">
-            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">Caractéristiques</h3>
+            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">{{ __('messages.nadoae.specs_title') }}</h3>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
               @php
                 $specs = [
-                  ['calendar', 'Année', $enchere->year],
-                  ['gauge', 'Kilométrage', number_format($enchere->km, 0, ',', ' ').' km'],
-                  ['fuel', 'Carburant', $enchere->carburant],
-                  ['settings', 'Boîte', $enchere->box],
-                  ['door-open', 'Portes', $enchere->nb_Door],
-                  ['zap', 'Puissance', $enchere->cv.' CV'],
-                  ['globe', 'Origine', $enchere->origine],
-                  ['car', 'Carrosserie', $enchere->bodywork ?? '—'],
-                  ['user-check', '1ère main', $enchere->premiere_main ? 'Oui' : 'Non'],
-                  ['key', 'Clés', $enchere->nb_cles ? $enchere->nb_cles.' '.($enchere->nb_cles > 1 ? 'clés' : 'clé') : null],
-                  ['circle-dot', 'Pneu de secours', $enchere->pneu_secours ? 'Oui' : 'Non'],
-                  ['wrench', 'Outillage', $enchere->outillage ? 'Oui' : 'Non'],
+                  ['calendar', __('messages.nadoae.year'), $enchere->year],
+                  ['gauge', __('messages.nadoae.spec_km'), number_format($enchere->km, 0, ',', ' ').' km'],
+                  ['fuel', __('messages.ventemodal.fuel'), $enchere->carburant],
+                  ['settings', __('messages.ventemodal.box'), $enchere->box],
+                  ['door-open', __('messages.nadoae.spec_doors'), $enchere->nb_Door],
+                  ['zap', __('messages.nadoae.spec_power'), $enchere->cv.' CV'],
+                  ['globe', __('messages.compare.origin'), $enchere->origine],
+                  ['car', __('messages.compare.body'), $enchere->bodywork ?? '—'],
+                  ['user-check', __('messages.nadoae.spec_first_hand'), $enchere->premiere_main ? __('messages.nadoae.yes') : __('messages.nadoae.no')],
+                  ['key', __('messages.nadoae.spec_keys'), $enchere->nb_cles ? $enchere->nb_cles.' '.($enchere->nb_cles > 1 ? __('messages.nadoae.key_plural') : __('messages.nadoae.key_singular')) : null],
+                  ['circle-dot', __('messages.nadoae.spec_spare'), $enchere->pneu_secours ? __('messages.nadoae.yes') : __('messages.nadoae.no')],
+                  ['wrench', __('messages.nadoae.spec_tools'), $enchere->outillage ? __('messages.nadoae.yes') : __('messages.nadoae.no')],
                 ];
               @endphp
               @foreach($specs as [$icon,$label,$value])
@@ -191,7 +191,7 @@
             </div>
 
             {{-- Documents du véhicule --}}
-            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mt-10 mb-6 uppercase">Documents</h3>
+            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mt-10 mb-6 uppercase">{{ __('messages.nadoae.documents_title') }}</h3>
             @php
               $vignetteAnnee = $enchere->vignette_annee ?? null;
               $vtDate        = $enchere->visite_technique ? \Carbon\Carbon::parse($enchere->visite_technique) : null;
@@ -200,21 +200,21 @@
               $documents = [
                 [
                   'icon'  => 'file-text',
-                  'label' => 'Carte grise',
-                  'value' => $enchere->carte_grise ? 'Disponible' : 'Non disponible',
+                  'label' => __('messages.nadoae.doc_carte_grise'),
+                  'value' => $enchere->carte_grise ? __('messages.nadoae.doc_available') : __('messages.nadoae.doc_unavailable'),
                   'ok'    => (bool) $enchere->carte_grise,
                 ],
                 [
                   'icon'  => 'receipt',
-                  'label' => 'Vignette',
-                  'value' => $vignetteAnnee ? 'Payée — '.$vignetteAnnee : 'Non renseignée',
+                  'label' => __('messages.nadoae.doc_vignette'),
+                  'value' => $vignetteAnnee ? __('messages.nadoae.doc_paid').' '.$vignetteAnnee : __('messages.nadoae.doc_not_filled'),
                   // À jour si la dernière année payée est l'année en cours ou plus récente.
                   'ok'    => $vignetteAnnee && (int) $vignetteAnnee >= (int) date('Y'),
                 ],
                 [
                   'icon'  => 'clipboard-check',
-                  'label' => 'Visite technique',
-                  'value' => $vtDate ? 'Valide jusqu\'au '.$vtDate->format('d/m/Y') : 'Non renseignée',
+                  'label' => __('messages.nadoae.doc_vt'),
+                  'value' => $vtDate ? __('messages.nadoae.doc_valid_until').' '.$vtDate->format('d/m/Y') : __('messages.nadoae.doc_not_filled'),
                   'ok'    => $vtValide,
                 ],
               ];
@@ -240,7 +240,7 @@
 
           {{-- Équipements --}}
           <div class="tab-panel" id="panel-equip">
-            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">Équipements</h3>
+            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">{{ __('messages.nadoae.tab_equip') }}</h3>
             @if(count($equipements))
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 @foreach($equipements as $label)
@@ -253,24 +253,24 @@
                 @endforeach
               </div>
             @else
-              <p class="text-sm text-slate-500">Aucun équipement listé.</p>
+              <p class="text-sm text-slate-500">{{ __('messages.nadoae.no_equip') }}</p>
             @endif
           </div>
 
           {{-- Expertise PDF --}}
           <div class="tab-panel" id="panel-expertise">
-            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">Rapport d'expertise</h3>
+            <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-6 uppercase">{{ __('messages.nadoae.report_title') }}</h3>
             @if($pdfExists)
               <div class="rounded-2xl overflow-hidden border border-slate-200">
                 <iframe src="{{ route('nadoautoenchere.pdf', $pdfName) }}" width="100%" height="600" style="border:none;"></iframe>
               </div>
               <a href="{{ route('nadoautoenchere.pdf', $pdfName) }}" target="_blank" class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-[#1459DD] hover:underline">
-                <i data-lucide="external-link" class="w-4 h-4"></i> Ouvrir dans un nouvel onglet
+                <i data-lucide="external-link" class="w-4 h-4"></i> {{ __('messages.nadoae.open_new_tab') }}
               </a>
             @else
               <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 text-center">
                 <i data-lucide="file-x" class="w-10 h-10 text-slate-300 mx-auto mb-3"></i>
-                <p class="text-sm text-slate-500">Aucun rapport disponible pour cette enchère.</p>
+                <p class="text-sm text-slate-500">{{ __('messages.nadoae.no_report') }}</p>
               </div>
             @endif
           </div>
@@ -284,13 +284,13 @@
         {{-- Pricing card --}}
         <div class="bg-white rounded-3xl border border-slate-100 card-shadow overflow-hidden">
           <div class="p-6">
-            <div class="text-[10px] font-black uppercase tracking-widest text-[#F37021] mb-2">Meilleure offre actuelle</div>
+            <div class="text-[10px] font-black uppercase tracking-widest text-[#F37021] mb-2">{{ __('messages.nadoae.best_offer') }}</div>
             <div class="flex items-baseline gap-1 mb-1">
               <span class="text-4xl font-black tracking-tighter text-slate-900">{{ number_format($prixTarget, 0, ',', ' ') }}</span>
               <span class="text-lg font-bold text-slate-500">DH</span>
             </div>
             <div class="text-xs text-slate-400 font-medium line-through">
-              Prix estimé {{ number_format($enchere->prix, 0, ',', ' ') }} DH
+              {{ __('messages.nadoae.estimated_price') }} {{ number_format($enchere->prix, 0, ',', ' ') }} DH
             </div>
 
             @if($endsTs)
@@ -298,7 +298,7 @@
               <div class="flex items-center gap-2 mb-2">
                 <i data-lucide="clock" class="w-4 h-4 text-[#F37021]"></i>
                 <span class="text-[10px] font-black uppercase tracking-widest opacity-70">
-                  @if($status === 'À venir') Démarre dans @elseif($status === 'Terminé') Terminé @else Fin dans @endif
+                  @if($status === 'À venir') {{ __('messages.nadoae.starts_in') }} @elseif($status === 'Terminé') {{ __('messages.nadoae.status_ended') }} @else {{ __('messages.nadoae.ends_in') }} @endif
                 </span>
               </div>
               <div class="countdown text-2xl font-black tracking-tighter" data-end="{{ $enchere->ends_at }}" data-start="{{ $enchere->starts_at }}">—</div>
@@ -313,18 +313,18 @@
                   method="POST" class="mt-5"
                   data-min-bid="{{ $minBid }}">
               @csrf
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">Votre enchère max</label>
+              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">{{ __('messages.nadoae.your_max_bid') }}</label>
               <div class="flex gap-2">
                 <input id="bidInput" type="number" name="p" step="1000" min="{{ $minBid }}" required
                        placeholder="{{ number_format($minBid, 0, ',', ' ') }}"
                        class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold focus:border-[#1459DD] focus:outline-none">
                 <button type="submit" class="px-5 py-3 rounded-xl bg-[#1459DD] text-white text-sm font-black uppercase tracking-widest hover:bg-[#0f47b5] transition">
-                  Enchérir
+                  {{ __('messages.nadoae.bid') }}
                 </button>
               </div>
               <p class="text-[11px] text-slate-500 mt-2 flex items-start gap-1.5">
                 <i data-lucide="info" class="w-3.5 h-3.5 flex-shrink-0 mt-0.5"></i>
-                <span>L'enchère monte automatiquement par paliers de 1000 DH jusqu'à votre max.</span>
+                <span>{{ __('messages.nadoae.bid_info') }}</span>
               </p>
             </form>
 
@@ -344,8 +344,8 @@
                         e.preventDefault();
                         Swal.fire({
                             icon: 'error',
-                            title: 'Enchère invalide',
-                            text: 'Le minimum requis est de ' + min.toLocaleString('fr-FR') + ' DH.',
+                            title: @json(__('messages.nadoae.bid_invalid')),
+                            text: @json(__('messages.nadoae.min_required')) + ' ' + min.toLocaleString('fr-FR') + ' DH.',
                             confirmButtonColor: '#1459DD'
                         });
                         return;
@@ -356,17 +356,17 @@
                     e.preventDefault();
 
                     Swal.fire({
-                        title: 'Confirmer votre enchère',
-                        html: 'Vous êtes sur le point d\'enchérir à hauteur de '
+                        title: @json(__('messages.nadoae.confirm_title')),
+                        html: @json(__('messages.nadoae.confirm_about')) + ' '
                             + '<strong style="color:#1459DD;font-size:1.3em">'
                             + raw.toLocaleString('fr-FR') + ' DH</strong>.'
                             + '<br><br><small style="color:#64748b">'
-                            + 'L\'enchère monte automatiquement par paliers de 1000 DH jusqu\'à votre maximum.'
-                            + '<br>Cette action est <strong>définitive</strong>.</small>',
+                            + @json(__('messages.nadoae.confirm_auto'))
+                            + '<br>' + @json(__('messages.nadoae.confirm_final')) + '</small>',
                         icon: 'question',
                         showCancelButton: true,
-                        confirmButtonText: 'Oui, enchérir',
-                        cancelButtonText: 'Annuler',
+                        confirmButtonText: @json(__('messages.nadoae.yes_bid')),
+                        cancelButtonText: @json(__('messages.nadoae.cancel')),
                         confirmButtonColor: '#1459DD',
                         cancelButtonColor: '#64748b',
                         reverseButtons: true,
@@ -397,7 +397,7 @@
             <div class="w-10 h-10 rounded-xl bg-[#1459DD]/20 flex items-center justify-center mb-4">
               <i data-lucide="map-pin" class="w-5 h-5 text-[#1459DD]"></i>
             </div>
-            <h4 class="text-xl font-black tracking-tighter text-white mb-2 uppercase">Où voir la voiture</h4>
+            <h4 class="text-xl font-black tracking-tighter text-white mb-2 uppercase">{{ __('messages.nadoae.where_see') }}</h4>
             <p class="text-xs text-slate-400 mb-4 leading-relaxed">
               {{ $locAdr }}
             </p>
@@ -414,7 +414,7 @@
 
             <a href="{{ $locLink }}" target="_blank" rel="noopener noreferrer"
                class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#F37021] hover:text-[#FDD817]">
-              Itinéraire <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              {{ __('messages.nadoae.itinerary') }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
           </div>
         </div>
