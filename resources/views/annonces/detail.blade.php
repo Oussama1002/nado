@@ -3560,12 +3560,8 @@
                         return;
                     }
 
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                        alert('Votre navigateur ne supporte pas l\'enregistrement audio.');
-                        return;
-                    }
-                    if (typeof MediaRecorder === 'undefined') {
-                        alert('MediaRecorder non disponible dans ce navigateur.');
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+                        alert("L'enregistrement vocal n'est pas disponible sur cet appareil. Vous pouvez écrire votre message.");
                         return;
                     }
 
@@ -3574,7 +3570,11 @@
                         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     } catch (err) {
                         console.error('[REC] mic error:', err);
-                        alert('Microphone non accessible: ' + err.message);
+                        // Message clair, sans détail technique, selon la cause.
+                        var micMsg = (err && (err.name === 'NotAllowedError' || err.name === 'SecurityError'))
+                            ? "Micro bloqué. Autorisez l'accès au microphone dans les réglages de votre navigateur pour envoyer un message vocal — ou écrivez votre message."
+                            : "Micro indisponible sur cet appareil. Vous pouvez écrire votre message.";
+                        alert(micMsg);
                         return;
                     }
 
