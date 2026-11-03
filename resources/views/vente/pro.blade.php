@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Vendre en tant que professionnel B2B – NADO')
+@section('title', __('messages.ventepages.sp_bc') . ' – NADO')
 
 @section('link')
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -87,11 +87,11 @@
     <div class="sp-breadcrumb">
         <div class="sp-wrap">
             <nav>
-                <a href="{{ route('index') }}">Accueil</a>
+                <a href="{{ route('index') }}">{{ __('messages.common.home') }}</a>
                 <i data-lucide="chevron-right" style="width:10px;height:10px;"></i>
-                <a href="{{ route('vente.form') }}">Vendre ma voiture</a>
+                <a href="{{ route('vente.form') }}">{{ __('messages.ventepages.sell_my_car') }}</a>
                 <i data-lucide="chevron-right" style="width:10px;height:10px;"></i>
-                <span class="bc-cur">Professionnel B2B</span>
+                <span class="bc-cur">{{ __('messages.ventepages.sp_bc') }}</span>
             </nav>
         </div>
     </div>
@@ -101,17 +101,17 @@
         {{-- Header --}}
         <div style="margin-bottom:48px;">
             <a href="{{ route('vente.form') }}" style="display:inline-flex;align-items:center;gap:6px;color:var(--sp-muted);font-size:12px;font-weight:700;text-decoration:none;margin-bottom:24px;">
-                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Retour
+                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> {{ __('messages.ventepages.back') }}
             </a>
             <div class="sp-pill">
                 <i data-lucide="building-2" style="width:12px;height:12px;"></i>
-                PARCOURS PROFESSIONNEL (B2B)
+                {{ __('messages.ventepages.sp_pill') }}
             </div>
             <h1 class="sp-h1">
-                GÉREZ VOTRE STOCK AUTO<br>
-                AVEC <span class="accent">L'EXPERTISE NADO</span>
+                {{ __('messages.ventepages.sp_h1_1') }}<br>
+                {{ __('messages.ventepages.sp_h1_with') }} <span class="accent">{{ __('messages.ventepages.sp_h1_accent') }}</span>
             </h1>
-            <p class="sp-subtitle">Concessionnaire, loueur ou entreprise avec flotte — NADO vous offre une solution complète pour vendre vos véhicules rapidement et au meilleur prix.</p>
+            <p class="sp-subtitle">{{ __('messages.ventepages.sp_subtitle') }}</p>
         </div>
 
         {{-- Main content or success screen --}}
@@ -121,8 +121,8 @@
                 {{-- Left: Company form --}}
                 <div>
                     <div class="sp-form-card">
-                        <div class="sp-form-title">Votre demande professionnelle</div>
-                        <div class="sp-form-sub">Renseignez vos coordonnées et nous vous recontactons sous 24h.</div>
+                        <div class="sp-form-title">{{ __('messages.ventepages.sp_form_title') }}</div>
+                        <div class="sp-form-sub">{{ __('messages.ventepages.sp_form_sub') }}</div>
 
                         <form id="sp-form" action="{{ route('vente.pro.store') }}" method="POST">
                             @csrf
@@ -131,55 +131,55 @@
 
                             <div class="sp-form-grid">
                                 <div class="sp-form-group">
-                                    <label>Raison sociale</label>
-                                    <input type="text" name="company_name" class="sp-input" placeholder="SARL Exemple" required>
+                                    <label>{{ __('messages.ventepages.sp_company') }}</label>
+                                    <input type="text" name="company_name" class="sp-input" placeholder="{{ __('messages.ventepages.sp_company_ph') }}" required>
                                 </div>
                                 <div class="sp-form-group">
-                                    <label>ICE</label>
+                                    <label>{{ __('messages.ventepages.sp_ice') }}</label>
                                     <input type="text" name="ice" class="sp-input" placeholder="000 000 000 00000">
                                 </div>
                                 <div class="sp-form-group">
-                                    <label>Secteur</label>
+                                    <label>{{ __('messages.ventepages.sp_sector') }}</label>
                                     <select name="sector" class="sp-input" required>
-                                        <option value="">Choisir</option>
-                                        <option>Concessionnaire</option>
-                                        <option>Location longue durée</option>
-                                        <option>Loueur courte durée</option>
-                                        <option>Entreprise (flotte)</option>
-                                        <option>Autre</option>
+                                        <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                        <option value="Concessionnaire">{{ __('messages.ventepages.sp_sector_concess') }}</option>
+                                        <option value="Location longue durée">{{ __('messages.ventepages.sp_sector_lld') }}</option>
+                                        <option value="Loueur courte durée">{{ __('messages.ventepages.sp_sector_llc') }}</option>
+                                        <option value="Entreprise (flotte)">{{ __('messages.ventepages.sp_sector_fleet') }}</option>
+                                        <option value="Autre">{{ __('messages.ventepages.sp_sector_other') }}</option>
                                     </select>
                                 </div>
                                 <div class="sp-form-group">
-                                    <label>Taille de flotte</label>
+                                    <label>{{ __('messages.ventepages.sp_fleet') }}</label>
                                     <select name="fleet_size" class="sp-input">
-                                        <option value="">Choisir</option>
-                                        <option>1 – 10 véhicules</option>
-                                        <option>11 – 50 véhicules</option>
-                                        <option>51 – 200 véhicules</option>
-                                        <option>+200 véhicules</option>
+                                        <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                        <option value="1 – 10 véhicules">{{ __('messages.ventepages.sp_fleet_1') }}</option>
+                                        <option value="11 – 50 véhicules">{{ __('messages.ventepages.sp_fleet_2') }}</option>
+                                        <option value="51 – 200 véhicules">{{ __('messages.ventepages.sp_fleet_3') }}</option>
+                                        <option value="+200 véhicules">{{ __('messages.ventepages.sp_fleet_4') }}</option>
                                     </select>
                                 </div>
                                 <div class="sp-form-group">
-                                    <label>Nom &amp; Prénom</label>
-                                    <input type="text" name="name" class="sp-input" placeholder="Votre nom" required>
+                                    <label>{{ __('messages.ventemodal.fullname') }}</label>
+                                    <input type="text" name="name" class="sp-input" placeholder="{{ __('messages.ventemodal.fullname_ph') }}" required>
                                 </div>
                                 <div class="sp-form-group">
-                                    <label>Téléphone</label>
-                                    <input type="tel" name="phone" class="sp-input" placeholder="+212 6…" required>
+                                    <label>{{ __('messages.ventemodal.phone') }}</label>
+                                    <input type="tel" name="phone" class="sp-input" placeholder="{{ __('messages.ventemodal.phone_ph') }}" required>
                                 </div>
                                 <div class="sp-form-group full">
-                                    <label>Email professionnel</label>
-                                    <input type="email" name="email" class="sp-input" placeholder="contact@entreprise.ma">
+                                    <label>{{ __('messages.ventepages.sp_email') }}</label>
+                                    <input type="email" name="email" class="sp-input" placeholder="{{ __('messages.ventepages.sp_email_ph') }}">
                                 </div>
                                 <div class="sp-form-group full">
-                                    <label>Message (optionnel)</label>
-                                    <textarea name="message" class="sp-input" rows="4" placeholder="Décrivez votre besoin, le nombre de véhicules à vendre, les modèles…" style="resize:vertical;"></textarea>
+                                    <label>{{ __('messages.ventepages.sp_message') }}</label>
+                                    <textarea name="message" class="sp-input" rows="4" placeholder="{{ __('messages.ventepages.sp_message_ph') }}" style="resize:vertical;"></textarea>
                                 </div>
                             </div>
 
                             <button type="submit" class="sp-submit">
                                 <i data-lucide="send" style="width:16px;height:16px;"></i>
-                                Envoyer ma demande
+                                {{ __('messages.ventepages.sp_submit') }}
                             </button>
                         </form>
                     </div>
@@ -190,47 +190,47 @@
 
                     {{-- Conditions --}}
                     <div class="sp-cond-card">
-                        <div class="sp-cond-title">Ce que NADO vous offre</div>
+                        <div class="sp-cond-title">{{ __('messages.ventepages.sp_offer_title') }}</div>
                         <ul class="sp-cond-list">
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Espace concessionnaire dédié sur NADO.ma
+                                {{ __('messages.ventepages.sp_offer1') }}
                             </li>
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Badge certifié NADO sur toutes vos annonces
+                                {{ __('messages.ventepages.sp_offer2') }}
                             </li>
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Mise en ligne illimitée de votre stock
+                                {{ __('messages.ventepages.sp_offer3') }}
                             </li>
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Tableau de bord analytique en temps réel
+                                {{ __('messages.ventepages.sp_offer4') }}
                             </li>
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Diffusion multi-plateformes incluse
+                                {{ __('messages.ventepages.sp_offer5') }}
                             </li>
                             <li class="sp-cond-item">
                                 <i data-lucide="check-circle" class="sp-check" style="width:16px;height:16px;"></i>
-                                Gestionnaire de compte dédié
+                                {{ __('messages.ventepages.sp_offer6') }}
                             </li>
                         </ul>
                     </div>
 
                     {{-- Accompagnement --}}
                     <div class="sp-accomp">
-                        <div class="sp-accomp-label">Accompagnement</div>
-                        <div class="sp-accomp-title">Un conseiller B2B à votre écoute</div>
-                        <div class="sp-accomp-desc">Notre équipe commerciale dédiée aux professionnels vous accompagne pour optimiser votre stratégie de vente et maximiser la rotation de votre stock.</div>
+                        <div class="sp-accomp-label">{{ __('messages.ventepages.sp_accomp_label') }}</div>
+                        <div class="sp-accomp-title">{{ __('messages.ventepages.sp_accomp_title') }}</div>
+                        <div class="sp-accomp-desc">{{ __('messages.ventepages.sp_accomp_desc') }}</div>
                     </div>
 
                     {{-- Support Express --}}
                     <div class="sp-support">
-                        <div class="sp-support-label">Support Express</div>
-                        <div class="sp-support-title">Réponse garantie sous 24h</div>
-                        <div class="sp-support-desc">Pour les partenaires professionnels, notre ligne directe est disponible du lundi au samedi de 9h à 18h.</div>
+                        <div class="sp-support-label">{{ __('messages.ventepages.sp_support_label') }}</div>
+                        <div class="sp-support-title">{{ __('messages.ventepages.sp_support_title') }}</div>
+                        <div class="sp-support-desc">{{ __('messages.ventepages.sp_support_desc') }}</div>
                         <a href="tel:+212520070611" class="sp-support-btn">
                             <i data-lucide="phone" style="width:14px;height:14px;"></i>
                             +212 520 070 611
@@ -245,7 +245,7 @@
         @if(session('success'))
         <div id="spSuccessOverlay" class="sp-success-overlay" onclick="if(event.target===this){this.remove();document.body.style.overflow='';}">
             <div class="sp-success-modal" role="dialog" aria-modal="true" aria-labelledby="spSuccessTitle">
-                <button type="button" class="sp-success-close" aria-label="Fermer"
+                <button type="button" class="sp-success-close" aria-label="{{ __('messages.ventemodal.close') }}"
                         onclick="document.getElementById('spSuccessOverlay').remove();document.body.style.overflow='';">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -254,11 +254,11 @@
                 <div class="sp-success-icon">
                     <i data-lucide="check" style="width:48px;height:48px;color:#16a34a;stroke-width:2.5;"></i>
                 </div>
-                <h2 id="spSuccessTitle" class="sp-success-title">Demande envoyée !</h2>
-                <p class="sp-success-sub">{{ session('success') }}<br>Notre équipe B2B vous contactera très prochainement.</p>
+                <h2 id="spSuccessTitle" class="sp-success-title">{{ __('messages.ventepages.sp_success_title') }}</h2>
+                <p class="sp-success-sub">{{ session('success') }}<br>{{ __('messages.ventepages.sp_success_sub2') }}</p>
                 <a href="{{ route('index') }}" class="sp-back-btn">
                     <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
-                    Retour au site
+                    {{ __('messages.ventepages.sp_back_site') }}
                 </a>
             </div>
         </div>

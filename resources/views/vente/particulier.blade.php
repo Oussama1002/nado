@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Vendre en tant que particulier – NADO')
+@section('title', __('messages.ventepages.pp_pill') . ' – NADO')
 
 @section('link')
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -98,11 +98,11 @@
     <div class="pp-breadcrumb">
         <div class="pp-wrap">
             <nav>
-                <a href="{{ route('index') }}">Accueil</a>
+                <a href="{{ route('index') }}">{{ __('messages.common.home') }}</a>
                 <i data-lucide="chevron-right" style="width:10px;height:10px;"></i>
-                <a href="{{ route('vente.form') }}">Vendre ma voiture</a>
+                <a href="{{ route('vente.form') }}">{{ __('messages.ventepages.sell_my_car') }}</a>
                 <i data-lucide="chevron-right" style="width:10px;height:10px;"></i>
-                <span class="bc-cur">Particulier</span>
+                <span class="bc-cur">{{ __('messages.ventepages.pp_bc') }}</span>
             </nav>
         </div>
     </div>
@@ -112,20 +112,20 @@
         {{-- Header --}}
         <div style="margin-bottom:48px;">
             <a href="{{ route('vente.form') }}" style="display:inline-flex;align-items:center;gap:6px;color:var(--pp-muted);font-size:12px;font-weight:700;text-decoration:none;margin-bottom:24px;">
-                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Retour
+                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> {{ __('messages.ventepages.back') }}
             </a>
             <div class="pp-pill">
                 <i data-lucide="user" style="width:12px;height:12px;"></i>
-                PARCOURS PARTICULIER
+                {{ __('messages.ventepages.pp_pill') }}
             </div>
             <h1 class="pp-h1">
-                VENDEZ VOTRE VOITURE<br>
-                <span class="accent">RAPIDEMENT</span> ET EN TOUTE<br>SÉCURITÉ
+                {{ __('messages.ventepages.pp_h1_1') }}<br>
+                <span class="accent">{{ __('messages.ventepages.pp_h1_accent') }}</span> {{ __('messages.ventepages.pp_h1_mid') }}<br>{{ __('messages.ventepages.pp_h1_3') }}
             </h1>
-            <p class="pp-subtitle">Particulier ou vendeur occasionnel — NADO vous accompagne de l'estimation à la transaction finale. Rejoignez des milliers de vendeurs satisfaits.</p>
+            <p class="pp-subtitle">{{ __('messages.ventepages.pp_subtitle') }}</p>
             <a class="pp-cta" href="{{ route('vente.form', ['open_modal' => 1]) }}" style="text-decoration:none;">
                 <i data-lucide="plus-circle" style="width:16px;height:16px;"></i>
-                Déposer mon annonce
+                {{ __('messages.ventepages.pp_cta') }}
             </a>
         </div>
 
@@ -137,34 +137,34 @@
                 {{-- Conditions --}}
                 <div class="pp-card">
                     <div class="pp-card-body">
-                        <p class="pp-section-label">Comment ça marche</p>
+                        <p class="pp-section-label">{{ __('messages.ventepages.pp_how') }}</p>
                         <div class="pp-conditions">
                             <div class="pp-condition">
                                 <div class="pp-cond-icon"><i data-lucide="camera" style="width:16px;height:16px;"></i></div>
                                 <div>
-                                    <div class="pp-cond-title">1. Déposez vos photos et infos</div>
-                                    <div class="pp-cond-desc">Téléchargez jusqu'à 20 photos et renseignez les caractéristiques de votre véhicule. Plus votre annonce est complète, plus elle attire d'acheteurs sérieux.</div>
+                                    <div class="pp-cond-title">{{ __('messages.ventepages.pp_s1_title') }}</div>
+                                    <div class="pp-cond-desc">{{ __('messages.ventepages.pp_s1_desc') }}</div>
                                 </div>
                             </div>
                             <div class="pp-condition">
                                 <div class="pp-cond-icon"><i data-lucide="megaphone" style="width:16px;height:16px;"></i></div>
                                 <div>
-                                    <div class="pp-cond-title">2. Nous publions et gérons les contacts</div>
-                                    <div class="pp-cond-desc">Votre annonce est diffusée sur NADO.ma et nos plateformes partenaires. Notre équipe filtre les prospects et vous met en relation avec les acheteurs vérifiés.</div>
+                                    <div class="pp-cond-title">{{ __('messages.ventepages.pp_s2_title') }}</div>
+                                    <div class="pp-cond-desc">{{ __('messages.ventepages.pp_s2_desc') }}</div>
                                 </div>
                             </div>
                             <div class="pp-condition">
                                 <div class="pp-cond-icon"><i data-lucide="shield-check" style="width:16px;height:16px;"></i></div>
                                 <div>
-                                    <div class="pp-cond-title">3. Transaction sécurisée chez NADO</div>
-                                    <div class="pp-cond-desc">La signature et le paiement s'effectuent dans nos locaux, sous la supervision de nos conseillers. Zéro risque, zéro arnaque.</div>
+                                    <div class="pp-cond-title">{{ __('messages.ventepages.pp_s3_title') }}</div>
+                                    <div class="pp-cond-desc">{{ __('messages.ventepages.pp_s3_desc') }}</div>
                                 </div>
                             </div>
                             <div class="pp-condition">
                                 <div class="pp-cond-icon" style="background:#22c55e;"><i data-lucide="check-circle" style="width:16px;height:16px;"></i></div>
                                 <div>
-                                    <div class="pp-cond-title">4. Vous recevez votre paiement</div>
-                                    <div class="pp-cond-desc">Virements sécurisés ou paiement par chèque certifié. Traçabilité complète de la transaction.</div>
+                                    <div class="pp-cond-title">{{ __('messages.ventepages.pp_s4_title') }}</div>
+                                    <div class="pp-cond-desc">{{ __('messages.ventepages.pp_s4_desc') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -174,13 +174,13 @@
                 {{-- Quote card --}}
                 <div class="pp-quote-card">
                     <div class="pp-quote-text">
-                        "NADO m'a permis de vendre ma Mercedes C-Class en moins de 10 jours, au prix que je voulais. Le processus était simple, rapide et 100% sécurisé."
+                        {{ __('messages.ventepages.pp_quote') }}
                     </div>
                     <div class="pp-quote-author">
                         <div class="pp-quote-avatar">AK</div>
                         <div>
                             <div class="pp-quote-name">Adil K.</div>
-                            <div class="pp-quote-role">Vendeur particulier — Casablanca</div>
+                            <div class="pp-quote-role">{{ __('messages.ventepages.pp_quote_role') }}</div>
                         </div>
                     </div>
                 </div>
@@ -192,12 +192,12 @@
 
                 {{-- Phone --}}
                 <div class="pp-phone-card">
-                    <p class="pp-phone-label">Contactez-nous directement</p>
+                    <p class="pp-phone-label">{{ __('messages.ventepages.pp_phone_label') }}</p>
                     <div class="pp-phone-number"><a href="tel:+212520070611">+212 520 070 611</a></div>
-                    <div class="pp-phone-hours">Lun – Sam  |  9h00 – 18h00</div>
+                    <div class="pp-phone-hours">{{ __('messages.ventepages.pp_phone_hours') }}</div>
                     <a href="https://wa.me/212520070611" target="_blank" class="pp-phone-btn">
                         <i data-lucide="message-circle" style="width:16px;height:16px;"></i>
-                        Contacter sur WhatsApp
+                        {{ __('messages.ventepages.pp_whatsapp') }}
                     </a>
                 </div>
 
@@ -210,34 +210,34 @@
                     <div class="pp-map-body">
                         <div class="pp-map-address">
                             <i data-lucide="map-pin" style="width:16px;height:16px;color:#1459DD;flex-shrink:0;margin-top:2px;"></i>
-                            <span><a href="https://maps.app.goo.gl/wrR8THmnk8ix3MVy9" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Showroom NADO — Casablanca, Maroc</a><br><span style="color:var(--pp-muted);font-size:12px;">Ouvert Lun. au Sam. 9h–18h</span></span>
+                            <span><a href="https://maps.app.goo.gl/wrR8THmnk8ix3MVy9" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">{{ __('messages.ventepages.pp_map_addr') }}</a><br><span style="color:var(--pp-muted);font-size:12px;">{{ __('messages.ventepages.pp_map_hours') }}</span></span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Trust --}}
                 <div class="pp-trust-card">
-                    <div class="pp-trust-title">Pourquoi NADO ?</div>
+                    <div class="pp-trust-title">{{ __('messages.ventepages.pp_trust_title') }}</div>
                     <ul class="pp-trust-list">
                         <li class="pp-trust-item">
                             <i data-lucide="check-circle" class="pp-trust-check" style="width:16px;height:16px;"></i>
-                            +20 ans d'expérience automobile
+                            {{ __('messages.ventepages.pp_trust1') }}
                         </li>
                         <li class="pp-trust-item">
                             <i data-lucide="check-circle" class="pp-trust-check" style="width:16px;height:16px;"></i>
-                            Acheteurs vérifiés et filtrés
+                            {{ __('messages.ventepages.pp_trust2') }}
                         </li>
                         <li class="pp-trust-item">
                             <i data-lucide="check-circle" class="pp-trust-check" style="width:16px;height:16px;"></i>
-                            Transaction 100% sécurisée
+                            {{ __('messages.ventepages.pp_trust3') }}
                         </li>
                         <li class="pp-trust-item">
                             <i data-lucide="check-circle" class="pp-trust-check" style="width:16px;height:16px;"></i>
-                            Accompagnement de A à Z
+                            {{ __('messages.ventepages.pp_trust4') }}
                         </li>
                         <li class="pp-trust-item">
                             <i data-lucide="check-circle" class="pp-trust-check" style="width:16px;height:16px;"></i>
-                            Zéro commission cachée
+                            {{ __('messages.ventepages.pp_trust5') }}
                         </li>
                     </ul>
                 </div>
