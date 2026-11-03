@@ -70,8 +70,13 @@ public function login(Request $request) {
         // so url.intended is gone by then and this field is the only thing left
         // carrying the target. Only same-host URLs are accepted, so the field cannot
         // be used to bounce a logged-in client to an external site.
-        $target = $request->input('redirect');
+        // On privilégie la destination demandée (champ "redirect" ou url.intended
+        // posée par la page de login) AVANT le renvoi par défaut des comptes enchère,
+        // sinon un clic « Discussion avec le vendeur » renvoie vers la prelogin enchère
+        // au lieu de la page de l'annonce.
+        $target = $request->input('redirect') ?: $request->session()->get('url.intended');
         if ($target && $this->isSafeRedirect($target)) {
+            $request->session()->forget('url.intended');
             return redirect()->to($target);
         }
 
