@@ -51,19 +51,57 @@ class ExportController extends Controller
     /** Colonnes jamais exportées (sensibles / inutiles). */
     private const EXCLUDE = ['password', 'remember_token', 'otp_code', 'otp_expires_at'];
 
+    /**
+     * Colonnes clé-étrangère à remplacer par la vraie valeur :
+     * colonne => [relation Eloquent, attribut affiché].
+     */
+    private const RESOLVE = [
+        'annonces' => [
+            'mark'    => ['brand', 'name'],
+            'modele'  => ['modeleRelation', 'name'],
+            'pack_id' => ['pack', 'name'],
+        ],
+        'nadoautoenchere' => [
+            'mark'   => ['brand', 'name'],
+            'modele' => ['modeleRelation', 'name'],
+        ],
+        'models' => [
+            'brand_id' => ['brand', 'name'],
+        ],
+    ];
+
     public function export(string $module)
     {
         abort_unless(isset(self::MODULES[$module]), 404);
 
         /** @var class-string<\Illuminate\Database\Eloquent\Model> $cls */
         $cls = self::MODULES[$module];
+        $resolve = self::RESOLVE[$module] ?? [];
+
+        $query = $cls::query();
+        if ($resolve) {
+            // Charge les relations nécessaires pour afficher les noms.
+            $query->with(array_values(array_unique(array_map(fn ($r) => $r[0], $resolve))));
+        }
 
         $rows = [];
-        foreach ($cls::all() as $record) {
-            $arr = $record->toArray(); // respecte $hidden (mdp masqués, etc.)
+        foreach ($query->get() as $record) {
+            // attributesToArray() = colonnes seules (pas les relations imbriquées), $hidden respecté.
+            $arr = $record->attributesToArray();
             foreach (self::EXCLUDE as $key) {
                 unset($arr[$key]);
             }
+
+            // Remplace les IDs des clés étrangères par la vraie valeur.
+            foreach ($resolve as $col => [$rel, $attr]) {
+                if (array_key_exists($col, $arr)) {
+                    $related = $record->{$rel};
+                    if ($related && isset($related->{$attr})) {
+                        $arr[$col] = $related->{$attr};
+                    }
+                }
+            }
+
             // Les valeurs tableau (JSON castés) ne tiennent pas dans une cellule.
             foreach ($arr as $k => $v) {
                 if (is_array($v)) {
