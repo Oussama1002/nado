@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimation Instantanée | Nado.ma</title>
+    <title>{{ __('messages.estimate.page_title') }}</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -458,10 +458,10 @@
 <div class="hero">
     <div class="hero-badge">
         <i data-lucide="zap" style="width:12px;height:12px;"></i>
-        Estimation Instantanée
+        {{ __('messages.estimate.hero_badge') }}
     </div>
-    <h1>Estimation<br><span>INSTANTANÉE</span></h1>
-    <p>Découvrez la valeur réelle de votre véhicule sur le marché marocain actuel.</p>
+    <h1>{{ __('messages.estimate.hero_h1_1') }}<br><span>{{ __('messages.estimate.hero_h1_2') }}</span></h1>
+    <p>{{ __('messages.estimate.hero_lead') }}</p>
 </div>
 
 <div class="page-body">
@@ -477,18 +477,18 @@
     @isset($valuation)
     <div id="valuation-print">
         <div class="report-print-header">
-            <strong style="color:var(--slate-900);">NADO.ma — Estimation du véhicule</strong>
+            <strong style="color:var(--slate-900);">{{ __('messages.estimate.report_header') }}</strong>
             <span>{{ \Carbon\Carbon::parse($valuation['date'])->format('d/m/Y') }}</span>
         </div>
 
         <div class="result-card">
-            <div class="result-label">Valeur Estimée NADO</div>
+            <div class="result-label">{{ __('messages.estimate.result_label') }}</div>
             <div class="result-value">
                 {{ number_format($valuation['final_value'], 0, ',', ' ') }}
                 <span class="result-currency">MAD</span>
             </div>
             <div class="result-subtitle">
-                Fourchette estimée :
+                {{ __('messages.estimate.range_label') }}
                 <strong style="color:#fff;">
                     {{ number_format($valuation['range']['min'], 0, ',', ' ') }}
                     –
@@ -496,7 +496,7 @@
                 </strong>
             </div>
             <div class="confidence-badge confidence-{{ $valuation['confidence']['level'] }}">
-                <span class="dot"></span> Confiance {{ $valuation['confidence']['label'] }}
+                <span class="dot"></span> {{ __('messages.estimate.confidence_word') }} {{ __('messages.estimate.conf_'.strtolower($valuation['confidence']['level'])) }}
             </div>
             <div class="result-tags">
                 <span class="result-tag">{{ $input['brand'] }}</span>
@@ -506,7 +506,7 @@
                 @endif
                 <span class="result-tag">{{ $input['year'] }}</span>
                 <span class="result-tag">{{ number_format($input['km'], 0, ',', ' ') }} km</span>
-                <span class="result-tag">{{ $fuelChoices[$input['fuel']] ?? ucfirst($input['fuel']) }}</span>
+                <span class="result-tag">{{ __('messages.estimate.fuel_'.$input['fuel']) }}</span>
                 @if(!empty($input['gearbox']))
                 <span class="result-tag">{{ $input['gearbox'] }}</span>
                 @endif
@@ -514,78 +514,76 @@
                 <span class="result-tag">{{ $input['power_cv'] }} CV</span>
                 @endif
                 @if(!empty($input['origin']) && isset($originChoices[$input['origin']]))
-                <span class="result-tag">{{ $originChoices[$input['origin']] }}</span>
+                <span class="result-tag">{{ __('messages.estimate.orig_'.$input['origin']) }}</span>
                 @endif
             </div>
         </div>
 
         <div class="result-actions" data-noprint>
             <a href="#estimation-form" class="btn-secondary">
-                <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Recalculer
+                <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> {{ __('messages.estimate.recalculate') }}
             </a>
             <button type="button" class="btn-secondary" id="btn-download-pdf">
-                <i data-lucide="file-down" style="width:16px;height:16px;"></i> Télécharger le rapport (PDF)
+                <i data-lucide="file-down" style="width:16px;height:16px;"></i> {{ __('messages.estimate.download_pdf') }}
             </button>
         </div>
 
         <div class="report-card">
-            <h2 class="report-title">Estimation du véhicule</h2>
+            <h2 class="report-title">{{ __('messages.estimate.report_title') }}</h2>
 
             <div class="calc-row">
                 <div>
-                    <div class="calc-label">Valeur de base</div>
-                    <div class="calc-source">Source : {{ $valuation['base']['source_label'] }}</div>
+                    <div class="calc-label">{{ __('messages.estimate.base_value') }}</div>
+                    <div class="calc-source">{{ __('messages.estimate.source') }} {{ $valuation['base']['source_label'] }}</div>
                 </div>
                 <div class="calc-amount">{{ $mad($valuation['base']['value']) }}</div>
             </div>
 
             <div class="calc-total">
-                <span>Valeur estimée</span>
+                <span>{{ __('messages.estimate.estimated_value') }}</span>
                 <span class="calc-amount">{{ $mad($valuation['final_value']) }}</span>
             </div>
 
             <dl class="report-meta">
                 <div>
-                    <dt>Date de l'estimation</dt>
+                    <dt>{{ __('messages.estimate.date_label') }}</dt>
                     <dd>{{ \Carbon\Carbon::parse($valuation['date'])->format('d/m/Y') }}</dd>
                 </div>
                 <div>
-                    <dt>Méthodologie</dt>
+                    <dt>{{ __('messages.estimate.methodology_label') }}</dt>
                     <dd>{{ $valuation['methodology'] }}</dd>
                 </div>
                 <div>
-                    <dt>Source des données</dt>
+                    <dt>{{ __('messages.estimate.data_source') }}</dt>
                     <dd>{{ $valuation['base']['source_label'] }}</dd>
                 </div>
                 <div>
-                    <dt>Niveau de confiance</dt>
+                    <dt>{{ __('messages.estimate.confidence_level') }}</dt>
                     <dd>
-                        {{ $valuation['confidence']['label'] }} —
-                        {{ $valuation['confidence']['comparables'] }} annonce{{ $valuation['confidence']['comparables'] > 1 ? 's' : '' }} comparable{{ $valuation['confidence']['comparables'] > 1 ? 's' : '' }}
+                        {{ __('messages.estimate.conf_'.strtolower($valuation['confidence']['level'])) }} —
+                        {{ $valuation['confidence']['comparables'] }} {{ __('messages.estimate.comparables_unit') }}
                         @if($valuation['comparables_median'])
-                            (prix médian {{ $mad($valuation['comparables_median']) }})
+                            ({{ __('messages.estimate.median_price') }} {{ $mad($valuation['comparables_median']) }})
                         @endif
                     </dd>
                 </div>
                 <div>
-                    <dt>Réalisée par</dt>
+                    <dt>{{ __('messages.estimate.performed_by_label') }}</dt>
                     <dd>{{ $valuation['performed_by'] }}</dd>
                 </div>
                 <div>
-                    <dt>Âge du véhicule</dt>
+                    <dt>{{ __('messages.estimate.age_label') }}</dt>
                     <dd>
-                        {{ str_replace('.', ',', $valuation['age_years']) }} an(s)
+                        {{ str_replace('.', ',', $valuation['age_years']) }} {{ __('messages.estimate.years_suffix') }}
                         @if($valuation['first_registration_estimated'])
-                            <span class="form-hint">(date de 1ère mise en circulation non saisie : 1er juillet {{ $input['year'] }} retenu)</span>
+                            <span class="form-hint">{{ __('messages.estimate.first_reg_est', ['year' => $input['year']]) }}</span>
                         @endif
                     </dd>
                 </div>
             </dl>
 
             <p class="report-note">
-                <strong>Valeur vénale estimative interne.</strong> Cette estimation est calculée automatiquement à partir de
-                coefficients internes NADO et des annonces disponibles. Ce n'est ni une expertise officielle, ni une valeur
-                d'assurance, ni une offre d'achat ferme, tant qu'elle n'a pas été validée par un expert habilité.
+                {!! __('messages.estimate.report_note') !!}
             </p>
         </div>
     </div>
@@ -597,8 +595,8 @@
             <i data-lucide="car" style="width:20px;height:20px;color:var(--primary);"></i>
         </div>
         <div>
-            <h2>Quelle est votre voiture ?</h2>
-            <p>Commencez par identifier la marque et le modèle.</p>
+            <h2>{{ __('messages.estimate.form_q_title') }}</h2>
+            <p>{{ __('messages.estimate.form_q_sub') }}</p>
         </div>
     </div>
 
@@ -612,13 +610,13 @@
             @csrf
             <div class="form-grid">
 
-                <div class="form-section-title">1. Le véhicule</div>
+                <div class="form-section-title">{{ __('messages.estimate.sec1') }}</div>
 
                 {{-- Marque --}}
                 <div class="form-group">
-                    <label>Marque</label>
+                    <label>{{ __('messages.estimate.marque') }}</label>
                     <select name="brand" id="est-brand" required>
-                        <option value="">Sélectionner une marque</option>
+                        <option value="">{{ __('messages.estimate.select_brand') }}</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->name }}"
                                 data-id="{{ $brand->id }}"
@@ -632,9 +630,9 @@
 
                 {{-- Modèle --}}
                 <div class="form-group">
-                    <label>Modèle</label>
+                    <label>{{ __('messages.estimate.modele') }}</label>
                     <select name="model" id="est-model" required>
-                        <option value="">Sélectionner un modèle</option>
+                        <option value="">{{ __('messages.estimate.select_model') }}</option>
                         @if($val('model'))
                             <option value="{{ $val('model') }}" selected>{{ $val('model') }}</option>
                         @endif
@@ -644,40 +642,40 @@
 
                 {{-- Version --}}
                 <div class="form-group">
-                    <label>Version / finition <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">(optionnel)</span></label>
+                    <label>{{ __('messages.estimate.version') }} <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">{{ __('messages.estimate.optional') }}</span></label>
                     {{-- Filled by JS from the chosen brand (trimsByBrand) --}}
                     <select name="version" id="est-version">
-                        <option value="">Choisissez d'abord la marque</option>
+                        <option value="">{{ __('messages.estimate.choose_brand_first') }}</option>
                     </select>
                     <input type="text" name="version_other" id="est-version-other" maxlength="100"
-                        placeholder="Précisez la version / finition" style="display:none;margin-top:0.5rem;"
+                        placeholder="{{ __('messages.estimate.version_ph') }}" style="display:none;margin-top:0.5rem;"
                         value="{{ old('version_other') }}">
                     @error('version')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
                 {{-- Date de 1ère mise en circulation --}}
                 <div class="form-group">
-                    <label>Date de 1ère mise en circulation</label>
+                    <label>{{ __('messages.estimate.first_reg') }}</label>
                     <input type="date" name="first_registration" id="est-first-registration" required
                         min="1990-01-01" max="{{ date('Y-m-d') }}" value="{{ $val('first_registration') }}">
-                    <span class="form-hint">Voir la carte grise.</span>
+                    <span class="form-hint">{{ __('messages.estimate.see_cg') }}</span>
                     @error('first_registration')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
                 {{-- Kilométrage --}}
                 <div class="form-group">
-                    <label>Kilométrage actuel (km)</label>
-                    <input type="number" name="km" placeholder="Ex: 85000" min="0" required value="{{ $val('km') }}">
+                    <label>{{ __('messages.estimate.mileage') }}</label>
+                    <input type="number" name="km" placeholder="{{ __('messages.estimate.mileage_ph') }}" min="0" required value="{{ $val('km') }}">
                     @error('km')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
                 {{-- Carburant --}}
                 <div class="form-group">
-                    <label>Carburant</label>
+                    <label>{{ __('messages.estimate.fuel') }}</label>
                     <select name="fuel" required>
-                        <option value="">Type de carburant</option>
+                        <option value="">{{ __('messages.estimate.fuel_type') }}</option>
                         @foreach($fuelChoices as $value => $label)
-                            <option value="{{ $value }}" {{ $val('fuel') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $value }}" {{ $val('fuel') === $value ? 'selected' : '' }}>{{ __('messages.estimate.fuel_'.$value) }}</option>
                         @endforeach
                     </select>
                     @error('fuel')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
@@ -685,83 +683,83 @@
 
                 {{-- Puissance fiscale --}}
                 <div class="form-group">
-                    <label>Puissance fiscale (CV) <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">(recommandé)</span></label>
-                    <input type="number" name="power_cv" min="1" max="200" placeholder="Ex: 8" value="{{ $val('power_cv') }}">
-                    <span class="form-hint">Indiquée sur la carte grise. À partir de 11 CV, la vignette augmente fortement.</span>
+                    <label>{{ __('messages.estimate.fiscal_power') }} <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">{{ __('messages.estimate.recommended') }}</span></label>
+                    <input type="number" name="power_cv" min="1" max="200" placeholder="{{ __('messages.estimate.fiscal_ph') }}" value="{{ $val('power_cv') }}">
+                    <span class="form-hint">{{ __('messages.estimate.fiscal_hint') }}</span>
                     @error('power_cv')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
                 {{-- Boîte --}}
                 <div class="form-group">
-                    <label>Boîte de vitesse</label>
+                    <label>{{ __('messages.estimate.gearbox') }}</label>
                     <select name="gearbox">
-                        <option value="">Sélectionner</option>
+                        <option value="">{{ __('messages.estimate.select') }}</option>
                         @foreach(['Manuelle','Automatique'] as $g)
-                            <option value="{{ $g }}" {{ $val('gearbox') === $g ? 'selected' : '' }}>{{ $g }}</option>
+                            <option value="{{ $g }}" {{ $val('gearbox') === $g ? 'selected' : '' }}>{{ $g === 'Manuelle' ? __('messages.ventemodal.box_manual') : __('messages.ventemodal.box_auto') }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 {{-- Origine --}}
                 <div class="form-group">
-                    <label>Origine</label>
+                    <label>{{ __('messages.estimate.origin') }}</label>
                     <select name="origin">
-                        <option value="">Je ne sais pas</option>
+                        <option value="">{{ __('messages.estimate.dont_know') }}</option>
                         @foreach($originChoices as $value => $label)
-                            <option value="{{ $value }}" {{ $val('origin') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $value }}" {{ $val('origin') === $value ? 'selected' : '' }}>{{ __('messages.estimate.orig_'.$value) }}</option>
                         @endforeach
                     </select>
-                    <span class="form-hint">WW au Maroc = acheté neuf au Maroc. Dédouané = importé d'occasion.</span>
+                    <span class="form-hint">{{ __('messages.estimate.origin_hint') }}</span>
                     @error('origin')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
-                <div class="form-section-title">2. État et historique</div>
+                <div class="form-section-title">{{ __('messages.estimate.sec2') }}</div>
 
                 @foreach([
-                    'condition_mechanical' => 'État mécanique',
-                    'condition_body'       => 'État carrosserie',
-                    'condition_interior'   => 'État intérieur',
-                ] as $field => $label)
+                    'condition_mechanical' => 'cond_mechanical',
+                    'condition_body'       => 'cond_body',
+                    'condition_interior'   => 'cond_interior',
+                ] as $field => $lkey)
                     <div class="form-group">
-                        <label>{{ $label }}</label>
+                        <label>{{ __('messages.estimate.'.$lkey) }}</label>
                         <select name="{{ $field }}" required>
                             @foreach($conditionChoices as $value => $choice)
-                                <option value="{{ $value }}" {{ $val($field, 'bon') === $value ? 'selected' : '' }}>{{ $choice }}</option>
+                                <option value="{{ $value }}" {{ $val($field, 'bon') === $value ? 'selected' : '' }}>{{ __('messages.estimate.cond_'.$value) }}</option>
                             @endforeach
                         </select>
                     </div>
                 @endforeach
 
                 <div class="form-group">
-                    <label>Historique d'entretien</label>
+                    <label>{{ __('messages.estimate.maintenance') }}</label>
                     <select name="maintenance" required>
                         @foreach($maintenanceChoices as $value => $choice)
-                            <option value="{{ $value }}" {{ $val('maintenance', 'partiel') === $value ? 'selected' : '' }}>{{ $choice }}</option>
+                            <option value="{{ $value }}" {{ $val('maintenance', 'partiel') === $value ? 'selected' : '' }}>{{ __('messages.estimate.maint_'.$value) }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Nombre de propriétaires <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">(optionnel)</span></label>
+                    <label>{{ __('messages.estimate.owners') }} <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">{{ __('messages.estimate.optional') }}</span></label>
                     <select name="owners">
-                        <option value="">Je ne sais pas</option>
+                        <option value="">{{ __('messages.estimate.dont_know') }}</option>
                         @foreach($ownerChoices as $value => $choice)
-                            <option value="{{ $value }}" {{ (string) $val('owners') === (string) $value ? 'selected' : '' }}>{{ $choice }}</option>
+                            <option value="{{ $value }}" {{ (string) $val('owners') === (string) $value ? 'selected' : '' }}>{{ __('messages.estimate.owners_'.$value) }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Historique d'accident</label>
+                    <label>{{ __('messages.estimate.accident') }}</label>
                     <select name="accident" required>
                         @foreach($accidentChoices as $value => $choice)
-                            <option value="{{ $value }}" {{ $val('accident', 'aucun') === $value ? 'selected' : '' }}>{{ $choice }}</option>
+                            <option value="{{ $value }}" {{ $val('accident', 'aucun') === $value ? 'selected' : '' }}>{{ __('messages.estimate.acc_'.$value) }}</option>
                         @endforeach
                     </select>
-                    <span class="form-hint">Un véhicule réparé peut être en bon état aujourd'hui : son historique compte à part.</span>
+                    <span class="form-hint">{{ __('messages.estimate.accident_hint') }}</span>
                 </div>
 
-                <div class="form-section-title">3. Équipements optionnels</div>
+                <div class="form-section-title">{{ __('messages.estimate.sec3') }}</div>
 
                 <div class="form-group full">
                     <div class="options-grid">
@@ -769,19 +767,19 @@
                             <label class="option-check">
                                 <input type="checkbox" name="options[]" value="{{ $value }}"
                                     {{ in_array($value, $selectedOptions, true) ? 'checked' : '' }}>
-                                {{ $label }}
+                                {{ __('messages.estimate.opt_'.$value) }}
                             </label>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="form-section-title">4. Valeur de référence</div>
+                <div class="form-section-title">{{ __('messages.estimate.sec4') }}</div>
 
                 <div class="form-group full">
-                    <label>Prix neuf / valeur de référence <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">(optionnel)</span></label>
-                    <input type="number" name="reference_value" placeholder="Ex: 250 000 MAD" min="0" step="500"
+                    <label>{{ __('messages.estimate.ref_value') }} <span style="font-weight:400;font-size:0.78rem;color:var(--slate-500);">{{ __('messages.estimate.optional') }}</span></label>
+                    <input type="number" name="reference_value" placeholder="{{ __('messages.estimate.ref_ph') }}" min="0" step="500"
                         value="{{ $val('reference_value') }}">
-                    <span class="form-hint">Prix neuf du véhicule (catalogue, facture d'achat neuf). Sinon, NADO utilise ses tarifs de référence ou les annonces comparables.</span>
+                    <span class="form-hint">{{ __('messages.estimate.ref_hint') }}</span>
                     @error('reference_value')<span style="font-size:0.75rem;color:#ef4444;">{{ $message }}</span>@enderror
                 </div>
 
@@ -789,20 +787,30 @@
 
             <button type="submit" class="btn-submit">
                 <i data-lucide="calculator" style="width:18px;height:18px;"></i>
-                {{ isset($valuation) ? 'Recalculer' : 'Estimer la valeur' }}
+                {{ isset($valuation) ? __('messages.estimate.recalculate') : __('messages.estimate.submit_estimate') }}
             </button>
         </form>
     </div>
 
     <div class="disclaimer">
         <i data-lucide="info" style="width:18px;height:18px;color:var(--primary);flex-shrink:0;margin-top:1px;"></i>
-        <p><strong>Estimation indicative.</strong> Cette valeur est calculée à partir de coefficients internes NADO et des annonces du marché marocain. Ce n'est pas une expertise officielle ni une offre d'achat ferme. Pour une évaluation précise, contactez nos experts NADO.</p>
+        <p>{!! __('messages.estimate.disclaimer') !!}</p>
     </div>
 
 </div>
 
 <script>
     lucide.createIcons();
+
+    // i18n strings injected from messages.php so JS follows the active locale
+    var EST_I18N = {
+        dontKnow:     @json(__('messages.estimate.dont_know')),
+        chooseBrand:  @json(__('messages.estimate.choose_brand_first')),
+        other:        @json(__('messages.estimate.js_other')),
+        selectModel:  @json(__('messages.estimate.select_model')),
+        generating:   @json(__('messages.estimate.js_generating')),
+        pdfError:     @json(__('messages.estimate.js_pdf_error')),
+    };
 
     var modelsUrl = '{{ route('achat.models.by.brand', '') }}/';
 
@@ -816,7 +824,7 @@
         versionSelect.innerHTML = '';
         var first = document.createElement('option');
         first.value = '';
-        first.textContent = brand ? 'Je ne sais pas' : "Choisissez d'abord la marque";
+        first.textContent = brand ? EST_I18N.dontKnow : EST_I18N.chooseBrand;
         versionSelect.appendChild(first);
         if (!brand) { toggleVersionOther(); return; }
 
@@ -830,7 +838,7 @@
         });
         var other = document.createElement('option');
         other.value = '__other';
-        other.textContent = 'Autre (préciser)';
+        other.textContent = EST_I18N.other;
         versionSelect.appendChild(other);
 
         // A previous value that is not in the list → "Autre" with the text filled in
@@ -858,7 +866,7 @@
         var selectedOption = this.options[this.selectedIndex];
         var brandId = selectedOption.getAttribute('data-id');
         var modelSelect = document.getElementById('est-model');
-        modelSelect.innerHTML = '<option value="">Sélectionner un modèle</option>';
+        modelSelect.innerHTML = '<option value="">' + EST_I18N.selectModel + '</option>';
         if (!brandId) return;
         fetch(modelsUrl + brandId)
             .then(function(res){ return res.json(); })
@@ -883,7 +891,7 @@
                 .then(function(res){ return res.json(); })
                 .then(function(models){
                     var modelSelect = document.getElementById('est-model');
-                    modelSelect.innerHTML = '<option value="">Sélectionner un modèle</option>';
+                    modelSelect.innerHTML = '<option value="">' + EST_I18N.selectModel + '</option>';
                     models.forEach(function(m){
                         var opt = document.createElement('option');
                         opt.value = m.name;
@@ -947,7 +955,7 @@
 
             var original = btn.innerHTML;
             btn.disabled = true;
-            btn.textContent = 'Génération du PDF…';
+            btn.textContent = EST_I18N.generating;
 
             var hidden = report.querySelectorAll('[data-noprint]');
             Array.prototype.forEach.call(hidden, function (el) {
@@ -990,7 +998,7 @@
                 .catch(function (err) {
                     restore();
                     console.error('PDF generation failed:', err);
-                    alert("Le PDF n'a pas pu être généré sur cet appareil. Utilisez le menu du navigateur « Imprimer / Enregistrer en PDF ».");
+                    alert(EST_I18N.pdfError);
                 });
         });
     })();
