@@ -615,7 +615,7 @@
     @if (!request()->is('vente/formulaire*'))
         <div class="vmkt-wrap">
             <div class="vp-banner">
-                <div class="vp-banner-inner"><p>📢</p>Bannière publicitaire — 1000 × 225</div>
+                <div class="vp-banner-inner"><p>📢</p>{{ __('messages.ventemodal.banner') }}</div>
             </div>
         </div>
     @endif
@@ -693,7 +693,7 @@
             {{-- Banner after 3 cards --}}
             @if (!request()->is('vente/formulaire*'))
                 <div class="vp-banner" style="margin-top:56px;">
-                    <div class="vp-banner-inner"><p>📣</p>Bannière publicitaire — 1000 × 225</div>
+                    <div class="vp-banner-inner"><p>📣</p>{{ __('messages.ventemodal.banner') }}</div>
                 </div>
             @endif
         </div>
@@ -913,7 +913,7 @@
             {{-- Banner --}}
             @if (!request()->is('vente/formulaire*'))
                 <div class="vp-banner" style="margin-top:80px;">
-                    <div class="vp-banner-inner"><p>📣</p>Bannière publicitaire — 1000 × 225</div>
+                    <div class="vp-banner-inner"><p>📣</p>{{ __('messages.ventemodal.banner') }}</div>
                 </div>
             @endif
         </div>
@@ -1031,11 +1031,11 @@
             <div>
                 <div class="vp-badge" style="margin-bottom:8px;box-shadow:none;">
                     <i data-lucide="zap" style="width:12px;height:12px;fill:currentColor;"></i>
-                    Vendez au meilleur prix
+                    {{ __('messages.ventemodal.badge_price') }}
                 </div>
-                <div class="vp-modal-title">Déposez votre annonce</div>
+                <div class="vp-modal-title">{{ __('messages.ventemodal.title') }}</div>
             </div>
-            <button class="vp-modal-close" onclick="closeVenteModal()" aria-label="Fermer">
+            <button class="vp-modal-close" onclick="closeVenteModal()" aria-label="{{ __('messages.ventemodal.close') }}">
                 <i data-lucide="x" style="width:18px;height:18px;"></i>
             </button>
         </div>
@@ -1049,15 +1049,15 @@
 
                 <div class="vm-step-node active" data-step="1">
                     <div class="vm-step-circle"><i data-lucide="car-front" style="width:16px;height:16px;"></i></div>
-                    <span class="vm-step-label">Véhicule</span>
+                    <span class="vm-step-label">{{ __('messages.ventemodal.step_vehicle') }}</span>
                 </div>
                 <div class="vm-step-node" data-step="2">
                     <div class="vm-step-circle"><i data-lucide="user" style="width:16px;height:16px;"></i></div>
-                    <span class="vm-step-label">Coordonnées</span>
+                    <span class="vm-step-label">{{ __('messages.ventemodal.step_contact') }}</span>
                 </div>
                 <div class="vm-step-node" data-step="3">
                     <div class="vm-step-circle"><i data-lucide="package" style="width:16px;height:16px;"></i></div>
-                    <span class="vm-step-label">Offre</span>
+                    <span class="vm-step-label">{{ __('messages.ventemodal.step_offer') }}</span>
                 </div>
             </div>
 
@@ -1114,14 +1114,14 @@
                     </div>
                     @endauth
 
-                    <h2 class="vm-step-h2">1. Véhicule &amp; détails</h2>
+                    <h2 class="vm-step-h2">{{ __('messages.ventemodal.s1_title') }}</h2>
 
                     {{-- Row 1: identité --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
                         <div class="vm-form-group">
-                            <label>Marque</label>
+                            <label>{{ __('messages.ventemodal.marque') }}</label>
                             <select name="mark" id="vm-mark" class="vm-input" required>
-                                <option value="">Choisir</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->name }}" data-id="{{ $brand->id }}"
                                         @isset($prefill) {{ ($prefill['mark'] ?? '') === $brand->name ? 'selected' : '' }} @endisset>
@@ -1131,32 +1131,32 @@
                             </select>
                         </div>
                         <div class="vm-form-group">
-                            <label>Modèle</label>
+                            <label>{{ __('messages.ventemodal.modele') }}</label>
                             <select name="modele" id="vm-modele" class="vm-input" required>
                                 @isset($prefill)
                                     <option value="{{ $prefill['modele'] ?? '' }}" selected>{{ $prefill['modele'] ?? '' }}</option>
                                 @else
-                                    <option value="">Sélectionnez une marque d'abord</option>
+                                    <option value="">{{ __('messages.ventemodal.select_brand_first') }}</option>
                                 @endisset
                             </select>
                         </div>
                         <div class="vm-form-group">
-                            <label>Année</label>
+                            <label>{{ __('messages.ventemodal.year') }}</label>
                             <select name="year" class="vm-input" required>
-                                <option value="">Année</option>
+                                <option value="">{{ __('messages.ventemodal.year') }}</option>
                                 @for ($i = date('Y'); $i >= 1992; $i--)
                                     <option value="{{ $i }}" @isset($prefill) {{ (int)($prefill['year'] ?? 0) === (int)$i ? 'selected' : '' }} @endisset>{{ $i }}</option>
                                 @endfor
                             </select>
                         </div>
                         <div class="vm-form-group">
-                            <label>Carburant</label>
+                            <label>{{ __('messages.ventemodal.fuel') }}</label>
                             <select name="carburant" class="vm-input" required>
-                                <option value="">Choisir</option>
-                                <option @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Essence' ? 'selected' : '' }} @endisset>Essence</option>
-                                <option @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Diesel' ? 'selected' : '' }} @endisset>Diesel</option>
-                                <option @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Electrique' ? 'selected' : '' }} @endisset>Electrique</option>
-                                <option @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Hybride' ? 'selected' : '' }} @endisset>Hybride</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                <option value="Essence" @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Essence' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.fuel_essence') }}</option>
+                                <option value="Diesel" @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Diesel' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.fuel_diesel') }}</option>
+                                <option value="Electrique" @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Electrique' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.fuel_electric') }}</option>
+                                <option value="Hybride" @isset($prefill) {{ ($prefill['carburant'] ?? '') === 'Hybride' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.fuel_hybrid') }}</option>
                             </select>
                         </div>
                     </div>
@@ -1164,21 +1164,21 @@
                     {{-- Row 2: km + boîte + CV --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
                         <div class="vm-form-group">
-                            <label>Km</label>
-                            <input type="number" name="km" placeholder="Ex : 45 000" class="vm-input" required min="0"
+                            <label>{{ __('messages.ventemodal.km') }}</label>
+                            <input type="number" name="km" placeholder="{{ __('messages.ventemodal.km_ph') }}" class="vm-input" required min="0"
                                 @isset($prefill) value="{{ $prefill['km'] ?? '' }}" @endisset>
                         </div>
                         <div class="vm-form-group">
-                            <label>Boîte</label>
+                            <label>{{ __('messages.ventemodal.box') }}</label>
                             <select name="box" class="vm-input" required>
-                                <option value="">Choisir</option>
-                                <option @isset($prefill) {{ ($prefill['box'] ?? '') === 'Manuelle' ? 'selected' : '' }} @endisset>Manuelle</option>
-                                <option @isset($prefill) {{ ($prefill['box'] ?? '') === 'Automatique' ? 'selected' : '' }} @endisset>Automatique</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                <option value="Manuelle" @isset($prefill) {{ ($prefill['box'] ?? '') === 'Manuelle' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.box_manual') }}</option>
+                                <option value="Automatique" @isset($prefill) {{ ($prefill['box'] ?? '') === 'Automatique' ? 'selected' : '' }} @endisset>{{ __('messages.ventemodal.box_auto') }}</option>
                             </select>
                         </div>
                         <div class="vm-form-group">
-                            <label>CV (fiscale)</label>
-                            <input type="number" name="cv" placeholder="Ex : 7" class="vm-input" min="0"
+                            <label>{{ __('messages.ventemodal.cv') }}</label>
+                            <input type="number" name="cv" placeholder="{{ __('messages.ventemodal.cv_ph') }}" class="vm-input" min="0"
                                 @isset($prefill) value="{{ $prefill['cv'] ?? '' }}" @endisset>
                         </div>
                     </div>
@@ -1186,20 +1186,34 @@
                     {{-- Row 3: état / origine --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
                         <div class="vm-form-group">
-                            <label>État</label>
+                            <label>{{ __('messages.ventemodal.state') }}</label>
+                            @php $etatLabels = [
+                                'Excellent' => __('messages.ventemodal.state_excellent'),
+                                'Très bon'  => __('messages.ventemodal.state_very_good'),
+                                'Bon'       => __('messages.ventemodal.state_good'),
+                                'Correct'   => __('messages.ventemodal.state_correct'),
+                                'Endommagé' => __('messages.ventemodal.state_damaged'),
+                                'Neuf'      => __('messages.ventemodal.state_new'),
+                            ]; @endphp
                             <select name="etat" class="vm-input" required>
-                                <option value="">Choisir</option>
-                                @foreach(['Excellent','Très bon','Bon','Correct','Endommagé','Neuf'] as $opt)
-                                    <option @isset($prefill) {{ ($prefill['etat'] ?? '') === $opt ? 'selected' : '' }} @endisset>{{ $opt }}</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                @foreach($etatLabels as $val => $label)
+                                    <option value="{{ $val }}" @isset($prefill) {{ ($prefill['etat'] ?? '') === $val ? 'selected' : '' }} @endisset>{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="vm-form-group">
-                            <label>Origine</label>
+                            <label>{{ __('messages.ventemodal.origin') }}</label>
+                            @php $origineLabels = [
+                                'Dédouané'             => __('messages.ventemodal.origin_cleared'),
+                                'WW au Maroc'          => __('messages.ventemodal.origin_ww'),
+                                'Importé neuf'         => __('messages.ventemodal.origin_imported'),
+                                'Pas encore dédouané'  => __('messages.ventemodal.origin_not_cleared'),
+                            ]; @endphp
                             <select name="origine" class="vm-input" required>
-                                <option value="">Choisir</option>
-                                @foreach(['Dédouané','WW au Maroc','Importé neuf','Pas encore dédouané'] as $opt)
-                                    <option @isset($prefill) {{ ($prefill['origine'] ?? '') === $opt ? 'selected' : '' }} @endisset>{{ $opt }}</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
+                                @foreach($origineLabels as $val => $label)
+                                    <option value="{{ $val }}" @isset($prefill) {{ ($prefill['origine'] ?? '') === $val ? 'selected' : '' }} @endisset>{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -1208,8 +1222,8 @@
                     {{-- Row 4: Prix (seul, centré) --}}
                     <div class="vm-form-grid" style="grid-template-columns: 1fr; margin-top: 8px;">
                         <div class="vm-form-group" style="max-width: 320px; margin: 0 auto; width: 100%; text-align: center;">
-                            <label style="display:block; text-align:center;">Prix (MAD)</label>
-                            <input type="number" name="prix" placeholder="Ex : 180 000"
+                            <label style="display:block; text-align:center;">{{ __('messages.ventemodal.price') }}</label>
+                            <input type="number" name="prix" placeholder="{{ __('messages.ventemodal.price_ph') }}"
                                 class="vm-input" min="0" style="text-align: center;"
                                 @isset($prefill) value="{{ $prefill['prix'] ?? '' }}" @endisset>
                         </div>
@@ -1218,10 +1232,10 @@
                     {{-- Row 5: Description --}}
                     <div class="vm-form-grid" style="grid-template-columns: 1fr; margin-top: 16px;">
                         <div class="vm-form-group">
-                            <label>À propos de ce véhicule</label>
+                            <label>{{ __('messages.ventemodal.about_vehicle') }}</label>
                             <textarea name="description" rows="5"
                                 class="vm-input"
-                                placeholder="Décrivez votre véhicule : état général, options, entretien, historique, raisons de la vente…"
+                                placeholder="{{ __('messages.ventemodal.desc_ph') }}"
                                 maxlength="5000"
                                 style="resize: vertical; min-height: 140px; font-family: inherit; line-height: 1.5;">@isset($prefill){{ $prefill['description'] ?? '' }}@endisset</textarea>
                         </div>
@@ -1232,29 +1246,29 @@
                      STEP 2 — Coordonnées & Photos
                 ═════════════════════════════════════════ --}}
                 <div id="vm-step-2" class="vm-step-content">
-                    <h2 class="vm-step-h2">2. Coordonnées &amp; photos</h2>
+                    <h2 class="vm-step-h2">{{ __('messages.ventemodal.s2_title') }}</h2>
 
                     {{-- Contact fields --}}
                     <div class="vm-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                         <div class="vm-form-group">
-                            <label>Nom &amp; Prénom</label>
-                            <input type="text" name="name" placeholder="Votre nom" class="vm-input" required
+                            <label>{{ __('messages.ventemodal.fullname') }}</label>
+                            <input type="text" name="name" placeholder="{{ __('messages.ventemodal.fullname_ph') }}" class="vm-input" required
                                 value="{{ $prefill['name'] ?? (Auth::guard('client')->check() ? (Auth::guard('client')->user()->name ?? '') : '') }}">
                         </div>
                         <div class="vm-form-group">
-                            <label>Téléphone</label>
-                            <input type="tel" name="phone" placeholder="+212 6…" class="vm-input" required
+                            <label>{{ __('messages.ventemodal.phone') }}</label>
+                            <input type="tel" name="phone" placeholder="{{ __('messages.ventemodal.phone_ph') }}" class="vm-input" required
                                 value="{{ $prefill['phone'] ?? (Auth::guard('client')->check() ? (Auth::guard('client')->user()->phone ?? '') : '') }}">
                         </div>
                         <div class="vm-form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" placeholder="vous@exemple.com" class="vm-input"
+                            <label>{{ __('messages.ventemodal.email') }}</label>
+                            <input type="email" name="email" placeholder="{{ __('messages.ventemodal.email_ph') }}" class="vm-input"
                                 value="{{ $prefill['email'] ?? (Auth::guard('client')->check() ? (Auth::guard('client')->user()->email ?? '') : '') }}">
                         </div>
                         <div class="vm-form-group">
-                            <label>Ville</label>
+                            <label>{{ __('messages.ventemodal.city') }}</label>
                             <select name="city" class="vm-input" required>
-                                <option value="">Choisir</option>
+                                <option value="">{{ __('messages.ventemodal.choose') }}</option>
                                 @foreach ($city as $c)
                                     <option value="{{ $c->name }}" @isset($prefill) {{ ($prefill['city'] ?? '') === $c->name ? 'selected' : '' }} @endisset>{{ $c->name }}</option>
                                 @endforeach
@@ -1265,16 +1279,16 @@
                     {{-- Photos drop zone --}}
                     <p class="vm-section-label">
                         <i data-lucide="image" style="width:14px;height:14px;"></i>
-                        Photos du véhicule
+                        {{ __('messages.ventemodal.photos_label') }}
                     </p>
                     <p style="font-size:12px;color:var(--vp-muted);font-weight:600;margin-bottom:12px;">
-                        Glissez-déposez ou appuyez — jusqu'à 20 images
+                        {{ __('messages.ventemodal.photos_hint') }}
                     </p>
                     <div class="vm-dropzone" id="vm-photo-zone" onclick="document.getElementById('vm-photos-input').click()">
                         <div class="vm-dropzone-icon">🖼️</div>
-                        <div class="vm-dropzone-title">Déposez ou cliquez</div>
-                        <div class="vm-dropzone-sub">JPG, PNG, WEBP acceptés</div>
-                        <span class="vm-dropzone-count" id="vm-photo-count">0 / 20 photos</span>
+                        <div class="vm-dropzone-title">{{ __('messages.ventemodal.drop_click') }}</div>
+                        <div class="vm-dropzone-sub">{{ __('messages.ventemodal.photo_formats') }}</div>
+                        <span class="vm-dropzone-count" id="vm-photo-count">0 {{ __('messages.ventemodal.photos_suffix') }}</span>
                         <input type="file" id="vm-photos-input" name="photos[]"
                                multiple accept="image/*" style="display:none">
                     </div>
@@ -1283,22 +1297,22 @@
                     {{-- Video drop zone --}}
                     <p class="vm-section-label" style="margin-top:32px;">
                         <i data-lucide="video" style="width:14px;height:14px;"></i>
-                        Vidéo du véhicule <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.6;">(optionnel)</span>
+                        {{ __('messages.ventemodal.video_label') }} <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.6;">{{ __('messages.ventemodal.optional') }}</span>
                     </p>
                     <p style="font-size:12px;color:var(--vp-muted);font-weight:600;margin-bottom:12px;">
-                        Une vidéo courte pour présenter votre véhicule — max 100 Mo
+                        {{ __('messages.ventemodal.video_hint') }}
                     </p>
                     <div class="vm-dropzone vm-dropzone-video" id="vm-video-zone" onclick="document.getElementById('vm-video-input').click()">
                         <div class="vm-dropzone-icon">🎥</div>
-                        <div class="vm-dropzone-title">Déposez une vidéo ou cliquez</div>
-                        <div class="vm-dropzone-sub">MP4, MOV, AVI — max 100 Mo</div>
+                        <div class="vm-dropzone-title">{{ __('messages.ventemodal.drop_video') }}</div>
+                        <div class="vm-dropzone-sub">{{ __('messages.ventemodal.video_formats') }}</div>
                         <input type="file" id="vm-video-input" name="video"
                                accept="video/*" style="display:none">
                     </div>
                     <div id="vm-video-preview" style="display:none;" class="vm-video-preview">
                         <div class="vm-video-preview-icon">🎬</div>
                         <div class="vm-video-preview-name" id="vm-video-name"></div>
-                        <button type="button" class="vm-video-remove" onclick="vmRemoveVideo()" title="Supprimer">✕</button>
+                        <button type="button" class="vm-video-remove" onclick="vmRemoveVideo()" title="{{ __('messages.ventemodal.remove') }}">✕</button>
                     </div>
                 </div>
 
@@ -1306,9 +1320,9 @@
                      STEP 3 — Choisissez votre pack
                 ═════════════════════════════════════════ --}}
                 <div id="vm-step-3" class="vm-step-content">
-                    <h2 class="vm-step-h2" style="text-align:center;">3. Choisissez votre pack</h2>
+                    <h2 class="vm-step-h2" style="text-align:center;">{{ __('messages.ventemodal.s3_title') }}</h2>
                     <p style="text-align:center;color:var(--vp-muted);font-size:14px;font-weight:500;margin:-8px 0 32px;">
-                        Sélectionnez l'offre qui correspond à vos besoins.
+                        {{ __('messages.ventemodal.s3_sub') }}
                     </p>
 
                     {{-- Pack cards --}}
@@ -1318,17 +1332,17 @@
                     <div style="text-align:center;margin:28px 0 8px;">
                         <button type="button" id="vm-free-btn" class="vm-free-btn">
                             <i data-lucide="sparkles" style="width:15px;height:15px;"></i>
-                            Publier gratuitement sur nado.ma
+                            {{ __('messages.ventemodal.publish_free') }}
                         </button>
                     </div>
                 </div>
 
                 {{-- Nav buttons --}}
                 <div class="vm-nav">
-                    <button type="button" id="vm-prev" class="vm-btn-prev" onclick="vmMoveStep(-1)">Précédent</button>
+                    <button type="button" id="vm-prev" class="vm-btn-prev" onclick="vmMoveStep(-1)">{{ __('messages.ventemodal.prev') }}</button>
                     <div class="vm-spacer"></div>
                     <button type="button" id="vm-next" class="vm-btn-next" onclick="vmMoveStep(1)">
-                        Suivant <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+                        {{ __('messages.ventemodal.next') }} <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
                     </button>
                 </div>
             </form>
@@ -1351,32 +1365,32 @@
                 </div>
             </div>
 
-            <h2 class="vm-cp-title">C'est confirmé !</h2>
+            <h2 class="vm-cp-title">{{ __('messages.ventemodal.confirmed') }}</h2>
 
             <div class="vm-cp-pack-badge" id="vm-cp-pack-badge">
                 <i data-lucide="package" style="width:14px;height:14px;"></i>
-                <span id="vm-cp-pack-label">Publication gratuite</span>
+                <span id="vm-cp-pack-label">{{ __('messages.ventemodal.free_publish') }}</span>
             </div>
 
             <p class="vm-cp-sub">
-                Votre annonce a bien été soumise.<br>
-                Elle sera visible après validation par notre équipe.
+                {{ __('messages.ventemodal.submitted_1') }}<br>
+                {{ __('messages.ventemodal.submitted_2') }}
             </p>
 
             <div class="vm-cp-actions">
                 @if(request()->boolean('embed'))
                     <button type="button" class="vp-cta-btn vm-cp-submit" onclick="closeVenteModal()">
-                        Retour au tableau de bord
+                        {{ __('messages.ventemodal.back_dashboard') }}
                         <i data-lucide="arrow-right" class="vp-cta-arrow" style="width:18px;height:18px;"></i>
                     </button>
                 @else
                     <button type="button" class="vp-cta-btn vm-cp-submit"
                             onclick="window.location.href = '{{ route('index') }}'">
-                        Retour au site
+                        {{ __('messages.ventemodal.back_site') }}
                         <i data-lucide="arrow-right" class="vp-cta-arrow" style="width:18px;height:18px;"></i>
                     </button>
                     <button type="button" class="vm-cp-cancel" onclick="vmResetVente(); closeVenteModal()">
-                        Rester sur la page
+                        {{ __('messages.ventemodal.stay') }}
                     </button>
                 @endif
             </div>
@@ -1389,6 +1403,25 @@
 
 @section('script')
 <script>
+// ── i18n (injected from messages.php so JS strings follow the locale) ──
+const VM_I18N = {
+    loading:         @json(__('messages.ventemodal.loading')),
+    selectBrand:     @json(__('messages.ventemodal.select_brand')),
+    selectModel:     @json(__('messages.ventemodal.select_model')),
+    loadError:       @json(__('messages.ventemodal.load_error')),
+    fillRequired:    @json(__('messages.ventemodal.fill_required')),
+    bestChoice:      @json(__('messages.ventemodal.best_choice')),
+    selected:        @json(__('messages.ventemodal.selected')),
+    choose:          @json(__('messages.ventemodal.choose')),
+    videoTooBig:     @json(__('messages.ventemodal.video_too_big')),
+    filesTooBig:     @json(__('messages.ventemodal.files_too_big')),
+    sessionExpired:  @json(__('messages.ventemodal.session_expired')),
+    genericError:    @json(__('messages.ventemodal.generic_error')),
+    connectionError: @json(__('messages.ventemodal.connection_error')),
+    checkInfo:       @json(__('messages.ventemodal.check_info')),
+    freePublish:     @json(__('messages.ventemodal.free_publish')),
+    photosSuffix:    @json(__('messages.ventemodal.photos_suffix')),
+};
 // ── MODAL ─────────────────────────────────────────────────────────
 function openVenteModal() {
     @auth('client')
@@ -1421,13 +1454,14 @@ var vmSelectedPack = null;
 var vmPhotoFiles = [];   // accumulated File objects
 // Modifier: the annonce's current photos [{name, url}] — removable, sent back as keep_photos[]
 var vmExistingPhotos = @json($prefill['photos'] ?? []);
+// id stays canonical (sent to the server as `mode`); title/features are localized.
 var vmPacks = [
-    { id: 'Pack Distance', title: 'Pack Distance', price: '199',
-      features: ['Service à distance', 'Renouvellement 1x/jour (10j)', 'Diffusion NADO, Avito', 'Appel direct', 'Assistance de base'] },
-    { id: 'Pack Showroom', title: 'Pack Showroom', price: '499', recommended: true,
-      features: ['Service local', 'Renouvellement 3x/j (30j)', 'Reels & Vidéo YouTube', 'Expertise & Contrôle', 'Expo Showroom 1 sem', 'Badge garantie NADO', 'Gestion rendez-vous'] },
-    { id: 'Pack Express',  title: 'Pack Express',  price: '299',
-      features: ['Service mobilité', 'Renouvellement 2x/j (15j)', 'Vidéo YouTube', 'Contrôle & expertise', 'Accompagnement RDV'] }
+    { id: 'Pack Distance', title: @json(__('messages.ventemodal.pack_distance')), price: '199',
+      features: [@json(__('messages.ventemodal.feat_remote')), @json(__('messages.ventemodal.feat_renew_1d')), @json(__('messages.ventemodal.feat_diffusion')), @json(__('messages.ventemodal.feat_direct_call')), @json(__('messages.ventemodal.feat_basic_support'))] },
+    { id: 'Pack Showroom', title: @json(__('messages.ventemodal.pack_showroom')), price: '499', recommended: true,
+      features: [@json(__('messages.ventemodal.feat_local')), @json(__('messages.ventemodal.feat_renew_3d')), @json(__('messages.ventemodal.feat_reels')), @json(__('messages.ventemodal.feat_expertise')), @json(__('messages.ventemodal.feat_expo')), @json(__('messages.ventemodal.feat_warranty')), @json(__('messages.ventemodal.feat_appointments'))] },
+    { id: 'Pack Express',  title: @json(__('messages.ventemodal.pack_express')),  price: '299',
+      features: [@json(__('messages.ventemodal.feat_mobility')), @json(__('messages.ventemodal.feat_renew_2d')), @json(__('messages.ventemodal.feat_youtube')), @json(__('messages.ventemodal.feat_control')), @json(__('messages.ventemodal.feat_rdv_support'))] }
 ];
 
 // ── INIT ──────────────────────────────────────────────────────────
@@ -1444,19 +1478,19 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('vm-mark').addEventListener('change', function () {
         var brandId = this.options[this.selectedIndex].dataset.id;
         var sel = document.getElementById('vm-modele');
-        sel.innerHTML = '<option value="">Chargement…</option>';
-        if (!brandId) { sel.innerHTML = '<option value="">Sélectionnez une marque</option>'; return; }
+        sel.innerHTML = '<option value="">' + VM_I18N.loading + '</option>';
+        if (!brandId) { sel.innerHTML = '<option value="">' + VM_I18N.selectBrand + '</option>'; return; }
         fetch("{{ route('get.models') }}?brand_id=" + brandId)
             .then(function (r) { return r.json(); })
             .then(function (data) {
-                sel.innerHTML = '<option value="">Sélectionnez le modèle</option>';
+                sel.innerHTML = '<option value="">' + VM_I18N.selectModel + '</option>';
                 data.forEach(function (m) {
                     var o = document.createElement('option');
                     o.value = m.name; o.textContent = m.name;
                     sel.appendChild(o);
                 });
             })
-            .catch(function () { sel.innerHTML = '<option value="">Erreur de chargement</option>'; });
+            .catch(function () { sel.innerHTML = '<option value="">' + VM_I18N.loadError + '</option>'; });
     });
 
     // Photo drop zone
@@ -1569,7 +1603,7 @@ function vmRemoveExistingPhoto(idx) {
 function vmRenderPhotos() {
     var grid  = document.getElementById('vm-photo-preview');
     var count = document.getElementById('vm-photo-count');
-    count.textContent = (vmExistingPhotos.length + vmPhotoFiles.length) + ' / 20 photos';
+    count.textContent = (vmExistingPhotos.length + vmPhotoFiles.length) + ' ' + VM_I18N.photosSuffix;
 
     // Render synchronously with object URLs: async FileReader callbacks from a
     // previous render could append after the grid was cleared (duplicates / wrong order).
@@ -1634,7 +1668,7 @@ function vmInitVideoZone() {
 function vmSetVideo(file) {
     var maxBytes = 100 * 1024 * 1024;
     if (file.size > maxBytes) {
-        alert('La vidéo dépasse 100 Mo. Veuillez choisir un fichier plus petit.');
+        alert(VM_I18N.videoTooBig);
         document.getElementById('vm-video-input').value = '';
         return;
     }
@@ -1672,7 +1706,7 @@ function vmValidate(step) {
             if (!el.value.trim()) { el.classList.add('error'); ok = false; }
             else                    el.classList.remove('error');
         });
-    if (!ok) alert('Veuillez remplir tous les champs obligatoires.');
+    if (!ok) alert(VM_I18N.fillRequired);
     return ok;
 }
 
@@ -1698,7 +1732,7 @@ function vmRenderPacks() {
     c.innerHTML = vmPacks.map(function (p) {
         var sel = vmSelectedPack === p.id;
         return '<div class="vm-pack-card' + (sel ? ' selected' : '') + '" onclick="vmSelectPack(\'' + p.id + '\')">'
-            + (p.recommended ? '<div class="vm-pack-recommended">Meilleur Choix</div>' : '')
+            + (p.recommended ? '<div class="vm-pack-recommended">' + VM_I18N.bestChoice + '</div>' : '')
             + '<h3 class="vm-pack-title">' + p.title + '</h3>'
             + '<div class="vm-pack-price">' + p.price + ' <span>DH</span></div>'
             + '<ul class="vm-pack-feats">'
@@ -1709,7 +1743,7 @@ function vmRenderPacks() {
               }).join('')
             + '</ul>'
             + '<button type="button" class="vm-select-btn">'
-            + (sel ? 'Sélectionné ✓' : 'Choisir') + '</button>'
+            + (sel ? (VM_I18N.selected + ' ✓') : VM_I18N.choose) + '</button>'
             + '</div>';
     }).join('');
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1778,18 +1812,18 @@ function vmSubmitVente(packId) {
             } else if (res.status === 422) {
                 vmShowErrors(res.data.errors || {});
             } else if (res.status === 413) {
-                alert('Les fichiers envoyés sont trop volumineux. Réduisez le nombre de photos ou la taille de la vidéo.');
+                alert(VM_I18N.filesTooBig);
             } else if (res.status === 419) {
-                alert('Votre session a expiré. Veuillez recharger la page et réessayer.');
+                alert(VM_I18N.sessionExpired);
             } else {
                 // Log the server's detail (message / exception) for debugging
                 console.error('Vente submit failed', res.status, res.data);
-                alert((res.data && res.data.message) || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+                alert((res.data && res.data.message) || VM_I18N.genericError);
             }
         })
         .catch(function () {
             vmSetSending(false);
-            alert('Connexion impossible. Vérifiez votre connexion internet et réessayez.');
+            alert(VM_I18N.connectionError);
         });
 }
 
@@ -1809,7 +1843,7 @@ function vmShowErrors(errors) {
         if (step && (firstStep === null || step < firstStep)) firstStep = step;
     });
     if (firstStep && firstStep !== vmStep) vmMoveStep(firstStep - vmStep);
-    alert(messages.join('\n') || 'Veuillez vérifier les informations saisies.');
+    alert(messages.join('\n') || VM_I18N.checkInfo);
 }
 
 // Reset the modal to a blank form (after a successful submit)
@@ -1838,7 +1872,7 @@ function vmShowConfirmPage(packId) {
     var pack  = packId ? vmPacks.find(function (p) { return p.id === packId; }) : null;
     var label = pack
         ? pack.title + ' — ' + pack.price + ' DH'
-        : 'Publication gratuite';
+        : VM_I18N.freePublish;
 
     document.getElementById('vm-cp-pack-label').textContent = label;
 
