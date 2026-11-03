@@ -367,18 +367,16 @@
             <div>
                 <div class="ap-hero-eyebrow">
                     <span class="pulse-dot"></span>
-                    L'UNIVERS NADO EN DIRECT
+                    {{ __('messages.about.hero_eyebrow') }}
                 </div>
 
                 <h1 class="ap-h1">
-                    L'Auto<br>
-                    <span class="ap-h1-accent">SANS FILTRES.</span>
+                    {{ __('messages.about.hero_h1_1') }}<br>
+                    <span class="ap-h1-accent">{{ __('messages.about.hero_h1_2') }}</span>
                 </h1>
 
                 <p class="ap-hero-lead">
-                    Depuis plus de 20 ans, NADO accompagne les Marocains dans
-                    chaque étape de leur vie automobile — achat, vente, financement,
-                    expertise. Une seule adresse de confiance.
+                    {{ __('messages.about.hero_lead') }}
                 </p>
             </div>
 
@@ -386,7 +384,7 @@
             <div class="ap-phone-col">
                 <div class="ap-phone">
                     <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80"
-                         alt="NADO — L'auto sans filtres" loading="lazy">
+                         alt="{{ __('messages.about.alt_hero') }}" loading="lazy">
                     <div class="ap-phone-overlay">
                         <i data-lucide="play" style="width:40px;height:40px;fill:white;color:white;"></i>
                     </div>
@@ -405,29 +403,29 @@
 
                 {{-- Left: milestones --}}
                 <div>
-                    <span class="ap-hist-eyebrow">Notre Héritage</span>
-                    <h2 class="ap-hist-h2">Depuis 2005.</h2>
+                    <span class="ap-hist-eyebrow">{{ __('messages.about.heritage_eyebrow') }}</span>
+                    <h2 class="ap-hist-h2">{{ __('messages.about.heritage_h2') }}</h2>
 
                     <div class="ap-milestones">
                         <div class="ap-milestone">
                             <div class="ap-ms-year">2005</div>
                             <div>
-                                <div class="ap-ms-title">La Fondation</div>
-                                <div class="ap-ms-desc">Ouverture du premier showroom NADO à Casablanca. Une vision simple : rendre le marché automobile marocain plus transparent et plus sûr.</div>
+                                <div class="ap-ms-title">{{ __('messages.about.ms1_title') }}</div>
+                                <div class="ap-ms-desc">{{ __('messages.about.ms1_desc') }}</div>
                             </div>
                         </div>
                         <div class="ap-milestone">
                             <div class="ap-ms-year">2012</div>
                             <div>
-                                <div class="ap-ms-title">L'Expansion</div>
-                                <div class="ap-ms-desc">Lancement de la plateforme digitale NADO.ma et des enchères auto en ligne. Des milliers d'acheteurs et vendeurs connectés à l'échelle nationale.</div>
+                                <div class="ap-ms-title">{{ __('messages.about.ms2_title') }}</div>
+                                <div class="ap-ms-desc">{{ __('messages.about.ms2_desc') }}</div>
                             </div>
                         </div>
                         <div class="ap-milestone">
                             <div class="ap-ms-year">2025</div>
                             <div>
-                                <div class="ap-ms-title">L'Écosystème</div>
-                                <div class="ap-ms-desc">NADO devient un écosystème complet : achat, vente, reprise, financement, expertise et enchères — tout sous une seule marque de confiance.</div>
+                                <div class="ap-ms-title">{{ __('messages.about.ms3_title') }}</div>
+                                <div class="ap-ms-desc">{{ __('messages.about.ms3_desc') }}</div>
                             </div>
                         </div>
                     </div>
@@ -437,7 +435,7 @@
                 <div>
                     <div class="ap-hist-media">
                         <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=1200&q=80"
-                             alt="Showroom NADO" loading="lazy">
+                             alt="{{ __('messages.about.alt_showroom') }}" loading="lazy">
                         <div class="ap-hist-media-overlay"></div>
                     </div>
                 </div>
@@ -451,7 +449,7 @@
     ════════════════════════════════════════════ --}}
     <section class="ap-eco">
         <div class="ap-wrap">
-            <h2 class="ap-eco-h2">L'Écosystème <span>NADO.</span></h2>
+            <h2 class="ap-eco-h2">{{ __('messages.about.eco_h2') }} <span>NADO.</span></h2>
 
             <div class="ap-eco-grid">
 
@@ -459,48 +457,48 @@
                     <div class="ap-svc-icon">
                         <i data-lucide="car-front" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">NADO Achat</h3>
-                    <p class="ap-svc-desc">Trouvez le véhicule idéal parmi des centaines d'annonces certifiées. Chaque voiture est inspectée et garantie par nos experts.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc1_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc1_desc') }}</p>
                 </div>
 
                 <div class="ap-svc-card">
                     <div class="ap-svc-icon">
                         <i data-lucide="tags" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">NADO Vente</h3>
-                    <p class="ap-svc-desc">Vendez votre voiture rapidement et au meilleur prix. Diffusion premium, gestion des contacts, transaction 100 % sécurisée.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc2_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc2_desc') }}</p>
                 </div>
 
                 <div class="ap-svc-card">
                     <div class="ap-svc-icon">
                         <i data-lucide="hand-coins" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">NADO Reprise</h3>
-                    <p class="ap-svc-desc">Échangez votre ancien véhicule contre un crédit sur votre prochain achat. Estimation immédiate, aucune contrainte.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc3_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc3_desc') }}</p>
                 </div>
 
                 <div class="ap-svc-card">
                     <div class="ap-svc-icon">
                         <i data-lucide="gavel" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">Auto Enchère</h3>
-                    <p class="ap-svc-desc">Participez à nos enchères automobiles en ligne ou en salle. Acheteurs vérifiés, transparence totale, meilleures opportunités.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc4_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc4_desc') }}</p>
                 </div>
 
                 <div class="ap-svc-card">
                     <div class="ap-svc-icon">
                         <i data-lucide="landmark" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">NADO Finance</h3>
-                    <p class="ap-svc-desc">Simulez et obtenez votre crédit auto en quelques clics. Partenariats bancaires exclusifs, taux compétitifs, réponse rapide.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc5_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc5_desc') }}</p>
                 </div>
 
                 <div class="ap-svc-card">
                     <div class="ap-svc-icon">
                         <i data-lucide="shield-check" style="width:28px;height:28px;"></i>
                     </div>
-                    <h3 class="ap-svc-title">NADO Expert</h3>
-                    <p class="ap-svc-desc">Inspection complète de 110 points par nos techniciens certifiés. Rapport d'expertise détaillé et badge de garantie inclus.</p>
+                    <h3 class="ap-svc-title">{{ __('messages.about.svc6_title') }}</h3>
+                    <p class="ap-svc-desc">{{ __('messages.about.svc6_desc') }}</p>
                 </div>
 
             </div>
@@ -512,7 +510,7 @@
     ════════════════════════════════════════════ --}}
     <section class="ap-expertise">
         <div class="ap-wrap">
-            <h2 class="ap-exp-h2">L'Expertise<br>en 30 minutes.</h2>
+            <h2 class="ap-exp-h2">{{ __('messages.about.exp_h2_1') }}<br>{{ __('messages.about.exp_h2_2') }}</h2>
 
             <div class="ap-bento-grid">
 
@@ -520,32 +518,32 @@
                     <div class="ap-bento-icon">
                         <i data-lucide="settings-2" style="width:32px;height:32px;"></i>
                     </div>
-                    <h3 class="ap-bento-title">Diagnostic Complet</h3>
-                    <p class="ap-bento-desc">110 points de contrôle sur la mécanique, la carrosserie, l'électronique et la structure. Résultats en moins de 30 minutes.</p>
+                    <h3 class="ap-bento-title">{{ __('messages.about.bento1_title') }}</h3>
+                    <p class="ap-bento-desc">{{ __('messages.about.bento1_desc') }}</p>
                 </div>
 
                 <div class="ap-bento-card">
                     <div class="ap-bento-icon">
                         <i data-lucide="sparkles" style="width:32px;height:32px;"></i>
                     </div>
-                    <h3 class="ap-bento-title">Mise en Valeur</h3>
-                    <p class="ap-bento-desc">Photos professionnelles, vidéo YouTube et présentation premium pour maximiser l'attractivité de votre annonce.</p>
+                    <h3 class="ap-bento-title">{{ __('messages.about.bento2_title') }}</h3>
+                    <p class="ap-bento-desc">{{ __('messages.about.bento2_desc') }}</p>
                 </div>
 
                 <div class="ap-bento-card">
                     <div class="ap-bento-icon">
                         <i data-lucide="history" style="width:32px;height:32px;"></i>
                     </div>
-                    <h3 class="ap-bento-title">Historique Vérifié</h3>
-                    <p class="ap-bento-desc">Vérification complète du carnet d'entretien, des antécédents d'accident et de l'historique administratif du véhicule.</p>
+                    <h3 class="ap-bento-title">{{ __('messages.about.bento3_title') }}</h3>
+                    <p class="ap-bento-desc">{{ __('messages.about.bento3_desc') }}</p>
                 </div>
 
                 <div class="ap-bento-card">
                     <div class="ap-bento-icon">
                         <i data-lucide="shield-check" style="width:32px;height:32px;"></i>
                     </div>
-                    <h3 class="ap-bento-title">Garantie NADO</h3>
-                    <p class="ap-bento-desc">Chaque véhicule certifié reçoit le badge Garantie NADO Sérénité. Couverture pièces et main d'œuvre, tranquillité assurée.</p>
+                    <h3 class="ap-bento-title">{{ __('messages.about.bento4_title') }}</h3>
+                    <p class="ap-bento-desc">{{ __('messages.about.bento4_desc') }}</p>
                 </div>
 
             </div>
@@ -559,15 +557,15 @@
         <div class="ap-wrap">
 
             <div class="ap-social-header">
-                <h2 class="ap-social-h2">Le Mur <span>Social.</span></h2>
+                <h2 class="ap-social-h2">{{ __('messages.about.social_h2_1') }} <span>{{ __('messages.about.social_h2_2') }}</span></h2>
             </div>
 
             <div class="ap-social-grid" id="ap-social-grid">
                 @forelse($stories ?? [] as $story)
                     @php
                         $src = asset('storage/' . ltrim($story->media_path, '/'));
-                        $label = $story->media_type === 'video' ? 'Story · Vidéo' : 'Story · Photo';
-                        $title = 'Story NADO';
+                        $label = $story->media_type === 'video' ? __('messages.about.story_video') : __('messages.about.story_photo');
+                        $title = __('messages.about.story_title');
                     @endphp
                     <a href="{{ $src }}" target="_blank" rel="noopener"
                        class="ap-social-card" style="text-decoration:none;color:inherit;">
@@ -590,7 +588,7 @@
                 @empty
                     <div style="grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--ap-muted);">
                         <i data-lucide="gallery-vertical-end" style="width:48px;height:48px;color:var(--ap-blue);margin-bottom:16px;"></i>
-                        <p style="font-size:1.15rem;font-weight:600;margin:0;">Aucune story pour le moment.</p>
+                        <p style="font-size:1.15rem;font-weight:600;margin:0;">{{ __('messages.about.no_stories') }}</p>
                     </div>
                 @endforelse
             </div>
@@ -603,8 +601,8 @@
     <section class="ap-temoignages">
         <div class="ap-wrap">
 
-            <span class="ap-tem-eyebrow">Avis Clients</span>
-            <h2 class="ap-tem-h2">Ils nous font <span>Confiance.</span></h2>
+            <span class="ap-tem-eyebrow">{{ __('messages.about.tem_eyebrow') }}</span>
+            <h2 class="ap-tem-h2">{{ __('messages.about.tem_h2_1') }} <span>{{ __('messages.about.tem_h2_2') }}</span></h2>
 
             <div class="ap-tem-grid">
 
@@ -620,10 +618,10 @@
                         <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
                     </div>
                     <p class="ap-tem-text">
-                        "NADO a totalement transformé mon expérience d'achat auto. En moins de 48h, j'avais ma BMW inspectée, certifiée et livrée. Une équipe professionnelle, un processus transparent du début à la fin."
+                        {{ __('messages.about.tem1_text') }}
                     </p>
                     <div class="ap-tem-name">Karim El Mansouri</div>
-                    <div class="ap-tem-role">Acheteur — Casablanca</div>
+                    <div class="ap-tem-role">{{ __('messages.about.tem1_role') }}</div>
                 </div>
 
                 <div class="ap-tem-card">
@@ -638,10 +636,10 @@
                         <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
                     </div>
                     <p class="ap-tem-text">
-                        "J'ai vendu ma Mercedes en 10 jours grâce à NADO. Le Pack Showroom est exceptionnel — photos pro, vidéo YouTube, badge certifié. Le prix obtenu a dépassé mes attentes. Je recommande à 100%."
+                        {{ __('messages.about.tem2_text') }}
                     </p>
                     <div class="ap-tem-name">Samira Benali</div>
-                    <div class="ap-tem-role">Vendeuse Particulier — Rabat</div>
+                    <div class="ap-tem-role">{{ __('messages.about.tem2_role') }}</div>
                 </div>
 
             </div>
@@ -653,15 +651,15 @@
     ════════════════════════════════════════════ --}}
     <footer class="ap-footer-cta">
         <div class="ap-wrap">
-            <h2 class="ap-footer-h2">Rejoignez <span>la Famille.</span></h2>
+            <h2 class="ap-footer-h2">{{ __('messages.about.footer_h2_1') }} <span>{{ __('messages.about.footer_h2_2') }}</span></h2>
             <div class="ap-footer-btns">
                 <a href="{{ route('annonces.index') }}" class="ap-btn-primary">
                     <i data-lucide="search" style="width:16px;height:16px;"></i>
-                    Explorer le stock
+                    {{ __('messages.about.explore_stock') }}
                 </a>
                 <a href="{{ route('index') }}" class="ap-btn-secondary">
                     <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
-                    Retour à l'accueil
+                    {{ __('messages.about.back_home') }}
                 </a>
             </div>
         </div>
