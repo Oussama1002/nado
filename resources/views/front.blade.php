@@ -5322,6 +5322,7 @@
                     margin: 16,
                     nav: false,
                     dots: true,
+                    rtl: @json(app()->getLocale() === 'ar'), // sinon les avis s'affichent hors écran en arabe
                     touchDrag: true,
                     mouseDrag: true,
                     autoplay: false,
