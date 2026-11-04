@@ -1921,7 +1921,7 @@
                     <p class="result-info">
                         {{ __('messages.financement.result_info') }}
                     </p>
-                    <button class="btn-primary">
+                    <button type="button" class="btn-primary" onclick="demanderAccord()">
                         {{ __('messages.financement.cta_accord') }}
                         <svg class="icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24">
                             <path d="M5 12h14" />
@@ -2359,6 +2359,22 @@
                 updateCalculation();
             });
         }
+
+        // "Demander un accord de principe" → page contact pré-remplie avec la simulation.
+        function demanderAccord() {
+            var mensualite = (document.getElementById('mensualiteValue')?.textContent || '').trim();
+            var fmt = function (n) { return Number(n).toLocaleString('fr-FR'); };
+            var subject = "Demande d'accord de principe — Financement auto";
+            var message = "Bonjour,\nJe souhaite un accord de principe pour un financement auto NADO.\n\n"
+                + "Prix du véhicule : " + fmt(vehiclePrice) + " MAD\n"
+                + "Apport : " + fmt(apport) + " MAD\n"
+                + "Durée : " + duration + " mois\n"
+                + "Mensualité estimée : " + mensualite + " MAD\n"
+                + "Profil : " + activeProfile + "\n";
+            window.location.href = "{{ route('contactez-nous.index') }}?subject="
+                + encodeURIComponent(subject) + "&message=" + encodeURIComponent(message);
+        }
+        window.demanderAccord = demanderAccord;
 
         // Start the application
         init();

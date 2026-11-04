@@ -101,14 +101,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input name="subject" type="text" required class="form-control" placeholder="Sujet">
+                                        <input name="subject" type="text" required class="form-control" placeholder="Sujet" value="{{ old('subject', request('subject')) }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <textarea name="message" rows="4" class="form-control" required placeholder="Message..."></textarea>
+                                        <textarea name="message" rows="4" class="form-control" required placeholder="Message...">{{ old('message', request('message')) }}</textarea>
                                     </div>
                                 </div>
                             </div>
