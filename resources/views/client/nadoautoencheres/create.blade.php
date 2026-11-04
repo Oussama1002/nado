@@ -1,7 +1,7 @@
 @extends('layouts.client')
 
-@section('client_title', 'Créer un véhicule')
-@section('client_subtitle', 'Ajoutez un véhicule à votre flotte.')
+@section('client_title', __('messages.cannonce.veh_create_title'))
+@section('client_subtitle', __('messages.cannonce.veh_create_subtitle'))
 @section('client_content')
 
 <div class="container">
@@ -15,13 +15,13 @@
     </div>
 @endif
 
-    <h1 class="mb-4">Créer une Annonce</h1>
+    <h1 class="mb-4">{{ __('messages.cannonce.veh_create_title') }}</h1>
 
     <form action="{{ route('client.annonces.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         {{-- SECTION 1 : Informations générales --}}
-        <h4 class="mt-4">Informations Générales</h4>
+        <h4 class="mt-4">{{ __('messages.cannonce.sec_general') }}</h4>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>Titre</label>
@@ -34,12 +34,12 @@
         </div>
 
         {{-- SECTION 2 : Véhicule --}}
-        <h4 class="mt-4">Détails du Véhicule</h4>
+        <h4 class="mt-4">{{ __('messages.cannonce.sec_vehicle') }}</h4>
         <div class="row">
             <div class="col-md-4 mb-3">
-                <label>Marque</label>
+                <label>{{ __('messages.ventemodal.marque') }}</label>
                 <select name="mark" id="brand-select" class="form-control" required>
-    <option value="">Choisissez une marque</option>
+    <option value="">{{ __('messages.cannonce.choose_brand') }}</option>
     @foreach($brands as $brand)
         <option value="{{ $brand->id }}" {{ old('mark') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
     @endforeach
@@ -48,17 +48,17 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Modèle</label>
+                <label>{{ __('messages.ventemodal.modele') }}</label>
                 <select name="modele" id="model-select" class="form-control" required>
-    <option value="">Sélectionnez un modèle</option>
+    <option value="">{{ __('messages.cannonce.select_model') }}</option>
 </select>
 
             </div>
 
           <div class="col-md-4 mb-3">
-    <label for="color">Couleur</label>
+    <label for="color">{{ __('messages.cannonce.color') }}</label>
    <select name="colors" id="color" class="form-control" required>
-    <option value="">Sélectionnez une couleur</option>
+    <option value="">{{ __('messages.cannonce.select_color') }}</option>
     @foreach($colors as $color)
         <option value="{{ $color->name }}">{{ $color->name }}</option>
     @endforeach
@@ -68,28 +68,28 @@
 
 
             <div class="col-md-4 mb-3">
-                <label>Kilométrage</label>
+                <label>{{ __('messages.cannonce.km') }}</label>
                 <input type="number" name="km" class="form-control" required>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>CV</label>
+                <label>{{ __('messages.cannonce.cv') }}</label>
                 <input type="number" name="cv" class="form-control" required>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Nombre de Portes</label>
+                <label>{{ __('messages.cannonce.doors') }}</label>
                 <select name="nb_Door" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="3">3 portes</option>
-                    <option value="5">5 portes</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="3">{{ __('messages.cannonce.doors_3') }}</option>
+                    <option value="5">{{ __('messages.cannonce.doors_5') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Année</label>
+                <label>{{ __('messages.ventemodal.year') }}</label>
                 <select name="year" class="form-control" required>
-                    <option value="">Sélectionnez l'année</option>
+                    <option value="">{{ __('messages.cannonce.select_year') }}</option>
                     @for ($y = date('Y'); $y >= 1990; $y--)
                         <option value="{{ $y }}">{{ $y }}</option>
                     @endfor
@@ -97,58 +97,58 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Origine</label>
+                <label>{{ __('messages.ventemodal.origin') }}</label>
                 <select name="origine" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="WW au Maroc">WW au Maroc</option>
-                    <option value="dédouané">Dédouané</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="WW au Maroc">{{ __('messages.ventemodal.origin_ww') }}</option>
+                    <option value="dédouané">{{ __('messages.ventemodal.origin_cleared') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Première Main</label>
+                <label>{{ __('messages.cannonce.first_main') }}</label>
                 <select name="premiere_main" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="Oui">Oui</option>
-                    <option value="Non">Non</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="Oui">{{ __('messages.nadoae.yes') }}</option>
+                    <option value="Non">{{ __('messages.nadoae.no') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>État</label>
+                <label>{{ __('messages.ventemodal.state') }}</label>
                 <select name="etat" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="Neuf">Neuf</option>
-                    <option value="Très bon état">Très bon état</option>
-                    <option value="Bon état">Bon état</option>
-                    <option value="Accidenté">Accidenté</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="Neuf">{{ __('messages.ventemodal.state_new') }}</option>
+                    <option value="Très bon état">{{ __('messages.cannonce.state_tres_bon') }}</option>
+                    <option value="Bon état">{{ __('messages.cannonce.state_bon') }}</option>
+                    <option value="Accidenté">{{ __('messages.cannonce.state_accidente') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Carburant</label>
+                <label>{{ __('messages.ventemodal.fuel') }}</label>
                 <select name="carburant" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="essence">Essence</option>
-                    <option value="hybride">Hybride</option>
-                    <option value="electrique">Électrique</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="diesel">{{ __('messages.ventemodal.fuel_diesel') }}</option>
+                    <option value="essence">{{ __('messages.ventemodal.fuel_essence') }}</option>
+                    <option value="hybride">{{ __('messages.ventemodal.fuel_hybrid') }}</option>
+                    <option value="electrique">{{ __('messages.ventemodal.fuel_electric') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Boîte</label>
+                <label>{{ __('messages.ventemodal.box') }}</label>
                 <select name="box" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="automatique">Automatique</option>
-                    <option value="manuelle">Manuelle</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="automatique">{{ __('messages.ventemodal.box_auto') }}</option>
+                    <option value="manuelle">{{ __('messages.ventemodal.box_manual') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Ville</label>
+                <label>{{ __('messages.ventemodal.city') }}</label>
                 <select name="city" class="form-control" required>
-                    <option value="">Sélectionnez une ville</option>
+                    <option value="">{{ __('messages.cannonce.select_city') }}</option>
                     @foreach ($villes as $ville)
                         <option value="{{ $ville->name }}">{{ $ville->name }}</option>
                     @endforeach
@@ -157,11 +157,11 @@
         </div>
 
        {{-- SECTION 3 : Options --}}
-<h4 class="mt-4">Options</h4>
+<h4 class="mt-4">{{ __('messages.cannonce.options') }}</h4>
 
 <div class="mb-2">
     <input type="checkbox" id="checkAllOptions" class="form-check-input">
-    <label for="checkAllOptions" class="form-check-label fw-bold text-primary">Tout sélectionner</label>
+    <label for="checkAllOptions" class="form-check-label fw-bold text-primary">{{ __('messages.cannonce.select_all') }}</label>
 </div>
 
 <div class="row">
@@ -207,9 +207,9 @@
 </div>
 
       {{-- SECTION 4 : Images --}}
-<h4 class="mt-4">Images</h4>
+<h4 class="mt-4">{{ __('messages.cannonce.images') }}</h4>
 <div class="mb-3">
-<label>Ajoutez vos images</label>
+<label>{{ __('messages.cannonce.add_images') }}</label>
 <div id="dropzone" class="dropzone"></div>
 <!-- <input type="file" name="images[]" id="imagesInput" multiple hidden> -->
 </div>
@@ -232,9 +232,9 @@
       {{-- SECTION 6 : Actions --}}
 <div class="mt-4">
     {{-- Bouton Publier -> Ouvre uniquement le modal --}}
-    <button type="button" id="showPackModal" class="btn btn-success">Publier</button>
+    <button type="button" id="showPackModal" class="btn btn-success">{{ __('messages.cannonce.publish') }}</button>
 
-    <a href="{{ route('client.annonces.index') }}" class="btn btn-secondary">Annuler</a>
+    <a href="{{ route('client.annonces.index') }}" class="btn btn-secondary">{{ __('messages.cannonce.cancel') }}</a>
 </div>
 
 {{-- Champ caché pour pack choisi --}}
@@ -250,7 +250,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content rounded-4 shadow-lg">
       <div class="modal-header border-0 bg-white">
-        <h5 class="modal-title fw-bold text-primary" id="packModalLabel">Nos <span class="text-dark">PACKs</span></h5>
+        <h5 class="modal-title fw-bold text-primary" id="packModalLabel">{{ __('messages.plans.heading_1') }} <span class="text-dark">PACKs</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
@@ -261,12 +261,12 @@
             <div class="pack-card border border-primary rounded-4 h-100 p-4 d-flex flex-column justify-content-between" data-pack-id="2">
               <div>
                 <span class="badge bg-primary mb-2 px-3 py-1 fs-6">BASIC</span>
-                <h6 class="fw-semibold mt-3 mb-3 text-primary">Visibilité 7 Jours</h6>
+                <h6 class="fw-semibold mt-3 mb-3 text-primary">{{ __('messages.plans.duration_7') }}</h6>
                 <ul class="list-unstyled small text-start px-2">
-                  <li>• Renouvellement 1 fois/jour</li>
-                  <li>• Réseaux sociaux & sites de vente</li>
-                  <li>• Vitrine Nado.ma</li>
-                  <li>• Afficher votre numéro</li>
+                  <li>• {{ __('messages.plans.feat_renew_1') }}</li>
+                  <li>• {{ __('messages.plans.feat_social') }}</li>
+                  <li>• {{ __('messages.plans.feat_vitrine') }}</li>
+                  <li>• {{ __('messages.plans.feat_show_number') }}</li>
                 </ul>
               </div>
               <div class="mt-4 fw-bold fs-5 text-primary">199 DH</div>
@@ -278,12 +278,12 @@
             <div class="pack-card border border-primary rounded-4 h-100 p-4 d-flex flex-column justify-content-between" data-pack-id="3">
               <div>
                 <span class="badge bg-primary mb-2 px-3 py-1 fs-6">MEDIUM</span>
-                <h6 class="fw-semibold mt-3 mb-3 text-primary">Visibilité 15 Jours</h6>
+                <h6 class="fw-semibold mt-3 mb-3 text-primary">{{ __('messages.plans.duration_15') }}</h6>
                 <ul class="list-unstyled small text-start px-2">
-                  <li>• Renouvellement 1 fois/jour</li>
-                  <li>• Réseaux sociaux & sites de vente</li>
-                  <li>• Vitrine Nado.ma</li>
-                  <li>• Afficher votre numéro</li>
+                  <li>• {{ __('messages.plans.feat_renew_1') }}</li>
+                  <li>• {{ __('messages.plans.feat_social') }}</li>
+                  <li>• {{ __('messages.plans.feat_vitrine') }}</li>
+                  <li>• {{ __('messages.plans.feat_show_number') }}</li>
                 </ul>
               </div>
               <div class="mt-4 fw-bold fs-5 text-primary">299 DH</div>
@@ -295,14 +295,14 @@
             <div class="pack-card border border-primary rounded-4 h-100 p-4 d-flex flex-column justify-content-between" data-pack-id="4">
               <div>
                 <span class="badge bg-primary mb-2 px-3 py-1 fs-6">PREMIUM</span>
-                <h6 class="fw-semibold mt-3 mb-3 text-primary">Visibilité 30 Jours</h6>
+                <h6 class="fw-semibold mt-3 mb-3 text-primary">{{ __('messages.plans.duration_30') }}</h6>
                 <ul class="list-unstyled small text-start px-2">
-                  <li>• Renouvellement 2 fois/jour</li>
-                  <li>• Réseaux sociaux & sites de vente</li>
-                  <li>• Vitrine Nado.ma</li>
-                  <li>• Reels Instagram / TikTok</li>
-                  <li>• Vidéo / Short YouTube</li>
-                  <li>• Gestion des rendez-vous</li>
+                  <li>• {{ __('messages.plans.feat_renew_2') }}</li>
+                  <li>• {{ __('messages.plans.feat_social') }}</li>
+                  <li>• {{ __('messages.plans.feat_vitrine') }}</li>
+                  <li>• {{ __('messages.plans.feat_reels') }}</li>
+                  <li>• {{ __('messages.plans.feat_youtube') }}</li>
+                  <li>• {{ __('messages.plans.feat_appointments') }}</li>
                 </ul>
               </div>
               <div class="mt-4 fw-bold fs-5 text-primary">499 DH</div>
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadModels(brandId, selectedModelId = null) {
         if (!brandId) {
-            modelSelect.innerHTML = '<option value="">Sélectionnez un modèle</option>';
+            modelSelect.innerHTML = '<option value="">' + @json(__('messages.cannonce.select_model')) + '</option>';
             return;
         }
 
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                modelSelect.innerHTML = '<option value="">Sélectionnez un modèle</option>';
+                modelSelect.innerHTML = '<option value="">' + @json(__('messages.cannonce.select_model')) + '</option>';
                 data.forEach(model => {
                     const isSelected = selectedModelId && selectedModelId.toString() === model.id.toString();
                     const opt = document.createElement('option');

@@ -1452,6 +1452,10 @@ return [
         'choose'          => 'اختر',
         'update_btn'      => 'تحديث',
         'loading'         => 'جارٍ التحميل...',
+        'veh_create_title'    => 'إضافة مركبة',
+        'veh_create_subtitle' => 'أضِف مركبة إلى أسطولك.',
+        'veh_edit_title'      => 'تعديل مركبة',
+        'veh_edit_subtitle'   => 'حدّث معلومات المركبة.',
     ],
 
 ];

@@ -1453,6 +1453,10 @@ return [
         'choose'          => 'Choisir',
         'update_btn'      => 'Mettre à jour',
         'loading'         => 'Chargement...',
+        'veh_create_title'    => 'Créer un véhicule',
+        'veh_create_subtitle' => 'Ajoutez un véhicule à votre flotte.',
+        'veh_edit_title'      => 'Modifier un véhicule',
+        'veh_edit_subtitle'   => 'Mettez à jour les informations du véhicule.',
     ],
 
 ];
