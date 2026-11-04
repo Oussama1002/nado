@@ -1478,6 +1478,7 @@ return [
 
     'mail' => [
         // account_approved
+        'aa_subject'   => 'تم تفعيل حسابك على Nado.ma ✅',
         'aa_title'     => 'تفعيل الحساب',
         'aa_greeting'  => 'مرحباً :name،',
         'aa_verified'  => 'تم التحقّق من حسابك كعميل على <strong>Nado.ma</strong> وتفعيله من طرف فريقنا.',
@@ -1487,6 +1488,7 @@ return [
         'aa_team'      => 'فريق Nado.ma',
         // proposer_prix
         'pp_title'      => 'عرضك على AUTO ENCHERE',
+        'pp_subject_hdr'=> 'عرضك على AUTO ENCHERE:',
         'pp_subject'    => 'الموضوع: عرضك على AUTO ENCHERE:',
         'pp_thanks'     => 'شكراً لمشاركتك!',
         'pp_dear'       => 'عزيزي/عزيزتي :name،',

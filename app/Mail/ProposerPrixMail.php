@@ -23,7 +23,9 @@ class ProposerPrixMail extends Mailable
 
     public function build()
     {
-        $subject = "Votre Offre sur AUTO ENCHERE : {$this->enchere->id} - {$this->enchere->brand?->name} {$this->enchere->modeleRelation?->name} - Merci de votre participation !";
+        $subject = __('messages.mail.pp_subject_hdr')
+                 . " {$this->enchere->id} - {$this->enchere->brand?->name} {$this->enchere->modeleRelation?->name} - "
+                 . __('messages.mail.pp_thanks');
 
         return $this->subject($subject)
                     ->view('mail.proposer_prix');

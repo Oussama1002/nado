@@ -1479,6 +1479,7 @@ return [
 
     'mail' => [
         // account_approved
+        'aa_subject'   => 'Votre compte Nado.ma est activé ✅',
         'aa_title'     => 'Activation de compte',
         'aa_greeting'  => 'Bonjour :name,',
         'aa_verified'  => 'Votre compte client sur <strong>Nado.ma</strong> a été vérifié et activé par notre équipe.',
@@ -1488,6 +1489,7 @@ return [
         'aa_team'      => "L'équipe Nado.ma",
         // proposer_prix
         'pp_title'      => 'Votre Offre sur AUTO ENCHERE',
+        'pp_subject_hdr'=> 'Votre Offre sur AUTO ENCHERE :',
         'pp_subject'    => 'Objet : Votre Offre sur AUTO ENCHERE :',
         'pp_thanks'     => 'Merci de votre participation !',
         'pp_dear'       => 'Cher(ère) :name,',

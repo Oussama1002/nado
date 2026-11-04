@@ -20,7 +20,7 @@ class AccountApproved extends Mailable
 
     public function build()
     {
-        return $this->subject("Votre compte Nado.ma est activé ✅")
+        return $this->subject(__('messages.mail.aa_subject'))
                     ->view('mail.account_approved')
                     ->with(['name' => $this->client->name]);
     }
