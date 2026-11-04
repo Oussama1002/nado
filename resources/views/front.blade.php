@@ -434,6 +434,62 @@
             }
         }
 
+        /* ---- Hero en arabe (RTL) : on inverse image ⇄ fond blanc --------- */
+        html[dir="rtl"] .hero {
+            background: linear-gradient(245deg, #ffffff 0%, #fbfcfe 42%, #f4f7fb 72%, #eef2f8 100%);
+        }
+        html[dir="rtl"] .hero-bg {
+            right: auto;
+            left: 0;
+            -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .45) 14%, #000 42%);
+            mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .45) 14%, #000 42%);
+        }
+        html[dir="rtl"] .hero-bg img,
+        html[dir="rtl"] .hero-slider .item img {
+            object-position: center left;
+        }
+        html[dir="rtl"] .hero-overlay {
+            background: linear-gradient(to left,
+                    rgba(255, 255, 255, .92) 0%,
+                    rgba(255, 255, 255, .55) 35%,
+                    rgba(255, 255, 255, .15) 70%,
+                    rgba(255, 255, 255, .30) 100%);
+        }
+        html[dir="rtl"] .hero-desc {
+            border-left: none;
+            border-right: 4px solid var(--secondary);
+            padding-left: 0;
+            padding-right: 1.5rem;
+        }
+        @media (max-width: 1023px) {
+            html[dir="rtl"] .hero-bg {
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .5) 22%, #000 55%);
+                mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .5) 22%, #000 55%);
+            }
+            html[dir="rtl"] .hero-overlay {
+                background:
+                    linear-gradient(to bottom, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, .25) 45%, rgba(255, 255, 255, .75) 100%),
+                    linear-gradient(to left, rgba(255, 255, 255, .90) 0%, rgba(255, 255, 255, .45) 55%, rgba(255, 255, 255, .20) 100%);
+            }
+        }
+        @media (max-width: 640px) {
+            html[dir="rtl"] .hero-bg {
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .5) 20%, #000 52%);
+                mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, .5) 20%, #000 52%);
+            }
+            html[dir="rtl"] .hero-overlay {
+                background: linear-gradient(to left,
+                        rgba(255, 255, 255, .94) 0%,
+                        rgba(255, 255, 255, .70) 42%,
+                        rgba(255, 255, 255, .25) 78%,
+                        rgba(255, 255, 255, .35) 100%);
+            }
+            html[dir="rtl"] .hero-desc {
+                border-right-width: 3px;
+                padding-right: 0.9rem;
+            }
+        }
+
         /* STORIES SECTION */
         .stories {
             padding: 5rem 0;
