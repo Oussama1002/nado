@@ -1399,6 +1399,8 @@ return [
         'toit_panoramique'           => 'سقف بانورامي فاتح',
         'barres_de_toit'             => 'قضبان سقف',
         'vitres_surteintees'         => 'زجاج داكن إضافي',
+        'vitres_electriques'         => 'نوافذ كهربائية',
+        'park_assist'                => 'مساعد ركن تلقائي',
     ],
 
     'cannonce' => [

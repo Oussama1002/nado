@@ -10,7 +10,7 @@
 
     $vehicleName = trim(($brandName ?? '') . ' ' . ($modelName ?? ''));
     if ($vehicleName === '') {
-        $vehicleName = $annonce->titre ?: 'Véhicule';
+        $vehicleName = $annonce->titre ?: __('messages.nadoae.vehicle');
     }
 
     // Photo principale pour l'aperçu de partage (WhatsApp/Facebook) — même logique
@@ -2754,6 +2754,12 @@
                                     'radar_recul' => 'Radar de recul',
                                     'verrouillage' => 'Verrouillage centralisé à distance',
                                 ];
+                                // Reverse maps (French label -> key) so each equipment is
+                                // shown in the active locale, with a graceful FR fallback.
+                                $equipFr   = trans('messages.equip', [], 'fr');
+                                $equipRev  = is_array($equipFr) ? array_flip($equipFr) : [];
+                                $compareFr = trans('messages.compare', [], 'fr');
+                                $compareRev= is_array($compareFr) ? array_flip($compareFr) : [];
                                 $equipements = [];
                                 foreach ($equipementLabels as $field => $label) {
                                     $value = $annonce->$field ?? null;
@@ -2761,7 +2767,10 @@
                                         ? !in_array(strtolower(trim($value)), ['', '0', 'non', 'false', 'off'], true)
                                         : (bool) $value;
                                     if ($isOn) {
-                                        $equipements[$label] = $label;
+                                        if (isset($equipRev[$label]))        $disp = __('messages.equip.'.$equipRev[$label]);
+                                        elseif (isset($compareRev[$label]))  $disp = __('messages.compare.'.$compareRev[$label]);
+                                        else                                 $disp = $label;
+                                        $equipements[$label] = $disp;
                                     }
                                 }
                                 $equipements = array_values($equipements);

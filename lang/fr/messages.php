@@ -1400,6 +1400,8 @@ return [
         'toit_panoramique'           => 'Toit Panoramique ouvrant',
         'barres_de_toit'             => 'Barres de toit',
         'vitres_surteintees'         => 'Vitres sur-teintées',
+        'vitres_electriques'         => 'Vitres électriques',
+        'park_assist'                => 'Park Assist Auto.',
     ],
 
     'cannonce' => [
