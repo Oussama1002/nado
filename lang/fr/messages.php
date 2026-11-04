@@ -1477,4 +1477,36 @@ return [
         'services_heading'    => 'Services',
     ],
 
+    'mail' => [
+        // account_approved
+        'aa_title'     => 'Activation de compte',
+        'aa_greeting'  => 'Bonjour :name,',
+        'aa_verified'  => 'Votre compte client sur <strong>Nado.ma</strong> a été vérifié et activé par notre équipe.',
+        'aa_login'     => 'Vous pouvez désormais vous connecter et profiter de nos services 🚗',
+        'aa_login_btn' => 'Se connecter',
+        'aa_not_you'   => "Si vous n'êtes pas à l'origine de cette demande, merci de nous contacter immédiatement.",
+        'aa_team'      => "L'équipe Nado.ma",
+        // proposer_prix
+        'pp_title'      => 'Votre Offre sur AUTO ENCHERE',
+        'pp_subject'    => 'Objet : Votre Offre sur AUTO ENCHERE :',
+        'pp_thanks'     => 'Merci de votre participation !',
+        'pp_dear'       => 'Cher(ère) :name,',
+        'pp_thank_1'    => "Nous vous remercions sincèrement pour l'intérêt que vous portez au véhicule",
+        'pp_ref'        => 'Réf.',
+        'pp_thank_2'    => 'et pour votre offre déposée sur la plateforme AUTO ENCHERE.',
+        'pp_offer_1'    => 'Votre offre de',
+        'pp_offer_2'    => 'a été enregistrée avec succès.',
+        'pp_next'       => "🔹 Prochaines étapes : Suivez l'évolution de l'enchère",
+        'pp_ongoing_1'  => "L'enchère pour ce véhicule est en cours et se clôturera le",
+        'pp_follow'     => "Cliquez ici pour suivre l'évolution de l'enchère",
+        'pp_important'  => "ℹ️ Information Importante : En cas d'offre gagnante",
+        'pp_winning'    => "Si votre offre est la plus élevée à la clôture de l'enchère, notre équipe vous contactera dans les 48 heures suivant la fin de l'enchère pour organiser la finalisation de l'achat.",
+        'pp_delay'      => "Un délai de 48 heures est alloué pour répondre et confirmer votre intention d'achat après notre prise de contact. Au-delà, votre offre sera considérée comme annulée.",
+        'pp_terms_1'    => 'Consultez nos',
+        'pp_terms_link' => 'Conditions Générales de Vente',
+        'pp_terms_2'    => 'pour plus de détails.',
+        'pp_regards'    => 'Cordialement,',
+        'pp_team'       => "L'équipe AUTO ENCHERE",
+    ],
+
 ];
