@@ -1458,4 +1458,20 @@ return [
         'veh_edit_subtitle'   => 'حدّث معلومات المركبة.',
     ],
 
+    'extra' => [
+        'monthly_from'        => 'قسطك الشهري ابتداءً من',
+        'start_price'         => 'سعر الانطلاق',
+        'about_nado'          => 'عن نادو',
+        'social_networks'     => 'شبكات التواصل',
+        'all_models_short'    => 'كل الطُّرز',
+        'video_preview'       => 'معاينة الفيديو',
+        'preview_unavailable' => 'المعاينة غير متوفرة.',
+        'chat_load_error'     => 'خطأ أثناء التحميل. حاول مجدداً.',
+        'recorder_error'      => 'خطأ في إنشاء المسجّل:',
+        'no_audio'            => 'لم يُلتقَط أي صوت. تحقّق من الميكروفون وحاول مجدداً.',
+        'finance_tagline'     => 'NADO CONNECT • حلول تمويل متميّزة • 2025',
+        'nav_heading'         => 'التنقّل',
+        'services_heading'    => 'الخدمات',
+    ],
+
 ];

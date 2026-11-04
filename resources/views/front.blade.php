@@ -4051,7 +4051,7 @@
                                     alt="Annonce" style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
                                 @if(!empty($ad->certifie))
-                                    <div class="listing-type-badge type-certifie">Certifié</div>
+                                    <div class="listing-type-badge type-certifie">{{ __('messages.compare.certified') }}</div>
                                 @elseif(!empty($ad->particulie))
                                     <div class="listing-type-badge type-particulier">Particulier</div>
                                 @elseif(!empty($ad->pro))
@@ -4103,7 +4103,7 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">VOTRE MENSUALITÉ À PARTIR DE</span>
+                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
                                         <div class="monthly-price">
                                             <span
                                                 class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
@@ -4295,7 +4295,7 @@
                                     alt="Annonce" style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
                                 @if(!empty($ad->certifie))
-                                    <div class="listing-type-badge type-certifie">Certifié</div>
+                                    <div class="listing-type-badge type-certifie">{{ __('messages.compare.certified') }}</div>
                                 @elseif(!empty($ad->particulie))
                                     <div class="listing-type-badge type-particulier">Particulier</div>
                                 @elseif(!empty($ad->pro))
@@ -4347,7 +4347,7 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">VOTRE MENSUALITÉ À PARTIR DE</span>
+                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
                                         <div class="monthly-price">
                                             <span
                                                 class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
@@ -4401,7 +4401,7 @@
                                     style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
                                 @if(!empty($ad->certifie))
-                                    <div class="listing-type-badge type-certifie">Certifié</div>
+                                    <div class="listing-type-badge type-certifie">{{ __('messages.compare.certified') }}</div>
                                 @elseif(!empty($ad->particulie))
                                     <div class="listing-type-badge type-particulier">Particulier</div>
                                 @elseif(!empty($ad->pro))
@@ -4453,7 +4453,7 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">VOTRE MENSUALITÉ À PARTIR DE</span>
+                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
                                         <div class="monthly-price">
                                             <span
                                                 class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
@@ -4511,7 +4511,7 @@
                                     style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
                                 @if(!empty($ad->certifie))
-                                    <div class="listing-type-badge type-certifie">Certifié</div>
+                                    <div class="listing-type-badge type-certifie">{{ __('messages.compare.certified') }}</div>
                                 @elseif(!empty($ad->particulie))
                                     <div class="listing-type-badge type-particulier">Particulier</div>
                                 @elseif(!empty($ad->pro))
@@ -4563,7 +4563,7 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">VOTRE MENSUALITÉ À PARTIR DE</span>
+                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
                                         <div class="monthly-price">
                                             <span
                                                 class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
@@ -4663,7 +4663,7 @@
                                     {{ $mainEnchere->year }}</p>
                             </div>
                             <div class="current-bid">
-                                <span class="bid-label">Prix de départ</span>
+                                <span class="bid-label">{{ __('messages.extra.start_price') }}</span>
                                 <span class="bid-amount">{{ number_format($mainEnchere->prix, 0, ',', ' ') }} MAD</span>
                                 <span class="btn-bid">Placer une enchère
                                     <i data-lucide="gavel" style="width: 16px; height: 16px; margin-left: 0.5rem;"></i>
@@ -5064,16 +5064,16 @@
                     </p>
                 </div>
                 <div>
-                    <h4 class="footer-heading">Navigation</h4>
+                    <h4 class="footer-heading">{{ __('messages.extra.nav_heading') }}</h4>
                     <ul class="footer-links">
                         <li><a href="#">Accueil</a></li>
                         <li><a href="#">Acheter une voiture</a></li>
                         <li><a href="#">Vendre ma voiture</a></li>
-                        <li><a href="#">À propos de NADO</a></li>
+                        <li><a href="#">{{ __('messages.extra.about_nado') }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="footer-heading">Services</h4>
+                    <h4 class="footer-heading">{{ __('messages.extra.services_heading') }}</h4>
                     <ul class="footer-links">
                         <li><a href="#" class="text-secondary">NADO Connect</a></li>
                         <li><a href="#">Auto Enchère</a></li>
@@ -5081,7 +5081,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="footer-heading">Réseaux Sociaux</h4>
+                    <h4 class="footer-heading">{{ __('messages.extra.social_networks') }}</h4>
                     <p style="font-size: 0.75rem; color: var(--slate-400); margin-bottom: 1.5rem;">Suivez nos
                         livraisons en direct sur les réseaux.</p>
                     <div class="flex gap-4">
@@ -5437,7 +5437,7 @@
         document.getElementById('search-brand').addEventListener('change', function () {
             var brandId = this.value;
             var modelSelect = document.getElementById('search-model');
-            modelSelect.innerHTML = '<option value="">Tous modèles</option>';
+            modelSelect.innerHTML = '<option value="">' + @json(__('messages.extra.all_models_short')) + '</option>';
             if (!brandId) return;
             fetch('{{ route('achat.models.by.brand', '') }}/' + brandId)
                 .then(function(res){ return res.json(); })

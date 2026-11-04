@@ -2409,7 +2409,7 @@
                                         $thumbImage = asset('assets/images/default-car.jpg');
                                     }
                                 @endphp
-                                <img src="{{ $thumbImage }}" alt="Aperçu vidéo">
+                                <img src="{{ $thumbImage }}" alt="{{ __('messages.extra.video_preview') }}">
                                 <div class="play-overlay">
                                     <div class="play-button">
                                         <i class="fas fa-play"></i>
@@ -3109,7 +3109,7 @@
 
             const status = viewer.querySelector('.rapport-pdf-status');
             const fail = function () {
-                status.innerHTML = 'Aperçu indisponible. <a href="' + viewer.dataset.url +
+                status.innerHTML = @json(__('messages.extra.preview_unavailable')) + ' <a href="' + viewer.dataset.url +
                     '" target="_blank" rel="noopener" style="color:var(--blue-primary);font-weight:700;">Ouvrir le rapport</a>';
             };
 
@@ -3203,7 +3203,7 @@
 
                         overlayHtml = `
                         <div class="live-view-thumbnail">
-                            <img src="${thumbSrc}" alt="Aperçu vidéo">
+                            <img src="${thumbSrc}" alt="${@json(__('messages.extra.video_preview'))}">
                             <div class="play-overlay">
                                 <div class="play-button"><i class="fas fa-play"></i></div>
                             </div>
@@ -3524,7 +3524,7 @@
                         chatBody.appendChild(p);
                         return;
                     }
-                    chatBody.innerHTML = '<p style="color:red;padding:1rem;">Erreur lors du chargement. Réessayez.</p>';
+                    chatBody.innerHTML = '<p style="color:red;padding:1rem;">' + @json(__('messages.extra.chat_load_error')) + '</p>';
                 });
             }
 
@@ -3597,7 +3597,7 @@
                         mediaRec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
                     } catch (err) {
                         console.error('[REC] MediaRecorder ctor error:', err);
-                        alert('Erreur création recorder: ' + err.message);
+                        alert(@json(__('messages.extra.recorder_error')) + ' ' + err.message);
                         stream.getTracks().forEach(t => t.stop());
                         return;
                     }
@@ -3619,7 +3619,7 @@
                         await new Promise(r => setTimeout(r, 50));
 
                         if (!audioChunks.length) {
-                            alert('Aucun audio capté. Vérifiez votre micro et réessayez.');
+                            alert(@json(__('messages.extra.no_audio')));
                             return;
                         }
 

@@ -1459,4 +1459,20 @@ return [
         'veh_edit_subtitle'   => 'Mettez à jour les informations du véhicule.',
     ],
 
+    'extra' => [
+        'monthly_from'        => 'VOTRE MENSUALITÉ À PARTIR DE',
+        'start_price'         => 'Prix de départ',
+        'about_nado'          => 'À propos de NADO',
+        'social_networks'     => 'Réseaux Sociaux',
+        'all_models_short'    => 'Tous modèles',
+        'video_preview'       => 'Aperçu vidéo',
+        'preview_unavailable' => 'Aperçu indisponible.',
+        'chat_load_error'     => 'Erreur lors du chargement. Réessayez.',
+        'recorder_error'      => 'Erreur création recorder :',
+        'no_audio'            => 'Aucun audio capté. Vérifiez votre micro et réessayez.',
+        'finance_tagline'     => 'NADO CONNECT • SOLUTIONS DE FINANCEMENT PREMIUM • 2025',
+        'nav_heading'         => 'Navigation',
+        'services_heading'    => 'Services',
+    ],
+
 ];

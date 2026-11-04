@@ -2115,7 +2115,7 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>NADO CONNECT • SOLUTIONS DE FINANCEMENT PREMIUM • 2025</p>
+        <p>{{ __('messages.extra.finance_tagline') }}</p>
     </footer>
 
     <script>
