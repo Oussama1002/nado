@@ -13,6 +13,14 @@ class LoginController extends Controller
     public function showLoginForm(Request $request) {
         if ($request->has('redirect')) {
             session(['url.intended' => $request->query('redirect')]);
+        } elseif (! $request->session()->has('url.intended')) {
+            // Pas de destination explicite → mémorise la page précédente (même domaine,
+            // hors pages d'auth) pour y revenir après connexion.
+            $ref = (string) $request->headers->get('referer');
+            if ($ref && $this->isSafeRedirect($ref)
+                && ! preg_match('#/(login|register|logout|verify|password|prelogin)#i', $ref)) {
+                session(['url.intended' => $ref]);
+            }
         }
         return view('client.auth.login');
     }
@@ -103,8 +111,19 @@ private function isSafeRedirect(string $target): bool
     }
 
     $host = parse_url($target, PHP_URL_HOST);
+    if ($host === null) {
+        return false;
+    }
 
-    return $host !== null && $host === parse_url(config('app.url'), PHP_URL_HOST);
+    // www et non-www du domaine de l'app sont équivalents (le client peut naviguer
+    // sur autoenchere.ma alors que APP_URL est www.autoenchere.ma).
+    $strip = static fn ($h) => preg_replace('/^www\./i', '', strtolower((string) $h));
+    $allowed = [
+        $strip(parse_url(config('app.url'), PHP_URL_HOST)),
+        $strip(request()->getHost()),
+    ];
+
+    return in_array($strip($host), $allowed, true);
 }
 
     protected function guard()
