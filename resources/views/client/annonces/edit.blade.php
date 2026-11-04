@@ -1,7 +1,7 @@
 @extends('layouts.client')
 
-@section('client_title', 'Modifier une annonce')
-@section('client_subtitle', 'Mettez à jour les informations de votre annonce.')
+@section('client_title', __('messages.cannonce.edit_title'))
+@section('client_subtitle', __('messages.cannonce.edit_subtitle'))
 @section('client_content')
 <div class="container">
 @if ($errors->any())
@@ -21,27 +21,27 @@
         @method('PUT')
 
         {{-- SECTION 1 : Informations générales --}}
-        <h4 class="mt-4">Informations Générales</h4>
+        <h4 class="mt-4">{{ __('messages.cannonce.sec_general') }}</h4>
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label>Titre</label>
+                <label>{{ __('messages.cannonce.title') }}</label>
                 <input type="text" name="titre" class="form-control"
                        value="{{ old('titre', $annonce->titre) }}" required>
             </div>
             <div class="col-md-6 mb-3">
-                <label>Prix (DH)</label>
+                <label>{{ __('messages.cannonce.price') }}</label>
                 <input type="number" name="prix" class="form-control"
                        value="{{ old('prix', $annonce->prix) }}" required>
             </div>
         </div>
 
         {{-- SECTION 2 : Véhicule --}}
-        <h4 class="mt-4">Détails du Véhicule</h4>
+        <h4 class="mt-4">{{ __('messages.cannonce.sec_vehicle') }}</h4>
         <div class="row">
             <div class="col-md-4 mb-3">
-                <label>Marque</label>
+                <label>{{ __('messages.ventemodal.marque') }}</label>
                 <select name="mark" id="brand-select" class="form-control" required>
-                    <option value="">Choisissez une marque</option>
+                    <option value="">{{ __('messages.cannonce.choose_brand') }}</option>
                     @foreach($brands as $brand)
                         <option value="{{ $brand->id }}"
                             {{ old('mark', $annonce->mark) == $brand->id ? 'selected' : '' }}>
@@ -52,15 +52,15 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Modèle</label>
+                <label>{{ __('messages.ventemodal.modele') }}</label>
                 <select name="modele" id="model-select" class="form-control" required>
-                    <option value="">Sélectionnez un modèle</option>
+                    <option value="">{{ __('messages.cannonce.select_model') }}</option>
                 </select>
             </div>
             <div class="col-md-4 mb-3">
-    <label for="matricule" class="form-label">Matricule</label>
-    <input type="text" name="matricule" id="matricule" class="form-control" 
-           value="{{ old('matricule') }}" placeholder="Entrez le matricule">
+    <label for="matricule" class="form-label">{{ __('messages.cannonce.matricule') }}</label>
+    <input type="text" name="matricule" id="matricule" class="form-control"
+           value="{{ old('matricule') }}" placeholder="{{ __('messages.cannonce.matricule_ph') }}">
     @error('matricule')
         <span class="text-danger">{{ $message }}</span>
     @enderror
@@ -90,9 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
           <div class="col-md-4 mb-3">
-    <label for="color">Couleur</label>
+    <label for="color">{{ __('messages.cannonce.color') }}</label>
     <select name="colors" id="color" class="form-control" required>
-        <option value="">Sélectionnez une couleur</option>
+        <option value="">{{ __('messages.cannonce.select_color') }}</option>
         @foreach($colors as $color)
             <option value="{{ $color->name }}" 
                 {{ old('colors', $annonce->colors) == $color->name ? 'selected' : '' }}>
@@ -103,30 +103,30 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
             <div class="col-md-4 mb-3">
-                <label>Kilométrage</label>
+                <label>{{ __('messages.cannonce.km') }}</label>
                 <input type="number" name="km" class="form-control"
                        value="{{ old('km', $annonce->km) }}" required>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>CV</label>
+                <label>{{ __('messages.cannonce.cv') }}</label>
                 <input type="number" name="cv" class="form-control"
                        value="{{ old('cv', $annonce->cv) }}" required>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Nombre de Portes</label>
+                <label>{{ __('messages.cannonce.doors') }}</label>
                 <select name="nb_Door" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="3" {{ old('nb_Door', $annonce->nb_Door) == 3 ? 'selected' : '' }}>3 portes</option>
-                    <option value="5" {{ old('nb_Door', $annonce->nb_Door) == 5 ? 'selected' : '' }}>5 portes</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="3" {{ old('nb_Door', $annonce->nb_Door) == 3 ? 'selected' : '' }}>{{ __('messages.cannonce.doors_3') }}</option>
+                    <option value="5" {{ old('nb_Door', $annonce->nb_Door) == 5 ? 'selected' : '' }}>{{ __('messages.cannonce.doors_5') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Année</label>
+                <label>{{ __('messages.ventemodal.year') }}</label>
                 <select name="year" class="form-control" required>
-                    <option value="">Sélectionnez l'année</option>
+                    <option value="">{{ __('messages.cannonce.select_year') }}</option>
                     @for ($y = date('Y'); $y >= 1990; $y--)
                         <option value="{{ $y }}"
                             {{ old('year', $annonce->year) == $y ? 'selected' : '' }}>
@@ -137,60 +137,60 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Origine</label>
+                <label>{{ __('messages.ventemodal.origin') }}</label>
                 <select name="origine" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="WW au Maroc" {{ old('origine', $annonce->origine) == "WW au Maroc" ? 'selected' : '' }}>WW au Maroc</option>
-                    <option value="dédouané" {{ old('origine', $annonce->origine) == "dédouané" ? 'selected' : '' }}>Dédouané</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="WW au Maroc" {{ old('origine', $annonce->origine) == "WW au Maroc" ? 'selected' : '' }}>{{ __('messages.ventemodal.origin_ww') }}</option>
+                    <option value="dédouané" {{ old('origine', $annonce->origine) == "dédouané" ? 'selected' : '' }}>{{ __('messages.ventemodal.origin_cleared') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Première Main</label>
+                <label>{{ __('messages.cannonce.first_main') }}</label>
                 <select name="premiere_main" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="Oui" {{ old('premiere_main', $annonce->premiere_main) == "Oui" ? 'selected' : '' }}>Oui</option>
-                    <option value="Non" {{ old('premiere_main', $annonce->premiere_main) == "Non" ? 'selected' : '' }}>Non</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="Oui" {{ old('premiere_main', $annonce->premiere_main) == "Oui" ? 'selected' : '' }}>{{ __('messages.nadoae.yes') }}</option>
+                    <option value="Non" {{ old('premiere_main', $annonce->premiere_main) == "Non" ? 'selected' : '' }}>{{ __('messages.nadoae.no') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>État</label>
+                <label>{{ __('messages.ventemodal.state') }}</label>
                 <select name="etat" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="Neuf" {{ old('etat', $annonce->etat) == "Neuf" ? 'selected' : '' }}>Neuf</option>
-                    <option value="Très bon état" {{ old('etat', $annonce->etat) == "Très bon état" ? 'selected' : '' }}>Très bon état</option>
-                    <option value="Bon état" {{ old('etat', $annonce->etat) == "Bon état" ? 'selected' : '' }}>Bon état</option>
-                    <option value="Accidenté" {{ old('etat', $annonce->etat) == "Accidenté" ? 'selected' : '' }}>Accidenté</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="Neuf" {{ old('etat', $annonce->etat) == "Neuf" ? 'selected' : '' }}>{{ __('messages.ventemodal.state_new') }}</option>
+                    <option value="Très bon état" {{ old('etat', $annonce->etat) == "Très bon état" ? 'selected' : '' }}>{{ __('messages.cannonce.state_tres_bon') }}</option>
+                    <option value="Bon état" {{ old('etat', $annonce->etat) == "Bon état" ? 'selected' : '' }}>{{ __('messages.cannonce.state_bon') }}</option>
+                    <option value="Accidenté" {{ old('etat', $annonce->etat) == "Accidenté" ? 'selected' : '' }}>{{ __('messages.cannonce.state_accidente') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Carburant</label>
+                <label>{{ __('messages.ventemodal.fuel') }}</label>
                 <select name="carburant" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="diesel" {{ old('carburant', $annonce->carburant) == "diesel" ? 'selected' : '' }}>Diesel</option>
-                    <option value="essence" {{ old('carburant', $annonce->carburant) == "essence" ? 'selected' : '' }}>Essence</option>
-                    <option value="hybride" {{ old('carburant', $annonce->carburant) == "hybride" ? 'selected' : '' }}>Hybride</option>
-                    <option value="electrique" {{ old('carburant', $annonce->carburant) == "electrique" ? 'selected' : '' }}>Électrique</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="diesel" {{ old('carburant', $annonce->carburant) == "diesel" ? 'selected' : '' }}>{{ __('messages.ventemodal.fuel_diesel') }}</option>
+                    <option value="essence" {{ old('carburant', $annonce->carburant) == "essence" ? 'selected' : '' }}>{{ __('messages.ventemodal.fuel_essence') }}</option>
+                    <option value="hybride" {{ old('carburant', $annonce->carburant) == "hybride" ? 'selected' : '' }}>{{ __('messages.ventemodal.fuel_hybrid') }}</option>
+                    <option value="electrique" {{ old('carburant', $annonce->carburant) == "electrique" ? 'selected' : '' }}>{{ __('messages.ventemodal.fuel_electric') }}</option>
                 </select>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Boîte</label>
+                <label>{{ __('messages.ventemodal.box') }}</label>
                 <select name="box" class="form-control" required>
-                    <option value="">Sélectionnez</option>
-                    <option value="automatique" {{ old('box', $annonce->box) == "automatique" ? 'selected' : '' }}>Automatique</option>
-                    <option value="manuelle" {{ old('box', $annonce->box) == "manuelle" ? 'selected' : '' }}>Manuelle</option>
+                    <option value="">{{ __('messages.cannonce.select') }}</option>
+                    <option value="automatique" {{ old('box', $annonce->box) == "automatique" ? 'selected' : '' }}>{{ __('messages.ventemodal.box_auto') }}</option>
+                    <option value="manuelle" {{ old('box', $annonce->box) == "manuelle" ? 'selected' : '' }}>{{ __('messages.ventemodal.box_manual') }}</option>
                 </select>
             </div>
             <div class="col-md-4 mb-3">
             
 
             <div class="col-md-4 mb-3">
-                <label>Ville</label>
+                <label>{{ __('messages.ventemodal.city') }}</label>
                 <select name="city" class="form-control" required>
-                    <option value="">Sélectionnez une ville</option>
+                    <option value="">{{ __('messages.cannonce.select_city') }}</option>
                     @foreach ($villes as $ville)
                         <option value="{{ $ville->name }}"
                             {{ old('city', $annonce->city) == $ville->name ? 'selected' : '' }}>
@@ -201,15 +201,19 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         </div>
 {{-- SECTION 3 : Options --}}
-<h4 class="mt-4">Options</h4>
+<h4 class="mt-4">{{ __('messages.cannonce.options') }}</h4>
 
 <div class="mb-2">
     <input type="checkbox" id="checkAllOptions" class="form-check-input">
-    <label for="checkAllOptions" class="form-check-label fw-bold text-primary">Tout sélectionner</label>
+    <label for="checkAllOptions" class="form-check-label fw-bold text-primary">{{ __('messages.cannonce.select_all') }}</label>
 </div>
 
 <div class="row">
     @php
+           // Reverse map from the French equipment label to its key, so each
+           // option is translated regardless of this form's own field names.
+           $equipFr  = trans('messages.equip', [], 'fr');
+           $equipRev = is_array($equipFr) ? array_flip($equipFr) : [];
            $options = [
             // Sécurité
     'airbags' => 'Airbags',
@@ -286,13 +290,13 @@ document.addEventListener("DOMContentLoaded", function () {
                    name="{{ $field }}"
                    value="1"
                    {{ old($field, $annonce->$field) ? 'checked' : '' }}>
-            <label class="form-check-label" for="{{ $field }}">{{ $label }}</label>
+            <label class="form-check-label" for="{{ $field }}">{{ isset($equipRev[$label]) ? __('messages.equip.'.$equipRev[$label]) : $label }}</label>
         </div>
     @endforeach
 </div>
 
        <div class="form-group mt-4">
-    <label for="images">Images</label>
+    <label for="images">{{ __('messages.cannonce.images') }}</label>
     <div id="image-uploader" class="dropzone"></div>
 
    <div class="mt-3 d-flex flex-wrap gap-2">
@@ -314,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="modal fade" id="packModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Choisir un Pack</h5></div>
+      <div class="modal-header"><h5 class="modal-title">{{ __('messages.cannonce.choose_pack') }}</h5></div>
       <div class="modal-body row">
         @foreach($packs as $pack)
           <div class="col-md-4">
@@ -322,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <h5>{{ $pack->name }}</h5>
               <p>{{ $pack->description }}</p>
               <button type="button" class="btn btn-outline-primary select-pack"
-                      data-id="{{ $pack->id }}">Choisir</button>
+                      data-id="{{ $pack->id }}">{{ __('messages.cannonce.choose') }}</button>
             </div>
           </div>
         @endforeach
@@ -332,8 +336,8 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
         <div class="mt-4">
-            <button type="submit" class="btn btn-success">Mettre à jour</button>
-            <a href="{{ route('client.annonces.index') }}" class="btn btn-secondary">Annuler</a>
+            <button type="submit" class="btn btn-success">{{ __('messages.cannonce.update_btn') }}</button>
+            <a href="{{ route('client.annonces.index') }}" class="btn btn-secondary">{{ __('messages.cannonce.cancel') }}</a>
         </div>
     </form>
 </div>
@@ -346,11 +350,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadModels(brandId, selectedModelId = null) {
         if (!brandId) {
-            modelSelect.innerHTML = '<option value="">Sélectionnez un modèle</option>';
+            modelSelect.innerHTML = '<option value="">' + @json(__('messages.cannonce.select_model')) + '</option>';
             return;
         }
 
-        modelSelect.innerHTML = '<option value="">Chargement...</option>';
+        modelSelect.innerHTML = '<option value="">' + @json(__('messages.cannonce.loading')) + '</option>';
 
         fetch(`/client/models-by-brand/${brandId}`)
             .then(response => {
@@ -358,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                modelSelect.innerHTML = '<option value="">Sélectionnez un modèle</option>';
+                modelSelect.innerHTML = '<option value="">' + @json(__('messages.cannonce.select_model')) + '</option>';
                 data.forEach(model => {
                     const isSelected = selectedModelId && selectedModelId.toString() === model.id.toString();
                     const opt = document.createElement('option');
