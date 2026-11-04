@@ -4014,8 +4014,8 @@
                 style="width:36px;height:36px;border-radius:50%;background:#1459DD;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;">
                 N</div>
             <div style="flex:1;min-width:0;">
-                <div style="font-weight:800;color:#0f172a;font-size:14px;line-height:1.2;">Assistant financement</div>
-                <div style="font-size:11px;color:#64748b;">Simulateur NADO</div>
+                <div style="font-weight:800;color:#0f172a;font-size:14px;line-height:1.2;">{{ app()->getLocale() === 'ar' ? 'مساعد التمويل' : 'Assistant financement' }}</div>
+                <div style="font-size:11px;color:#64748b;">{{ app()->getLocale() === 'ar' ? 'محاكي نادو' : 'Simulateur NADO' }}</div>
             </div>
             <button type="button" onclick="closeFinanceBot()" aria-label="Fermer"
                 style="width:34px;height:34px;border:0;border-radius:50%;background:#e2e8f0;color:#475569;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;">&times;</button>
@@ -4028,7 +4028,7 @@
         <div
             style="border-top:1px solid #e2e8f0;padding:12px 14px;background:#f8fafc;display:flex;gap:8px;align-items:center;">
             <input id="financeBotInput" type="text" autocomplete="off"
-                placeholder="Posez votre question (prix, options...)"
+                placeholder="{{ app()->getLocale() === 'ar' ? 'اطرح سؤالك (الثمن، الخيارات...)' : 'Posez votre question (prix, options...)' }}"
                 style="flex:1;min-width:0;border:1.5px solid #cbd5e1;border-radius:999px;padding:10px 16px;font-size:13px;outline:none;font-family:inherit;">
             <button type="button" id="financeBotSend" aria-label="Envoyer"
                 style="flex-shrink:0;width:38px;height:38px;border:0;border-radius:50%;background:#1459DD;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;">
@@ -4046,6 +4046,7 @@
     (function () {
         const botOverlay = document.getElementById('financeBotOverlay');
         const botBody = document.getElementById('financeBotBody');
+        const BOT_AR = @json(app()->getLocale() === 'ar'); // réponses du bot en arabe ?
 
         function scroll() {
             if (botBody) botBody.scrollTop = botBody.scrollHeight;
@@ -4067,7 +4068,7 @@
                   'font-size:13.5px;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere;max-width:88%;';
 
             const meta = document.createElement('div');
-            meta.textContent = (fromClient ? '' : 'NADO Bot · ') +
+            meta.textContent = (fromClient ? '' : (BOT_AR ? 'بوت نادو · ' : 'NADO Bot · ')) +
                 new Date().toTimeString().slice(0, 5);
             meta.style.cssText = 'font-size:10px;opacity:.55;margin-top:3px;';
 
@@ -4162,6 +4163,12 @@
         }
 
         function soldMessage() {
+            if (BOT_AR) {
+                return 'تم بيع هذه السيارة.\n' +
+                    BOT_DATA.vehicule + ' لم تعد متوفرة للبيع.\n\n' +
+                    'لدينا سيارات مماثلة أخرى: تواصل معنا عبر واتساب\n' +
+                    'وسيقترح عليك أحد المستشارين بدائل مناسبة.';
+            }
             return 'Ce vehicule a ete VENDU.\n' +
                 BOT_DATA.vehicule + ' n\'est plus disponible a la vente.\n' +
                 '\n' +
@@ -4185,8 +4192,15 @@
         function answerFor(question) {
             const q = norm(question);
 
-            // Price
-            if (hasAny(q, ['prix', 'price', 'combien', 'coute', 'cout', 'tarif', 'montant', 'cher'])) {
+            // Price / الثمن
+            if (hasAny(q, ['prix', 'price', 'combien', 'coute', 'cout', 'tarif', 'montant', 'cher', 'الثمن', 'السعر', 'بكم', 'بشحال', 'كم', 'تمن', 'ثمن'])) {
+                if (BOT_AR) {
+                    let a = 'الثمن: ' + nfMad(BOT_DATA.prix) + '\n' + BOT_DATA.vehicule;
+                    if (BOT_DATA.annee) a += ' - ' + BOT_DATA.annee;
+                    if (BOT_DATA.km) a += ' - ' + new Intl.NumberFormat('fr-FR').format(BOT_DATA.km) + ' كم';
+                    if (isSold()) a += '\n\nتنبيه: هذه السيارة مباعة بالفعل.';
+                    return a;
+                }
                 let a = 'PRIX : ' + nfMad(BOT_DATA.prix) + '\n' + BOT_DATA.vehicule;
                 if (BOT_DATA.annee) a += ' - ' + BOT_DATA.annee;
                 if (BOT_DATA.km) a += ' - ' + new Intl.NumberFormat('fr-FR').format(BOT_DATA.km) + ' km';
@@ -4194,33 +4208,44 @@
                 return a;
             }
 
-            // Options / equipment
-            if (hasAny(q, ['option', 'equipement', 'accessoire', 'confort', 'securite', 'finition', 'serie'])) {
+            // Options / equipment / التجهيزات
+            if (hasAny(q, ['option', 'equipement', 'accessoire', 'confort', 'securite', 'finition', 'serie', 'خيار', 'تجهيز', 'إضافات', 'كماليات', 'أمان', 'راحة'])) {
                 const eq = BOT_DATA.equipements || [];
+                if (BOT_AR) {
+                    if (!eq.length) return 'لا توجد تجهيزات مدرجة لهذه السيارة.\nيمكن لمستشار أن يفصّل لك الخيارات عبر واتساب.';
+                    return 'الخيارات والتجهيزات (' + eq.length + '):\n' + eq.map(function (e) { return '- ' + e; }).join('\n');
+                }
                 if (!eq.length) return 'Aucun equipement n\'est liste pour ce vehicule.\nUn conseiller peut vous detailler les options sur WhatsApp.';
                 return 'OPTIONS ET EQUIPEMENTS (' + eq.length + ') :\n' +
                     eq.map(function (e) { return '- ' + e; }).join('\n');
             }
 
-            // Availability
-            if (hasAny(q, ['dispo', 'disponible', 'vendu', 'reserve', 'encore la', 'toujours'])) {
-                return isSold()
-                    ? soldMessage()
-                    : BOT_DATA.vehicule + ' est DISPONIBLE.' +
-                      (BOT_DATA.ville ? '\nVisible a ' + BOT_DATA.ville + '.' : '');
+            // Availability / التوفر
+            if (hasAny(q, ['dispo', 'disponible', 'vendu', 'reserve', 'encore la', 'toujours', 'متوفر', 'متاح', 'مبيع', 'مباع', 'محجوز', 'مازال', 'لازال'])) {
+                if (isSold()) return soldMessage();
+                if (BOT_AR) return BOT_DATA.vehicule + ' متوفرة.' + (BOT_DATA.ville ? '\nمتاحة للمعاينة في ' + BOT_DATA.ville + '.' : '');
+                return BOT_DATA.vehicule + ' est DISPONIBLE.' + (BOT_DATA.ville ? '\nVisible a ' + BOT_DATA.ville + '.' : '');
             }
 
-            // Location
-            if (hasAny(q, ['adresse', 'localisation', 'location', 'agence', 'ou se trouve', 'ou etes', 'situe', 'map', 'itineraire', 'venir'])) {
+            // Location / العنوان
+            if (hasAny(q, ['adresse', 'localisation', 'location', 'agence', 'ou se trouve', 'ou etes', 'situe', 'map', 'itineraire', 'venir', 'العنوان', 'الموقع', 'الوكالة', 'أين', 'فين', 'خريطة', 'الطريق'])) {
+                if (BOT_AR) {
+                    return 'وكالتنا:\nhttps://maps.app.goo.gl/RuP9P8wv898XNAAJ9' +
+                        (BOT_DATA.ville ? '\nالسيارة متاحة للمعاينة في ' + BOT_DATA.ville + '.' : '');
+                }
                 return 'NOTRE AGENCE :\nhttps://maps.app.goo.gl/RuP9P8wv898XNAAJ9' +
                     (BOT_DATA.ville ? '\nVehicule visible a ' + BOT_DATA.ville + '.' : '');
             }
 
-            // Documents
-            if (hasAny(q, ['document', 'papier', 'dossier', 'piece', 'justificatif'])) {
+            // Documents / الوثائق
+            if (hasAny(q, ['document', 'papier', 'dossier', 'piece', 'justificatif', 'وثيقة', 'وثائق', 'أوراق', 'ملف', 'مستند', 'الأوراق'])) {
                 const profilBtn = document.querySelector('.profile-btn.active');
                 const profil = profilBtn ? profilBtn.textContent.trim() : '';
                 const docs = (typeof docsForProfile === 'function') ? docsForProfile(profil) : null;
+                if (BOT_AR) {
+                    if (docs) return 'الوثائق المطلوبة - الملف: ' + profil + '\n' + docs.map(function (d) { return '- ' + d; }).join('\n');
+                    return 'اختر ملفك في المحاكي للحصول على\nقائمة الوثائق المطلوبة بدقة.';
+                }
                 if (docs) {
                     return 'PIECES A FOURNIR - Profil : ' + profil + '\n' +
                         docs.map(function (d) { return '- ' + d; }).join('\n');
@@ -4228,8 +4253,17 @@
                 return 'Selectionnez votre profil dans le simulateur pour obtenir\nla liste exacte des pieces a fournir.';
             }
 
-            // Vehicle specs
-            if (hasAny(q, ['kilometr', 'km', 'annee', 'carburant', 'diesel', 'essence', 'boite', 'transmission', 'motorisation'])) {
+            // Vehicle specs / المواصفات
+            if (hasAny(q, ['kilometr', 'km', 'annee', 'carburant', 'diesel', 'essence', 'boite', 'transmission', 'motorisation', 'كيلومتر', 'السنة', 'الوقود', 'مازوط', 'ديزل', 'بنزين', 'علبة', 'ناقل'])) {
+                if (BOT_AR) {
+                    let a = BOT_DATA.vehicule + '\n';
+                    if (BOT_DATA.annee) a += 'السنة: ' + BOT_DATA.annee + '\n';
+                    if (BOT_DATA.km) a += 'الكيلومتراج: ' + new Intl.NumberFormat('fr-FR').format(BOT_DATA.km) + ' كم\n';
+                    if (BOT_DATA.carburant) a += 'الوقود: ' + BOT_DATA.carburant + '\n';
+                    if (BOT_DATA.boite) a += 'علبة السرعة: ' + BOT_DATA.boite + '\n';
+                    if (BOT_DATA.ville) a += 'المدينة: ' + BOT_DATA.ville;
+                    return a.trim();
+                }
                 let a = BOT_DATA.vehicule + '\n';
                 if (BOT_DATA.annee) a += 'Annee : ' + BOT_DATA.annee + '\n';
                 if (BOT_DATA.km) a += 'Kilometrage : ' + new Intl.NumberFormat('fr-FR').format(BOT_DATA.km) + ' km\n';
@@ -4239,9 +4273,16 @@
                 return a.trim();
             }
 
-            // Financing
-            if (hasAny(q, ['credit', 'financ', 'mensualite', 'apport', 'duree', 'simulation'])) {
+            // Financing / التمويل
+            if (hasAny(q, ['credit', 'financ', 'mensualite', 'apport', 'duree', 'simulation', 'قرض', 'تمويل', 'قسط', 'دفعة', 'مدة', 'محاكاة'])) {
                 const mens = (document.getElementById('monthly-payment')?.textContent || '').trim();
+                if (BOT_AR) {
+                    return mens
+                        ? 'حسب محاكاتك الحالية:\nالقسط التقديري: ' + mens + ' درهم / شهر\n' +
+                          '(عرض إرشادي، رهن قبول الملف.)\n' +
+                          'عدّل الدفعة والمدة في المحاكي لإعادة الحساب.'
+                        : 'استعمل المحاكي لتقدير قسطك الشهري.';
+                }
                 return mens
                     ? 'Selon votre simulation actuelle :\nMENSUALITE ESTIMEE : ' + mens + ' MAD / mois\n' +
                       '(Offre indicative, soumise a acceptation du dossier.)\n' +
@@ -4249,6 +4290,11 @@
                     : 'Utilisez le simulateur pour estimer votre mensualite.';
             }
 
+            if (BOT_AR) {
+                return 'يمكنني إفادتك حول الثمن، الخيارات، التوفر،\n' +
+                    'المواصفات، وثائق التمويل وعنوان الوكالة.\n' +
+                    'لأي سؤال آخر، يجيبك مستشار عبر واتساب.';
+            }
             return 'Je peux vous renseigner sur le PRIX, les OPTIONS, la DISPONIBILITE,\n' +
                 'les CARACTERISTIQUES, les DOCUMENTS de financement et l\'ADRESSE de l\'agence.\n' +
                 'Pour toute autre question, un conseiller vous repond sur WhatsApp.';
@@ -4286,7 +4332,9 @@
             botOverlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
 
-            bubble('Je souhaite financer ce vehicule. Quelle est ma mensualite et quels documents dois-je fournir ?', true);
+            bubble(BOT_AR
+                ? 'أريد تمويل هذه السيارة. ما هو قسطي الشهري وما الوثائق المطلوبة؟'
+                : 'Je souhaite financer ce vehicule. Quelle est ma mensualite et quels documents dois-je fournir ?', true);
 
             // A sold car leads with that fact - no point quoting a financing plan for it.
             const steps = [];
@@ -4296,8 +4344,10 @@
                 steps.push(recapText);
                 if (docsText) steps.push(docsText);
             }
-            steps.push('Vous pouvez aussi me poser une question : prix, options, disponibilite,\n' +
-                'caracteristiques ou documents.');
+            steps.push(BOT_AR
+                ? 'يمكنك أيضًا طرح سؤال: الثمن، الخيارات، التوفر،\nالمواصفات أو الوثائق.'
+                : 'Vous pouvez aussi me poser une question : prix, options, disponibilite,\n' +
+                  'caracteristiques ou documents.');
 
             say(steps, 0);
             setTimeout(function () { botInput?.focus(); }, 400);
