@@ -105,7 +105,8 @@
                         ? substr($digits, 0, 2) . ' •• •• ' . substr($digits, -2)
                         : '•• •• •• ••';
                 @endphp
-                <div class="dmd-card">
+                <div class="dmd-card" style="cursor:pointer;"
+                     onclick="if(!event.target.closest('a,button,input')) window.location.href='{{ route('demandes.show', $d->id) }}'">
                     <div class="dmd-card-head">
                         <span class="dmd-badge">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
