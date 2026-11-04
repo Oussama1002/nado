@@ -3684,6 +3684,9 @@
             window.openFinanceChat = function () {
                 overlay.classList.add('open');
                 document.body.style.overflow = 'hidden';
+                // Masque le mini-player Nado Radio tant que la discussion est ouverte.
+                var nadoMini = document.getElementById('nadoMini');
+                if (nadoMini) nadoMini.style.display = 'none';
                 isOpen = true;
                 if (!IS_AUTH) { authGate.style.display = 'block'; return; }
                 if (!discussionId) { loadDiscussion(); } else { chatInput?.focus(); startPolling(); }
@@ -3767,6 +3770,9 @@
             window.closeFinanceChat = function () {
                 overlay.classList.remove('open');
                 document.body.style.overflow = 'unset';
+                // Réaffiche le mini-player Nado Radio.
+                var nadoMini = document.getElementById('nadoMini');
+                if (nadoMini) nadoMini.style.display = '';
                 isOpen = false;
                 stopPolling();
             };
