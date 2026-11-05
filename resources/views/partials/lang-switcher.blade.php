@@ -3,5 +3,5 @@
     <a href="{{ route('locale.switch', 'fr') }}" aria-label="Français" title="Français"
        style="text-decoration:none;padding:5px 10px;border-radius:8px;transition:.15s;{{ $current === 'fr' ? 'background:#1459DD;color:#fff;' : 'color:#334155;background:#f1f5f9;' }}">FR</a>
     <a href="{{ route('locale.switch', 'ar') }}" aria-label="العربية" title="العربية"
-       style="text-decoration:none;padding:5px 10px;border-radius:8px;transition:.15s;{{ $current === 'ar' ? 'background:#1459DD;color:#fff;' : 'color:#334155;background:#f1f5f9;' }}">AR</a>
+       style="text-decoration:none;padding:5px 10px;border-radius:8px;transition:.15s;{{ $current === 'ar' ? 'background:#1459DD;color:#fff;' : 'color:#334155;background:#f1f5f9;' }}">عربي</a>
 </div>
