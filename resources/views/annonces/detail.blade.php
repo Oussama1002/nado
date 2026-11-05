@@ -1306,6 +1306,26 @@
         transform: scale(0.95);
     }
 
+    /* Expert CTA under the description: animated blue/yellow gradient so it stands out. */
+    .chat-btn.expert-cta,
+    .chat-btn.expert-cta:hover {
+        background: linear-gradient(110deg, #1459DD 0%, #1459DD 34%, #FDD817 50%, #1459DD 66%, #1459DD 100%);
+        background-size: 220% 100%;
+    }
+    .chat-btn.expert-cta {
+        animation: expertShimmer 2.8s linear infinite;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 16px 28px -8px rgba(20, 89, 221, 0.45);
+    }
+    .chat-btn.expert-cta:hover { filter: brightness(1.04); }
+    @keyframes expertShimmer {
+        0%   { background-position: 120% 50%; }
+        100% { background-position: -20% 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .chat-btn.expert-cta { animation: none; background-position: 50% 50%; }
+    }
+
     /* Sidebar */
     .sidebar {
         width: 100%;
@@ -2592,7 +2612,7 @@
                             @endif يجب اغتنامها.
                             تتميّز بلمسة أنيقة بلون <strong class="desc-hl">{{ $annonce->colors ?? 'غير متوفر' }}</strong>،
                             وقد قطعت <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}</bdi> كلم</strong>.
-                            وهي مزوّدة بعلبة سرعة <strong class="desc-hl">{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'غير متوفر' }}</strong>
+                            وهي مزوّدة بعلبة سرعة <strong class="desc-hl">{{ $boxRaw ? $boxLabel : 'غير متوفر' }}</strong>
                             وبقوة جبائية تبلغ <strong class="desc-hl">{{ $annonce->cv ?? 'غير متوفر' }} حصان</strong>.
                             هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong> <strong class="desc-hl">معتمدة من نادو</strong>@if ($annonce->garantie ?? false)، وتتوفّر على <strong class="desc-hl">ضمان</strong>@endif.
                             وهي متوفرة بـ<strong class="desc-hl">الدار البيضاء</strong>، ومعروضة بسعر
@@ -2629,7 +2649,7 @@
                             @endif
                         </div>
 
-                        <button type="button" class="chat-btn" style="width:100%;margin-top:1.75rem;" onclick="openExpertModal()">
+                        <button type="button" class="chat-btn expert-cta" style="width:100%;margin-top:1.75rem;" onclick="openExpertModal()">
                             <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
                         </button>
                     </div>
