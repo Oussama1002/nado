@@ -5119,15 +5119,15 @@
                         <span class="text-secondary">DO</span>
                     </div>
                     <p style="color: var(--slate-400); font-weight: 500; line-height: 1.625;">
-                        Le premier portail automobile premium au Maroc. Expertise, confiance et innovation.
+                        {{ __('messages.extra.footer_tagline') }}
                     </p>
                 </div>
                 <div>
                     <h4 class="footer-heading">{{ __('messages.extra.nav_heading') }}</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Acheter une voiture</a></li>
-                        <li><a href="#">Vendre ma voiture</a></li>
+                        <li><a href="#">{{ __('messages.extra.footer_home') }}</a></li>
+                        <li><a href="#">{{ __('messages.extra.footer_buy') }}</a></li>
+                        <li><a href="#">{{ __('messages.extra.footer_sell') }}</a></li>
                         <li><a href="#">{{ __('messages.extra.about_nado') }}</a></li>
                     </ul>
                 </div>
@@ -5136,13 +5136,12 @@
                     <ul class="footer-links">
                         <li><a href="#" class="text-secondary">NADO Connect</a></li>
                         <li><a href="#">Auto Enchère</a></li>
-                        <li><a href="#">Vente cash</a></li>
+                        <li><a href="#">{{ __('messages.extra.footer_vente_cash') }}</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="footer-heading">{{ __('messages.extra.social_networks') }}</h4>
-                    <p style="font-size: 0.75rem; color: var(--slate-400); margin-bottom: 1.5rem;">Suivez nos
-                        livraisons en direct sur les réseaux.</p>
+                    <p style="font-size: 0.75rem; color: var(--slate-400); margin-bottom: 1.5rem;">{{ __('messages.extra.footer_social_note') }}</p>
                     <div class="flex gap-4">
                         <button class="social-btn"><i data-lucide="instagram"
                                 style="width: 16px; height: 16px; color: var(--white);"></i></button>
@@ -5155,7 +5154,7 @@
             </div>
             <div
                 style="padding-top: 2rem; border-top: 1px solid var(--slate-600); text-align: center; font-size: 10px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em;">
-                © 2025 NADO PREMIUM AUTOMOTIVE • TOUS DROITS RÉSERVÉS
+                {{ __('messages.extra.footer_rights') }}
             </div>
         </div>
     </footer>

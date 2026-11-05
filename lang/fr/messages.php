@@ -1509,6 +1509,13 @@ return [
         'finance_tagline'     => 'NADO CONNECT • SOLUTIONS DE FINANCEMENT PREMIUM • 2025',
         'nav_heading'         => 'Navigation',
         'services_heading'    => 'Services',
+        'footer_tagline'      => 'Le premier portail automobile premium au Maroc. Expertise, confiance et innovation.',
+        'footer_home'         => 'Accueil',
+        'footer_buy'          => 'Acheter une voiture',
+        'footer_sell'         => 'Vendre ma voiture',
+        'footer_vente_cash'   => 'Vente cash',
+        'footer_social_note'  => 'Suivez nos livraisons en direct sur les réseaux.',
+        'footer_rights'       => '© 2025 NADO PREMIUM AUTOMOTIVE • TOUS DROITS RÉSERVÉS',
     ],
 
     'mail' => [

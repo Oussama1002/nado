@@ -1508,6 +1508,13 @@ return [
         'finance_tagline'     => 'NADO CONNECT • حلول تمويل متميّزة • 2025',
         'nav_heading'         => 'التنقّل',
         'services_heading'    => 'الخدمات',
+        'footer_tagline'      => 'أول بوابة سيارات متميّزة في المغرب. خبرة وثقة وابتكار.',
+        'footer_home'         => 'الرئيسية',
+        'footer_buy'          => 'شراء سيارة',
+        'footer_sell'         => 'بيع سيارتي',
+        'footer_vente_cash'   => 'البيع النقدي',
+        'footer_social_note'  => 'تابع عمليات التسليم مباشرة على شبكاتنا.',
+        'footer_rights'       => '© 2025 NADO PREMIUM AUTOMOTIVE • جميع الحقوق محفوظة',
     ],
 
     'mail' => [
