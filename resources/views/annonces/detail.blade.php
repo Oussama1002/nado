@@ -2655,14 +2655,9 @@
                         <p style="margin:0.6rem 0 0;text-align:center;font-size:0.8rem;color:#64748b;display:flex;align-items:center;justify-content:center;gap:6px;">
                             <i class="fas fa-map-marker-alt" style="color:#1459DD;"></i> {{ __('messages.expert.need_expert_note') }}
                         </p>
-                        <div style="text-align:center;margin-top:0.75rem;">
-                            <a href="{{ route('contactez-nous.index') }}"
-                               style="display:inline-flex;align-items:center;gap:7px;padding:0.65rem 1.4rem;border:1.5px solid #1459DD;border-radius:999px;color:#1459DD;font-weight:800;font-size:0.85rem;text-decoration:none;transition:background .2s,color .2s;"
-                               onmouseover="this.style.background='#1459DD';this.style.color='#fff';"
-                               onmouseout="this.style.background='transparent';this.style.color='#1459DD';">
-                                <i class="fas fa-headset"></i> {{ __('messages.expert.contact_now') }}
-                            </a>
-                        </div>
+                        <p style="margin:0.35rem 0 0;text-align:center;font-size:0.85rem;color:#475569;">
+                            <a href="{{ route('contactez-nous.index') }}" style="color:#1459DD;font-weight:800;text-decoration:underline;">{{ __('messages.expert.contact_now') }}</a>
+                        </p>
                     </div>
                 </section>
 
