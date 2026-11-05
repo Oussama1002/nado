@@ -1,3 +1,116 @@
+@php
+    // Required-documents data per client profile (localized FR / AR), used by the
+    // documents section and its inline JS below.
+    $financeProfilesFr = [
+        ['name' => 'Salarié(e) du privé', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Spécimen de chèque ou Attestation de RIB",
+            "3 derniers bulletins de salaire",
+            "Attestation de salaire",
+            "Attestation de travail",
+            "Attestation CNSS",
+            "Justificatif d'adresse (moins de 3 mois)",
+            "3 derniers relevés bancaires",
+        ]],
+        ['name' => 'Fonctionnaire', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Spécimen de chèque ou Attestation de RIB",
+            "Justificatif d'adresse (moins de 3 mois)",
+            "3 derniers relevés bancaires",
+            "État d'engagement récent ou attestation de salaire",
+        ]],
+        ['name' => 'Retraité(e)', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Spécimen de chèque ou Attestation de RIB",
+            "Dernière attestation de pension",
+            "Justificatif d'adresse (moins de 3 mois)",
+            "3 derniers relevés bancaires",
+        ]],
+        ['name' => 'Profession libérale', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Spécimen de chèque ou Attestation de RIB",
+            "Copie de la carte professionnelle",
+            "Justificatif d'adresse (moins de 3 mois)",
+            "3 derniers relevés bancaires",
+        ]],
+        ['name' => 'Commerçant', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Spécimen de chèque ou Attestation de RIB",
+            "Registre du commerce (Modèle J)",
+            "Justificatif d'adresse (moins de 3 mois)",
+            "3 derniers relevés bancaires",
+        ]],
+        ['name' => 'Entreprise', 'docs' => [
+            "Copie de la Carte d'identité nationale du gérant",
+            "Spécimen de chèque ou Attestation de RIB de l'entreprise",
+            "Statuts de l'entreprise",
+            "Justificatif d'adresse du/des gérant(s) (moins de 3 mois)",
+            "3 derniers relevés bancaires de l'entreprise",
+            "Registre du commerce (Modèle J) récent (moins de 3 mois)",
+        ]],
+        ['name' => 'Ancien client', 'docs' => [
+            "Copie de la Carte d'identité nationale",
+            "Dernier relevé bancaire",
+            "Dernier bulletin de paie",
+        ]],
+    ];
+
+    $financeProfilesAr = [
+        ['name' => 'أجير بالقطاع الخاص', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'نموذج شيك أو شهادة RIB',
+            'آخر 3 أوراق أجرة',
+            'شهادة الأجر',
+            'شهادة العمل',
+            'شهادة الصندوق الوطني للضمان الاجتماعي (CNSS)',
+            'إثبات العنوان (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية',
+        ]],
+        ['name' => 'موظف', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'نموذج شيك أو شهادة RIB',
+            'إثبات العنوان (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية',
+            'بيان التزام حديث أو شهادة الأجر',
+        ]],
+        ['name' => 'متقاعد', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'نموذج شيك أو شهادة RIB',
+            'آخر شهادة معاش',
+            'إثبات العنوان (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية',
+        ]],
+        ['name' => 'مهنة حرة', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'نموذج شيك أو شهادة RIB',
+            'نسخة من البطاقة المهنية',
+            'إثبات العنوان (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية',
+        ]],
+        ['name' => 'تاجر', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'نموذج شيك أو شهادة RIB',
+            'السجل التجاري (النموذج J)',
+            'إثبات العنوان (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية',
+        ]],
+        ['name' => 'شركة', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف للمسير',
+            'نموذج شيك أو شهادة RIB الخاصة بالشركة',
+            'النظام الأساسي للشركة',
+            'إثبات عنوان المسير(ين) (أقل من 3 أشهر)',
+            'آخر 3 كشوفات بنكية للشركة',
+            'سجل تجاري (النموذج J) حديث (أقل من 3 أشهر)',
+        ]],
+        ['name' => 'عميل سابق', 'docs' => [
+            'نسخة من البطاقة الوطنية للتعريف',
+            'آخر كشف بنكي',
+            'آخر ورقة أجرة',
+        ]],
+    ];
+
+    $financeProfiles = app()->getLocale() === 'ar' ? $financeProfilesAr : $financeProfilesFr;
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
@@ -893,6 +1006,10 @@
         .section-intro {
             margin-bottom: 5rem;
             text-align: left;
+        }
+
+        html[dir="rtl"] .section-intro {
+            text-align: right;
         }
 
         .section-badge {
@@ -1948,7 +2065,7 @@
                 <h2 class="main-title">{!! __('messages.financement.doc_title') !!}</h2>
                 <p class="section-subtitle">
                     {!! __('messages.financement.doc_subtitle') !!}
-                    <span class="profile-badge" id="activeProfileBadge">Salarié(e) du privé</span>
+                    <span class="profile-badge" id="activeProfileBadge">{{ $financeProfiles[0]['name'] ?? '' }}</span>
                 </p>
             </div>
 
@@ -1970,7 +2087,7 @@
                                     <path d="M12 11v6" />
                                 </svg>
                             </div>
-                            <h3 class="docs-title">{{ __('messages.financement.profile_label') }} <span id="activeProfileTitle">Salarié(e) du privé</span>
+                            <h3 class="docs-title">{{ __('messages.financement.profile_label') }} <span id="activeProfileTitle">{{ $financeProfiles[0]['name'] ?? '' }}</span>
                             </h3>
                         </div>
                         <div class="docs-grid" id="documentsList"></div>
@@ -2119,86 +2236,14 @@
     </footer>
 
     <script>
-        // Profiles data
-        const profiles = [{
-                name: 'Salarié(e) du privé',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Spécimen de chèque ou Attestation de RIB",
-                    "3 derniers bulletins de salaire",
-                    "Attestation de salaire",
-                    "Attestation de travail",
-                    "Attestation CNSS",
-                    "Justificatif d'adresse (moins de 3 mois)",
-                    "3 derniers relevés bancaires"
-                ]
-            },
-            {
-                name: 'Fonctionnaire',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Spécimen de chèque ou Attestation de RIB",
-                    "Justificatif d'adresse (moins de 3 mois)",
-                    "3 derniers relevés bancaires",
-                    "État d'engagement récent ou attestation de salaire"
-                ]
-            },
-            {
-                name: 'Retraité(e)',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Spécimen de chèque ou Attestation de RIB",
-                    "Dernière attestation de pension",
-                    "Justificatif d'adresse (moins de 3 mois)",
-                    "3 derniers relevés bancaires"
-                ]
-            },
-            {
-                name: 'Profession libérale',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Spécimen de chèque ou Attestation de RIB",
-                    "Copie de la carte professionnelle",
-                    "Justificatif d'adresse (moins de 3 mois)",
-                    "3 derniers relevés bancaires"
-                ]
-            },
-            {
-                name: 'Commerçant',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Spécimen de chèque ou Attestation de RIB",
-                    "Registre du commerce (Modèle J)",
-                    "Justificatif d'adresse (moins de 3 mois)",
-                    "3 derniers relevés bancaires"
-                ]
-            },
-            {
-                name: 'Entreprise',
-                docs: [
-                    "Copie de la Carte d'identité nationale du gérant",
-                    "Spécimen de chèque ou Attestation de RIB de l'entreprise",
-                    "Statuts de l'entreprise",
-                    "Justificatif d'adresse du/des gérant(s) (moins de 3 mois)",
-                    "3 derniers relevés bancaires de l'entreprise",
-                    "Registre du commerce (Modèle J) récent (moins de 3 mois)"
-                ]
-            },
-            {
-                name: 'Ancien client',
-                docs: [
-                    "Copie de la Carte d'identité nationale",
-                    "Dernier relevé bancaire",
-                    "Dernier bulletin de paie"
-                ]
-            }
-        ];
+        // Profiles data (localized FR / AR) — built in the @php block at the top of this view
+        const profiles = @json($financeProfiles, JSON_UNESCAPED_UNICODE);
 
         // State
         let vehiclePrice = 250000;
         let apport = 50000;
         let duration = 60;
-        let activeProfile = 'Salarié(e) du privé';
+        let activeProfile = profiles.length ? profiles[0].name : '';
         let tauxAnnuel = 0.075;
 
         // Initialize
