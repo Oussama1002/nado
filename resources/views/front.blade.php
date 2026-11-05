@@ -4644,7 +4644,6 @@
                     <div>
                         <h2 class="price-title">{!! __('messages.home.price_heading') !!}
                         </h2>
-                        <p class="price-desc">{{ __('messages.home.price_desc') }}</p>
                         <a href="{{ route('estimate.page') }}" class="btn-estimate" style="text-decoration: none; display: inline-flex;"><span>{{ __('messages.home.estimate_my_car') }}</span><i data-lucide="arrow-right"
                                 style="width: 20px; height: 20px;"></i></a>
                     </div>
