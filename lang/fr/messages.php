@@ -90,6 +90,9 @@ return [
         'ville'    => 'Choisir une ville *',
         'message'  => 'Votre message',
         'submit'   => 'Envoyer ma demande',
+        'need_expert' => 'Vous avez besoin d\'un expert ?',
+        'sending'  => 'Envoi…',
+        'error'    => 'Une erreur est survenue. Merci de réessayer.',
     ],
 
     'catalog' => [

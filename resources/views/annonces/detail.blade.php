@@ -2628,6 +2628,10 @@
                                 <span class="info-tag">{{ __('messages.detail.tag_warranty_incl') }}</span>
                             @endif
                         </div>
+
+                        <button type="button" class="chat-btn" style="width:100%;margin-top:1.75rem;" onclick="openExpertModal()">
+                            <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
+                        </button>
                     </div>
                 </section>
 
@@ -4393,6 +4397,126 @@
         40%           { opacity: 1;  transform: translateY(-3px); }
     }
 </style>
+
+@php $expertVilles = \App\Models\Ville::orderBy('name')->get(); @endphp
+<!-- Expert NADO — popup contact form (ported from the homepage) -->
+<div id="expertModal" class="expert-modal" aria-hidden="true">
+    <div class="expert-modal__backdrop" onclick="closeExpertModal()"></div>
+    <div class="expert-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="expertModalTitle">
+        <button type="button" class="expert-modal__close" onclick="closeExpertModal()" aria-label="Fermer">&times;</button>
+        <h3 id="expertModalTitle" class="expert-modal__title">{!! __('messages.expert.title') !!}</h3>
+        <p class="expert-modal__subtitle">{{ __('messages.expert.subtitle') }}</p>
+
+        <form id="expertForm" class="expert-modal__form" method="post" action="{{ route('contactez-nous.store') }}">
+            @csrf
+            <input type="text" name="name" required placeholder="{{ __('messages.expert.name') }}" class="expert-input">
+            <div class="expert-modal__grid">
+                <input type="tel" name="phone" required placeholder="{{ __('messages.expert.phone') }}" class="expert-input">
+                <input type="email" name="email" required placeholder="{{ __('messages.expert.email') }}" class="expert-input">
+            </div>
+            <select name="ville" required class="expert-input">
+                <option value="" disabled selected>{{ __('messages.expert.ville') }}</option>
+                @foreach($expertVilles as $ville)
+                    <option value="{{ $ville->name }}">{{ $ville->name }}</option>
+                @endforeach
+            </select>
+            <textarea name="message" rows="4" placeholder="{{ __('messages.expert.message') }}" class="expert-input"></textarea>
+            <div id="expertFormFeedback" class="expert-modal__feedback" role="status"></div>
+            <button type="submit" id="expertSubmitBtn" class="expert-modal__submit">{{ __('messages.expert.submit') }}</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .expert-modal { position: fixed; inset: 0; z-index: 100000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .expert-modal.open { display: flex; }
+    .expert-modal__backdrop { position: absolute; inset: 0; background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(6px); }
+    .expert-modal__dialog { position: relative; width: 100%; max-width: 540px; max-height: 92vh; overflow-y: auto; background: #0b1220; border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2.5rem; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6); animation: expertPop 0.25s ease; }
+    @keyframes expertPop { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    .expert-modal__close { position: absolute; top: 1rem; inset-inline-end: 1.25rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 2rem; line-height: 1; cursor: pointer; transition: color 0.2s; }
+    .expert-modal__close:hover { color: #fff; }
+    .expert-modal__title { font-size: 1.75rem; font-weight: 900; color: #fff; margin: 0 0 0.5rem; }
+    .expert-modal__title .text-primary { color: #1459DD; }
+    .expert-modal__subtitle { color: rgba(255,255,255,0.6); font-size: 0.95rem; margin: 0 0 1.75rem; }
+    .expert-modal__form { display: flex; flex-direction: column; gap: 1rem; }
+    .expert-modal__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 520px) { .expert-modal__grid { grid-template-columns: 1fr; } .expert-modal__dialog { padding: 2rem 1.5rem; } }
+    .expert-input { width: 100%; padding: 0.9rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 0.75rem; color: #fff; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s, background 0.2s; }
+    .expert-input::placeholder { color: rgba(255,255,255,0.4); }
+    .expert-input:focus { border-color: #1459DD; background: rgba(255,255,255,0.08); }
+    select.expert-input { appearance: none; cursor: pointer; }
+    select.expert-input option { color: #0b1220; }
+    textarea.expert-input { resize: vertical; min-height: 90px; }
+    .expert-modal__feedback { font-size: 0.9rem; font-weight: 600; min-height: 1.2em; }
+    .expert-modal__feedback.is-success { color: #22c55e; }
+    .expert-modal__feedback.is-error { color: #f87171; }
+    .expert-modal__submit { width: 100%; padding: 1rem; border: none; border-radius: 0.75rem; background: #1459DD; color: #fff; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; transition: transform 0.15s, opacity 0.2s; }
+    .expert-modal__submit:hover { transform: translateY(-2px); }
+    .expert-modal__submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+</style>
+
+<script>
+    function openExpertModal() {
+        var m = document.getElementById('expertModal');
+        m.classList.add('open');
+        m.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeExpertModal() {
+        var m = document.getElementById('expertModal');
+        m.classList.remove('open');
+        m.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeExpertModal(); });
+
+    (function () {
+        var form = document.getElementById('expertForm');
+        if (!form) return;
+        var EXPERT_I18N = {
+            sending: @json(__('messages.expert.sending')),
+            error:   @json(__('messages.expert.error'))
+        };
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var btn = document.getElementById('expertSubmitBtn');
+            var fb = document.getElementById('expertFormFeedback');
+            var oldLabel = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = EXPERT_I18N.sending;
+            fb.textContent = '';
+            fb.className = 'expert-modal__feedback';
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value
+                },
+                body: new FormData(form)
+            })
+            .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+            .then(function (res) {
+                if (res.ok && res.body && res.body.success) {
+                    fb.textContent = res.body.message || '';
+                    fb.classList.add('is-success');
+                    form.reset();
+                    setTimeout(closeExpertModal, 2500);
+                } else {
+                    var msg = EXPERT_I18N.error;
+                    if (res.body && res.body.errors) {
+                        msg = Object.keys(res.body.errors).map(function (k) { return res.body.errors[k][0]; }).join(' ');
+                    }
+                    fb.textContent = msg;
+                    fb.classList.add('is-error');
+                }
+            })
+            .catch(function () { fb.textContent = EXPERT_I18N.error; fb.classList.add('is-error'); })
+            .finally(function () { btn.disabled = false; btn.textContent = oldLabel; });
+        });
+    })();
+</script>
 
 </body>
 
