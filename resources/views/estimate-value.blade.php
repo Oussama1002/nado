@@ -534,9 +534,6 @@
             <a href="#estimation-form" class="btn-secondary">
                 <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> {{ __('messages.estimate.recalculate') }}
             </a>
-            <button type="button" class="btn-secondary" id="btn-download-pdf">
-                <i data-lucide="file-down" style="width:16px;height:16px;"></i> {{ __('messages.estimate.download_pdf') }}
-            </button>
         </div>
 
         <div class="report-card">
