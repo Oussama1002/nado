@@ -163,9 +163,9 @@
                     @endphp
 
                     <div class="dmd-meta">
-                        <span>💰 {{ $priceLabel }}</span>
-                        <span>📅 {{ $yearLabel }}</span>
-                        <span>🛣 {{ $kmLabel }}</span>
+                        <span>💰 <bdi dir="ltr">{{ $priceLabel }}</bdi></span>
+                        <span>📅 <bdi dir="ltr">{{ $yearLabel }}</bdi></span>
+                        <span>🛣 <bdi dir="ltr">{{ $kmLabel }}</bdi></span>
                         <span>⚙ {{ $boiteLabel }}</span>
                         <span>⛽ {{ $carburantLabel }}</span>
                     </div>

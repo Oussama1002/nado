@@ -2524,7 +2524,7 @@
 
                                 @auth('client')
                                 <p class="op-label"><i class="fas fa-tag" style="color:#1459DD;margin-right:5px;"></i>{{ __('messages.detail.propose_price') }}</p>
-                                <p class="op-ref">{{ __('messages.detail.displayed_price') }} <strong>{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</strong></p>
+                                <p class="op-ref">{{ __('messages.detail.displayed_price') }} <strong><bdi dir="ltr">{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</bdi></strong></p>
                                 <form id="offerForm" method="POST" action="{{ route('annonces.proposerPrix', $annonce->id) }}" style="width:100%;">
                                     @csrf
                                     <div class="op-row">
@@ -2591,12 +2591,12 @@
                                 <strong class="desc-hl">أول يد</strong>
                             @endif يجب اغتنامها.
                             تتميّز بلمسة أنيقة بلون <strong class="desc-hl">{{ $annonce->colors ?? 'غير متوفر' }}</strong>،
-                            وقد قطعت <strong class="desc-hl">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} كلم</strong>.
+                            وقد قطعت <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}</bdi> كلم</strong>.
                             وهي مزوّدة بعلبة سرعة <strong class="desc-hl">{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'غير متوفر' }}</strong>
                             وبقوة جبائية تبلغ <strong class="desc-hl">{{ $annonce->cv ?? 'غير متوفر' }} حصان</strong>.
                             هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong> <strong class="desc-hl">معتمدة من نادو</strong>@if ($annonce->garantie ?? false)، وتتوفّر على <strong class="desc-hl">ضمان</strong>@endif.
                             وهي متوفرة بـ<strong class="desc-hl">الدار البيضاء</strong>، ومعروضة بسعر
-                            <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} درهم</strong>.
+                            <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }}</bdi> درهم</strong>.
                         </p>
                         @else
                         <p class="description-text">

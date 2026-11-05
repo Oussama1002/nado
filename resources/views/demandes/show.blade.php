@@ -131,15 +131,15 @@
         <dl class="dmd-specs">
             @if($demande->price_min || $demande->price_max)
                 <div class="dmd-spec"><dt>{{ __('messages.demande_show.budget') }}</dt>
-                    <dd>{{ number_format($demande->price_min ?? 0, 0, ',', ' ') }} – {{ number_format($demande->price_max ?? 0, 0, ',', ' ') }} DH</dd></div>
+                    <dd><bdi dir="ltr">{{ number_format($demande->price_min ?? 0, 0, ',', ' ') }} – {{ number_format($demande->price_max ?? 0, 0, ',', ' ') }} DH</bdi></dd></div>
             @endif
             @if($demande->year_min || $demande->year_max)
                 <div class="dmd-spec"><dt>{{ __('messages.demande_show.year') }}</dt>
-                    <dd>{{ $demande->year_min ?? '…' }} – {{ $demande->year_max ?? '…' }}</dd></div>
+                    <dd><bdi dir="ltr">{{ $demande->year_min ?? '…' }} – {{ $demande->year_max ?? '…' }}</bdi></dd></div>
             @endif
             @if($demande->km_max)
                 <div class="dmd-spec"><dt>{{ __('messages.demande_show.km_max') }}</dt>
-                    <dd>{{ number_format($demande->km_max, 0, ',', ' ') }}</dd></div>
+                    <dd><bdi dir="ltr">{{ number_format($demande->km_max, 0, ',', ' ') }}</bdi></dd></div>
             @endif
             @if($demande->boite && $demande->boite !== 'any')
                 <div class="dmd-spec"><dt>{{ __('messages.demande_show.gearbox') }}</dt>
