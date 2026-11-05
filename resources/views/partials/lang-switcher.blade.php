@@ -5,3 +5,10 @@
     <a href="{{ route('locale.switch', 'ar') }}" aria-label="العربية" title="العربية"
        style="text-decoration:none;padding:5px 10px;border-radius:8px;transition:.15s;{{ $current === 'ar' ? 'background:#1459DD;color:#fff;' : 'color:#334155;background:#f1f5f9;' }}">عربي</a>
 </div>
+<style>
+    /* Keep the FR | عربي switch from overflowing the narrow mobile top bar. */
+    @media (max-width: 600px) {
+        .lang-switch { font-size: 11px !important; gap: 3px !important; }
+        .lang-switch a { padding: 4px 7px !important; }
+    }
+</style>

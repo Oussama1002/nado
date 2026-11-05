@@ -314,7 +314,7 @@
                     .contact-info { gap: 10px !important; }
                     .info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 5px !important; }
                 }
-                @media (max-width: 380px) {
+                @media (max-width: 480px) {
                     .contact-info .info-item:first-child { display: none !important; }
                     .info-item { font-size: 10px !important; }
                 }

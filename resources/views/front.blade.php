@@ -3862,8 +3862,8 @@
                 .contact-info { gap: 10px !important; }
                 .info-item { font-size: 9px !important; letter-spacing: 0.02em !important; gap: 5px !important; }
             }
-            @media (max-width: 380px) {
-                /* Last resort: drop the email, keep the phone. */
+            @media (max-width: 480px) {
+                /* Drop the email, keep the phone + radio so nothing overflows. */
                 .contact-info .info-item:first-child { display: none !important; }
                 .info-item { font-size: 10px !important; }
             }
