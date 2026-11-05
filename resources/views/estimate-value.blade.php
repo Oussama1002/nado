@@ -449,6 +449,16 @@
             .report-print-header { display: flex !important; justify-content: space-between; margin-bottom: 1rem; font-size: 0.8rem; color: var(--slate-500); }
             .calc-row { break-inside: avoid; }
         }
+
+        /* Keep formatted numbers (prices, ranges, km, CV) left-to-right in RTL
+           so the digit groups and units don't bidi-reverse in Arabic. */
+        html[dir="rtl"] .result-value,
+        html[dir="rtl"] .result-subtitle strong,
+        html[dir="rtl"] .result-tag,
+        html[dir="rtl"] .calc-amount {
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
     </style>
 </head>
 <body style="padding-top:110px;">
@@ -548,7 +558,7 @@
             <dl class="report-meta">
                 <div>
                     <dt>{{ __('messages.estimate.date_label') }}</dt>
-                    <dd>{{ \Carbon\Carbon::parse($valuation['date'])->format('d/m/Y') }}</dd>
+                    <dd><bdi dir="ltr">{{ \Carbon\Carbon::parse($valuation['date'])->format('d/m/Y') }}</bdi></dd>
                 </div>
                 <div>
                     <dt>{{ __('messages.estimate.methodology_label') }}</dt>
@@ -562,9 +572,9 @@
                     <dt>{{ __('messages.estimate.confidence_level') }}</dt>
                     <dd>
                         {{ __('messages.estimate.conf_'.strtolower($valuation['confidence']['level'])) }} —
-                        {{ $valuation['confidence']['comparables'] }} {{ __('messages.estimate.comparables_unit') }}
+                        <bdi dir="ltr">{{ $valuation['confidence']['comparables'] }}</bdi> {{ __('messages.estimate.comparables_unit') }}
                         @if($valuation['comparables_median'])
-                            ({{ __('messages.estimate.median_price') }} {{ $mad($valuation['comparables_median']) }})
+                            ({{ __('messages.estimate.median_price') }} <bdi dir="ltr">{{ $mad($valuation['comparables_median']) }}</bdi>)
                         @endif
                     </dd>
                 </div>
