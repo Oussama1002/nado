@@ -1757,6 +1757,12 @@
                     overflow-wrap: break-word;
                     word-break: break-word;
                 }
+                /* These blocks are hard-coded text-align:left; flip them for Arabic
+                   so the section heading and the modal read right-to-left. */
+                html[dir="rtl"] .reprise-wrapper .section-header,
+                html[dir="rtl"] .reprise-wrapper .modal-content {
+                    text-align: right;
+                }
             </style>
 
             <div class="reprise-wrapper">
