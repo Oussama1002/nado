@@ -616,6 +616,34 @@
             gap: 0.75rem;
         }
 
+        /* Client-type selector: a dropdown on mobile, the full list on desktop. */
+        .profile-select { display: none; }
+        @media (max-width: 1023px) {
+            .profile-list { display: none; }
+            .profile-select {
+                display: block;
+                width: 100%;
+                padding: 1rem 2.75rem 1rem 1.25rem;
+                border: 2px solid #1459DD;
+                border-radius: 1rem;
+                background-color: #fff;
+                color: #0f172a;
+                font-size: 0.95rem;
+                font-weight: 800;
+                font-family: inherit;
+                cursor: pointer;
+                appearance: none;
+                -webkit-appearance: none;
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231459DD' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+                background-repeat: no-repeat;
+                background-position: right 1rem center;
+            }
+            html[dir="rtl"] .profile-select {
+                padding: 1rem 1.25rem 1rem 2.75rem;
+                background-position: left 1rem center;
+            }
+        }
+
         .profile-item {
             width: 100%;
             text-align: left;
@@ -2104,8 +2132,11 @@
             </div>
 
             <div class="documents-grid">
-                <!-- Profile List -->
-                <div class="profile-list" id="profileList"></div>
+                <!-- Profile selector: dropdown on mobile, vertical list on desktop -->
+                <div class="profile-col">
+                    <select id="profileSelect" class="profile-select" aria-label="{{ __('messages.financement.profile_type') }}"></select>
+                    <div class="profile-list" id="profileList"></div>
+                </div>
 
                 <!-- Documents Card -->
                 <div>
@@ -2250,13 +2281,13 @@
             </h2>
             <p class="cta-desc">{{ __('messages.financement.cta_desc') }}</p>
             <div class="cta-buttons">
-                <button class="btn-phone">
+                <a href="tel:+212520070611" class="btn-phone" style="text-decoration:none;">
                     <svg class="icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24">
                         <path
                             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                     </svg>
                     <bdi dir="ltr">+212 520 070 611</bdi>
-                </button>
+                </a>
                 <button class="btn-back" onclick="window.history.back()">
                     {{ __('messages.financement.back') }}
                 </button>
@@ -2473,6 +2504,7 @@
             setupProfileButtons();
             createDurationButtons();
             createProfileList();
+            createProfileSelect();
             updateDocuments();
             // set initial rate from active profile if possible, or default
             const initialBtn = document.querySelector('.profile-btn');
@@ -2539,10 +2571,40 @@
             updateProfileList();
         }
 
+        // Mobile equivalent of the profile list: a <select> dropdown.
+        function createProfileSelect() {
+            const sel = document.getElementById('profileSelect');
+            if (!sel) return;
+            sel.innerHTML = '';
+            profiles.forEach(profile => {
+                const opt = document.createElement('option');
+                opt.value = profile.name;
+                opt.textContent = profile.name;
+                sel.appendChild(opt);
+            });
+            sel.onchange = () => {
+                const btns = Array.from(document.querySelectorAll('#profileButtons .profile-btn'));
+                const match = btns.find(b => b.textContent.trim() === sel.value);
+                if (match) {
+                    const t = parseFloat(match.dataset.taux);
+                    if (!isNaN(t)) tauxAnnuel = t / 100;
+                }
+                setActiveProfile(sel.value);
+                updateCalculation();
+            };
+            updateProfileSelect();
+        }
+
+        function updateProfileSelect() {
+            const sel = document.getElementById('profileSelect');
+            if (sel && sel.value !== activeProfile) sel.value = activeProfile;
+        }
+
         function setActiveProfile(profileName) {
             activeProfile = profileName;
             updateProfileButtons();
             updateProfileList();
+            updateProfileSelect();
             updateDocuments();
         }
 
