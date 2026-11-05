@@ -379,6 +379,15 @@ return [
         'result_info'   => 'عرض إرشادي محسوب على أساس نسبة سنوية 7.5%. موافقة مبدئية فورية.',
         'cta_accord'    => 'اطلب موافقة مبدئية',
 
+        // Pre-approval request popup (triggered by the "اطلب موافقة مبدئية" button)
+        'accord_title'    => 'طلب موافقة مبدئية',
+        'accord_subtitle' => 'تحقق من محاكاتك واترك معلومات الاتصال الخاصة بك — سيعاود مستشار الاتصال بك قريبًا.',
+        'accord_recap'    => 'ملخص محاكاتك',
+        'accord_months'   => 'شهرًا',
+        'accord_success'  => 'تم إرسال طلبك بنجاح. سيعاود مستشار NADO الاتصال بك قريبًا.',
+        'accord_error'    => 'حدث خطأ. يرجى المحاولة مرة أخرى.',
+        'accord_sending'  => 'جارٍ الإرسال…',
+
         'doc_badge'    => 'ملفك',
         'doc_title'    => 'الوثائق <br>المطلوبة.',
         'doc_subtitle' => 'تختلف الوثائق المطلوبة حسب <span style="font-weight: 900; color: #0f172a;">ملفك كمقترض</span>. لقد اخترت:',

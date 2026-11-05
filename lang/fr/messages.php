@@ -380,6 +380,15 @@ return [
         'result_info'   => 'Offre indicative calculée sur un taux annuel de 7,5%. Réponse de principe immédiate.',
         'cta_accord'    => 'Demander un accord de principe',
 
+        // Pre-approval request popup (triggered by the "Demander un accord de principe" button)
+        'accord_title'    => "Demande d'accord de principe",
+        'accord_subtitle' => 'Vérifiez votre simulation et laissez vos coordonnées — un conseiller vous recontacte rapidement.',
+        'accord_recap'    => 'Récapitulatif de votre simulation',
+        'accord_months'   => 'mois',
+        'accord_success'  => 'Votre demande a bien été envoyée. Un conseiller NADO vous recontactera rapidement.',
+        'accord_error'    => 'Une erreur est survenue. Merci de réessayer.',
+        'accord_sending'  => 'Envoi…',
+
         'doc_badge'    => 'Votre Dossier',
         'doc_title'    => 'Pièces à <br>fournir.',
         'doc_subtitle' => 'Les documents demandés varient selon votre <span style="font-weight: 900; color: #0f172a;">profil emprunteur</span>. Vous avez sélectionné :',

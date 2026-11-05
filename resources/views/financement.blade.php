@@ -2235,6 +2235,194 @@
         <p>{{ __('messages.extra.finance_tagline') }}</p>
     </footer>
 
+    <!-- Pre-approval request popup (opened by the "Demander un accord de principe" button) -->
+    <div id="accordModal" class="accord-modal" aria-hidden="true">
+        <div class="accord-modal__backdrop" onclick="closeAccordModal()"></div>
+        <div class="accord-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="accordModalTitle">
+            <button type="button" class="accord-modal__close" onclick="closeAccordModal()" aria-label="{{ __('messages.financement.back') }}">&times;</button>
+            <h3 id="accordModalTitle" class="accord-modal__title">{{ __('messages.financement.accord_title') }}</h3>
+            <p class="accord-modal__subtitle">{{ __('messages.financement.accord_subtitle') }}</p>
+
+            <div class="accord-recap">
+                <p class="accord-recap__title">{{ __('messages.financement.accord_recap') }}</p>
+                <ul class="accord-recap__list">
+                    <li><span>{{ __('messages.financement.profile_type') }}</span><strong id="recapProfile">—</strong></li>
+                    <li><span>{{ __('messages.financement.vehicle_value') }}</span><strong><bdi dir="ltr" id="recapPrice">—</bdi></strong></li>
+                    <li><span>{{ __('messages.financement.apport') }}</span><strong><bdi dir="ltr" id="recapApport">—</bdi></strong></li>
+                    <li><span>{{ __('messages.financement.duration') }}</span><strong><bdi dir="ltr" id="recapDuration">—</bdi></strong></li>
+                    <li class="accord-recap__highlight"><span>{{ __('messages.financement.result_label') }}</span><strong><bdi dir="ltr" id="recapMensualite">—</bdi></strong></li>
+                </ul>
+            </div>
+
+            <form id="accordForm" class="accord-modal__form" method="post" action="{{ route('contactez-nous.store') }}">
+                @csrf
+                <input type="hidden" name="subject" id="accordSubject" value="">
+                <input type="hidden" name="message" id="accordMessage" value="">
+                <input type="text" name="name" required placeholder="{{ __('messages.expert.name') }}" class="accord-input">
+                <div class="accord-modal__grid">
+                    <input type="tel" name="phone" required placeholder="{{ __('messages.expert.phone') }}" class="accord-input">
+                    <input type="email" name="email" required placeholder="{{ __('messages.expert.email') }}" class="accord-input">
+                </div>
+                <select name="ville" class="accord-input">
+                    <option value="" disabled selected>{{ __('messages.expert.ville') }}</option>
+                    @foreach ($city ?? [] as $v)
+                        <option value="{{ $v->name }}">{{ $v->name }}</option>
+                    @endforeach
+                </select>
+                <textarea name="note" rows="3" placeholder="{{ __('messages.expert.message') }}" class="accord-input"></textarea>
+                <div id="accordFeedback" class="accord-modal__feedback" role="status"></div>
+                <button type="submit" id="accordSubmitBtn" class="accord-modal__submit">{{ __('messages.expert.submit') }}</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .accord-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .accord-modal.open { display: flex; }
+        .accord-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(6px);
+        }
+        .accord-modal__dialog {
+            position: relative;
+            width: 100%;
+            max-width: 540px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.45);
+            animation: accordPop 0.25s ease;
+        }
+        @keyframes accordPop {
+            from { transform: translateY(16px) scale(0.98); opacity: 0; }
+            to   { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .accord-modal__close {
+            position: absolute;
+            top: 1rem;
+            inset-inline-end: 1.25rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .accord-modal__close:hover { color: #0f172a; }
+        .accord-modal__title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+        }
+        .accord-modal__subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0 0 1.5rem;
+        }
+        .accord-recap {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .accord-recap__title {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1459DD;
+            margin: 0 0 0.75rem;
+        }
+        .accord-recap__list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .accord-recap__list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            color: #475569;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .accord-recap__list li:last-child { border-bottom: none; }
+        .accord-recap__list strong { color: #0f172a; font-weight: 800; }
+        .accord-recap__highlight { padding-top: 0.6rem !important; }
+        .accord-recap__highlight strong { color: #1459DD; font-size: 1.05rem; }
+        .accord-modal__form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+        .accord-modal__grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+        @media (max-width: 520px) {
+            .accord-modal__grid { grid-template-columns: 1fr; }
+            .accord-modal__dialog { padding: 2rem 1.5rem; }
+        }
+        .accord-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            color: #0f172a;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .accord-input::placeholder { color: #94a3b8; }
+        .accord-input:focus { border-color: #1459DD; background: #fff; }
+        select.accord-input { appearance: none; cursor: pointer; }
+        textarea.accord-input { resize: vertical; min-height: 80px; }
+        .accord-modal__feedback {
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-height: 1.2em;
+        }
+        .accord-modal__feedback.is-success { color: #16a34a; }
+        .accord-modal__feedback.is-error { color: #dc2626; }
+        .accord-modal__submit {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            background: #1459DD;
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: transform 0.15s, opacity 0.2s;
+        }
+        .accord-modal__submit:hover { transform: translateY(-2px); }
+        .accord-modal__submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    </style>
+
     <script>
         // Profiles data (localized FR / AR) — built in the @php block at the top of this view
         const profiles = @json($financeProfiles, JSON_UNESCAPED_UNICODE);
@@ -2406,20 +2594,125 @@
         }
 
         // "Demander un accord de principe" → page contact pré-remplie avec la simulation.
+        // Localized labels for the pre-approval popup / email summary.
+        var accordLabels = {
+            months:  @json(__('messages.financement.accord_months')),
+            success: @json(__('messages.financement.accord_success')),
+            error:   @json(__('messages.financement.accord_error')),
+            sending: @json(__('messages.financement.accord_sending')),
+            profile: @json(__('messages.financement.profile_type')),
+            price:   @json(__('messages.financement.vehicle_value')),
+            apport:  @json(__('messages.financement.apport')),
+            duration:@json(__('messages.financement.duration')),
+            mens:    @json(__('messages.financement.result_label'))
+        };
+
+        function currentMensualite() {
+            return (document.getElementById('mensualiteValue')?.textContent || '').trim();
+        }
+        function fmtMoney(n) { return Number(n).toLocaleString('fr-FR') + ' MAD'; }
+
+        // "Demander un accord de principe" → open the popup with the simulation recap.
         function demanderAccord() {
-            var mensualite = (document.getElementById('mensualiteValue')?.textContent || '').trim();
-            var fmt = function (n) { return Number(n).toLocaleString('fr-FR'); };
-            var subject = "Demande d'accord de principe — Financement auto";
-            var message = "Bonjour,\nJe souhaite un accord de principe pour un financement auto NADO.\n\n"
-                + "Prix du véhicule : " + fmt(vehiclePrice) + " MAD\n"
-                + "Apport : " + fmt(apport) + " MAD\n"
-                + "Durée : " + duration + " mois\n"
-                + "Mensualité estimée : " + mensualite + " MAD\n"
-                + "Profil : " + activeProfile + "\n";
-            window.location.href = "{{ route('contactez-nous.index') }}?subject="
-                + encodeURIComponent(subject) + "&message=" + encodeURIComponent(message);
+            var mensualite = currentMensualite();
+            var durationTxt = duration + ' ' + accordLabels.months;
+
+            document.getElementById('recapProfile').textContent    = activeProfile;
+            document.getElementById('recapPrice').textContent       = fmtMoney(vehiclePrice);
+            document.getElementById('recapApport').textContent      = fmtMoney(apport);
+            document.getElementById('recapDuration').textContent    = durationTxt;
+            document.getElementById('recapMensualite').textContent  = mensualite + ' MAD';
+
+            // Build the subject + message that get emailed to contact@nado.ma.
+            document.getElementById('accordSubject').value = "Demande d'accord de principe — Financement auto";
+            document.getElementById('accordMessage').value =
+                  accordLabels.profile  + " : " + activeProfile + "\n"
+                + accordLabels.price    + " : " + fmtMoney(vehiclePrice) + "\n"
+                + accordLabels.apport   + " : " + fmtMoney(apport) + "\n"
+                + accordLabels.duration + " : " + durationTxt + "\n"
+                + accordLabels.mens     + " : " + mensualite + " MAD\n";
+
+            openAccordModal();
         }
         window.demanderAccord = demanderAccord;
+
+        function openAccordModal() {
+            var m = document.getElementById('accordModal');
+            m.classList.add('open');
+            m.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAccordModal() {
+            var m = document.getElementById('accordModal');
+            m.classList.remove('open');
+            m.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+        window.closeAccordModal = closeAccordModal;
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeAccordModal();
+        });
+
+        // The popup appends the user's free-text note to the generated recap, then
+        // submits to the contact endpoint (JSON) so we can stay on the page.
+        (function () {
+            var form = document.getElementById('accordForm');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var btn = document.getElementById('accordSubmitBtn');
+                var fb = document.getElementById('accordFeedback');
+                var oldLabel = btn.textContent;
+
+                // Fold the optional note into the message field expected by the controller.
+                var note = (form.querySelector('[name=note]')?.value || '').trim();
+                var base = document.getElementById('accordMessage').value;
+                var fd = new FormData(form);
+                fd.delete('note');
+                fd.set('message', note ? base + "\n" + note : base);
+
+                btn.disabled = true;
+                btn.textContent = accordLabels.sending;
+                fb.textContent = '';
+                fb.className = 'accord-modal__feedback';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value
+                    },
+                    body: fd
+                })
+                .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+                .then(function (res) {
+                    if (res.ok && res.body && res.body.success) {
+                        fb.textContent = accordLabels.success;
+                        fb.classList.add('is-success');
+                        form.reset();
+                        setTimeout(closeAccordModal, 2800);
+                    } else {
+                        var msg = accordLabels.error;
+                        if (res.body && res.body.errors) {
+                            msg = Object.keys(res.body.errors)
+                                .map(function (k) { return res.body.errors[k][0]; })
+                                .join(' ');
+                        }
+                        fb.textContent = msg;
+                        fb.classList.add('is-error');
+                    }
+                })
+                .catch(function () {
+                    fb.textContent = accordLabels.error;
+                    fb.classList.add('is-error');
+                })
+                .finally(function () {
+                    btn.disabled = false;
+                    btn.textContent = oldLabel;
+                });
+            });
+        })();
 
         // Start the application
         init();
