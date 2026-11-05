@@ -1740,6 +1740,23 @@
                 .reprise-wrapper .reprise-btn:hover {
                     color: var(--primary);
                 }
+
+                /* Arabic (RTL): letter-spacing breaks the cursive joining of
+                   Arabic letters — eyebrows/badges render as disconnected glyphs
+                   (e.g. "مسارنا" -> "م س ا ر ن ا") and the extra tracking widens
+                   headings until they overflow and clip. Arabic never needs
+                   tracking, so neutralize it site-wide on this page and let the
+                   big headings wrap instead of overflowing. */
+                html[dir="rtl"] .reprise-wrapper * {
+                    letter-spacing: normal !important;
+                }
+                html[dir="rtl"] .reprise-wrapper .hero h1,
+                html[dir="rtl"] .reprise-wrapper .section-title,
+                html[dir="rtl"] .reprise-wrapper .rp-dz-title,
+                html[dir="rtl"] .reprise-wrapper .success-title {
+                    overflow-wrap: break-word;
+                    word-break: break-word;
+                }
             </style>
 
             <div class="reprise-wrapper">
