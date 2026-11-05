@@ -27,7 +27,7 @@
                 </div>
                 @if(feature_on('radio.enabled'))
                     <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0 ml-6 sm:ml-0">
-                        <i class="fa-solid fa-radio text-[14px] sm:text-[15px] flex-shrink-0"></i><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
                     </a>
                 @endif
                 @include('partials.lang-switcher')
