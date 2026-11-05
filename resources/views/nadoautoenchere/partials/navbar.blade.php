@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                 {{-- Email : masqué sur très petits écrans (le téléphone suffit) --}}
-                <div class="hidden min-[420px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
+                <div class="hidden min-[480px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
                     <i data-lucide="mail" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="mailto:contact@nado.ma" class="hover:text-[#1459DD] transition-colors">contact@nado.ma</a>
                 </div>
@@ -27,7 +27,7 @@
                 </div>
                 @if(feature_on('radio.enabled'))
                     <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0 ml-6 sm:ml-0">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
                     </a>
                 @endif
                 @include('partials.lang-switcher')
