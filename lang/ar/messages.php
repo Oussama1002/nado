@@ -66,7 +66,7 @@ return [
         'financement_desc'     => 'موافقة مبدئية فورية. أسعار تفضيلية لعملائنا المميّزين.',
         'simulate_credit'      => 'محاكاة قرضي',
         'pros_heading'         => 'آخر <span class="text-primary">إعلانات</span> <span class="text-secondary">المحترفين</span>',
-        'price_heading'        => 'كم تساوي <br><span class="text-secondary">سيارتك ؟</span>',
+        'price_heading'        => 'كم قيمة <br><span class="text-secondary">سيارتي ؟</span>',
         'price_desc'           => 'احصل على تقدير دقيق في دقيقتين بالاعتماد على الذكاء الاصطناعي.',
         'estimate_my_car'      => 'قيّم سيارتي',
         'immersive_heading'    => 'تجارب <span class="text-primary">غامرة</span>',
