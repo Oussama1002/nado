@@ -68,7 +68,7 @@ return [
         'simulate_credit'      => 'Simuler mon crédit',
         'pros_heading'         => 'Dernières <br><span class="text-primary">ANNONCES</span> <span class="text-secondary">PROS</span>',
         'price_heading'        => 'Combien vaut <br><span class="text-secondary">VOTRE VOITURE ?</span>',
-        'price_desc'           => "Obtenez une estimation précise en 2 minutes basée sur l'IA.",
+        'price_desc'           => "Obtenez une estimation précise en 2 minutes basée sur l'expert NADO.",
         'estimate_my_car'      => 'Estimer ma voiture',
         'immersive_heading'    => 'Expériences <span class="text-primary">Immersives</span>',
         'live_heading'         => "L'Arène des <br><span class=\"text-primary\">Enchères Live</span>",
