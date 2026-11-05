@@ -2678,7 +2678,7 @@
                             </button>
                             <p class="expert-card-note">
                                 <i class="fas fa-map-marker-alt" style="color:#1459DD;"></i>
-                                <span>{{ __('messages.expert.need_expert_note') }} {{ __('messages.expert.contact_now') }}.</span>
+                                <span>{{ __('messages.expert.need_expert_note') }} <strong style="color:#1459DD;font-weight:900;">{{ __('messages.expert.contact_now') }}.</strong></span>
                             </p>
                         </div>
                     </div>
