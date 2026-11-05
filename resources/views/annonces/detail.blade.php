@@ -2672,8 +2672,10 @@
                             @endif
                         </div>
 
-                        <div class="expert-card">
-                            <button type="button" class="chat-btn expert-cta" style="width:100%;" onclick="openExpertModal()">
+                        <div class="expert-card" role="button" tabindex="0" style="cursor:pointer;"
+                             onclick="openExpertModal()"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openExpertModal();}">
+                            <button type="button" class="chat-btn expert-cta" style="width:100%;" onclick="event.stopPropagation();openExpertModal()">
                                 <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
                             </button>
                             <p class="expert-card-note">
