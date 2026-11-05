@@ -2352,9 +2352,21 @@
                             {{ $vehicleName }}
                         @endif
                     </h1>
+                    @php
+                        // Localize the French-stored fuel / gearbox values (fall back to the
+                        // raw value when there's no translation). Reused in the specs grid below.
+                        $fuelRaw   = $annonce->carburant;
+                        $fuelLabel = $fuelRaw
+                            ? (trans()->has('messages.catalog.fuel.' . $fuelRaw) ? __('messages.catalog.fuel.' . $fuelRaw) : $fuelRaw)
+                            : __('messages.detail.spec_fuel');
+                        $boxRaw   = ucfirst($annonce->box ?? $annonce->transmission ?? '');
+                        $boxLabel = $boxRaw
+                            ? (trans()->has('messages.catalog.box.' . $boxRaw) ? __('messages.catalog.box.' . $boxRaw) : $boxRaw)
+                            : __('messages.detail.spec_gearbox');
+                    @endphp
                     <p class="specs-subtitle">
-                        {{ $annonce->year ?? __('messages.detail.spec_year') }} • {{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM •
-                        {{ $annonce->carburant ?? __('messages.detail.spec_fuel') }} • {{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: __('messages.detail.spec_gearbox') }}
+                        {{ $annonce->year ?? __('messages.detail.spec_year') }} • <bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM</bdi> •
+                        {{ $fuelLabel }} • {{ $boxLabel }}
                     </p>
 
                     @php
@@ -2645,7 +2657,7 @@
                                     <span>{{ __('messages.detail.spec_mileage') }}</span><strong><bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM</bdi></strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>{{ __('messages.detail.spec_fuel') }}</span><strong>{{ $annonce->carburant ?? 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_fuel') }}</span><strong>{{ $annonce->carburant ? $fuelLabel : 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
                                     <span>{{ __('messages.detail.spec_year') }}</span><strong>{{ $annonce->year ?? 'N/A' }}</strong>
@@ -2661,7 +2673,7 @@
                                 </div>
                                 <div class="spec-item"><span>{{ __('messages.detail.spec_power') }}</span><strong>{{ $annonce->cv ?? 'N/A' }}</strong></div>
                                 <div class="spec-item">
-                                    <span>{{ __('messages.detail.spec_gearbox') }}</span><strong>{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'N/A' }}</strong>
+                                    <span>{{ __('messages.detail.spec_gearbox') }}</span><strong>{{ $boxRaw ? $boxLabel : 'N/A' }}</strong>
                                 </div>
                             </div>
                         </div>
