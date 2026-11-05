@@ -1147,7 +1147,7 @@
                         <a href="#"><i data-lucide="linkedin"></i></a>
                     </div>
                     @if(feature_on('radio.enabled'))
-                        <style>@media (max-width:600px){.nd-radio-txt{display:none !important;}.info-item i{width:10px !important;height:10px !important;}.nd-radio-link{margin-left:0 !important;margin-right:0 !important;}}</style>
+                        <style>@media (max-width:600px){.nd-radio-txt{display:inline !important;font-size:9px !important;}.info-item i{width:10px !important;height:10px !important;}.nd-radio-link{margin-left:0 !important;margin-right:0 !important;}}</style>
                         <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="nd-radio-txt">Nado Radio</span>
                         </a>
@@ -1427,7 +1427,7 @@
             @media (max-width: 600px) {
                 .top-bar .social-links { display: none !important; }
                 .info-item i { width: 10px !important; height: 10px !important; }
-                .nd-radio-txt { display: none !important; }
+                .nd-radio-txt { display: inline !important; font-size: 9px !important; }
                 .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
                 .top-bar { padding: 8px 0 !important; }
                 .top-bar .custom-container { padding: 0 10px !important; }
