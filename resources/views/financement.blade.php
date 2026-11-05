@@ -140,6 +140,13 @@
             text-align: left;
         }
 
+        /* Arabic (Cairo) renders visually smaller than Latin at the same size.
+           Scale the whole page up a touch in RTL so body copy, labels, buttons
+           and the documents list read comfortably (rem-based sizes all scale). */
+        html[dir="rtl"] {
+            font-size: 112.5%;
+        }
+
         /* Header */
         .header {
             background-color: #ffffff;
