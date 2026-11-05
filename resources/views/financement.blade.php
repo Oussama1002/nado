@@ -1374,6 +1374,26 @@
                 height: 20px;
             }
 
+            /* Mobile top bar — mirror the shared navbar so it doesn't overflow:
+               drop the socials, shrink the contact info, and hide the email on
+               very narrow screens. */
+            .info-item, .info-item a { white-space: nowrap !important; word-break: keep-all !important; }
+            .info-item i { flex-shrink: 0 !important; }
+            @media (max-width: 600px) {
+                .top-bar .social-links { display: none !important; }
+                .info-item i { width: 10px !important; height: 10px !important; }
+                .nd-radio-txt { display: inline !important; font-size: 9px !important; }
+                .nd-radio-link { margin-left: 28px !important; }
+                .top-bar { padding: 8px 0 !important; }
+                .top-bar .custom-container { padding: 0 10px !important; }
+                .contact-info { gap: 10px !important; }
+                .info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 5px !important; }
+            }
+            @media (max-width: 380px) {
+                .contact-info .info-item:first-child { display: none !important; }
+                .info-item { font-size: 10px !important; }
+            }
+
             /* Main Nav */
             .main-nav {
                 background: white;
