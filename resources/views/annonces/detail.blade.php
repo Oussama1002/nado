@@ -2652,6 +2652,9 @@
                         <button type="button" class="chat-btn expert-cta" style="width:100%;margin-top:1.75rem;" onclick="openExpertModal()">
                             <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
                         </button>
+                        <p style="margin:0.6rem 0 0;text-align:center;font-size:0.8rem;color:#64748b;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i class="fas fa-map-marker-alt" style="color:#1459DD;"></i> {{ __('messages.expert.need_expert_note') }}
+                        </p>
                     </div>
                 </section>
 

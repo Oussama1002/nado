@@ -91,6 +91,7 @@ return [
         'message'  => 'Votre message',
         'submit'   => 'Envoyer ma demande',
         'need_expert' => 'Vous avez besoin d\'un expert ?',
+        'need_expert_note' => 'Nos experts vous accompagnent où que vous soyez.',
         'sending'  => 'Envoi…',
         'error'    => 'Une erreur est survenue. Merci de réessayer.',
     ],
