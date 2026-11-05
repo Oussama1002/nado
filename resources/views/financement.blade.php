@@ -141,10 +141,17 @@
         }
 
         /* Arabic (Cairo) renders visually smaller than Latin at the same size.
-           Scale the whole page up a touch in RTL so body copy, labels, buttons
-           and the documents list read comfortably (rem-based sizes all scale). */
+           Scale the whole page up in RTL so body copy, labels, buttons and the
+           documents list read comfortably (rem-based sizes all scale). */
         html[dir="rtl"] {
-            font-size: 112.5%;
+            font-size: 118%;
+        }
+
+        /* Duration chips are built in JS as "60 m"; isolate them LTR so the
+           number and unit don't bidi-reverse to "m 60" on the Arabic page. */
+        html[dir="rtl"] .duration-btn {
+            direction: ltr;
+            unicode-bidi: isolate;
         }
 
         /* Header */
