@@ -685,6 +685,15 @@
             border: 1px solid #f1f5f9;
         }
 
+        /* On mobile the 4rem card padding + the info-box padding + the icon left
+           almost no room for the note text (it wrapped one word per line). Shrink
+           them so the text has width to flow. */
+        @media (max-width: 767px) {
+            .documents-card { padding: 1.5rem; border-radius: 1.5rem; }
+            .info-box { padding: 1.25rem; gap: 1rem; margin-top: 2rem; }
+            .info-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; }
+        }
+
         .docs-grid {
             display: grid;
             grid-template-columns: 1fr;
