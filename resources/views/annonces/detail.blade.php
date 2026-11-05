@@ -1326,6 +1326,29 @@
         .chat-btn.expert-cta { animation: none; background-position: 50% 50%; }
     }
 
+    /* Card wrapping the expert CTA + its note. */
+    .expert-card {
+        margin-top: 1.75rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 14px 30px -20px rgba(15, 23, 42, 0.25);
+    }
+    .expert-card-note {
+        margin: 0.9rem 0 0;
+        font-size: 0.85rem;
+        color: #475569;
+        line-height: 1.6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+    .expert-card-note i { color: #1459DD; }
+
     /* Sidebar */
     .sidebar {
         width: 100%;
@@ -2649,15 +2672,15 @@
                             @endif
                         </div>
 
-                        <button type="button" class="chat-btn expert-cta" style="width:100%;margin-top:1.75rem;" onclick="openExpertModal()">
-                            <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
-                        </button>
-                        <p style="margin:0.6rem 0 0;text-align:center;font-size:0.8rem;color:#64748b;display:flex;align-items:center;justify-content:center;gap:6px;">
-                            <i class="fas fa-map-marker-alt" style="color:#1459DD;"></i> {{ __('messages.expert.need_expert_note') }}
-                        </p>
-                        <p style="margin:0.35rem 0 0;text-align:center;font-size:0.85rem;color:#475569;">
-                            <a href="{{ route('contactez-nous.index') }}" style="color:#1459DD;font-weight:800;text-decoration:underline;">{{ __('messages.expert.contact_now') }}</a>
-                        </p>
+                        <div class="expert-card">
+                            <button type="button" class="chat-btn expert-cta" style="width:100%;" onclick="openExpertModal()">
+                                <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
+                            </button>
+                            <p class="expert-card-note">
+                                <i class="fas fa-map-marker-alt" style="color:#1459DD;"></i>
+                                <span>{{ __('messages.expert.need_expert_note') }} {{ __('messages.expert.contact_now') }}.</span>
+                            </p>
+                        </div>
                     </div>
                 </section>
 
