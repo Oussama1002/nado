@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                 {{-- Email : masqué sur très petits écrans (le téléphone suffit) --}}
-                <div class="hidden min-[480px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
+                <div class="hidden min-[420px]:flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">
                     <i data-lucide="mail" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#1459DD] flex-shrink-0"></i>
                     <a href="mailto:contact@nado.ma" class="hover:text-[#1459DD] transition-colors">contact@nado.ma</a>
                 </div>

@@ -2205,7 +2205,7 @@
                 .nv-top-bar .nd-radio-link { margin-left: 28px !important; }
                 .nv-top-bar [style*="gap:16px"] { gap: 8px !important; }
             }
-            @media (max-width: 480px) {
+            @media (max-width: 380px) {
                 .nv-contact-info .nv-info-item:first-child { display: none !important; } /* garde le téléphone */
             }
 
