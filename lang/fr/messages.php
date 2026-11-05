@@ -97,6 +97,26 @@ return [
         'error'    => 'Une erreur est survenue. Merci de réessayer.',
     ],
 
+    'contact' => [
+        'badge'        => 'Contact',
+        'title'        => 'Parlons de votre <span class="cx-hl">projet auto</span>',
+        'subtitle'     => 'Une question, un besoin d\'estimation ou d\'accompagnement ? Notre équipe vous répond rapidement.',
+        'addr_label'   => 'Adresse',
+        'addr_value'   => 'Rue 93, N° 11, Jnane Californie, Casablanca',
+        'email_label'  => 'Email',
+        'phone_label'  => 'Téléphone',
+        'hours_label'  => 'Horaires',
+        'hours_value'  => 'Lun – Sam, 9h – 19h',
+        'form_title'   => 'Écrivez-nous',
+        'name_ph'      => 'Nom complet',
+        'email_ph'     => 'Email',
+        'phone_ph'     => 'Téléphone',
+        'subject_ph'   => 'Sujet',
+        'message_ph'   => 'Votre message…',
+        'send'         => 'Envoyer le message',
+        'success'      => 'Votre message a bien été envoyé. Nous vous recontactons rapidement.',
+    ],
+
     'catalog' => [
         'updated'        => 'Mis à jour il y a 5 min',
         'hero_1'         => 'Trouvez votre',

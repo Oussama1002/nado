@@ -58,7 +58,7 @@ class ContactController extends Controller
             ]);
         }
 
-        return to_route('contactez-nous.index');
+        return to_route('contactez-nous.index')->with('success', __('messages.contact.success'));
     }
 
     /**
