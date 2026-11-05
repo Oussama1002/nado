@@ -2637,14 +2637,12 @@
                         <div class="tab-pane active" id="details">
                             <div class="specs-grid">
                                 <div class="spec-item">
-                                    <span>{{ __('messages.detail.spec_price') }}</span><strong>{{ number_format($annonce->prix, 0, ',', ' ') }}
-                                        DH</strong>
+                                    <span>{{ __('messages.detail.spec_price') }}</span><strong><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</bdi></strong>
                                 </div>
                                 <div class="spec-item"><span>{{ __('messages.detail.spec_brand_model') }}</span><strong>{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'N/A' }}</strong>
                                 </div>
                                 <div class="spec-item">
-                                    <span>{{ __('messages.detail.spec_mileage') }}</span><strong>{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}
-                                        KM</strong>
+                                    <span>{{ __('messages.detail.spec_mileage') }}</span><strong><bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} KM</bdi></strong>
                                 </div>
                                 <div class="spec-item">
                                     <span>{{ __('messages.detail.spec_fuel') }}</span><strong>{{ $annonce->carburant ?? 'N/A' }}</strong>
