@@ -3852,11 +3852,10 @@
                 /* Socials are duplicated in the drawer; contact details matter more. */
                 .top-bar .social-links { display: none !important; }
                 .info-item i { width: 10px !important; height: 10px !important; }
-                .nd-radio-txt { display: inline !important; font-size: 9px !important; }
-                .nd-radio-link { margin-left: 28px !important; }
-                /* In Arabic the strip is mirrored, so the 28px lands on the wrong
-                   side and leaves an awkward gap — tighten it next to the phone. */
-                html[dir="rtl"] .nd-radio-link { margin-left: 8px !important; }
+                /* Radio = icon only on mobile (the "NADO RADIO" label is what
+                   overflowed and collided with the phone). */
+                .nd-radio-txt { display: none !important; }
+                .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
                 .top-bar { padding: 8px 0 !important; }
                 .top-bar .custom-container { padding: 0 10px !important; }
                 .contact-info { gap: 10px !important; }

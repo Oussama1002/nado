@@ -300,8 +300,8 @@
         @media (max-width: 600px) {
             .top-bar .social-links { display: none !important; }
             .info-item i { width: 10px !important; height: 10px !important; } /* icônes mail/téléphone plus petites */
-            .nd-radio-txt { display: inline !important; font-size: 9px !important; } /* "Nado Radio" affiché sur mobile */
-            .nd-radio-link { margin-left: 28px !important; } /* espace avec le téléphone */
+            .nd-radio-txt { display: none !important; } /* icône seule sur mobile (le label débordait) */
+            .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
             .top-bar { padding: 8px 0 !important; }
             .top-bar .custom-container { padding: 0 10px !important; }
             .contact-info { gap: 10px !important; }
