@@ -63,6 +63,8 @@
     .nado-mini-play { background: #1459DD; color: #fff; }
     .nado-mini-play:hover { background: #0b3fa0; }
     html[dir=rtl] .nado-mini { right: auto; left: 20px; }
+    /* Hidden while any popup/modal is open (toggled by the observer below). */
+    .nado-mini.nado-mini--suppressed { display: none !important; }
 </style>
 
 <script>
@@ -147,6 +149,46 @@
         function drawIcons() { if (typeof lucide !== 'undefined') lucide.createIcons(); }
         drawIcons();
         document.addEventListener('DOMContentLoaded', drawIcons);
+    })();
+
+    // Hide the mini-player while any popup/modal is open. Most modals across the
+    // site lock page scroll (body/html overflow:hidden or a modal-open class) or
+    // show a known dialog container — we watch for those so every popup hides the
+    // radio without needing to know about it.
+    (function () {
+        var mini = document.getElementById('nadoMini');
+        if (!mini) return;
+
+        var DIALOG_SEL = [
+            '.modal.show', '.modal.in', '.modal.open',
+            '.expert-modal.open', '.accord-modal.open',
+            '.offcanvas.show',
+            '[role="dialog"].open', '[role="dialog"].show',
+            '.swal2-container', '.fancybox__container'
+        ].join(',');
+
+        function scrollLocked(el) {
+            if (!el) return false;
+            var cs;
+            try { cs = getComputedStyle(el); } catch (e) { return false; }
+            if (cs.overflow === 'hidden' || cs.overflowY === 'hidden') return true;
+            var c = el.classList;
+            return c.contains('modal-open') || c.contains('overflow-hidden')
+                || c.contains('no-scroll') || c.contains('is-locked');
+        }
+
+        function popupOpen() {
+            if (scrollLocked(document.body) || scrollLocked(document.documentElement)) return true;
+            try { if (document.querySelector(DIALOG_SEL)) return true; } catch (e) {}
+            return false;
+        }
+
+        function sync() { mini.classList.toggle('nado-mini--suppressed', popupOpen()); }
+
+        var mo = new MutationObserver(sync);
+        mo.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+        mo.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
+        sync();
     })();
 </script>
 @endif
