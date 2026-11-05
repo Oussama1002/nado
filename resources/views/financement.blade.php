@@ -763,11 +763,19 @@
         }
 
         .info-text {
+            /* Take the remaining row space and wrap normally; without this the
+               flex item collapses to its longest word on mobile (one word/line). */
+            flex: 1;
+            min-width: 0;
             font-size: 0.75rem;
             font-weight: 700;
             color: #64748b;
             line-height: 1.75;
             text-align: left;
+        }
+
+        html[dir="rtl"] .info-text {
+            text-align: right;
         }
 
         /* Steps Section */
