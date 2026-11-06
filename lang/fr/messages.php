@@ -1552,4 +1552,62 @@ return [
         'pp_team'       => "L'équipe AUTO ENCHERE",
     ],
 
+    // ─────────────── Vérification situation légale (opposition NARSA) ───────────────
+    'legalcheck' => [
+        'nav'                  => 'Vérifier la situation légale',
+        'page_title'           => 'Vérifier la situation légale (NARSA) — NADO',
+        'heading'              => 'Vérifier la situation légale',
+        'subheading'           => 'Contrôle d’opposition sur le registre officiel NARSA',
+        'intro'                => "Assurez les acheteurs qu’aucune opposition (حجز) ne bloque le transfert de propriété du véhicule. Le contrôle se fait sur le service officiel NARSA : saisissez le matricule, lancez la recherche, puis revenez indiquer le résultat et joindre une capture d’écran.",
+        'attached_to'          => 'Rattaché à l’annonce',
+
+        'matricule_legend'     => 'Matricule du véhicule',
+        'matricule_number'     => 'Numéro',
+        'matricule_letter'     => 'Lettre (série)',
+        'matricule_region'     => 'Code région',
+        'matricule_hint'       => 'Exemple : 27314 — و — 72',
+
+        'steps_title'          => 'Comment faire',
+        'step_open'            => 'Ouvrez le service officiel NARSA (nouvel onglet).',
+        'step_retype'          => 'Recopiez exactement le matricule affiché ci-dessus.',
+        'step_captcha'         => 'Cochez « Je ne suis pas un robot », puis cliquez sur Rechercher.',
+        'step_return'          => 'Revenez ici, indiquez le résultat et joignez une capture d’écran.',
+        'open_narsa'           => 'Ouvrir le service officiel NARSA',
+
+        'result_legend'        => 'Résultat affiché par NARSA',
+        'result_clear'         => 'Aucune opposition',
+        'result_opposition'    => 'Opposition active',
+        'screenshot_label'     => 'Capture d’écran du résultat NARSA',
+        'screenshot_hint'      => 'Image JPG, PNG ou WEBP — 8 Mo maximum. Obligatoire pour obtenir le badge.',
+        'submit'               => 'Envoyer le résultat',
+
+        'disclaimer'           => 'Le résultat reflète la base publique NARSA au moment du contrôle et reste indicatif ; ce n’est pas un certificat officiel. Le document officiel est le « certificat de non-opposition ».',
+
+        'submitted'            => 'Merci. Votre vérification a été enregistrée et sera examinée par notre équipe.',
+        'status_pending'       => 'Vérification en attente de validation.',
+        'status_confirmed'     => 'Vérification confirmée.',
+        'status_rejected'      => 'Vérification rejetée. Vous pouvez en soumettre une nouvelle.',
+        'declared_clear'       => 'Résultat déclaré : aucune opposition.',
+        'declared_opposition'  => 'Résultat déclaré : opposition active.',
+
+        'err_number'           => 'Indiquez le numéro du matricule.',
+        'err_letter'           => 'Indiquez la lettre (série).',
+        'err_region'           => 'Indiquez le code région.',
+        'err_result'           => 'Indiquez le résultat affiché par NARSA.',
+        'err_screenshot'       => 'Joignez une capture d’écran du résultat.',
+        'err_screenshot_type'  => 'Formats acceptés : JPG, PNG ou WEBP.',
+        'err_screenshot_size'  => 'Image trop lourde : 8 Mo maximum.',
+        'err_matricule_invalid'=> 'Matricule invalide. Vérifiez les trois champs.',
+
+        // Badge affiché sur la page détail (acheteurs)
+        'badge_verified'       => 'Situation légale vérifiée (NARSA)',
+        'badge_declared'       => 'Situation légale déclarée par le vendeur (NARSA)',
+        'badge_disclaimer'     => 'Indicatif, selon la base publique NARSA à la date du contrôle — pas un certificat officiel.',
+
+        // Point d’entrée (vente / annonces)
+        'cta_title'            => 'Situation légale du véhicule',
+        'cta_text'            => 'Rassurez les acheteurs : vérifiez qu’aucune opposition ne bloque la vente.',
+        'cta_button'           => 'Vérifier la situation légale',
+    ],
+
 ];

@@ -200,6 +200,51 @@ public function videoAd()
     return $this->hasOne(\App\Models\Videosads::class, 'annonce_id');
 }
 
+    // Vérifications de situation légale (opposition NARSA, flux guidé).
+    public function legalChecks()
+    {
+        return $this->hasMany(\App\Models\LegalCheck::class, 'annonce_id');
+    }
+
+    /** Dernière vérification, quel que soit son statut. */
+    public function latestLegalCheck()
+    {
+        return $this->hasOne(\App\Models\LegalCheck::class, 'annonce_id')->latestOfMany();
+    }
+
+    /** Dernière vérification « aucune opposition » confirmée par un admin. */
+    public function confirmedLegalCheck()
+    {
+        return $this->hasOne(\App\Models\LegalCheck::class, 'annonce_id')
+            ->where('declared_status', 'clear')
+            ->where('admin_status', 'confirmed')
+            ->latestOfMany();
+    }
+
+    /**
+     * La vérification à afficher en badge public (ou null).
+     * - require_admin_review ON  → uniquement une vérif "clear" + confirmée.
+     * - require_admin_review OFF → une vérif "clear" (déclarée vendeur) suffit,
+     *   tant qu'elle n'a pas été rejetée. Libellé honnête côté vue.
+     * On ne badge JAMAIS une opposition/unknown (donnée sensible + périssable).
+     */
+    public function badgeLegalCheck()
+    {
+        if (! feature_on('legalcheck.enabled')) {
+            return null;
+        }
+
+        if (feature_on('legalcheck.require_admin_review')) {
+            return $this->confirmedLegalCheck;
+        }
+
+        return $this->legalChecks()
+            ->where('declared_status', 'clear')
+            ->where('admin_status', '!=', 'rejected')
+            ->latest()
+            ->first();
+    }
+
 
     // Corrigé : utilise la relation media au lieu de décoder $this->media qui n'est pas un JSON
     public function pathImageAds()

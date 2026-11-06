@@ -258,6 +258,15 @@ Route::post('/vente/carte-grise/extract', [\App\Http\Controllers\CarteGriseContr
     ->middleware(['auth:client', 'throttle:20,60'])
     ->name('cartegrise.extract');
 
+// Vérification situation légale (opposition NARSA) — flux guidé (gated : flag + auth:client).
+Route::middleware(['auth:client'])->group(function () {
+    Route::get('/verification-legale', [\App\Http\Controllers\LegalCheckController::class, 'form'])
+        ->name('legalcheck.form');
+    Route::post('/verification-legale', [\App\Http\Controllers\LegalCheckController::class, 'store'])
+        ->middleware('throttle:10,60')
+        ->name('legalcheck.store');
+});
+
 // Fresh CSRF token for long-lived forms (vente modal) — avoids 419 when the
 // session was regenerated in another tab (login/logout) or has expired
 Route::get('/csrf-token', function () {
@@ -513,6 +522,21 @@ Route::prefix('admin/settings')->name('admin.settings.')
         Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
         Route::get('/{group}', [SettingsController::class, 'group'])->name('group');
         Route::post('/{group}', [SettingsController::class, 'update'])->name('update');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Revue admin — Vérifications situation légale (opposition NARSA)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin/legal-checks')->name('admin.legalchecks.')
+    ->middleware(['auth:admin', 'role:admin'])
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LegalCheckController::class, 'index'])->name('index');
+        Route::get('/{legalCheck}', [\App\Http\Controllers\Admin\LegalCheckController::class, 'show'])->name('show');
+        Route::get('/{legalCheck}/screenshot', [\App\Http\Controllers\Admin\LegalCheckController::class, 'screenshot'])->name('screenshot');
+        Route::post('/{legalCheck}/confirm', [\App\Http\Controllers\Admin\LegalCheckController::class, 'confirm'])->name('confirm');
+        Route::post('/{legalCheck}/reject', [\App\Http\Controllers\Admin\LegalCheckController::class, 'reject'])->name('reject');
     });
 
 /*

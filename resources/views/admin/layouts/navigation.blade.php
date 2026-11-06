@@ -83,6 +83,16 @@
                             <span>Demandes</span>
                         </a>
                     </li>
+
+                    {{-- Situation légale (opposition NARSA) --}}
+                    @if(feature_on('legalcheck.enabled'))
+                    <li @class(['sidebar-item', 'active' => str_contains($current_route , "legalchecks.")])>
+                        <a href="{{ route('admin.legalchecks.index') }}" class='sidebar-link'>
+                            <i class="bi bi-shield-check"></i>
+                            <span>Situation légale</span>
+                        </a>
+                    </li>
+                    @endif
            <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "clients.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>

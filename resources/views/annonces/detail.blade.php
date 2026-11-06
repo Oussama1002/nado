@@ -579,6 +579,34 @@
         border: 1px solid #fde68a;
     }
 
+    /* NARSA legal-status badge (shown only for a clean result). */
+    .legal-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 10px;
+    }
+    .legal-badge-verified {
+        background: #f0fdf4;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+    .legal-badge-declared {
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+    .legal-badge-note {
+        display: block;
+        font-size: 11px;
+        color: #94a3b8;
+        margin-top: 0.4rem;
+        line-height: 1.4;
+        max-width: 420px;
+    }
+
     .main-title {
         font-size: clamp(2rem, 6vw, 3rem);
         font-weight: 900;
@@ -2379,6 +2407,21 @@
                             <span class="badge pro-badge">{{ __('messages.detail.badge_pro') }}</span>
                         @endif
                     </div>
+
+                    @php $legalCheck = $annonce->badgeLegalCheck(); @endphp
+                    @if($legalCheck)
+                        @php $legalVerified = $legalCheck->isConfirmed(); @endphp
+                        <div class="badge-row">
+                            <span class="badge legal-badge {{ $legalVerified ? 'legal-badge-verified' : 'legal-badge-declared' }}">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                {{ $legalVerified ? __('messages.legalcheck.badge_verified') : __('messages.legalcheck.badge_declared') }}
+                                @if($legalCheck->checked_at)
+                                    — {{ $legalCheck->checked_at->format('d/m/Y') }}
+                                @endif
+                            </span>
+                        </div>
+                        <small class="legal-badge-note">{{ __('messages.legalcheck.badge_disclaimer') }}</small>
+                    @endif
                     <h1 class="main-title">
                         @if ($brandName || $modelName)
                             {{ $brandName }}

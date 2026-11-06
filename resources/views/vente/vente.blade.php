@@ -554,6 +554,27 @@
         </div>
     </div>
 
+    {{-- ════════ Vérification situation légale (NARSA) — flux guidé ════════ --}}
+    @if(feature_on('legalcheck.enabled'))
+    <div class="vmkt-wrap" style="margin-top:18px;">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between;
+                    background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:18px 22px;">
+            <div style="display:flex;align-items:center;gap:14px;min-width:240px;">
+                <i class="fa-solid fa-shield-halved" style="font-size:1.6rem;color:#16a34a;"></i>
+                <div>
+                    <div style="font-weight:900;color:#0f172a;">{{ __('messages.legalcheck.cta_title') }}</div>
+                    <div style="color:#15803d;font-size:.92rem;">{{ __('messages.legalcheck.cta_text') }}</div>
+                </div>
+            </div>
+            <a href="{{ route('legalcheck.form') }}"
+               style="background:#16a34a;color:#fff;font-weight:800;text-decoration:none;
+                      padding:.7rem 1.2rem;border-radius:10px;white-space:nowrap;">
+                {{ __('messages.legalcheck.cta_button') }}
+            </a>
+        </div>
+    </div>
+    @endif
+
     {{-- ════════ HERO ════════ --}}
     <section class="vp-hero">
         <div class="vp-hero-dots"></div>

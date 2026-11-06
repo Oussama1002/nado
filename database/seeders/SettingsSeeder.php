@@ -217,6 +217,12 @@ class SettingsSeeder extends Seeder
                 ['retain_image', 'bool', false, 'Conserver l\'image après extraction (sinon purge)'],
             ],
 
+            // ──────────────────── legalcheck (opposition NARSA) ─────────
+            'legalcheck' => [
+                ['enabled', 'bool', false, 'Vérification situation légale (NARSA) activée'],
+                ['require_admin_review', 'bool', true, 'Badge public seulement après validation admin'],
+            ],
+
             // ───────────────────────── global ───────────────────────────
             'global' => [
                 ['marketplace_enabled', 'bool', true, 'Marketplace ouvert'],
