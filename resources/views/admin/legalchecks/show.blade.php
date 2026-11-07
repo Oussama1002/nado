@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-5">
             <table class="table table-bordered">
-                <tr><th>Matricule</th><td><strong dir="ltr" style="unicode-bidi:isolate;">{{ $legalCheck->matricule_full }}</strong></td></tr>
+                <tr><th>Matricule</th><td><strong dir="ltr" style="unicode-bidi:isolate;">{{ $legalCheck->matricule_full ?: '—' }}</strong></td></tr>
                 <tr><th>Résultat déclaré</th>
                     <td>
                         @if($legalCheck->declared_status === 'clear')

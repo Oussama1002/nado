@@ -60,16 +60,14 @@ class LegalCheckController extends Controller
         abort_unless($client, 403);
 
         $validated = $request->validate([
-            'matricule_number' => ['required', 'string', 'max:10'],
-            'matricule_letter' => ['required', 'string', 'max:8'],
-            'matricule_region' => ['required', 'string', 'max:6'],
+            // Matricule facultatif : le vendeur le saisit directement dans le service NARSA intégré.
+            'matricule_number' => ['nullable', 'string', 'max:10'],
+            'matricule_letter' => ['nullable', 'string', 'max:8'],
+            'matricule_region' => ['nullable', 'string', 'max:6'],
             'declared_status'  => ['required', 'in:clear,opposition'],
             'screenshot'       => ['required', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'annonce_id'       => ['nullable', 'integer'],
         ], [
-            'matricule_number.required' => __('messages.legalcheck.err_number'),
-            'matricule_letter.required' => __('messages.legalcheck.err_letter'),
-            'matricule_region.required' => __('messages.legalcheck.err_region'),
             'declared_status.required'  => __('messages.legalcheck.err_result'),
             'declared_status.in'        => __('messages.legalcheck.err_result'),
             'screenshot.required'       => __('messages.legalcheck.err_screenshot'),
@@ -77,19 +75,15 @@ class LegalCheckController extends Controller
             'screenshot.max'            => __('messages.legalcheck.err_screenshot_size'),
         ]);
 
-        // Sanitize léger : chiffres pour number/region, on garde lettres latines + arabes pour la série.
-        $number = preg_replace('/[^0-9]/u', '', $validated['matricule_number']);
-        $region = preg_replace('/[^0-9]/u', '', $validated['matricule_region']);
-        $letter = trim(preg_replace('/[^\p{Arabic}A-Za-z]/u', '', $validated['matricule_letter']));
+        // Sanitize léger : chiffres pour number/region, lettres latines + arabes pour la série.
+        $number = preg_replace('/[^0-9]/u', '', $validated['matricule_number'] ?? '');
+        $region = preg_replace('/[^0-9]/u', '', $validated['matricule_region'] ?? '');
+        $letter = trim(preg_replace('/[^\p{Arabic}A-Za-z]/u', '', $validated['matricule_letter'] ?? ''));
 
-        if ($number === '' || $region === '' || $letter === '') {
-            return back()
-                ->withInput()
-                ->withErrors(['matricule_number' => __('messages.legalcheck.err_matricule_invalid')]);
-        }
-
-        // Format d'affichage FR/AR-safe : « 27314 و 72 ».
-        $full = $number . ' ' . $letter . ' ' . $region;
+        // Format d'affichage si fourni, sinon null.
+        $full = ($number !== '' || $letter !== '' || $region !== '')
+            ? trim($number . ' ' . $letter . ' ' . $region)
+            : null;
 
         // Rattachement annonce : seulement si elle appartient au vendeur connecté.
         $annonceId = null;
@@ -110,9 +104,9 @@ class LegalCheckController extends Controller
         LegalCheck::create([
             'annonce_id'       => $annonceId,
             'client_id'        => $client->id,
-            'matricule_number' => $number,
-            'matricule_letter' => $letter,
-            'matricule_region' => $region,
+            'matricule_number' => $number ?: null,
+            'matricule_letter' => $letter ?: null,
+            'matricule_region' => $region ?: null,
             'matricule_full'   => $full,
             'declared_status'  => $validated['declared_status'],
             'screenshot_path'  => $path,

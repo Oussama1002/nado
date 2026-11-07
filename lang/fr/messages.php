@@ -1558,6 +1558,7 @@ return [
         'page_title'           => 'Vérifier la situation légale (NARSA) — NADO',
         'heading'              => 'Vérifier la situation légale',
         'subheading'           => 'Contrôle d’opposition sur le registre officiel NARSA',
+        'narsa_service'        => 'Service officiel NARSA',
         'intro'                => "Assurez les acheteurs qu’aucune opposition (حجز) ne bloque le transfert de propriété du véhicule. Le contrôle se fait sur le service officiel NARSA : saisissez le matricule, lancez la recherche, puis revenez indiquer le résultat et joindre une capture d’écran.",
         'attached_to'          => 'Rattaché à l’annonce',
 

@@ -149,52 +149,10 @@
             <input type="hidden" name="annonce_id" value="{{ $annonce->id }}">
         @endif
 
-        {{-- 1. Matricule --}}
+        {{-- 1. Service NARSA intégré (iframe cross-origin : le vendeur agit dedans,
+             on ne lit rien à travers). Ne s'affiche que depuis une IP marocaine. --}}
         <div class="lc-card">
-            <p class="lc-legend">{{ __('messages.legalcheck.matricule_legend') }}</p>
-            @php
-                // Lettres de série des plaques marocaines (valeur = lettre arabe, label = équivalent latin).
-                $plateLetters = [
-                    'أ' => 'A', 'ب' => 'B', 'ج' => 'J', 'د' => 'D', 'ه' => 'H',
-                    'و' => 'W', 'ط' => 'T', 'ق' => 'Q', 'ش' => 'CH', 'WW' => 'WW',
-                ];
-            @endphp
-            <div class="lc-matricule">
-                <div class="lc-field">
-                    <label for="lc_number">{{ __('messages.legalcheck.matricule_number') }}</label>
-                    <input type="tel" inputmode="numeric" id="lc_number" name="matricule_number"
-                           value="{{ old('matricule_number') }}" placeholder="00000" autocomplete="off">
-                </div>
-                <div class="lc-field">
-                    <label for="lc_letter">{{ __('messages.legalcheck.matricule_letter') }}</label>
-                    <select id="lc_letter" name="matricule_letter">
-                        <option value="" disabled {{ old('matricule_letter') ? '' : 'selected' }}>—</option>
-                        @foreach($plateLetters as $ar => $latin)
-                            <option value="{{ $ar }}" {{ old('matricule_letter') === $ar ? 'selected' : '' }}>
-                                {{ $ar }} ({{ $latin }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="lc-field">
-                    <label for="lc_region">{{ __('messages.legalcheck.matricule_region') }}</label>
-                    <input type="tel" inputmode="numeric" id="lc_region" name="matricule_region"
-                           value="{{ old('matricule_region') }}" placeholder="00" autocomplete="off">
-                </div>
-            </div>
-            <div class="lc-hint">{{ __('messages.legalcheck.matricule_hint') }}</div>
-
-            <div class="lc-preview-box">
-                <span class="lbl">{{ __('messages.legalcheck.matricule_legend') }}</span>
-                <span class="lc-preview-val" id="lc_preview">—</span>
-                <button type="button" id="lc_copy" class="lc-copy-btn">
-                    <i class="fa-solid fa-copy"></i> <span>{{ __('messages.legalcheck.copy') }}</span>
-                </button>
-            </div>
-
-            {{-- Service NARSA intégré, affiché par défaut dans la section matricule
-                 (iframe cross-origin : le vendeur agit dedans, on ne lit rien à
-                 travers). Ne s'affiche que depuis une IP marocaine, d'où le repli. --}}
+            <p class="lc-legend">{{ __('messages.legalcheck.narsa_service') }}</p>
             <div class="lc-embed" id="lc_embed">
                 <div class="lc-embed-bar">
                     <span><i class="fa-solid fa-shield-halved"></i> opposition.narsa.gov.ma</span>
@@ -261,91 +219,16 @@
         </div>
     </form>
 </div>
-<div class="lc-toast" id="lc_toast"></div>
 @endsection
 
 @section('script')
 <script>
     (function () {
-        var isAr = @json(app()->getLocale() === 'ar');
-        var T = {
-            copied:   isAr ? 'تم نسخ رقم التسجيل — الصقه في خانة NARSA' : 'Matricule copié — collez-le dans le champ NARSA',
-            copyBtn:  isAr ? 'نسخ' : 'Copier',
-            copiedBtn:isAr ? 'تم النسخ' : 'Copié',
-            nothing:  isAr ? 'أدخل رقم التسجيل أولاً' : 'Saisissez d’abord le matricule',
-        };
-
-        var num = document.getElementById('lc_number');
-        var let = document.getElementById('lc_letter');
-        var reg = document.getElementById('lc_region');
-        var preview = document.getElementById('lc_preview');
         var file = document.getElementById('lc_screenshot');
         var fname = document.getElementById('lc_fname');
-        var copyBtn = document.getElementById('lc_copy');
-        var openBtn = document.getElementById('lc_open');
-        var toast = document.getElementById('lc_toast');
-        var toastTimer;
-
-        function matricule() {
-            return [num.value.trim(), let.value.trim(), reg.value.trim()].filter(Boolean).join(' ');
-        }
-        function refresh() {
-            var m = matricule();
-            preview.textContent = m ? m : '—';
-        }
-        [num, let, reg].forEach(function (el) { el && el.addEventListener('input', refresh); });
-        refresh();
-
         file && file.addEventListener('change', function () {
             fname.textContent = this.files && this.files[0] ? this.files[0].name : '';
         });
-
-        function showToast(msg) {
-            if (!toast) return;
-            toast.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
-        }
-
-        function copyMatricule() {
-            var m = matricule();
-            if (!m) { showToast(T.nothing); return false; }
-
-            var done = function () {
-                showToast(T.copied);
-                if (copyBtn) {
-                    copyBtn.classList.add('copied');
-                    var span = copyBtn.querySelector('span');
-                    if (span) span.textContent = T.copiedBtn;
-                    setTimeout(function () {
-                        copyBtn.classList.remove('copied');
-                        if (span) span.textContent = T.copyBtn;
-                    }, 2000);
-                }
-            };
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(m).then(done).catch(fallbackCopy);
-            } else {
-                fallbackCopy();
-            }
-            function fallbackCopy() {
-                try {
-                    var ta = document.createElement('textarea');
-                    ta.value = m; ta.style.position = 'fixed'; ta.style.opacity = '0';
-                    document.body.appendChild(ta); ta.focus(); ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    done();
-                } catch (e) { /* clipboard unavailable — seller types manually */ }
-            }
-            return true;
-        }
-
-        copyBtn && copyBtn.addEventListener('click', copyMatricule);
-        // Copier au moment d'ouvrir NARSA (nouvel onglet) : plus qu'à coller.
-        openBtn && openBtn.addEventListener('click', function () { copyMatricule(); });
     })();
 </script>
 @endsection

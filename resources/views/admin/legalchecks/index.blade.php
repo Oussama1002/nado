@@ -57,7 +57,7 @@
                             <span class="text-muted">Standalone</span>
                         @endif
                     </td>
-                    <td><span dir="ltr" style="unicode-bidi:isolate;">{{ $check->matricule_full }}</span></td>
+                    <td><span dir="ltr" style="unicode-bidi:isolate;">{{ $check->matricule_full ?: '—' }}</span></td>
                     <td>
                         @if($check->declared_status === 'clear')
                             <span class="badge bg-success">Aucune opposition</span>
