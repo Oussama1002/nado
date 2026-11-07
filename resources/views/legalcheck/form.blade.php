@@ -191,24 +191,10 @@
                     <i class="fa-solid fa-copy"></i> <span>{{ __('messages.legalcheck.copy') }}</span>
                 </button>
             </div>
-        </div>
 
-        {{-- 2. Guided steps --}}
-        <div class="lc-card">
-            <p class="lc-legend">{{ __('messages.legalcheck.steps_title') }}</p>
-            <ol class="lc-steps">
-                <li>{{ __('messages.legalcheck.step_open') }}</li>
-                <li>{{ __('messages.legalcheck.step_retype') }}</li>
-                <li>{{ __('messages.legalcheck.step_captcha') }}</li>
-                <li>{{ __('messages.legalcheck.step_return') }}</li>
-            </ol>
-            <p class="lc-hint" style="margin-top:.2rem;">
-                <i class="fa-solid fa-circle-info"></i> {{ __('messages.legalcheck.open_narsa_note') }}
-            </p>
-
-            {{-- Service NARSA intégré, affiché par défaut (iframe cross-origin :
-                 le vendeur agit dedans, on ne lit rien à travers). Ne s'affiche
-                 que depuis une IP marocaine, d'où le repli « nouvel onglet ». --}}
+            {{-- Service NARSA intégré, affiché par défaut dans la section matricule
+                 (iframe cross-origin : le vendeur agit dedans, on ne lit rien à
+                 travers). Ne s'affiche que depuis une IP marocaine, d'où le repli. --}}
             <div class="lc-embed" id="lc_embed">
                 <div class="lc-embed-bar">
                     <span><i class="fa-solid fa-shield-halved"></i> opposition.narsa.gov.ma</span>
@@ -225,6 +211,20 @@
                     <i class="fa-solid fa-triangle-exclamation"></i> {{ __('messages.legalcheck.embed_fallback') }}
                 </p>
             </div>
+        </div>
+
+        {{-- 2. Guided steps --}}
+        <div class="lc-card">
+            <p class="lc-legend">{{ __('messages.legalcheck.steps_title') }}</p>
+            <ol class="lc-steps">
+                <li>{{ __('messages.legalcheck.step_open') }}</li>
+                <li>{{ __('messages.legalcheck.step_retype') }}</li>
+                <li>{{ __('messages.legalcheck.step_captcha') }}</li>
+                <li>{{ __('messages.legalcheck.step_return') }}</li>
+            </ol>
+            <p class="lc-hint" style="margin-top:.2rem;">
+                <i class="fa-solid fa-circle-info"></i> {{ __('messages.legalcheck.open_narsa_note') }}
+            </p>
         </div>
 
         {{-- 3. Result + screenshot --}}
