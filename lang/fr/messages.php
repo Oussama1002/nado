@@ -1566,13 +1566,15 @@ return [
         'matricule_letter'     => 'Lettre (série)',
         'matricule_region'     => 'Code région',
         'matricule_hint'       => 'Exemple : 27314 — و — 72',
+        'copy'                 => 'Copier',
 
         'steps_title'          => 'Comment faire',
-        'step_open'            => 'Ouvrez le service officiel NARSA (nouvel onglet).',
-        'step_retype'          => 'Recopiez exactement le matricule affiché ci-dessus.',
+        'step_open'            => 'Ouvrez le service officiel NARSA (nouvel onglet). Le matricule est copié automatiquement.',
+        'step_retype'          => 'Collez le matricule (Ctrl+V) dans le champ « Immatriculation » de NARSA.',
         'step_captcha'         => 'Cochez « Je ne suis pas un robot », puis cliquez sur Rechercher.',
         'step_return'          => 'Revenez ici, indiquez le résultat et joignez une capture d’écran.',
         'open_narsa'           => 'Ouvrir le service officiel NARSA',
+        'open_narsa_note'      => 'Nous ne pouvons pas remplir la page NARSA à votre place (page officielle externe) : le matricule est copié dans le presse-papiers, collez-le simplement (Ctrl+V).',
 
         'result_legend'        => 'Résultat affiché par NARSA',
         'result_clear'         => 'Aucune opposition',

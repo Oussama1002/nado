@@ -34,7 +34,21 @@
         padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
     }
     .lc-preview-box .lbl { font-size: .78rem; opacity: .7; text-transform: uppercase; letter-spacing: .08em; }
-    .lc-preview-val { font-size: 1.5rem; font-weight: 900; letter-spacing: .04em; direction: ltr; unicode-bidi: isolate; }
+    .lc-preview-val { font-size: 1.5rem; font-weight: 900; letter-spacing: .04em; direction: ltr; unicode-bidi: isolate; flex: 1; }
+    .lc-copy-btn {
+        display: inline-flex; align-items: center; gap: .4rem; background: rgba(255,255,255,.12);
+        color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 8px;
+        padding: .45rem .75rem; font-weight: 700; font-size: .85rem; cursor: pointer; white-space: nowrap;
+    }
+    .lc-copy-btn:hover { background: rgba(255,255,255,.22); }
+    .lc-copy-btn.copied { background: #16a34a; border-color: #16a34a; }
+    .lc-toast {
+        position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+        background: #0f172a; color: #fff; padding: .8rem 1.3rem; border-radius: 999px; font-weight: 700;
+        box-shadow: 0 10px 30px rgba(0,0,0,.25); opacity: 0; pointer-events: none;
+        transition: opacity .2s, transform .2s; z-index: 9999;
+    }
+    .lc-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .lc-steps { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0 0; }
     .lc-steps li {
         counter-increment: step; position: relative; padding-{{ $isAr ? 'right' : 'left' }}: 2.4rem;
@@ -144,6 +158,9 @@
             <div class="lc-preview-box">
                 <span class="lbl">{{ __('messages.legalcheck.matricule_legend') }}</span>
                 <span class="lc-preview-val" id="lc_preview">—</span>
+                <button type="button" id="lc_copy" class="lc-copy-btn">
+                    <i class="fa-solid fa-copy"></i> <span>{{ __('messages.legalcheck.copy') }}</span>
+                </button>
             </div>
         </div>
 
@@ -156,10 +173,13 @@
                 <li>{{ __('messages.legalcheck.step_captcha') }}</li>
                 <li>{{ __('messages.legalcheck.step_return') }}</li>
             </ol>
-            <a class="lc-open-btn" href="{{ $narsaUrl }}" target="_blank" rel="noopener noreferrer">
+            <a class="lc-open-btn" id="lc_open" href="{{ $narsaUrl }}" target="_blank" rel="noopener noreferrer">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 {{ __('messages.legalcheck.open_narsa') }}
             </a>
+            <p class="lc-hint" style="margin-top:.6rem;">
+                <i class="fa-solid fa-circle-info"></i> {{ __('messages.legalcheck.open_narsa_note') }}
+            </p>
         </div>
 
         {{-- 3. Result + screenshot --}}
@@ -196,21 +216,37 @@
         </div>
     </form>
 </div>
+<div class="lc-toast" id="lc_toast"></div>
 @endsection
 
 @section('script')
 <script>
     (function () {
+        var isAr = @json(app()->getLocale() === 'ar');
+        var T = {
+            copied:   isAr ? 'تم نسخ رقم التسجيل — الصقه في خانة NARSA' : 'Matricule copié — collez-le dans le champ NARSA',
+            copyBtn:  isAr ? 'نسخ' : 'Copier',
+            copiedBtn:isAr ? 'تم النسخ' : 'Copié',
+            nothing:  isAr ? 'أدخل رقم التسجيل أولاً' : 'Saisissez d’abord le matricule',
+        };
+
         var num = document.getElementById('lc_number');
         var let = document.getElementById('lc_letter');
         var reg = document.getElementById('lc_region');
         var preview = document.getElementById('lc_preview');
         var file = document.getElementById('lc_screenshot');
         var fname = document.getElementById('lc_fname');
+        var copyBtn = document.getElementById('lc_copy');
+        var openBtn = document.getElementById('lc_open');
+        var toast = document.getElementById('lc_toast');
+        var toastTimer;
 
+        function matricule() {
+            return [num.value.trim(), let.value.trim(), reg.value.trim()].filter(Boolean).join(' ');
+        }
         function refresh() {
-            var parts = [num.value.trim(), let.value.trim(), reg.value.trim()].filter(Boolean);
-            preview.textContent = parts.length ? parts.join('  ') : '—';
+            var m = matricule();
+            preview.textContent = m ? m : '—';
         }
         [num, let, reg].forEach(function (el) { el && el.addEventListener('input', refresh); });
         refresh();
@@ -218,6 +254,53 @@
         file && file.addEventListener('change', function () {
             fname.textContent = this.files && this.files[0] ? this.files[0].name : '';
         });
+
+        function showToast(msg) {
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
+        }
+
+        function copyMatricule() {
+            var m = matricule();
+            if (!m) { showToast(T.nothing); return false; }
+
+            var done = function () {
+                showToast(T.copied);
+                if (copyBtn) {
+                    copyBtn.classList.add('copied');
+                    var span = copyBtn.querySelector('span');
+                    if (span) span.textContent = T.copiedBtn;
+                    setTimeout(function () {
+                        copyBtn.classList.remove('copied');
+                        if (span) span.textContent = T.copyBtn;
+                    }, 2000);
+                }
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(m).then(done).catch(fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
+            function fallbackCopy() {
+                try {
+                    var ta = document.createElement('textarea');
+                    ta.value = m; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta); ta.focus(); ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    done();
+                } catch (e) { /* clipboard unavailable — seller types manually */ }
+            }
+            return true;
+        }
+
+        copyBtn && copyBtn.addEventListener('click', copyMatricule);
+        // Copier au moment d'ouvrir NARSA : le vendeur n'a plus qu'à coller.
+        openBtn && openBtn.addEventListener('click', function () { copyMatricule(); });
     })();
 </script>
 @endsection
