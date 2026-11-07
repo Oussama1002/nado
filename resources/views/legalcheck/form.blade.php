@@ -68,16 +68,17 @@
         padding: .85rem 1.4rem; border-radius: 10px; font-size: 1rem;
     }
     .lc-open-btn:hover { background: #0e47b0; color: #fff; }
-    .lc-open-btn { border: 0; cursor: pointer; }
-    .lc-open-row { display: flex; gap: .6rem; flex-wrap: wrap; }
-    .lc-open-alt { background: #fff; color: #1459DD; border: 1.5px solid #1459DD; }
-    .lc-open-alt:hover { background: #eff6ff; color: #1459DD; }
     .lc-embed { margin-top: 1rem; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
     .lc-embed-bar {
-        display: flex; align-items: center; justify-content: space-between;
+        display: flex; align-items: center; justify-content: space-between; gap: .6rem;
         background: #0f172a; color: #fff; padding: .5rem .9rem; font-weight: 700; font-size: .85rem;
     }
-    .lc-embed-close { background: transparent; border: 0; color: #fff; font-size: 1.3rem; line-height: 1; cursor: pointer; }
+    .lc-embed-open {
+        display: inline-flex; align-items: center; gap: .4rem; color: #fff; text-decoration: none;
+        background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+        border-radius: 8px; padding: .35rem .7rem; white-space: nowrap;
+    }
+    .lc-embed-open:hover { background: rgba(255,255,255,.22); color: #fff; }
     .lc-embed iframe { width: 100%; height: 820px; border: 0; display: block; background: #fff; }
     .lc-embed-fallback { padding: .6rem .9rem 0; }
     .lc-results { display: flex; gap: .75rem; flex-wrap: wrap; }
@@ -201,30 +202,23 @@
                 <li>{{ __('messages.legalcheck.step_captcha') }}</li>
                 <li>{{ __('messages.legalcheck.step_return') }}</li>
             </ol>
-            <div class="lc-open-row">
-                <button type="button" class="lc-open-btn" id="lc_embed_btn">
-                    <i class="fa-solid fa-window-maximize"></i>
-                    {{ __('messages.legalcheck.embed_here') }}
-                </button>
-                <a class="lc-open-btn lc-open-alt" id="lc_open" href="{{ $narsaUrl }}" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    {{ __('messages.legalcheck.open_narsa') }}
-                </a>
-            </div>
-            <p class="lc-hint" style="margin-top:.6rem;">
+            <p class="lc-hint" style="margin-top:.2rem;">
                 <i class="fa-solid fa-circle-info"></i> {{ __('messages.legalcheck.open_narsa_note') }}
             </p>
 
-            {{-- Service NARSA intégré (iframe cross-origin : le vendeur agit dedans,
-                 on ne lit rien à travers). Chargé à la demande ; ne s'affiche que
-                 depuis une IP marocaine, d'où le repli « nouvel onglet ». --}}
-            <div class="lc-embed" id="lc_embed" hidden>
+            {{-- Service NARSA intégré, affiché par défaut (iframe cross-origin :
+                 le vendeur agit dedans, on ne lit rien à travers). Ne s'affiche
+                 que depuis une IP marocaine, d'où le repli « nouvel onglet ». --}}
+            <div class="lc-embed" id="lc_embed">
                 <div class="lc-embed-bar">
                     <span><i class="fa-solid fa-shield-halved"></i> opposition.narsa.gov.ma</span>
-                    <button type="button" class="lc-embed-close" id="lc_embed_close" aria-label="×">&times;</button>
+                    <a href="{{ $narsaUrl }}" id="lc_open" target="_blank" rel="noopener noreferrer" class="lc-embed-open">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        {{ __('messages.legalcheck.open_narsa') }}
+                    </a>
                 </div>
                 <iframe id="lc_iframe"
-                        data-src="https://opposition.narsa.gov.ma:82/consultation/opposition"
+                        src="https://opposition.narsa.gov.ma:82/consultation/opposition"
                         title="NARSA" loading="lazy"
                         referrerpolicy="no-referrer"></iframe>
                 <p class="lc-hint lc-embed-fallback">
@@ -350,23 +344,8 @@
         }
 
         copyBtn && copyBtn.addEventListener('click', copyMatricule);
-        // Copier au moment d'ouvrir NARSA : le vendeur n'a plus qu'à coller.
+        // Copier au moment d'ouvrir NARSA (nouvel onglet) : plus qu'à coller.
         openBtn && openBtn.addEventListener('click', function () { copyMatricule(); });
-
-        // Service NARSA intégré : charge l'iframe à la demande + copie le matricule.
-        var embedBtn = document.getElementById('lc_embed_btn');
-        var embed = document.getElementById('lc_embed');
-        var iframe = document.getElementById('lc_iframe');
-        var embedClose = document.getElementById('lc_embed_close');
-
-        embedBtn && embedBtn.addEventListener('click', function () {
-            if (iframe && !iframe.src) { iframe.src = iframe.getAttribute('data-src'); }
-            if (embed) { embed.hidden = false; embed.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            copyMatricule();
-        });
-        embedClose && embedClose.addEventListener('click', function () {
-            if (embed) embed.hidden = true;
-        });
     })();
 </script>
 @endsection
