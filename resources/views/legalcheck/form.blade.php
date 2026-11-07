@@ -154,13 +154,6 @@
         <div class="lc-card">
             <p class="lc-legend">{{ __('messages.legalcheck.narsa_service') }}</p>
             <div class="lc-embed" id="lc_embed">
-                <div class="lc-embed-bar">
-                    <span><i class="fa-solid fa-shield-halved"></i> opposition.narsa.gov.ma</span>
-                    <a href="{{ $narsaUrl }}" id="lc_open" target="_blank" rel="noopener noreferrer" class="lc-embed-open">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        {{ __('messages.legalcheck.open_narsa') }}
-                    </a>
-                </div>
                 <iframe id="lc_iframe"
                         src="https://opposition.narsa.gov.ma:82/consultation/opposition"
                         title="NARSA" loading="lazy"
