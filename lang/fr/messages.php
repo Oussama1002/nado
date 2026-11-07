@@ -1573,8 +1573,10 @@ return [
         'step_retype'          => 'Collez le matricule (Ctrl+V) dans le champ « Immatriculation » de NARSA.',
         'step_captcha'         => 'Cochez « Je ne suis pas un robot », puis cliquez sur Rechercher.',
         'step_return'          => 'Revenez ici, indiquez le résultat et joignez une capture d’écran.',
-        'open_narsa'           => 'Ouvrir le service officiel NARSA',
-        'open_narsa_note'      => 'Nous ne pouvons pas remplir la page NARSA à votre place (page officielle externe) : le matricule est copié dans le presse-papiers, collez-le simplement (Ctrl+V).',
+        'open_narsa'           => 'Ouvrir dans un nouvel onglet',
+        'open_narsa_note'      => 'Nous ne pouvons pas remplir la page NARSA à votre place (service officiel externe) : le matricule est copié dans le presse-papiers, collez-le simplement (Ctrl+V), cochez le captcha et lancez la recherche.',
+        'embed_here'           => 'Afficher le service NARSA ici',
+        'embed_fallback'       => 'Le service reste vide ? Il n’est accessible que depuis le Maroc. Ouvrez-le dans un nouvel onglet.',
 
         'result_legend'        => 'Résultat affiché par NARSA',
         'result_clear'         => 'Aucune opposition',
