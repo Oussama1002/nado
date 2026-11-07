@@ -143,85 +143,23 @@
         </div>
     @endif
 
-    <form action="{{ route('legalcheck.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @if($annonce)
-            <input type="hidden" name="annonce_id" value="{{ $annonce->id }}">
-        @endif
-
-        {{-- 1. Service NARSA intégré (iframe cross-origin : le vendeur agit dedans,
-             on ne lit rien à travers). Ne s'affiche que depuis une IP marocaine. --}}
-        <div class="lc-card">
-            <p class="lc-legend">{{ __('messages.legalcheck.narsa_service') }}</p>
-            <div class="lc-embed" id="lc_embed">
-                <iframe id="lc_iframe"
-                        src="https://opposition.narsa.gov.ma:82/consultation/opposition"
-                        title="NARSA" loading="lazy"
-                        referrerpolicy="no-referrer"></iframe>
-                <p class="lc-hint lc-embed-fallback">
-                    <i class="fa-solid fa-triangle-exclamation"></i> {{ __('messages.legalcheck.embed_fallback') }}
-                </p>
-            </div>
-        </div>
-
-        {{-- 2. Guided steps --}}
-        <div class="lc-card">
-            <p class="lc-legend">{{ __('messages.legalcheck.steps_title') }}</p>
-            <ol class="lc-steps">
-                <li>{{ __('messages.legalcheck.step_open') }}</li>
-                <li>{{ __('messages.legalcheck.step_retype') }}</li>
-                <li>{{ __('messages.legalcheck.step_captcha') }}</li>
-                <li>{{ __('messages.legalcheck.step_return') }}</li>
-            </ol>
-            <p class="lc-hint" style="margin-top:.2rem;">
-                <i class="fa-solid fa-circle-info"></i> {{ __('messages.legalcheck.open_narsa_note') }}
+    {{-- Service NARSA intégré (iframe cross-origin : le vendeur agit dedans,
+         on ne lit rien à travers). Ne s'affiche que depuis une IP marocaine. --}}
+    <div class="lc-card">
+        <p class="lc-legend">{{ __('messages.legalcheck.narsa_service') }}</p>
+        <div class="lc-embed" id="lc_embed">
+            <iframe id="lc_iframe"
+                    src="https://opposition.narsa.gov.ma:82/consultation/opposition"
+                    title="NARSA" loading="lazy"
+                    referrerpolicy="no-referrer"></iframe>
+            <p class="lc-hint lc-embed-fallback">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{ __('messages.legalcheck.embed_fallback') }}
             </p>
         </div>
-
-        {{-- 3. Result + screenshot --}}
-        <div class="lc-card">
-            <p class="lc-legend">{{ __('messages.legalcheck.result_legend') }}</p>
-            <div class="lc-results">
-                <label class="lc-radio clear">
-                    <input type="radio" name="declared_status" value="clear"
-                        {{ old('declared_status') === 'clear' ? 'checked' : '' }}>
-                    ✅ {{ __('messages.legalcheck.result_clear') }}
-                </label>
-                <label class="lc-radio opp">
-                    <input type="radio" name="declared_status" value="opposition"
-                        {{ old('declared_status') === 'opposition' ? 'checked' : '' }}>
-                    ⚠️ {{ __('messages.legalcheck.result_opposition') }}
-                </label>
-            </div>
-
-            <div class="lc-file" style="margin-top:1.25rem;">
-                <label class="filebtn" for="lc_screenshot">
-                    <i class="fa-solid fa-image"></i> {{ __('messages.legalcheck.screenshot_label') }}
-                </label>
-                <input type="file" id="lc_screenshot" name="screenshot" accept="image/*">
-                <span class="fname" id="lc_fname"></span>
-                <div class="lc-hint">{{ __('messages.legalcheck.screenshot_hint') }}</div>
-            </div>
-
-            <button type="submit" class="lc-submit">{{ __('messages.legalcheck.submit') }}</button>
-
-            <p class="lc-disclaimer">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>{{ __('messages.legalcheck.disclaimer') }}</span>
-            </p>
-        </div>
-    </form>
+        <p class="lc-disclaimer">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>{{ __('messages.legalcheck.disclaimer') }}</span>
+        </p>
+    </div>
 </div>
-@endsection
-
-@section('script')
-<script>
-    (function () {
-        var file = document.getElementById('lc_screenshot');
-        var fname = document.getElementById('lc_fname');
-        file && file.addEventListener('change', function () {
-            fname.textContent = this.files && this.files[0] ? this.files[0].name : '';
-        });
-    })();
-</script>
 @endsection
