@@ -1565,7 +1565,7 @@ return [
         'matricule_number'     => 'Numéro',
         'matricule_letter'     => 'Lettre (série)',
         'matricule_region'     => 'Code région',
-        'matricule_hint'       => 'Exemple : 27314 — و — 72',
+        'matricule_hint'       => 'Exemple : 00000 — A — 00',
         'copy'                 => 'Copier',
 
         'steps_title'          => 'Comment faire',

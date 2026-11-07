@@ -1564,7 +1564,7 @@ return [
         'matricule_number'     => 'الرقم',
         'matricule_letter'     => 'الحرف (السلسلة)',
         'matricule_region'     => 'رمز الجهة',
-        'matricule_hint'       => 'مثال: 27314 — و — 72',
+        'matricule_hint'       => 'مثال: 00000 — A — 00',
         'copy'                 => 'نسخ',
 
         'steps_title'          => 'طريقة العمل',

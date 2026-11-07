@@ -23,11 +23,14 @@
     .lc-matricule { display: flex; gap: .6rem; flex-wrap: wrap; }
     .lc-field { flex: 1 1 120px; min-width: 100px; }
     .lc-field label { display: block; font-size: .8rem; font-weight: 700; color: #64748b; margin-bottom: .3rem; }
-    .lc-field input {
+    .lc-field input,
+    .lc-field select {
         width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px;
         padding: .7rem .8rem; font-size: 1.1rem; font-weight: 700; text-align: center;
+        background: #fff; height: calc(1.1rem + 1.4rem + 3px);
     }
-    .lc-field input:focus { outline: none; border-color: #1459DD; }
+    .lc-field input:focus,
+    .lc-field select:focus { outline: none; border-color: #1459DD; }
     .lc-hint { color: #94a3b8; font-size: .82rem; margin-top: .5rem; }
     .lc-preview-box {
         margin-top: 1rem; background: #0f172a; color: #fff; border-radius: 12px;
@@ -136,21 +139,34 @@
         {{-- 1. Matricule --}}
         <div class="lc-card">
             <p class="lc-legend">{{ __('messages.legalcheck.matricule_legend') }}</p>
+            @php
+                // Lettres de série des plaques marocaines (valeur = lettre arabe, label = équivalent latin).
+                $plateLetters = [
+                    'أ' => 'A', 'ب' => 'B', 'ج' => 'J', 'د' => 'D', 'ه' => 'H',
+                    'و' => 'W', 'ط' => 'T', 'ق' => 'Q', 'ش' => 'CH', 'WW' => 'WW',
+                ];
+            @endphp
             <div class="lc-matricule">
                 <div class="lc-field">
                     <label for="lc_number">{{ __('messages.legalcheck.matricule_number') }}</label>
                     <input type="tel" inputmode="numeric" id="lc_number" name="matricule_number"
-                           value="{{ old('matricule_number') }}" placeholder="27314" autocomplete="off">
+                           value="{{ old('matricule_number') }}" placeholder="00000" autocomplete="off">
                 </div>
                 <div class="lc-field">
                     <label for="lc_letter">{{ __('messages.legalcheck.matricule_letter') }}</label>
-                    <input type="text" id="lc_letter" name="matricule_letter"
-                           value="{{ old('matricule_letter') }}" placeholder="و" autocomplete="off">
+                    <select id="lc_letter" name="matricule_letter">
+                        <option value="" disabled {{ old('matricule_letter') ? '' : 'selected' }}>—</option>
+                        @foreach($plateLetters as $ar => $latin)
+                            <option value="{{ $ar }}" {{ old('matricule_letter') === $ar ? 'selected' : '' }}>
+                                {{ $ar }} ({{ $latin }})
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="lc-field">
                     <label for="lc_region">{{ __('messages.legalcheck.matricule_region') }}</label>
                     <input type="tel" inputmode="numeric" id="lc_region" name="matricule_region"
-                           value="{{ old('matricule_region') }}" placeholder="72" autocomplete="off">
+                           value="{{ old('matricule_region') }}" placeholder="00" autocomplete="off">
                 </div>
             </div>
             <div class="lc-hint">{{ __('messages.legalcheck.matricule_hint') }}</div>
