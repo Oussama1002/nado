@@ -28,9 +28,16 @@ class ContactFromMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        // Build a descriptive subject so the recipient knows what the request
+        // is about (and from whom) straight from the inbox list, instead of a
+        // generic "Contact".
+        $object = $this->data['subject'] ?? 'Demande expert NADO';
+        $name   = $this->data['name'] ?? null;
+        $subject = $name ? "{$object} — {$name}" : $object;
+
         return new Envelope(
             from: new Address('contact@nado.ma', 'Nado.ma'),
-            subject: 'Contact',
+            subject: $subject,
         );
     }
 
