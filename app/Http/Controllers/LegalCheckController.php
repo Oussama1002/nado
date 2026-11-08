@@ -6,6 +6,7 @@ use App\Models\Annonces;
 use App\Models\LegalCheck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 /**
@@ -117,5 +118,97 @@ class LegalCheckController extends Controller
         return redirect()
             ->route('legalcheck.form', $annonceId ? ['annonce' => $annonceId] : [])
             ->with('success', __('messages.legalcheck.submitted'));
+    }
+
+    /**
+     * POST (AJAX) — demande différée quand le service NARSA intégré est en panne.
+     *
+     * Le vendeur ne peut pas lancer lui-même le contrôle (« Une erreur est
+     * survenue, réessayez plus tard »). Il laisse son matricule ; on enregistre
+     * une demande en attente et on lui enverra le résultat par email dès que le
+     * service sera de nouveau disponible (traitement manuel par l'équipe).
+     *
+     * Vie privée : on ne stocke QUE le matricule — jamais le nom/adresse du
+     * propriétaire (cf. règle OCR carte grise, AGENTS.md).
+     */
+    public function requestDeferred(Request $request)
+    {
+        abort_unless(feature_on('legalcheck.enabled'), 404);
+
+        $client = Auth::guard('client')->user();
+        abort_unless($client, 403);
+
+        $validated = $request->validate([
+            'matricule_number' => ['required', 'string', 'max:10'],
+            'matricule_letter' => ['required', 'string', 'max:8'],
+            'matricule_region' => ['required', 'string', 'max:6'],
+            'annonce_id'       => ['nullable', 'integer'],
+        ], [
+            'matricule_number.required' => __('messages.legalcheck.err_number'),
+            'matricule_letter.required' => __('messages.legalcheck.err_letter'),
+            'matricule_region.required' => __('messages.legalcheck.err_region'),
+        ]);
+
+        // Sanitize léger (même règle que store()).
+        $number = preg_replace('/[^0-9]/u', '', $validated['matricule_number']);
+        $region = preg_replace('/[^0-9]/u', '', $validated['matricule_region']);
+        $letter = trim(preg_replace('/[^\p{Arabic}A-Za-z]/u', '', $validated['matricule_letter']));
+
+        if ($number === '' || $letter === '' || $region === '') {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.legalcheck.err_matricule_invalid'),
+            ], 422);
+        }
+
+        $full = trim($number . ' ' . $letter . ' ' . $region);
+
+        // Rattachement annonce : seulement si elle appartient au vendeur connecté.
+        $annonceId = null;
+        if (! empty($validated['annonce_id'])) {
+            $owned = Annonces::where('id', $validated['annonce_id'])
+                ->where('phone', $client->phone)
+                ->exists();
+            if ($owned) {
+                $annonceId = (int) $validated['annonce_id'];
+            }
+        }
+
+        $check = LegalCheck::create([
+            'annonce_id'       => $annonceId,
+            'client_id'        => $client->id,
+            'matricule_number' => $number,
+            'matricule_letter' => $letter,
+            'matricule_region' => $region,
+            'matricule_full'   => $full,
+            'declared_status'  => 'unknown',
+            'screenshot_path'  => null,
+            'checked_at'       => null,
+            'admin_status'     => 'pending',
+            'notes'            => 'Demande différée (service NARSA indisponible) — résultat à envoyer par email.',
+        ]);
+
+        // Notifie l'équipe (traitement manuel). Email best-effort : un échec SMTP
+        // ne doit pas faire échouer la demande du vendeur.
+        try {
+            Mail::raw(
+                "Nouvelle demande de vérification légale (service NARSA en panne).\n\n"
+                . "Matricule : {$full}\n"
+                . "Client : {$client->name} <{$client->email}>\n"
+                . ($annonceId ? "Annonce : #{$annonceId}\n" : '')
+                . "Demande #{$check->id}\n\n"
+                . "À traiter puis renvoyer le résultat au client par email.",
+                function ($m) {
+                    $m->to('contact@nado.ma')->subject('Demande vérification légale (NARSA en panne)');
+                }
+            );
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.legalcheck.request_ack', ['email' => $client->email]),
+        ]);
     }
 }

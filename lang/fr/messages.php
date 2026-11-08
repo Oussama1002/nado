@@ -1613,6 +1613,18 @@ return [
         'cta_title'            => 'Situation légale du véhicule',
         'cta_text'            => 'Rassurez les acheteurs : vérifiez qu’aucune opposition ne bloque la vente.',
         'cta_button'           => 'Vérifier la situation légale',
+
+        // Demande différée (service NARSA en panne : « Une erreur est survenue »)
+        'request_unavailable_title' => 'Le service affiche une erreur ?',
+        'request_unavailable_text'  => 'Si le service NARSA affiche « Une erreur est survenue, réessayez plus tard », laissez-nous le matricule : nous vous enverrons le résultat par email dès que le service sera de nouveau disponible.',
+        'request_open_btn'          => 'Recevoir le résultat par email',
+        'request_modal_title'       => 'Recevez le résultat par email',
+        'request_modal_text'        => 'Saisissez le matricule du véhicule. Nous lançons le contrôle NARSA dès que le service est disponible et vous envoyons le résultat par email.',
+        'request_send'              => 'Envoyer la demande',
+        'request_cancel'            => 'Annuler',
+        'request_sending'           => 'Envoi…',
+        'request_ack'               => 'Demande enregistrée. Nous vous enverrons le résultat à :email dès que le service NARSA sera disponible.',
+        'request_error'             => 'Une erreur est survenue. Merci de réessayer.',
     ],
 
 ];

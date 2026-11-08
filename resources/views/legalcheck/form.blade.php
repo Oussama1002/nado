@@ -106,6 +106,35 @@
     .lc-alert.ok { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
     .lc-alert.err { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .lc-status { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: .8rem 1rem; color: #475569; margin-bottom: 1rem; }
+
+    /* Demande différée (service NARSA en panne) */
+    .lc-fallback { background: #fffbeb; border: 1px solid #fde68a; }
+    .lc-fallback .lc-legend { color: #b45309; }
+    .lc-fallback p { color: #78350f; line-height: 1.55; margin: 0 0 1rem; }
+    .lc-fallback-btn {
+        display: inline-flex; align-items: center; gap: .5rem; background: #1459DD; color: #fff;
+        font-weight: 800; border: 0; border-radius: 10px; padding: .85rem 1.4rem; font-size: 1rem; cursor: pointer;
+    }
+    .lc-fallback-btn:hover { background: #0e47b0; }
+    .lc-modal-overlay {
+        position: fixed; inset: 0; background: rgba(15,23,42,.55); display: none;
+        align-items: center; justify-content: center; z-index: 10000; padding: 16px;
+    }
+    .lc-modal-overlay.open { display: flex; }
+    .lc-modal {
+        background: #fff; border-radius: 16px; width: 100%; max-width: 480px;
+        padding: 1.6rem; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+    .lc-modal h2 { font-size: 1.25rem; font-weight: 900; color: #0f172a; margin: 0 0 .5rem; }
+    .lc-modal p.lc-modal-text { color: #475569; line-height: 1.5; margin: 0 0 1.1rem; font-size: .92rem; }
+    .lc-modal-err { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 10px; padding: .7rem .9rem; margin-bottom: 1rem; font-weight: 700; font-size: .9rem; display: none; }
+    .lc-modal-ok { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; border-radius: 10px; padding: .9rem 1rem; font-weight: 700; line-height: 1.5; display: none; }
+    .lc-modal-actions { display: flex; gap: .6rem; margin-top: 1.25rem; }
+    .lc-modal-send { flex: 1; background: #16a34a; color: #fff; border: 0; border-radius: 12px; padding: .9rem; font-size: 1rem; font-weight: 900; cursor: pointer; }
+    .lc-modal-send:hover { background: #15803d; }
+    .lc-modal-send:disabled { opacity: .6; cursor: default; }
+    .lc-modal-cancel { background: #f1f5f9; color: #475569; border: 0; border-radius: 12px; padding: .9rem 1.2rem; font-weight: 800; cursor: pointer; }
+    .lc-modal-cancel:hover { background: #e2e8f0; }
 </style>
 @endsection
 
@@ -161,5 +190,118 @@
             <span>{{ __('messages.legalcheck.disclaimer') }}</span>
         </p>
     </div>
+
+    {{-- Repli : le service NARSA intégré peut afficher « Une erreur est survenue,
+         réessayez plus tard ». Le vendeur laisse son matricule et on lui envoie
+         le résultat par email dès que le service est disponible. --}}
+    <div class="lc-card lc-fallback">
+        <p class="lc-legend"><i class="fa-solid fa-triangle-exclamation"></i> {{ __('messages.legalcheck.request_unavailable_title') }}</p>
+        <p>{{ __('messages.legalcheck.request_unavailable_text') }}</p>
+        <button type="button" class="lc-fallback-btn" id="lc_open_request">
+            <i class="fa-solid fa-envelope"></i> {{ __('messages.legalcheck.request_open_btn') }}
+        </button>
+    </div>
 </div>
+
+{{-- Modale : demande différée --}}
+<div class="lc-modal-overlay" id="lc_modal_overlay" role="dialog" aria-modal="true" aria-labelledby="lc_modal_title">
+    <div class="lc-modal">
+        <h2 id="lc_modal_title">{{ __('messages.legalcheck.request_modal_title') }}</h2>
+        <p class="lc-modal-text">{{ __('messages.legalcheck.request_modal_text') }}</p>
+
+        <div class="lc-modal-err" id="lc_modal_err"></div>
+        <div class="lc-modal-ok" id="lc_modal_ok"></div>
+
+        <form id="lc_request_form">
+            @if($annonce)
+                <input type="hidden" name="annonce_id" value="{{ $annonce->id }}">
+            @endif
+            <div class="lc-matricule">
+                <div class="lc-field">
+                    <label for="lc_m_number">{{ __('messages.legalcheck.matricule_number') }}</label>
+                    <input type="text" id="lc_m_number" name="matricule_number" inputmode="numeric" maxlength="10" autocomplete="off">
+                </div>
+                <div class="lc-field">
+                    <label for="lc_m_letter">{{ __('messages.legalcheck.matricule_letter') }}</label>
+                    <input type="text" id="lc_m_letter" name="matricule_letter" maxlength="8" autocomplete="off">
+                </div>
+                <div class="lc-field">
+                    <label for="lc_m_region">{{ __('messages.legalcheck.matricule_region') }}</label>
+                    <input type="text" id="lc_m_region" name="matricule_region" inputmode="numeric" maxlength="6" autocomplete="off">
+                </div>
+            </div>
+            <p class="lc-hint">{{ __('messages.legalcheck.matricule_hint') }}</p>
+
+            <div class="lc-modal-actions">
+                <button type="submit" class="lc-modal-send" id="lc_request_send">{{ __('messages.legalcheck.request_send') }}</button>
+                <button type="button" class="lc-modal-cancel" id="lc_request_cancel">{{ __('messages.legalcheck.request_cancel') }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+
+@section('script')
+<script>
+(function () {
+    const overlay = document.getElementById('lc_modal_overlay');
+    const openBtn = document.getElementById('lc_open_request');
+    const cancelBtn = document.getElementById('lc_request_cancel');
+    const form = document.getElementById('lc_request_form');
+    const sendBtn = document.getElementById('lc_request_send');
+    const errBox = document.getElementById('lc_modal_err');
+    const okBox = document.getElementById('lc_modal_ok');
+    if (!overlay || !openBtn || !form) return;
+
+    const TXT_SENDING = @json(__('messages.legalcheck.request_sending'));
+    const TXT_SEND = @json(__('messages.legalcheck.request_send'));
+    const TXT_GENERIC_ERR = @json(__('messages.legalcheck.request_error'));
+    const ENDPOINT = @json(route('legalcheck.request'));
+
+    function openModal() { errBox.style.display = 'none'; overlay.classList.add('open'); }
+    function closeModal() { overlay.classList.remove('open'); }
+
+    openBtn.addEventListener('click', openModal);
+    cancelBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errBox.style.display = 'none';
+        sendBtn.disabled = true;
+        sendBtn.textContent = TXT_SENDING;
+
+        try {
+            // Jeton CSRF frais (la session peut avoir été régénérée dans un autre onglet).
+            const tokRes = await fetch(@json(route('csrf.token')), { headers: { 'Accept': 'application/json' } });
+            const tokJson = await tokRes.json();
+
+            const fd = new FormData(form);
+            fd.append('_token', tokJson.token);
+
+            const res = await fetch(ENDPOINT, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': tokJson.token, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: fd,
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok && data.success) {
+                form.style.display = 'none';
+                okBox.textContent = data.message || '';
+                okBox.style.display = 'block';
+            } else {
+                errBox.textContent = data.message || TXT_GENERIC_ERR;
+                errBox.style.display = 'block';
+            }
+        } catch (err) {
+            errBox.textContent = TXT_GENERIC_ERR;
+            errBox.style.display = 'block';
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.textContent = TXT_SEND;
+        }
+    });
+})();
+</script>
 @endsection

@@ -265,6 +265,13 @@ Route::middleware(['auth:client'])->group(function () {
     Route::post('/verification-legale', [\App\Http\Controllers\LegalCheckController::class, 'store'])
         ->middleware('throttle:10,60')
         ->name('legalcheck.store');
+
+    // Demande différée : le service NARSA intégré est en panne ("Une erreur est
+    // survenue, réessayez plus tard"). Le vendeur laisse son matricule et on lui
+    // envoie le résultat par email dès que le service est de nouveau disponible.
+    Route::post('/verification-legale/demande', [\App\Http\Controllers\LegalCheckController::class, 'requestDeferred'])
+        ->middleware('throttle:10,60')
+        ->name('legalcheck.request');
 });
 
 // Fresh CSRF token for long-lived forms (vente modal) — avoids 419 when the

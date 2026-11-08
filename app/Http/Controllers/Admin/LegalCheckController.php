@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LegalCheck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -73,5 +74,47 @@ class LegalCheckController extends Controller
             'reviewed_at'  => now(),
             'notes'        => $request->input('notes', $legalCheck->notes),
         ]);
+
+        // Envoie le résultat au vendeur par email (notamment pour les demandes
+        // différées : "on vous envoie le résultat dès que le service est prêt").
+        // Best-effort : un échec SMTP ne bloque pas la revue admin.
+        if ($request->boolean('notify_client', true)) {
+            $this->notifyClientResult($legalCheck);
+        }
+    }
+
+    /** Email best-effort du résultat au vendeur rattaché (si email connu). */
+    private function notifyClientResult(LegalCheck $legalCheck): void
+    {
+        $legalCheck->loadMissing('client');
+        $client = $legalCheck->client;
+        if (! $client || empty($client->email)) {
+            return;
+        }
+
+        $matricule = $legalCheck->matricule_full ?: '—';
+        $verdict = $legalCheck->admin_status === 'confirmed'
+            ? ($legalCheck->declared_status === 'opposition'
+                ? 'Opposition active détectée sur le registre NARSA.'
+                : 'Aucune opposition — le véhicule est libre.')
+            : "Nous n'avons pas pu confirmer la situation légale.";
+        $notes = trim((string) $legalCheck->notes);
+
+        try {
+            Mail::raw(
+                "Bonjour {$client->name},\n\n"
+                . "Voici le résultat de votre vérification de situation légale (NARSA).\n\n"
+                . "Matricule : {$matricule}\n"
+                . "Résultat : {$verdict}\n"
+                . ($notes !== '' ? "\nNote de l'équipe : {$notes}\n" : '')
+                . "\nIndicatif, selon la base publique NARSA — ce n'est pas un certificat officiel.\n\n"
+                . "L'équipe NADO — autoenchere.ma",
+                function ($m) use ($client) {
+                    $m->to($client->email)->subject('Résultat de votre vérification légale (NARSA)');
+                }
+            );
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }
