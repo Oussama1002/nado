@@ -144,13 +144,17 @@
 @endsection
 
 @section('link')
+{{-- Font Awesome : chargé par le site public mais PAS par le thème admin (Mazer). --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
     .dash-action {
         display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.4rem;
         border-radius: 14px; color: #fff; text-decoration: none; height: 100%;
         box-shadow: 0 8px 22px rgba(15,23,42,.12); transition: transform .12s, box-shadow .12s;
     }
-    .dash-action:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15,23,42,.18); color: #fff; }
+    /* Forcer le blanc sur toute la tuile (le thème colore sinon les spans/liens). */
+    .dash-action, .dash-action:hover, .dash-action * { color: #fff !important; }
+    .dash-action:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15,23,42,.18); }
     .dash-action--amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .dash-action--blue  { background: linear-gradient(135deg, #3b82f6, #1459DD); }
     .dash-action--green { background: linear-gradient(135deg, #22c55e, #16a34a); }
@@ -166,7 +170,8 @@
 
     .dash-kpi .card-body { display: flex; flex-direction: column; gap: .15rem; padding: 1.15rem 1.25rem; }
     .dash-kpi__lbl { font-size: .82rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
-    .dash-kpi__num { font-size: 1.9rem; font-weight: 900; color: #0f172a; line-height: 1.1; }
+    /* Hérite la couleur de texte de la carte (lisible en thème clair ET sombre). */
+    .dash-kpi__num { font-size: 1.9rem; font-weight: 900; color: inherit; line-height: 1.1; }
     .dash-kpi__sub { font-size: .82rem; color: #94a3b8; font-weight: 600; }
 </style>
 @endsection
@@ -176,6 +181,10 @@
 <script>
 (function () {
     if (typeof Chart === 'undefined') return;
+
+    // Couleurs d'axe neutres : lisibles en thème clair comme sombre.
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(148,163,184,.18)';
 
     const BLUE = '#1459DD';
     const trendLabels = @json($trendLabels);
