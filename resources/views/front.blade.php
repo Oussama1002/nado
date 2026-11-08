@@ -3852,10 +3852,10 @@
                 /* Socials are duplicated in the drawer; contact details matter more. */
                 .top-bar .social-links { display: none !important; }
                 .info-item i { width: 10px !important; height: 10px !important; }
-                /* Keep the "NADO RADIO" label; the overlap came from the old 28px
-                   margin, so just drop that instead of hiding the text. */
-                .nd-radio-txt { display: inline !important; font-size: 9px !important; }
-                .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
+                /* The top-bar radio link crowds the phone number on narrow phones.
+                   Hide it here — the floating Nado Radio mini-player (bottom-left)
+                   is injected site-wide, so radio stays one tap away. */
+                .nd-radio-link { display: none !important; }
                 .top-bar { padding: 8px 0 !important; }
                 .top-bar .custom-container { padding: 0 10px !important; }
                 .contact-info { gap: 10px !important; }

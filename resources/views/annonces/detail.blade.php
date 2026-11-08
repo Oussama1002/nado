@@ -2246,8 +2246,9 @@
                 .nv-contact-info { gap: 8px !important; min-width: 0; }
                 .nv-info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 4px !important; }
                 .nv-info-item i { width: 10px !important; height: 10px !important; }
-                .nv-top-bar .nd-radio-txt { font-size: 9px !important; }
-                .nv-top-bar .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
+                /* Lien radio masqué sur mobile (chevauchait le téléphone) : le
+                   mini-lecteur flottant est injecté sur tout le site. */
+                .nv-top-bar .nd-radio-link { display: none !important; }
                 .nv-top-bar [style*="gap:16px"] { gap: 8px !important; }
             }
             @media (max-width: 380px) {
