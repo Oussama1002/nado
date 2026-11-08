@@ -477,9 +477,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 
 
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // all your admin resources go here:
     Route::post('/annonces/{id}/verify', [AnnoncesController::class, 'verify'])->name('annonces.verify');
