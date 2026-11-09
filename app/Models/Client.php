@@ -35,13 +35,15 @@ class Client extends Authenticatable
         'is_approved',
         'is_verified',
         'ae_approved',
+        'caution_reminder_sent_at',
         'otp_code',
         'otp_expires_at',
     ];
 
     protected $casts = [
-        'otp_expires_at' => 'datetime',
-        'ae_approved'    => 'boolean',
+        'otp_expires_at'           => 'datetime',
+        'ae_approved'              => 'boolean',
+        'caution_reminder_sent_at' => 'datetime',
     ];
 
     // ✅ Si tu utilises des mots de passe, ajoute aussi un cast

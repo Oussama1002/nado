@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         // Rappel email aux clients flotte&enchere ~24h avant l'ouverture d'une enchère.
         $schedule->command('nado:enchere-reminders')->hourly()->withoutOverlapping();
+
+        // Relance "déposez une caution" aux clients flotte&enchere non validés 10j après inscription.
+        $schedule->command('nado:caution-reminders')->dailyAt('09:00')->withoutOverlapping();
     }
 
     /**

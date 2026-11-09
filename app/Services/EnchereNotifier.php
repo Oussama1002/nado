@@ -102,6 +102,48 @@ class EnchereNotifier
 
 
     /**
+     * Rappelle à un client « flotte&enchere » non validé (sans caution) qu'il
+     * doit déposer une caution pour activer son compte Auto Enchère.
+     * Best-effort : ne lève jamais d'exception.
+     *
+     * @return bool true si l'email est parti.
+     */
+    public static function cautionReminder(Client $client): bool
+    {
+        if (!$client->email) {
+            return false;
+        }
+
+        $name = $client->name ?: 'cher client';
+        $html = '<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">'
+            . '<div style="max-width:560px;margin:0 auto;padding:24px;">'
+            . '<div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(15,23,42,.25);">'
+            . '<div style="background:#F37021;padding:20px 24px;color:#fff;">'
+            . '<div style="font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;opacity:.9;">NADO Auto Enchère</div>'
+            . '<div style="font-size:20px;font-weight:900;margin-top:4px;">Activez votre compte enchères</div>'
+            . '</div>'
+            . '<div style="padding:24px;">'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Bonjour ' . e($name) . ',</p>'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Votre compte <strong>Flotte &amp; Enchère</strong> a bien été créé, mais il n\'est pas encore validé. Pour participer aux enchères NADO, vous devez déposer une <strong>caution</strong> qui permet de valider votre compte.</p>'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 20px;">Contactez notre équipe pour finaliser le dépôt de votre caution et débloquer l\'accès aux ventes aux enchères.</p>'
+            . '<a href="' . e(route('nadoautoenchere.prelogin')) . '" style="display:inline-block;background:#1459DD;color:#fff;text-decoration:none;font-weight:900;font-size:14px;padding:14px 24px;border-radius:12px;">Activer mon compte</a>'
+            . '<p style="color:#94a3b8;font-size:12px;line-height:1.6;margin:20px 0 0;">Besoin d\'aide ? Écrivez-nous à contact@nado.ma.</p>'
+            . '</div></div></div></body></html>';
+
+        try {
+            Mail::html($html, function ($m) use ($client) {
+                $m->to($client->email, $client->name ?: '')
+                  ->subject('NADO Auto Enchère — déposez votre caution pour valider votre compte');
+            });
+            Log::info('Rappel caution enchère envoyé au client #' . $client->id);
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Rappel caution enchère échoué pour client #' . $client->id . ' : ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Informe contact@nado.ma qu'un client attend la validation de son accès
      * Auto Enchère. N'interrompt jamais le flux si l'envoi échoue.
      */
