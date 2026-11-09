@@ -23,7 +23,6 @@
 
                 <th>Entreprise</th>
 
-                <th>Vérifié</th>
                 <th>Date d’inscription</th>
                 <th>Action</th>
             </tr>
@@ -39,12 +38,6 @@
                     <td>{{ $client->ae_role ? ucfirst($client->ae_role) : '-' }}</td>
 
                     <td>{{ $client->company }}</td>
-                   <td>
-    <input type="checkbox" 
-           class="verify-toggle" 
-           data-id="{{ $client->id }}"
-           {{ $client->email_verified_at ? 'checked' : '' }}>
-</td>
 
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
                     <td>

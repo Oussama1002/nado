@@ -21,7 +21,6 @@
                 <th>Téléphone</th>
                 <th>Rôle</th>
                 <th>Accès enchères</th>
-                <th>Vérifié</th>
                 <th>Date d’inscription</th>
                 <th>Action</th>
             </tr>
@@ -55,12 +54,6 @@
                             {{ $client->ae_approved ? 'Retirer' : 'Valider' }}
                         </button>
                     </td>
-                    <td>
-                        <input type="checkbox"
-                               class="verify-toggle"
-                               data-id="{{ $client->id }}"
-                               {{ $client->email_verified_at ? 'checked' : '' }}>
-                    </td>
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-info btn-sm">Voir</a>
@@ -74,7 +67,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
+                    <td colspan="9" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
                 </tr>
             @endforelse
         </tbody>
