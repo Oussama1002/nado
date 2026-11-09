@@ -2990,7 +2990,7 @@
                         <a href="#"><i data-lucide="linkedin"></i></a>
                     </div>
                     @if(feature_on('radio.enabled'))
-                        <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
+                        <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;margin-left:12px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="nd-radio-txt">Nado Radio</span>
                         </a>
                     @endif
