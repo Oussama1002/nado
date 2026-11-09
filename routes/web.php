@@ -430,6 +430,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     // Doit précéder la resource : résolution AJAX d'un lien Google Maps (admin form)
     Route::post('nadoautoenchere/resolve-maps', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'resolveMaps'])
         ->name('nadoautoenchere.resolveMaps');
+    Route::post('nadoautoenchere/{id}/toggle-active', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'toggleActive'])
+        ->name('nadoautoenchere.toggleActive');
     Route::resource('nadoautoenchere', \App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class);
 
     Route::resource('videoads', VideoAdsController::class); // <-- this line

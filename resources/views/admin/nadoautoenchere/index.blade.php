@@ -32,6 +32,7 @@
 
                           <!-- <th>date</th> -->
                           <th>Active</th>
+                          <th>Notifié</th>
                           <th class="d-flex justify-content-end">Action</th>
                       </tr>
                   </thead>
@@ -50,7 +51,23 @@
                       <td>{{ $enchere->ends_at; }}</td>
 
                       <!-- <td>{{ $enchere->created_at; }}</td> -->
-                      <td class="text-center"> @if ($enchere->active == 1) <i class="bi bi-check text-success"></i> @else <i class="bi bi-dash-circle text-danger"></i> @endif </td>
+                      <td class="text-center">
+                          {{-- Curseur pour activer / désactiver l'enchère --}}
+                          <div class="form-check form-switch d-inline-block">
+                              <input class="form-check-input enchere-active-toggle" type="checkbox" role="switch"
+                                     data-id="{{ $enchere->id }}" {{ $enchere->active ? 'checked' : '' }}
+                                     style="cursor:pointer;">
+                          </div>
+                      </td>
+                      <td class="text-center">
+                          {{-- Rappel 24h envoyé aux clients / vendeur ? --}}
+                          @if ($enchere->reminder_sent_at)
+                              <span class="badge bg-success">Oui</span><br>
+                              <small class="text-muted">{{ \Illuminate\Support\Carbon::parse($enchere->reminder_sent_at)->format('d/m/Y H:i') }}</small>
+                          @else
+                              <span class="badge bg-secondary">Non</span>
+                          @endif
+                      </td>
                       <td>
                         <div class="d-flex gap-2 w-100 justify-content-end">
                          <a href="{{ route("admin.nadoautoenchere.edit" , $enchere)}}" class="btn btn-info">Update</a>
@@ -81,26 +98,26 @@
 @endsection
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.verify-toggle').forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            fetch("{{ route('admin.annonces.toggleHomepage') }}", {
-                method: "POST",
+    // Curseur Active : active / désactive l'enchère sans recharger la page.
+    document.querySelectorAll('.enchere-active-toggle').forEach(function (toggle) {
+        toggle.addEventListener('change', function () {
+            var id = this.dataset.id;
+            var checked = this.checked;
+            var self = this;
+            fetch('/admin/nadoautoenchere/' + encodeURIComponent(id) + '/toggle-active', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({
-                    id: this.dataset.id,
-                    is_homepage: this.checked ? 1 : 0
-                })
+                body: JSON.stringify({ active: checked ? 1 : 0 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    alert('Failed to update homepage status.');
-                }
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (!data.success) { self.checked = !checked; alert('Échec de la mise à jour.'); }
             })
-            .catch(() => alert('Error updating homepage status.'));
+            .catch(function () { self.checked = !checked; alert('Erreur réseau.'); });
         });
     });
 });

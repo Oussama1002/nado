@@ -28,6 +28,19 @@ class AdminNadoAutoEnchereController extends Controller
         ]);
     }
 
+    /** Active / désactive une enchère (toggle depuis la liste admin). */
+    public function toggleActive(Request $request, $id)
+    {
+        $enchere = NadoAutoEnchere::findOrFail($id);
+        $enchere->active = $request->boolean('active');
+        $enchere->save();
+
+        return response()->json([
+            'success' => true,
+            'active'  => (bool) $enchere->active,
+        ]);
+    }
+
     public function create()
     {
         return view('admin.nadoautoenchere.form', [
