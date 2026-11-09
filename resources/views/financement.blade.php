@@ -2317,6 +2317,8 @@
         <p>{{ __('messages.extra.finance_tagline') }}</p>
     </footer>
 
+    @include('partials.site-footer')
+
     <!-- Pre-approval request popup (opened by the "Demander un accord de principe" button) -->
     <div id="accordModal" class="accord-modal" aria-hidden="true">
         <div class="accord-modal__backdrop" onclick="closeAccordModal()"></div>

@@ -2284,6 +2284,8 @@
             });
         });
     </script>
+
+    @include('partials.site-footer')
 </body>
 
 </html>

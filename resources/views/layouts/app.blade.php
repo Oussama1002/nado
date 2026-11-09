@@ -68,6 +68,9 @@
         @yield('content')
     </main>
 
+    {{-- Shared site footer (self-contained partial) --}}
+    @include('partials.site-footer')
+
     {{-- Nado Radio mini-player is injected site-wide by InjectRadioMiniPlayer middleware --}}
     @yield('script')
 </body>
