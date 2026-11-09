@@ -226,7 +226,7 @@
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-20">
 
-                <div class="text-left">
+                <div class="{{ app()->getLocale() === 'ar' ? 'text-right' : 'text-left' }}">
                     <div
                         class="inline-flex items-center gap-2 px-4 py-2 bg-[#F37021]/10 border border-[#F37021]/20 rounded-full mb-8">
                         <i data-lucide="sparkles" class="w-4 h-4 text-[#F37021]"></i>
