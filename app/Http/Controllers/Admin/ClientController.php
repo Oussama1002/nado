@@ -29,12 +29,19 @@ class ClientController extends Controller
     }
 
     /** Liste dédiée des clients Auto Enchère (type flotte&enchere). */
-    public function encheresClients()
+    public function encheresClients(Request $request)
     {
+        // Filtre optionnel par rôle Auto Enchère (acheteur / vendeur) via ?role=.
+        $role = in_array($request->query('role'), ['acheteur', 'vendeur'], true)
+            ? $request->query('role')
+            : null;
+
         $clients = Client::where('type', 'flotte&enchere')
+            ->when($role, fn ($q) => $q->where('ae_role', $role))
             ->latest()
             ->get();
-        return view('admin.clients.encheres', compact('clients'));
+
+        return view('admin.clients.encheres', compact('clients', 'role'));
     }
     public function approval()
     {
