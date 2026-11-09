@@ -12,11 +12,11 @@
 <div class="register-page">
     <div class="register-container">
         <div class="form-header">
-            <h2><i class="fa-solid fa-gavel" style="color:#F37021"></i> Rejoindre les enchères NADO</h2>
+            <h2><i class="fa-solid fa-gavel" style="color:#F37021"></i> {{ __('messages.ae.reg_title') }}</h2>
             @if($isUpgrade)
-                <p>Vos informations sont déjà enregistrées — choisissez simplement votre rôle pour accéder aux enchères.</p>
+                <p>{{ __('messages.ae.reg_upgrade_desc') }}</p>
             @else
-                <p>Créez votre compte <strong>Flotte &amp; Enchère</strong> pour participer aux ventes aux enchères.</p>
+                <p>{!! __('messages.ae.reg_create_desc') !!}</p>
             @endif
         </div>
 
@@ -54,41 +54,41 @@
 
             <div class="form-group">
                 <i class="fa-solid fa-user form-icon" aria-hidden="true"></i>
-                <input type="text" name="name" placeholder="Nom complet" value="{{ old('name', $isUpgrade ? $authClient->name : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
+                <input type="text" name="name" placeholder="{{ __('messages.ae.reg_ph_name') }}" value="{{ old('name', $isUpgrade ? $authClient->name : '') }}" {{ $isUpgrade ? 'readonly' : '' }} required>
             </div>
 
             @if($profile !== "particulier")
             <div class="form-group">
                 <i class="fa-solid fa-building form-icon" aria-hidden="true"></i>
-                <input type="text" name="company" placeholder="Nom de l'entreprise" value="{{ old('company', $isUpgrade ? $authClient->company : '') }}">
+                <input type="text" name="company" placeholder="{{ __('messages.ae.reg_ph_company') }}" value="{{ old('company', $isUpgrade ? $authClient->company : '') }}">
             </div>
             @endif
 
             <div class="form-group">
                 <i class="fa-solid fa-envelope form-icon" aria-hidden="true"></i>
-                <input type="email" name="email" placeholder="Adresse e-mail" value="{{ old('email', $isUpgrade ? $authClient->email : '') }}" {{ $isUpgrade ? 'readonly' : 'required' }}>
+                <input type="email" name="email" placeholder="{{ __('messages.ae.reg_ph_email') }}" value="{{ old('email', $isUpgrade ? $authClient->email : '') }}" {{ $isUpgrade ? 'readonly' : 'required' }}>
             </div>
 
             <div class="form-group">
                 {{-- Téléphone éditable aussi en upgrade : l'Auto-Enchère s'appuie dessus.
                      type=tel (pas number) pour afficher les formats avec + et espaces. --}}
                 <i class="fa-solid fa-phone form-icon" aria-hidden="true"></i>
-                <input type="tel" name="phone" placeholder="Téléphone" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" required>
+                <input type="tel" name="phone" placeholder="{{ __('messages.ae.reg_ph_phone') }}" value="{{ old('phone', $isUpgrade ? $authClient->phone : '') }}" required>
             </div>
 
             @unless($isUpgrade)
             <div class="form-group password-group">
                 <i class="fa-solid fa-lock form-icon" aria-hidden="true"></i>
-                <input type="password" name="password" id="password" placeholder="Mot de passe" required>
-                <button type="button" class="toggle-password" data-target="#password" aria-label="Afficher / Masquer le mot de passe">
+                <input type="password" name="password" id="password" placeholder="{{ __('messages.ae.reg_ph_password') }}" required>
+                <button type="button" class="toggle-password" data-target="#password" aria-label="{{ __('messages.ae.reg_toggle_password') }}">
                     <i class="fa-solid fa-eye"></i>
                 </button>
             </div>
 
             <div class="form-group password-group">
                 <i class="fa-solid fa-key form-icon" aria-hidden="true"></i>
-                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmer le mot de passe" required>
-                <button type="button" class="toggle-password" data-target="#password_confirmation" aria-label="Afficher / Masquer la confirmation">
+                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="{{ __('messages.ae.reg_ph_password_confirm') }}" required>
+                <button type="button" class="toggle-password" data-target="#password_confirmation" aria-label="{{ __('messages.ae.reg_toggle_confirm') }}">
                     <i class="fa-solid fa-eye"></i>
                 </button>
             </div>
@@ -102,11 +102,11 @@
                 </div>
             @endif
 
-            <button type="submit" class="btn-register">{{ $isUpgrade ? 'Accéder aux enchères' : 'Créer mon compte enchères' }}</button>
+            <button type="submit" class="btn-register">{{ $isUpgrade ? __('messages.ae.reg_btn_upgrade') : __('messages.ae.reg_btn_create') }}</button>
 
             @unless($isUpgrade)
             <div class="register-link">
-                Déjà inscrit ? <a href="{{ route("nadoautoenchere.login") }}">Se connecter</a>
+                {{ __('messages.ae.reg_already') }} <a href="{{ route("nadoautoenchere.login") }}">{{ __('messages.ae.reg_login') }}</a>
             </div>
             @endunless
         </form>
