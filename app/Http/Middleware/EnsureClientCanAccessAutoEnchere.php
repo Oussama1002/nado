@@ -20,6 +20,15 @@ class EnsureClientCanAccessAutoEnchere
                 ->with('flotte_enchere_blocked', 'Votre compte doit être de type Flotte & Enchère pour accéder aux enchères.');
         }
 
+        // L'espace d'achat est réservé aux acheteurs : un vendeur doit créer un
+        // compte Acheteur. Ce contrôle passe AVANT "en attente" pour qu'un vendeur
+        // voie le bon message au lieu de la validation en attente.
+        if ($client->ae_role === 'vendeur') {
+            return redirect()
+                ->route('nadoautoenchere.prelogin')
+                ->with('ae_need_buyer', __('messages.ae.need_buyer_desc'));
+        }
+
         // Compte Auto Enchère en attente de validation admin → pas d'accès direct.
         if (! $client->ae_approved) {
             return redirect()

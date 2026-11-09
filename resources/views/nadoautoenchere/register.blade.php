@@ -8,6 +8,12 @@
     // (pas de ressaisie, pas de mot de passe), sinon inscription classique.
     $authClient = $client ?? null;
     $isUpgrade  = $authClient && $authClient->type !== 'flotte&enchere';
+
+    // Wording adapté au rôle choisi (vendeur / acheteur), sinon générique.
+    $regDescKey = $role === 'vendeur' ? 'reg_create_desc_vendeur'
+                : ($role === 'acheteur' ? 'reg_create_desc_acheteur' : 'reg_create_desc');
+    $regBtnKey  = $role === 'vendeur' ? 'reg_btn_create_vendeur'
+                : ($role === 'acheteur' ? 'reg_btn_create_acheteur' : 'reg_btn_create');
 @endphp
 <div class="register-page">
     <div class="register-container">
@@ -16,7 +22,7 @@
             @if($isUpgrade)
                 <p>{{ __('messages.ae.reg_upgrade_desc') }}</p>
             @else
-                <p>{!! __('messages.ae.reg_create_desc') !!}</p>
+                <p>{!! __('messages.ae.' . $regDescKey) !!}</p>
             @endif
         </div>
 
@@ -102,7 +108,7 @@
                 </div>
             @endif
 
-            <button type="submit" class="btn-register">{{ $isUpgrade ? __('messages.ae.reg_btn_upgrade') : __('messages.ae.reg_btn_create') }}</button>
+            <button type="submit" class="btn-register">{{ $isUpgrade ? __('messages.ae.reg_btn_upgrade') : __('messages.ae.' . $regBtnKey) }}</button>
 
             @unless($isUpgrade)
             <div class="register-link">

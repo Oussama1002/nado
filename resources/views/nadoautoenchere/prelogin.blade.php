@@ -107,6 +107,22 @@
     </div>
     @endif
 
+    {{-- Popup : un vendeur a cliqué sur « Acheter » → il lui faut un compte Acheteur. --}}
+    @if (session('ae_need_buyer'))
+    <div id="aeNeedBuyerModal" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 px-4" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+        <div class="bg-white rounded-2xl max-w-md w-full p-7 text-center shadow-2xl">
+            <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#1459DD]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900">{{ __('messages.ae.need_buyer_title') }}</h3>
+            <p class="mt-3 text-slate-600">{{ __('messages.ae.need_buyer_desc') }}</p>
+            <button type="button" onclick="document.getElementById('aeNeedBuyerModal').remove()" class="mt-6 w-full bg-[#1459DD] hover:bg-[#0f47b3] text-white font-bold py-3 rounded-xl transition-colors">{{ __('messages.ae.need_buyer_close') }}</button>
+        </div>
+    </div>
+    @endif
+
     {{-- NAVBAR (shared) --}}
     @section('na_nav_links')
         @php

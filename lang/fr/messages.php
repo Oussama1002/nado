@@ -301,6 +301,16 @@ return [
         'reg_btn_create'       => 'Créer mon compte enchères',
         'reg_already'          => 'Déjà inscrit ?',
         'reg_login'            => 'Se connecter',
+        // Variantes du formulaire d'inscription selon le rôle (vendeur / acheteur)
+        'reg_create_desc_vendeur'  => 'Créez votre compte <strong>Flotte &amp; Enchère</strong> en tant que <strong>Vendeur</strong> pour mettre vos véhicules aux enchères.',
+        'reg_create_desc_acheteur' => 'Créez votre compte <strong>Flotte &amp; Enchère</strong> en tant qu\'<strong>Acheteur</strong> pour participer aux ventes aux enchères.',
+        'reg_btn_create_vendeur'   => 'Créer mon compte vendeur',
+        'reg_btn_create_acheteur'  => 'Créer mon compte acheteur',
+        // Message : un vendeur tente d\'accéder à l\'espace d\'achat
+        'need_buyer_title' => 'Compte Acheteur requis',
+        'need_buyer_desc'  => 'Votre compte est enregistré en tant que Vendeur. Pour accéder à l\'espace d\'achat des enchères, vous devez créer un compte Acheteur.',
+        'need_buyer_btn'   => 'Créer un compte Acheteur',
+        'need_buyer_close' => 'J\'ai compris',
         'hero_title'     => "Ventes aux enchères de véhicules d'occasion",
         'hero_tag'       => 'Transparence • Professionnalisme • Tranquillité',
         'how_btn'        => 'Comment ça marche',
