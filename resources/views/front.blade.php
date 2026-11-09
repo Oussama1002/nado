@@ -1465,6 +1465,12 @@
             text-align: left;
         }
 
+        /* Arabic: aligner le contenu (expertise / financement) à droite (RTL). */
+        html[dir="rtl"] .expert-content {
+            text-align: right;
+            align-items: flex-end;
+        }
+
         .label-trust {
             display: flex;
             align-items: center;
