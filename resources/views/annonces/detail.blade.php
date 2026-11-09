@@ -2478,7 +2478,15 @@
                                 $mainImage = asset('storage/ads/' . $annonce->media->first()->name);
                             }
                             $imageCount = $hasImages ? count($annonce->images) : $annonce->media->count();
-                            $totalMedia = $imageCount + ($annonce->reel ? 1 : 0);
+
+                            // Uploaded video file (annonces.video) — distinct from the YouTube `reel`.
+                            // Stored on the public disk (e.g. "annonces/videos/xxx.mp4"); older rows may hold a full URL.
+                            $hasVideoFile = !empty($annonce->video);
+                            $videoFileUrl = $hasVideoFile
+                                ? (str_starts_with($annonce->video, 'http') ? $annonce->video : asset('storage/' . ltrim($annonce->video, '/')))
+                                : null;
+
+                            $totalMedia = $imageCount + ($annonce->reel ? 1 : 0) + ($hasVideoFile ? 1 : 0);
                         @endphp
 
                         <div class="image-counter">1 / {{ $totalMedia }}</div>
@@ -2487,7 +2495,7 @@
                             <img id="mainImage" src="{{ $mainImage }}" alt="Image véhicule">
                         @endif
 
-                        @if ($annonce->reel)
+                        @if ($annonce->reel || $hasVideoFile)
                             <div class="live-view-thumbnail" onclick="document.querySelector('.thumb-video').click()">
                                 @php
                                     $thumbImage = null;
@@ -2536,6 +2544,14 @@
                             <div class="thumb thumb-video"
                                 data-index="{{ $imageCount }}"
                                 data-type="video">
+                                <img src="{{ asset('assets/images/play-thumbnail.png') }}"
+                                    style="width:100%;height:100%;object-fit:cover;border-radius:0.5rem;">
+                            </div>
+                        @endif
+                        @if ($hasVideoFile)
+                            <div class="thumb thumb-video"
+                                data-index="{{ $imageCount + ($annonce->reel ? 1 : 0) }}"
+                                data-type="videofile">
                                 <img src="{{ asset('assets/images/play-thumbnail.png') }}"
                                     style="width:100%;height:100%;object-fit:cover;border-radius:0.5rem;">
                             </div>
@@ -3295,6 +3311,12 @@
                     videoId: "{{ $annonce->reel }}"
                 });
             @endif
+            @if ($hasVideoFile)
+                mediaList.push({
+                    type: 'videofile',
+                    src: @json($videoFileUrl)
+                });
+            @endif
 
             let currentIndex = 0;
             const mainDisplay = document.getElementById('mainDisplay');
@@ -3307,7 +3329,7 @@
 
                 if (item.type === 'image') {
                     let overlayHtml = '';
-                    const videoIndex = mediaList.findIndex(m => m.type === 'video');
+                    const videoIndex = mediaList.findIndex(m => m.type === 'video' || m.type === 'videofile');
                     if (videoIndex !== -1) {
                         const thumbSrc = mediaList.length > 1 && mediaList[1].type === 'image' ? mediaList[1].src :
                             mediaList[0].src;
@@ -3338,6 +3360,11 @@
                         });
                     }
 
+                } else if (item.type === 'videofile') {
+                    mainDisplay.innerHTML = `${counterHtml}
+                <video controls playsinline preload="metadata" src="${item.src}" style="width:100%;max-height:500px;height:400px;object-fit:contain;border-radius:1rem;background:#000;"></video>
+                <button id="prevBtn" class="gallery-nav-btn prev"><i class="fas fa-chevron-left"></i></button>
+                <button id="nextBtn" class="gallery-nav-btn next"><i class="fas fa-chevron-right"></i></button>`;
                 } else {
                     mainDisplay.innerHTML = `${counterHtml}
                 <iframe width="100%" height="400" src="https://www.youtube.com/embed/${item.videoId}" frameborder="0" allowfullscreen style="border-radius:1rem;"></iframe>
