@@ -32,8 +32,7 @@ class EnchereNotifier
             return 0;
         }
 
-        $subject = 'Enchère NADO — ouverture dans moins de 24 h : '
-            . ($enchere->titre ?: trim(($enchere->mark ?? '') . ' ' . ($enchere->modele ?? '')) ?: ('#' . $enchere->id));
+        $subject = 'Enchère NADO — ouverture dans moins de 24 h : ' . self::vehicleLabel($enchere);
         $html = self::buildEnchereHtml(
             $enchere,
             'Une enchère ouvre dans moins de 24 h',
@@ -76,7 +75,7 @@ class EnchereNotifier
             return false;
         }
 
-        $vehicule = $enchere->titre ?: trim(($enchere->mark ?? '') . ' ' . ($enchere->modele ?? '')) ?: ('#' . $enchere->id);
+        $vehicule = self::vehicleLabel($enchere);
         $html = self::buildEnchereHtml(
             $enchere,
             'Votre véhicule passe en ligne dans moins de 24 h',
@@ -97,6 +96,34 @@ class EnchereNotifier
         }
     }
 
+    /** Nom de la marque : résout l'ID via la relation, sinon renvoie la valeur brute (ligne migrée). */
+    private static function brandName(NadoAutoEnchere $enchere): string
+    {
+        if (is_numeric($enchere->mark)) {
+            return optional($enchere->brand)->name ?: (string) $enchere->mark;
+        }
+        return (string) ($enchere->mark ?? '');
+    }
+
+    /** Nom du modèle : idem (ID via relation, sinon valeur brute). */
+    private static function modelName(NadoAutoEnchere $enchere): string
+    {
+        if (is_numeric($enchere->modele)) {
+            return optional($enchere->modeleRelation)->name ?: (string) $enchere->modele;
+        }
+        return (string) ($enchere->modele ?? '');
+    }
+
+    /** Libellé lisible du véhicule (titre, sinon marque + modèle résolus). */
+    private static function vehicleLabel(NadoAutoEnchere $enchere): string
+    {
+        if ($enchere->titre) {
+            return $enchere->titre;
+        }
+        $label = trim(self::brandName($enchere) . ' ' . self::modelName($enchere));
+        return $label !== '' ? $label : ('#' . $enchere->id);
+    }
+
     /**
      * Construit le corps HTML du rappel d'enchère à partir des détails du véhicule.
      */
@@ -105,10 +132,14 @@ class EnchereNotifier
         $fmtDate = fn ($d) => $d ? \Illuminate\Support\Carbon::parse($d)->format('d/m/Y à H:i') : '—';
         $fmtNum  = fn ($n) => ($n === null || $n === '') ? '—' : number_format((float) $n, 0, ',', ' ');
 
+        // mark/modele contiennent un ID (lignes récentes) ou un nom (lignes migrées).
+        $brandName = self::brandName($enchere);
+        $modelName = self::modelName($enchere);
+
         $rows = [
-            'Véhicule'        => $enchere->titre ?: trim(($enchere->mark ?? '') . ' ' . ($enchere->modele ?? '')) ?: '—',
-            'Marque'          => $enchere->mark ?: '—',
-            'Modèle'          => $enchere->modele ?: '—',
+            'Véhicule'        => $enchere->titre ?: trim($brandName . ' ' . $modelName) ?: '—',
+            'Marque'          => $brandName ?: '—',
+            'Modèle'          => $modelName ?: '—',
             'Année'           => $enchere->year ?: '—',
             'Kilométrage'     => $enchere->km !== null ? $fmtNum($enchere->km) . ' km' : '—',
             'Carburant'       => $enchere->carburant ?: '—',
