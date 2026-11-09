@@ -34,7 +34,11 @@ class EnchereNotifier
 
         $subject = 'Enchère NADO — ouverture dans moins de 24 h : '
             . ($enchere->titre ?: trim(($enchere->mark ?? '') . ' ' . ($enchere->modele ?? '')) ?: ('#' . $enchere->id));
-        $html = self::buildEnchereHtml($enchere);
+        $html = self::buildEnchereHtml(
+            $enchere,
+            'Une enchère ouvre dans moins de 24 h',
+            'Bonjour,<br>Une nouvelle enchère réservée aux clients <strong>Flotte &amp; Enchère</strong> ouvre bientôt. Voici tous les détails du véhicule :'
+        );
 
         $sent = 0;
         foreach ($clients as $client) {
@@ -53,9 +57,50 @@ class EnchereNotifier
     }
 
     /**
+     * Prévient le vendeur (propriétaire du véhicule, retrouvé via le téléphone de
+     * l'enchère) que son véhicule sera mis en ligne dans moins de 24 h.
+     * Best-effort : ne lève jamais d'exception.
+     *
+     * @return bool true si l'email est parti.
+     */
+    public static function openingSoonToOwner(NadoAutoEnchere $enchere): bool
+    {
+        // Le propriétaire est rattaché par téléphone (client_id n'est pas renseigné).
+        $owner = $enchere->client; // belongsTo(Client, 'phone', 'phone')
+        if (!$owner && $enchere->phone) {
+            $owner = Client::where('phone', $enchere->phone)->first();
+        }
+
+        if (!$owner || !$owner->email) {
+            Log::info('Rappel vendeur enchère #' . $enchere->id . ' : propriétaire introuvable ou sans email.');
+            return false;
+        }
+
+        $vehicule = $enchere->titre ?: trim(($enchere->mark ?? '') . ' ' . ($enchere->modele ?? '')) ?: ('#' . $enchere->id);
+        $html = self::buildEnchereHtml(
+            $enchere,
+            'Votre véhicule passe en ligne dans moins de 24 h',
+            'Bonjour ' . e($owner->name ?: '') . ',<br>Votre véhicule <strong>' . e($vehicule)
+                . '</strong> sera mis aux enchères sur NADO dans moins de 24 h. Rappel des informations enregistrées :'
+        );
+
+        try {
+            Mail::html($html, function ($m) use ($owner, $vehicule) {
+                $m->to($owner->email, $owner->name ?: '')
+                  ->subject('NADO Auto Enchère — votre véhicule passe en ligne dans 24 h : ' . $vehicule);
+            });
+            Log::info('Rappel vendeur enchère #' . $enchere->id . ' envoyé au propriétaire #' . $owner->id);
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Rappel vendeur enchère #' . $enchere->id . ' échoué : ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Construit le corps HTML du rappel d'enchère à partir des détails du véhicule.
      */
-    private static function buildEnchereHtml(NadoAutoEnchere $enchere): string
+    private static function buildEnchereHtml(NadoAutoEnchere $enchere, string $heading, string $intro): string
     {
         $fmtDate = fn ($d) => $d ? \Illuminate\Support\Carbon::parse($d)->format('d/m/Y à H:i') : '—';
         $fmtNum  = fn ($n) => ($n === null || $n === '') ? '—' : number_format((float) $n, 0, ',', ' ');
@@ -90,10 +135,10 @@ class EnchereNotifier
             . '<div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(15,23,42,.25);">'
             . '<div style="background:#F37021;padding:20px 24px;color:#fff;">'
             . '<div style="font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;opacity:.9;">NADO Auto Enchère</div>'
-            . '<div style="font-size:20px;font-weight:900;margin-top:4px;">Une enchère ouvre dans moins de 24 h</div>'
+            . '<div style="font-size:20px;font-weight:900;margin-top:4px;">' . $heading . '</div>'
             . '</div>'
             . '<div style="padding:24px;">'
-            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Bonjour,<br>Une nouvelle enchère réservée aux clients <strong>Flotte &amp; Enchère</strong> ouvre bientôt. Voici tous les détails du véhicule :</p>'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">' . $intro . '</p>'
             . '<table style="width:100%;border-collapse:collapse;margin-bottom:20px;">' . $rowsHtml . '</table>'
             . '<a href="' . e($url) . '" style="display:inline-block;background:#1459DD;color:#fff;text-decoration:none;font-weight:900;font-size:14px;padding:14px 24px;border-radius:12px;">Voir l\'enchère</a>'
             . '<p style="color:#94a3b8;font-size:12px;line-height:1.6;margin:20px 0 0;">Vous recevez cet email car votre compte NADO est approuvé pour l\'Auto Enchère.</p>'

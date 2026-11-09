@@ -36,10 +36,11 @@ class SendEnchereReminders extends Command
         }
 
         foreach ($encheres as $enchere) {
-            $sent = EnchereNotifier::openingSoon($enchere);
+            $sent = EnchereNotifier::openingSoon($enchere);           // tous les clients flotte&enchere
+            $owner = EnchereNotifier::openingSoonToOwner($enchere);   // le vendeur (propriétaire du véhicule)
             // Marqué même si 0 envoi (aucun client) : évite de réessayer en boucle.
             $enchere->forceFill(['reminder_sent_at' => $now])->save();
-            $this->info("Enchère #{$enchere->id} : {$sent} email(s) envoyé(s).");
+            $this->info("Enchère #{$enchere->id} : {$sent} email(s) clients" . ($owner ? ' + vendeur' : '') . '.');
         }
 
         return self::SUCCESS;
