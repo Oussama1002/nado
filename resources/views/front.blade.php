@@ -4228,6 +4228,7 @@
                             }
                         @endphp
                         <div class="nado-story-item" onclick="event.stopPropagation(); launchNadoStory(this)"
+                            data-id="{{ $story->id }}"
                             {{-- Empty when there is no file: asset('storage/' . null) returns
                                  ".../storage", which is a valid-looking URL and used to be fed
                                  to <video>, showing an empty black player. --}}
@@ -5391,6 +5392,22 @@
             console.log('launchNadoStory called');
             var src = element.getAttribute('data-src');
             var type = element.getAttribute('data-type');
+
+            // Count this view: fetch a fresh CSRF token then POST (keeps CSRF intact).
+            // Fire-and-forget — never block opening the story if it fails.
+            var storyId = element.getAttribute('data-id');
+            if (storyId && !element.dataset.viewed) {
+                element.dataset.viewed = '1'; // don't double-count re-opens in the same session
+                fetch('/csrf-token', { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        return fetch('/stories/' + encodeURIComponent(storyId) + '/view', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': d.token, 'Accept': 'application/json' }
+                        });
+                    })
+                    .catch(function () { /* ignore */ });
+            }
             var insta = element.dataset.insta;
             var instaEmbed = element.dataset.instaEmbed;
 

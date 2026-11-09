@@ -281,6 +281,12 @@ Route::get('/csrf-token', function () {
         ->header('Cache-Control', 'no-store');
 })->name('csrf.token');
 
+// Increment a story's view counter when it is opened (homepage stories).
+Route::post('/stories/{story}/view', function (\App\Models\Story $story) {
+    $story->increment('views');
+    return response()->json(['views' => $story->views])->header('Cache-Control', 'no-store');
+})->name('stories.view');
+
 Route::get('/a-propos', function () {
     $stories = \App\Models\Story::query()
         ->where('expires_at', '>', now())
