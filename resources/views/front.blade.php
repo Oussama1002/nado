@@ -5835,7 +5835,7 @@
           ar: '✅ السيارات <strong>المعتمدة من نادو</strong> يفحصها خبراؤنا قبل عرضها للبيع.<br>يمكن الاطلاع على <strong>تقرير الفحص</strong> في تبويب <strong>«خبرة نادو»</strong> في كل إعلان.' },
         { keys: ['garantie','garanti','panne','serenite'],
           answer: '🛡️ <strong>Garantie NADO Sérénité</strong> : <strong>1 mois</strong> couvrant <strong>pièces et main d\'œuvre</strong>, dans la limite de <strong>1 000 km</strong>.<br>Les annonces concernées affichent le badge « Garantie incluse ».',
-          ar: '🛡️ <strong>ضمان نادو سيرينيتي</strong>: <strong>شهر واحد</strong> يغطي <strong>القطع واليد العاملة</strong>، في حدود <strong>1 000 كلم</strong>.<br>الإعلانات المعنية تحمل شارة «الضمان مشمول».' },
+          ar: '🛡️ <strong>ضمان نادو سيرينيتي</strong>: <strong>شهر واحد</strong> يغطي <strong>القطع واليد العاملة</strong>، في حدود <strong>&#8294;1 000&#8297; كلم</strong>.<br>الإعلانات المعنية تحمل شارة «الضمان مشمول».' },
         { keys: ['essai','essayer','visite','visiter','voir la voiture','voir le vehicule','rendez-vous','rdv'],
           answer: '📅 Pour voir ou essayer un véhicule, contactez-nous avec la référence de l\'annonce :<br>' + WHATSAPP + ' ou ' + TEL + '.<br>📍 Agence : <strong>Casablanca – Jnane Californie</strong> (' + MAPS + ').',
           ar: '📅 لمعاينة أو تجربة سيارة، تواصل معنا مع مرجع الإعلان:<br>' + WHATSAPP + ' أو ' + TEL + '.<br>📍 الوكالة: <strong>الدار البيضاء – جنان كاليفورنيا</strong> (' + MAPS + ').' },
