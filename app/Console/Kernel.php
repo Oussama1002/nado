@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Rappel email aux clients flotte&enchere ~24h avant l'ouverture d'une enchère.
+        $schedule->command('nado:enchere-reminders')->hourly()->withoutOverlapping();
     }
 
     /**

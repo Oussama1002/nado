@@ -42,11 +42,15 @@ class NadoAutoEnchere extends Model
         'barres_de_toit','vitres_surteintees','views','active','verified','colors',
         'carte_grise','vignette_annee','visite_technique',
         'nb_cles','pneu_secours','outillage',
-        'latitude','longitude','adresse','maps_url'
+        'latitude','longitude','adresse','maps_url',
+        'reminder_sent_at'
     ];
 
     protected $casts = [
         'images' => 'array',
+        'starts_at'        => 'datetime',
+        'ends_at'          => 'datetime',
+        'reminder_sent_at' => 'datetime',
         'carte_grise'      => 'boolean',
         'visite_technique' => 'date',
         'pneu_secours'     => 'boolean',
