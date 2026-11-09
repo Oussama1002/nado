@@ -50,8 +50,8 @@
                 {{-- ✅ Otherwise: show the normal full admin sidebar --}}
                 @else
                     @role('admin')
-                    <li class="sidebar-item d-none">
-                        <a href="{{route('dashboard')}}" class='sidebar-link'>
+                    <li @class(['sidebar-item', 'active' => request()->routeIs('admin.dashboard')])>
+                        <a href="{{ route('admin.dashboard') }}" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
