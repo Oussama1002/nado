@@ -24,7 +24,11 @@ class StoriesController extends Controller
      * ======================= */
     public function index()
     {
-        $stories = Story::latest()->get();
+        // Pinned stories first (slot 1, 2, 3), then the rest newest-first.
+        $stories = Story::orderByRaw('pin_position IS NULL')
+            ->orderBy('pin_position')
+            ->orderByDesc('id')
+            ->get();
         return view('admin.stories.index', compact('stories'));
     }
 
@@ -34,6 +38,83 @@ class StoriesController extends Controller
     public function create()
     {
         return view('admin.stories.create');
+    }
+
+    /* =======================
+     * EDIT FORM
+     * ======================= */
+    public function edit($id)
+    {
+        $story = Story::findOrFail($id);
+        return view('admin.stories.edit', compact('story'));
+    }
+
+    /* =======================
+     * UPDATE STORY
+     * ======================= */
+    public function update(Request $request, $id)
+    {
+        $story = Story::findOrFail($id);
+
+        $request->validate([
+            'media' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:20480',
+            'expires_at' => 'nullable|date',
+            'instagram_link' => 'nullable|url|max:2048',
+            'pin_position' => 'nullable|integer|min:1|max:3',
+        ]);
+
+        // Replace the media only when a new file is uploaded; otherwise keep the current one.
+        if ($request->hasFile('media')) {
+            if ($story->media_path && Storage::disk('public')->exists($story->media_path)) {
+                Storage::disk('public')->delete($story->media_path);
+            }
+            $story->media_path = $this->saveImage($request->file('media'), 'story');
+            $story->media_type = 'image';
+        }
+
+        $story->instagram_link = $request->input('instagram_link');
+        $story->expires_at = $request->expires_at ?: null;
+        $this->assignPin($story, $request->filled('pin_position') ? (int) $request->pin_position : null);
+
+        $story->save();
+        Cache::forget('stories');
+
+        return redirect()
+            ->route('admin.stories.index')
+            ->with('success', 'Story updated successfully');
+    }
+
+    /* =======================
+     * PIN / UNPIN STORY (slot 1, 2 or 3)
+     * ======================= */
+    public function pin(Request $request, $id)
+    {
+        $story = Story::findOrFail($id);
+        $request->validate([
+            'pin_position' => 'nullable|integer|min:1|max:3',
+        ]);
+
+        $this->assignPin($story, $request->filled('pin_position') ? (int) $request->pin_position : null);
+        $story->save();
+        Cache::forget('stories');
+
+        return redirect()
+            ->route('admin.stories.index')
+            ->with('success', 'Épinglage mis à jour.');
+    }
+
+    /**
+     * Set a story's pin slot, keeping each slot (1/2/3) unique: if another story
+     * already holds the target slot, it is freed. Does not persist $story itself.
+     */
+    private function assignPin(Story $story, ?int $position): void
+    {
+        if ($position !== null) {
+            Story::where('id', '!=', $story->id)
+                ->where('pin_position', $position)
+                ->update(['pin_position' => null]);
+        }
+        $story->pin_position = $position;
     }
 
     /* =======================

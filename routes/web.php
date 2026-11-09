@@ -491,6 +491,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::resource('avis-text', AvisTextController::class);
     Route::resource('avis-vd', AvisVdController::class);
     Route::resource('brands', BrandsController::class);
+    Route::post('stories/{id}/pin', [StoriesController::class, 'pin'])->name('stories.pin');
     Route::resource('stories', StoriesController::class);
     Route::resource('social-posts', SocialPostController::class)->except(['show']);
     Route::resource('colors', ColorController::class);

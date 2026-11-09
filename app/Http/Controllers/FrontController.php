@@ -41,6 +41,8 @@ class FrontController extends Controller
         // NO expiry filter: stories stay visible until an admin deletes them. Filtering
         // on expires_at made the section silently empty itself, twice.
         $stories = Story::query()
+            ->orderByRaw('pin_position IS NULL') // pinned (1,2,3) first
+            ->orderBy('pin_position')
             ->orderByDesc('id')
             ->limit(6)
             ->get();

@@ -29,6 +29,7 @@
                                                     <th>Type</th>
                                                     <th>Instagram</th>
                                                     <th>Views</th>
+                                                    <th>Épinglé</th>
                                                     <th>Expires At</th>
                                                     <th class="d-flex justify-content-end">Action</th>
                                                 </tr>
@@ -97,9 +98,25 @@
                                                             @endif
                                                         </td>
                                                         <td>{{ $story->views }}</td>
+                                                        <td>
+                                                            {{-- Épingler la story en position 1, 2 ou 3 (chaque position est unique). --}}
+                                                            <form action="{{ route('admin.stories.pin', $story->id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                <select name="pin_position" class="form-select form-select-sm"
+                                                                    style="width:84px;" onchange="this.form.submit()">
+                                                                    <option value="" {{ is_null($story->pin_position) ? 'selected' : '' }}>—</option>
+                                                                    <option value="1" {{ (int) $story->pin_position === 1 ? 'selected' : '' }}>1</option>
+                                                                    <option value="2" {{ (int) $story->pin_position === 2 ? 'selected' : '' }}>2</option>
+                                                                    <option value="3" {{ (int) $story->pin_position === 3 ? 'selected' : '' }}>3</option>
+                                                                </select>
+                                                            </form>
+                                                        </td>
                                                         <td>{{ $story->expires_at }}</td>
                                                         <td>
                                                             <div class="d-flex gap-2 w-100 justify-content-end">
+                                                                <a href="{{ route('admin.stories.edit', $story->id) }}"
+                                                                    class="btn btn-primary btn-sm">Modifier</a>
                                                                 <form
                                                                     action="{{ route('admin.stories.destroy', $story->id) }}"
                                                                     method="POST" class="d-inline">

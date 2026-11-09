@@ -11,6 +11,7 @@ class Story extends Model
         'media_type',
         'instagram_link',
         'views',
+        'pin_position',
         'expires_at',
     ];
     protected $dates = [
