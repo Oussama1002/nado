@@ -102,7 +102,7 @@ return [
         'title'        => 'Parlons de votre <span class="cx-hl">projet auto</span>',
         'subtitle'     => 'Une question, un besoin d\'estimation ou d\'accompagnement ? Notre équipe vous répond rapidement.',
         'addr_label'   => 'Adresse',
-        'addr_value'   => 'Rue 93, N° 11, Jnane Californie, Casablanca',
+        'addr_value'   => 'Rue 93, N° 11, Bd Haïfa, Jnane Californie, Casablanca',
         'email_label'  => 'Email',
         'phone_label'  => 'Téléphone',
         'hours_label'  => 'Horaires',
