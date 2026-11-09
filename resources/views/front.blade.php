@@ -4045,13 +4045,13 @@
                             <label>{{ __('messages.search.budget_max') }}</label>
                             <select id="search-budget">
                                 <option value="">{{ __('messages.search.any') }}</option>
-                                <option value="100000">100 000 MAD</option>
-                                <option value="200000">200 000 MAD</option>
-                                <option value="300000">300 000 MAD</option>
-                                <option value="500000">500 000 MAD</option>
-                                <option value="800000">800 000 MAD</option>
-                                <option value="1000000">1 000 000 MAD</option>
-                                <option value="1500000">1 500 000 MAD</option>
+                                <option value="100000">&#8294;100 000 MAD&#8297;</option>
+                                <option value="200000">&#8294;200 000 MAD&#8297;</option>
+                                <option value="300000">&#8294;300 000 MAD&#8297;</option>
+                                <option value="500000">&#8294;500 000 MAD&#8297;</option>
+                                <option value="800000">&#8294;800 000 MAD&#8297;</option>
+                                <option value="1000000">&#8294;1 000 000 MAD&#8297;</option>
+                                <option value="1500000">&#8294;1 500 000 MAD&#8297;</option>
                             </select>
                         </div>
                     </div>
