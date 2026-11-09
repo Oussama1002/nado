@@ -2334,6 +2334,11 @@
             width: 100%;
         }
 
+        /* Arabic: aligner le titre + bouton "Expert NADO" à droite (RTL). */
+        html[dir="rtl"] .whatsapp-content {
+            text-align: right;
+        }
+
         .whatsapp-title {
             font-size: 3rem;
             font-weight: 900;
