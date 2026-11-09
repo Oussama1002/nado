@@ -41,6 +41,8 @@ class RegisterController extends Controller
             'type'        => $request->type,
             // Rôle Auto Enchère (vendeur/acheteur) — pertinent pour flotte&enchere.
             'ae_role'     => $request->type === 'flotte&enchere' ? $request->ae_role : null,
+            // Vendeur enchère → accès validé automatiquement ; acheteur → validation admin.
+            'ae_approved' => $request->type === 'flotte&enchere' && $request->ae_role === 'vendeur',
             'phone'       => $request->phone,
             'company'     => $request->company,
             'logo'        => null,
@@ -51,8 +53,10 @@ class RegisterController extends Controller
         ]);
 
         if ($client->type === 'flotte&enchere') {
-            // Compte enchères → l'admin doit valider l'accès.
-            \App\Services\EnchereNotifier::adminPending($client);
+            // Acheteur enchère → l'admin doit valider l'accès. Vendeur → auto-validé, rien à faire.
+            if ($client->ae_role === 'acheteur') {
+                \App\Services\EnchereNotifier::adminPending($client);
+            }
         } else {
             $this->notifyAdminNewClient($client);
         }

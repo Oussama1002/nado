@@ -216,14 +216,23 @@ public function upgrade(Request $request)
         'company' => 'nullable|string|max:255',
     ]);
 
+    $isVendeur = $data['ae_role'] === 'vendeur';
+
     $client->type        = 'flotte&enchere';
     $client->ae_role     = $data['ae_role'];
     $client->phone       = $data['phone']; // l'Auto-Enchère identifie le client par téléphone
-    $client->ae_approved = false;          // en attente de validation admin
+    // Vendeur → accès validé automatiquement ; acheteur → en attente de validation admin.
+    $client->ae_approved = $isVendeur;
     if (! empty($data['company'])) {
         $client->company = $data['company'];
     }
     $client->save();
+
+    if ($isVendeur) {
+        // Pas de validation admin : le vendeur peut déposer ses véhicules tout de suite.
+        return redirect()->route('nadoautoenchere.vendre')
+            ->with('success', 'Votre compte Vendeur Auto Enchère est activé. Vous pouvez déposer vos véhicules aux enchères.');
+    }
 
     \App\Services\EnchereNotifier::adminPending($client);
 
