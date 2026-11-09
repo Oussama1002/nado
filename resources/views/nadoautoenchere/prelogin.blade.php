@@ -135,10 +135,35 @@
     <!-- HERO SECTION -->
     <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         {{-- Background video --}}
-        <video autoplay muted loop playsinline
+        <video id="heroBgVideo" autoplay muted loop playsinline webkit-playsinline preload="auto"
                class="absolute inset-0 w-full h-full object-cover z-0">
             <source src="{{ asset('storage/nadoautoenchere/bg/vd.mp4') }}" type="video/mp4">
         </video>
+        <script>
+            // Mobile browsers (iOS Safari, Android Chrome with Data Saver, Low Power
+            // mode) often refuse even a muted autoplay until it's forced via JS, and
+            // retried on the first user gesture. Desktop autoplays fine on its own.
+            (function () {
+                var v = document.getElementById('heroBgVideo');
+                if (!v) return;
+                v.muted = true;            // property, not just the attribute (iOS)
+                v.setAttribute('muted', '');
+                var tryPlay = function () {
+                    var p = v.play();
+                    if (p && typeof p.catch === 'function') { p.catch(function () {}); }
+                };
+                tryPlay();
+                // Retry once the page is ready and on the first interaction/visibility.
+                document.addEventListener('DOMContentLoaded', tryPlay);
+                window.addEventListener('load', tryPlay);
+                ['touchstart', 'click', 'scroll'].forEach(function (evt) {
+                    window.addEventListener(evt, tryPlay, { once: true, passive: true });
+                });
+                document.addEventListener('visibilitychange', function () {
+                    if (!document.hidden) tryPlay();
+                });
+            })();
+        </script>
         {{-- Dark overlay for legibility --}}
         <div class="absolute inset-0 bg-slate-900/60 z-10"></div>
 
