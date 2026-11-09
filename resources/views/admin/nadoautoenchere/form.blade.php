@@ -47,8 +47,26 @@
                                     </div>
                                     @endif
                                     <div class="col-12 col-md-6 my-2">
+                                        <div class="form-group col">
+                                            <label for="client-select">Client (remplit le téléphone)</label>
+                                            <select id="client-select" class="form-select round">
+                                                <option value="">— Sélectionner un client —</option>
+                                                @foreach(($clients ?? []) as $c)
+                                                    <option value="{{ $c->phone }}">{{ $c->name }}@if($c->phone) — {{ $c->phone }}@endif</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 my-2">
                                         @include('admin.partials.input', ["class" => 'col', "label" => "Téléphone" , "type" => "text",  "value" => $encheres->phone, "name" => 'phone', ])
                                     </div>
+                                    <script>
+                                        // Sélection d'un client → remplit automatiquement le téléphone.
+                                        document.getElementById('client-select')?.addEventListener('change', function () {
+                                            var phone = document.getElementById('phone');
+                                            if (phone && this.value) { phone.value = this.value; }
+                                        });
+                                    </script>
                                     <div class="col-12 col-md-6 my-2">
                                         @include('admin.partials.input', ["class" => 'col', "label" => "Prix" , "type" => "text",  "value" => $encheres->prix, "name" => 'prix', ])
                                     </div>

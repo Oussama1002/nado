@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\NadoAutoEnchereRequest;
 use App\Models\NadoAutoEnchere;
 use App\Models\Brand;
+use App\Models\Client;
 use App\Models\Color;
 use App\Models\Ville;
 use Illuminate\Support\Str;
@@ -33,7 +34,8 @@ class AdminNadoAutoEnchereController extends Controller
             'encheres' => new NadoAutoEnchere,
             'brands' => Brand::all(),
             'city' => Ville::all(),
-            'colors' => Color::all()
+            'colors' => Color::all(),
+            'clients' => Client::orderBy('name')->get(['id', 'name', 'phone']),
         ]);
     }
 
@@ -107,7 +109,8 @@ class AdminNadoAutoEnchereController extends Controller
             'encheres' => NadoAutoEnchere::findOrFail($id),
             'brands' => Brand::all(),
             'city' => Ville::all(),
-            'colors' => Color::all()
+            'colors' => Color::all(),
+            'clients' => Client::orderBy('name')->get(['id', 'name', 'phone']),
         ]);
     }
 
