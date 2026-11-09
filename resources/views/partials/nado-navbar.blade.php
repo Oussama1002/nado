@@ -300,9 +300,8 @@
         @media (max-width: 600px) {
             .top-bar .social-links { display: none !important; }
             .info-item i { width: 10px !important; height: 10px !important; } /* icônes mail/téléphone plus petites */
-            /* Lien radio masqué sur mobile (chevauchait le téléphone) : le
-               mini-lecteur flottant est injecté sur tout le site. */
-            .nd-radio-link { display: none !important; }
+            .nd-radio-txt { display: inline !important; font-size: 9px !important; } /* "Nado Radio" affiché sur mobile */
+            .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; } /* le label débordait à cause de la marge de 28px, pas du texte */
             .top-bar { padding: 8px 0 !important; }
             .top-bar .custom-container { padding: 0 10px !important; }
             .contact-info { gap: 10px !important; }
