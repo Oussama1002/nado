@@ -536,6 +536,12 @@
             padding-left: 0.25rem;
         }
 
+        /* Arabic: keep the stories in their authored order; a plain RTL flex row
+           would flip them right-to-left and reverse the sequence. */
+        html[dir="rtl"] .story-scroll {
+            direction: ltr;
+        }
+
         .story-card {
             flex-shrink: 0;
             width: 145px;
