@@ -35,8 +35,20 @@ class AdminNadoAutoEnchereController extends Controller
             'brands' => Brand::all(),
             'city' => Ville::all(),
             'colors' => Color::all(),
-            'clients' => Client::orderBy('name')->get(['id', 'name', 'phone']),
+            'clients' => $this->vendeurClients(),
         ]);
+    }
+
+    /**
+     * Clients Flotte & Enchère ayant le rôle vendeur (ce sont eux qui déposent
+     * des véhicules aux enchères) — pour le menu déroulant du formulaire.
+     */
+    private function vendeurClients()
+    {
+        return Client::where('type', 'flotte&enchere')
+            ->where('ae_role', 'vendeur')
+            ->orderBy('name')
+            ->get(['id', 'name', 'phone']);
     }
 
     public function store(NadoAutoEnchereRequest $request)
@@ -110,7 +122,7 @@ class AdminNadoAutoEnchereController extends Controller
             'brands' => Brand::all(),
             'city' => Ville::all(),
             'colors' => Color::all(),
-            'clients' => Client::orderBy('name')->get(['id', 'name', 'phone']),
+            'clients' => $this->vendeurClients(),
         ]);
     }
 
