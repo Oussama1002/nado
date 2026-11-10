@@ -538,6 +538,8 @@ return [
         'from'               => 'ابتداءً من',
         'per_month'          => '/ شهريًا',
         'chat_with_seller'   => 'محادثة مع البائع',
+        'whatsapp'           => 'واتساب',
+        'whatsapp_msg'       => 'مرحبًا، أرغب في مزيد من المعلومات حول هذا الإعلان:',
         'make_offer'         => 'تقديم عرض',
         'propose_price'      => 'اقترح سعرك',
         'displayed_price'    => 'السعر المعروض:',

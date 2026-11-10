@@ -539,6 +539,8 @@ return [
         'from'               => 'Dès',
         'per_month'          => '/ mois',
         'chat_with_seller'   => 'Discussion avec le vendeur',
+        'whatsapp'           => 'WhatsApp',
+        'whatsapp_msg'       => "Bonjour, je souhaite plus d'informations sur cette annonce :",
         'make_offer'         => 'Faire une offre',
         'propose_price'      => 'Proposer votre prix',
         'displayed_price'    => 'Prix affiché :',
