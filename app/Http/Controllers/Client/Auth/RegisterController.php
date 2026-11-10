@@ -21,9 +21,17 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        // Un compte NON vérifié portant cet email n'a jamais été finalisé : on
+        // autorise sa reprise (mise à jour + renvoi du lien) au lieu de bloquer.
+        // Un compte déjà vérifié reste protégé par la règle d'unicité.
+        $existing = Client::where('email', $request->email)->first();
+        $takeover = $existing && ! $existing->is_verified;
+
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:clients,email',
+            'email'    => $takeover
+                ? 'required|email|unique:clients,email,' . $existing->id
+                : 'required|email|unique:clients,email',
             'password' => 'required|string|min:6|confirmed',
             'type'     => 'required|in:pro,particulier,flotte&enchere',
             'phone'    => 'required|string|max:20',
@@ -31,10 +39,9 @@ class RegisterController extends Controller
             'ae_role'  => 'nullable|in:vendeur,acheteur',
         ]);
 
-        // Création du compte, inactif jusqu'à la confirmation de l'email
-        // (comportement calqué sur le flux "reset password" : l'utilisateur
-        // reçoit un lien signé et s'auto-approuve en cliquant dessus).
-        $client = Client::create([
+        // Attributs communs (création ou reprise d'un compte non vérifié).
+        // Le compte reste inactif jusqu'à la confirmation de l'email.
+        $attributes = [
             'name'        => $request->name,
             'email'       => $request->email,
             'password'    => Hash::make($request->password),
@@ -50,7 +57,14 @@ class RegisterController extends Controller
             // Email verification (is_verified) is the only gate for login.
             'is_approved' => true,
             'is_verified' => false,
-        ]);
+        ];
+
+        if ($takeover) {
+            $existing->update($attributes);
+            $client = $existing->refresh();
+        } else {
+            $client = Client::create($attributes);
+        }
 
         if ($client->type === 'flotte&enchere') {
             // Acheteur enchère → l'admin doit valider l'accès. Vendeur → auto-validé, rien à faire.
