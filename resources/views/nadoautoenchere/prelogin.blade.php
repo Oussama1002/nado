@@ -509,7 +509,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <a href="tel:+212663339072"
+                <a href="tel:+212770080009"
                     class="group bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-10 hover:bg-white/10 hover:border-white/20 transition-all text-left decoration-transparent">
                     <div
                         class="w-16 h-16 bg-[#1459DD]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#1459DD] transition-all">
@@ -518,11 +518,11 @@
                     </div>
                     <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">{{ __('messages.ae.phone1') }}</span>
                     <span class="text-2xl font-black text-white group-hover:text-[#F37021] transition-colors">
-                        +212 6 63 33 90 72
+                        07 70 08 00 09
                     </span>
                 </a>
 
-                <a href="tel:+212669559315"
+                <a href="tel:+212657140050"
                     class="group bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-10 hover:bg-white/10 hover:border-white/20 transition-all text-left decoration-transparent">
                     <div
                         class="w-16 h-16 bg-[#F37021]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#F37021] transition-all">
@@ -531,7 +531,7 @@
                     </div>
                     <span class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">{{ __('messages.ae.phone2') }}</span>
                     <span class="text-2xl font-black text-white group-hover:text-[#F37021] transition-colors">
-                        +212 6 69 55 93 15
+                        06 57 14 00 50
                     </span>
                 </a>
             </div>
