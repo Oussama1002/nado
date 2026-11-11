@@ -1366,7 +1366,7 @@
         overflow: hidden;
         z-index: 2;
     }
-    .expert-card-avatar svg { width: 100%; height: 100%; display: block; }
+    .expert-card-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 30%; display: block; }
     /* little "available" green dot */
     .expert-card-avatar::after {
         content: "";
@@ -2798,13 +2798,8 @@
                         <div class="expert-card" role="button" tabindex="0" style="cursor:pointer;"
                              onclick="openExpertModal()"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openExpertModal();}">
-                            <span class="expert-card-avatar" aria-hidden="true">
-                                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="32" cy="24" r="12" fill="#ffffff"/>
-                                    <path d="M12 58c0-11 9-18 20-18s20 7 20 18z" fill="#ffffff"/>
-                                    <path d="M24 33c2 3 5 4 8 4s6-1 8-4l3 7-11 5-11-5z" fill="#0d3fa6"/>
-                                    <rect x="28" y="38" width="8" height="12" rx="2" fill="#1459DD"/>
-                                </svg>
+                            <span class="expert-card-avatar">
+                                <img src="{{ asset('assets/images/expert-nado.jpg') }}" alt="{{ __('messages.expert.need_expert') }}" loading="lazy">
                             </span>
                             <button type="button" class="chat-btn" style="width:100%;" onclick="event.stopPropagation();openExpertModal()">
                                 <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
