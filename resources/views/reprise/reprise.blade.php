@@ -50,12 +50,17 @@
                         </div>
                     </div>
 
-                    <div style="display:flex;align-items:center;gap:16px;">
+                    <div class="top-bar-actions" style="display:flex;align-items:center;gap:16px;flex-shrink:0;">
                         <div class="social-links">
                             <a href="#"><i data-lucide="facebook"></i></a>
                             <a href="#"><i data-lucide="instagram"></i></a>
                             <a href="#"><i data-lucide="linkedin"></i></a>
                         </div>
+                        @if(feature_on('radio.enabled'))
+                            <a href="{{ route('nado-radio.index') }}" class="nd-radio-link" title="Nado Radio" aria-label="Nado Radio" style="display:inline-flex;align-items:center;gap:6px;color:#0f172a;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="nd-radio-txt">Nado Radio</span>
+                            </a>
+                        @endif
                         @include('partials.lang-switcher')
                     </div>
                 </div>
@@ -302,21 +307,37 @@
                 }
 
                 /* Mobile top bar — mirror the shared navbar so it doesn't overflow:
-                   drop the socials, shrink the contact info, and hide the email on
-                   very narrow screens. */
+                   drop the socials, shrink the contact info, pin the actions group so
+                   the FR / عربي switch is never clipped, and hide the email so the
+                   phone + radio + language switch always fit. */
                 .info-item, .info-item a { white-space: nowrap !important; word-break: keep-all !important; }
                 .info-item i { flex-shrink: 0 !important; }
+                .top-bar-actions { flex-shrink: 0 !important; }
+                .lang-switch { flex-shrink: 0 !important; }
                 @media (max-width: 600px) {
                     .top-bar .social-links { display: none !important; }
                     .info-item i { width: 10px !important; height: 10px !important; }
+                    .nd-radio-txt { display: inline !important; font-size: 9px !important; }
+                    .nd-radio-link svg { width: 16px !important; height: 16px !important; }
                     .top-bar { padding: 8px 0 !important; }
                     .top-bar .custom-container { padding: 0 10px !important; }
+                    .top-bar-actions { gap: 10px !important; }
                     .contact-info { gap: 10px !important; }
                     .info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 5px !important; }
-                }
-                @media (max-width: 380px) {
+                    /* free up room so عربي is always fully visible */
                     .contact-info .info-item:first-child { display: none !important; }
-                    .info-item { font-size: 10px !important; }
+                }
+                @media (max-width: 360px) {
+                    .nd-radio-txt { display: none !important; }
+                }
+
+                /* Keep the "PUBLIER UNE ANNONCE" CTA on a single line on mobile. */
+                .cta-button, .cta-button span { white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; hyphens: none !important; }
+                .cta-button { flex-shrink: 0 !important; text-align: center !important; }
+                @media (max-width: 1023px) {
+                    .right-section .cta-button { font-size: clamp(8.5px, 2.5vw, 13px) !important; padding: 9px 11px !important; letter-spacing: .01em !important; border-radius: 12px !important; gap: 6px !important; }
+                    .right-section { gap: 8px !important; padding-left: 8px !important; flex-shrink: 0 !important; }
+                    .left-section { min-width: 0 !important; flex-shrink: 1 !important; overflow: hidden !important; }
                 }
 
                 /* Main Nav */
