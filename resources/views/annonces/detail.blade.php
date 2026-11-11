@@ -4647,21 +4647,24 @@
     .expert-modal { position: fixed; inset: 0; z-index: 100000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .expert-modal.open { display: flex; }
     .expert-modal__backdrop { position: absolute; inset: 0; background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(6px); }
-    .expert-modal__dialog { position: relative; width: 100%; max-width: 540px; max-height: 92vh; overflow-y: auto; background: #0b1220; border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2.5rem; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6); animation: expertPop 0.25s ease; }
+    .expert-modal__dialog { position: relative; width: 100%; max-width: 540px; max-height: 92vh; overflow-y: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1.5rem; padding: 2.5rem; box-shadow: 0 30px 60px -15px rgba(15,23,42,0.35); animation: expertPop 0.25s ease; }
+    /* hide the scrollbar chrome (content can still scroll on very short screens) */
+    .expert-modal__dialog { scrollbar-width: none; -ms-overflow-style: none; }
+    .expert-modal__dialog::-webkit-scrollbar { width: 0; height: 0; display: none; }
     @keyframes expertPop { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-    .expert-modal__close { position: absolute; top: 1rem; inset-inline-end: 1.25rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 2rem; line-height: 1; cursor: pointer; transition: color 0.2s; }
-    .expert-modal__close:hover { color: #fff; }
-    .expert-modal__title { font-size: 1.75rem; font-weight: 900; color: #fff; margin: 0 0 0.5rem; }
+    .expert-modal__close { position: absolute; top: 1rem; inset-inline-end: 1.25rem; background: none; border: none; color: #94a3b8; font-size: 2rem; line-height: 1; cursor: pointer; transition: color 0.2s; }
+    .expert-modal__close:hover { color: #0f172a; }
+    .expert-modal__title { font-size: 1.75rem; font-weight: 900; color: #0f172a; margin: 0 0 0.5rem; }
     .expert-modal__title .text-primary { color: #1459DD; }
-    .expert-modal__subtitle { color: rgba(255,255,255,0.6); font-size: 0.95rem; margin: 0 0 1.75rem; }
+    .expert-modal__subtitle { color: #64748b; font-size: 0.95rem; margin: 0 0 1.75rem; }
     .expert-modal__form { display: flex; flex-direction: column; gap: 1rem; }
     .expert-modal__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 520px) { .expert-modal__grid { grid-template-columns: 1fr; } .expert-modal__dialog { padding: 2rem 1.5rem; } }
-    .expert-input { width: 100%; padding: 0.9rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 0.75rem; color: #fff; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s, background 0.2s; }
-    .expert-input::placeholder { color: rgba(255,255,255,0.4); }
-    .expert-input:focus { border-color: #1459DD; background: rgba(255,255,255,0.08); }
+    .expert-input { width: 100%; padding: 0.9rem 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; color: #0f172a; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s, background 0.2s; }
+    .expert-input::placeholder { color: #94a3b8; }
+    .expert-input:focus { border-color: #1459DD; background: #fff; box-shadow: 0 0 0 3px rgba(20,89,221,0.12); }
     select.expert-input { appearance: none; cursor: pointer; }
-    select.expert-input option { color: #0b1220; }
+    select.expert-input option { color: #0f172a; }
     textarea.expert-input { resize: vertical; min-height: 90px; }
     .expert-modal__feedback { font-size: 0.9rem; font-weight: 600; min-height: 1.2em; }
     .expert-modal__feedback.is-success { color: #22c55e; }
