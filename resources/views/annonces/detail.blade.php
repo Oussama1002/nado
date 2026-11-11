@@ -1336,7 +1336,8 @@
 
     /* Card wrapping the expert CTA + its note — gently floats to draw the eye. */
     .expert-card {
-        margin-top: 1.75rem;
+        position: relative;
+        margin-top: 2.75rem;
         background: #f8fafc;
         border: 1px solid #e2e8f0;
         border-radius: 1.25rem;
@@ -1345,6 +1346,38 @@
         box-shadow: 0 14px 30px -20px rgba(15, 23, 42, 0.25);
         animation: expertFloat 3s ease-in-out infinite;
         transition: transform 0.2s, box-shadow 0.2s;
+    }
+    /* Expert avatar tucked into the top corner of the card. */
+    .expert-card-avatar {
+        position: absolute;
+        top: -26px;
+        inset-inline-end: 18px;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1459DD, #0d3fa6);
+        border: 3px solid #fff;
+        box-shadow: 0 8px 18px -6px rgba(20, 89, 221, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.5rem;
+        overflow: hidden;
+        z-index: 2;
+    }
+    .expert-card-avatar svg { width: 100%; height: 100%; display: block; }
+    /* little "available" green dot */
+    .expert-card-avatar::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        inset-inline-end: 2px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #22c55e;
+        border: 2px solid #fff;
     }
     .expert-card:hover {
         animation-play-state: paused;
@@ -2765,6 +2798,14 @@
                         <div class="expert-card" role="button" tabindex="0" style="cursor:pointer;"
                              onclick="openExpertModal()"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openExpertModal();}">
+                            <span class="expert-card-avatar" aria-hidden="true">
+                                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="32" cy="24" r="12" fill="#ffffff"/>
+                                    <path d="M12 58c0-11 9-18 20-18s20 7 20 18z" fill="#ffffff"/>
+                                    <path d="M24 33c2 3 5 4 8 4s6-1 8-4l3 7-11 5-11-5z" fill="#0d3fa6"/>
+                                    <rect x="28" y="38" width="8" height="12" rx="2" fill="#1459DD"/>
+                                </svg>
+                            </span>
                             <button type="button" class="chat-btn" style="width:100%;" onclick="event.stopPropagation();openExpertModal()">
                                 <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
                             </button>
