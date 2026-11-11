@@ -1366,7 +1366,7 @@
         overflow: hidden;
         z-index: 2;
     }
-    .expert-card-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 30%; display: block; }
+    .expert-card-avatar svg { width: 100%; height: 100%; display: block; }
     /* little "available" green dot */
     .expert-card-avatar::after {
         content: "";
@@ -2798,8 +2798,36 @@
                         <div class="expert-card" role="button" tabindex="0" style="cursor:pointer;"
                              onclick="openExpertModal()"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openExpertModal();}">
-                            <span class="expert-card-avatar">
-                                <img src="{{ asset('assets/images/expert-nado.jpg') }}" alt="{{ __('messages.expert.need_expert') }}" loading="lazy">
+                            <span class="expert-card-avatar" aria-hidden="true">
+                                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <clipPath id="expAvClip"><circle cx="32" cy="32" r="32"/></clipPath>
+                                    </defs>
+                                    <g clip-path="url(#expAvClip)">
+                                        <rect width="64" height="64" fill="#e8f0ff"/>
+                                        <!-- shoulders / blazer -->
+                                        <path d="M9 64c0-13 10-20 23-20s23 7 23 20z" fill="#1459DD"/>
+                                        <path d="M27 46h10v12l-5 4-5-4z" fill="#f4f6fb"/>
+                                        <!-- collar -->
+                                        <path d="M27 46l5 7 5-7-2-3h-6z" fill="#0d3fa6"/>
+                                        <!-- neck -->
+                                        <path d="M28 40h8v7l-4 3-4-3z" fill="#e8b48c"/>
+                                        <!-- head -->
+                                        <circle cx="32" cy="27" r="12" fill="#f2c199"/>
+                                        <!-- hair -->
+                                        <path d="M20 27c0-8 6-13 12-13s12 5 12 13c0-4-2-6-4-6-1-3-5-4-8-4s-7 1-8 4c-2 0-4 2-4 6z" fill="#3a2a20"/>
+                                        <path d="M20 27c0-3 1-5 2-6v6zm24 0v-6c1 1 2 3 2 6z" fill="#3a2a20"/>
+                                        <!-- eyes & smile -->
+                                        <circle cx="28" cy="27" r="1.4" fill="#2a2320"/>
+                                        <circle cx="36" cy="27" r="1.4" fill="#2a2320"/>
+                                        <path d="M28.5 31.5c1.2 1.4 5.8 1.4 7 0" fill="none" stroke="#b5724a" stroke-width="1.4" stroke-linecap="round"/>
+                                        <!-- headset -->
+                                        <path d="M20 29v-3a12 12 0 0 1 24 0v3" fill="none" stroke="#111827" stroke-width="2.4" stroke-linecap="round"/>
+                                        <rect x="17.5" y="28" width="5" height="7" rx="2.2" fill="#111827"/>
+                                        <rect x="41.5" y="28" width="5" height="7" rx="2.2" fill="#111827"/>
+                                        <path d="M44 33v4c0 2-1.6 3.5-3.6 3.5H36" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round"/>
+                                    </g>
+                                </svg>
                             </span>
                             <button type="button" class="chat-btn" style="width:100%;" onclick="event.stopPropagation();openExpertModal()">
                                 <i class="fas fa-user-tie"></i> {{ __('messages.expert.need_expert') }}
