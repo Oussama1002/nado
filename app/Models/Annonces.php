@@ -256,6 +256,71 @@ public function videoAd()
 
         return 'phonedef.jpg';
     }
+
+    /**
+     * Historique de prix (discovery.price_alerts). Le hook « updating » enregistre
+     * chaque changement de prix, quelle que soit la voie de modification
+     * (client, admin, vente), donc une seule source.
+     */
+    protected static function booted(): void
+    {
+        static::updating(function ($ad) {
+            if (! $ad->isDirty('prix')) {
+                return;
+            }
+            $old = $ad->getOriginal('prix');
+            $new = $ad->prix;
+            if ($old === null || (float) $old === (float) $new) {
+                return;
+            }
+            try {
+                \App\Models\PriceHistory::create([
+                    'annonce_id' => $ad->id,
+                    'old_price'  => $old,
+                    'new_price'  => $new,
+                    'changed_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                // table absente (migration non jouée) → on n'empêche jamais la mise à jour
+                \Illuminate\Support\Facades\Log::warning('price_history non enregistré: ' . $e->getMessage());
+            }
+        });
+    }
+
+    public function priceHistories()
+    {
+        return $this->hasMany(\App\Models\PriceHistory::class, 'annonce_id');
+    }
+
+    /** Dernier changement de prix (pour le badge « prix en baisse »). */
+    public function latestPriceChange()
+    {
+        return $this->hasOne(\App\Models\PriceHistory::class, 'annonce_id')->latestOfMany('changed_at');
+    }
+
+    /**
+     * Montant de la baisse courante en MAD (0 si pas de baisse). Gated par le flag.
+     * On n'affiche que si le dernier changement est une baisse ET que le nouveau
+     * prix correspond toujours au prix actuel.
+     */
+    public function priceDropAmount(): int
+    {
+        if (! feature_on('discovery.price_alerts')) {
+            return 0;
+        }
+        $last = $this->relationLoaded('latestPriceChange')
+            ? $this->getRelation('latestPriceChange')
+            : $this->latestPriceChange()->first();
+
+        if (! $last) {
+            return 0;
+        }
+        if ((float) $last->new_price < (float) $last->old_price
+            && (float) $last->new_price === (float) $this->prix) {
+            return (int) round((float) $last->old_price - (float) $last->new_price);
+        }
+        return 0;
+    }
  
 
 }

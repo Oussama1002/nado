@@ -37,7 +37,7 @@ class BuyController extends Controller
 
         // Source UNIQUE des filtres (partagée avec les recherches sauvegardées).
         $data = \App\Support\AnnonceFilter::apply(
-            Annonces::with(['client', 'brand', 'modeleRelation'])
+            Annonces::with(['client', 'brand', 'modeleRelation', 'latestPriceChange'])
                 ->where('active', 1)
                 ->orderBy('status', 'ASC')
                 ->orderBy('id', 'DESC'),
