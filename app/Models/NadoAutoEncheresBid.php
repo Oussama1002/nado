@@ -15,6 +15,14 @@ class NadoAutoEncheresBid extends Model
         'enchere_id',
         'client_id',
         'proposition',
+        'is_auto',
+        'max_amount',
+    ];
+
+    protected $casts = [
+        'proposition' => 'decimal:2',
+        'max_amount'  => 'decimal:2',
+        'is_auto'     => 'boolean',
     ];
 
     /**

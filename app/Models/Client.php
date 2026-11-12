@@ -50,6 +50,18 @@ class Client extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    /**
+     * PHASE 3 (stub) — Caution / dépôt Auto-Enchère.
+     * Hook d'éligibilité pour le plafonnement par dépôt (cf. AuctionService +
+     * réglage enchere.deposit_threshold). Tant que la caution n'est pas modélisée
+     * (montant / statut de dépôt), on considère le pro approuvé comme couvert.
+     * À implémenter : vérifier un dépôt validé (table cautions / solde).
+     */
+    public function hasValidAuctionDeposit(): bool
+    {
+        return (bool) $this->ae_approved;
+    }
+
     public function favorites()
     {
         return $this->belongsToMany(

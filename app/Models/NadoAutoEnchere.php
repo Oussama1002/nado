@@ -27,6 +27,8 @@ class NadoAutoEnchere extends Model
         'phone','titre','prix','mark','modele','year','km','carburant','box','matricule','city','cv',
         'nb_Door','origine','premiere_main','video','reel','bodywork','images','rapport',
         'co2','certifie','particulier','showroom','finance','starts_at','ends_at',
+        'starting_price','current_price','reserve_price','min_increment','status',
+        'winner_client_id','winning_bid_id','extensions_count',
         'jantesA','airbags','climatisation','gps','toit_ouvrant','double_toit_ouvrant',
         'siege_cuir','radar_recul','camera_recul','abs','eps','esp','antipatinage',
         'aide_freinage_urgence','antidemarrage_electronique','aide_demarrage_cote','selecteur_mode_conduite',
@@ -51,6 +53,11 @@ class NadoAutoEnchere extends Model
         'starts_at'        => 'datetime',
         'ends_at'          => 'datetime',
         'reminder_sent_at' => 'datetime',
+        'starting_price'   => 'decimal:2',
+        'current_price'    => 'decimal:2',
+        'reserve_price'    => 'decimal:2',
+        'min_increment'    => 'decimal:2',
+        'extensions_count' => 'integer',
         'carte_grise'      => 'boolean',
         'visite_technique' => 'date',
         'pneu_secours'     => 'boolean',
@@ -143,5 +150,69 @@ public function client()
  public function bids()
     {
         return $this->hasMany(NadoAutoEncheresBid::class, 'enchere_id');
+    }
+
+    /** Gagnant de l'enchère (renseigné à la clôture). */
+    public function winner()
+    {
+        return $this->belongsTo(Client::class, 'winner_client_id');
+    }
+
+    /** Enchère gagnante (renseignée à la clôture). */
+    public function winningBid()
+    {
+        return $this->belongsTo(NadoAutoEncheresBid::class, 'winning_bid_id');
+    }
+
+    /** Incrément minimum effectif (valeur de l'enchère, sinon réglage global). */
+    public function effectiveMinIncrement(): float
+    {
+        $inc = (float) ($this->min_increment ?? 0);
+        if ($inc <= 0) {
+            $inc = (float) settings('enchere.default_min_increment', 1000);
+        }
+        return $inc > 0 ? $inc : 1000;
+    }
+
+    /** Mise à prix effective (fallback sur prix estimé). */
+    public function effectiveStartingPrice(): float
+    {
+        return (float) (($this->starting_price ?? 0) ?: ($this->prix ?? 0));
+    }
+
+    /** Plus haute enchère courante (prix courant, sinon mise à prix). */
+    public function currentHighBid(): float
+    {
+        $current = (float) ($this->current_price ?? 0);
+        return $current > 0 ? $current : $this->effectiveStartingPrice();
+    }
+
+    /**
+     * Montant minimum pour la prochaine enchère valable.
+     * Première enchère : la mise à prix. Ensuite : courant + incrément.
+     */
+    public function minNextBid(): float
+    {
+        $hasBid = $this->current_price !== null && (float) $this->current_price > 0;
+        if (! $hasBid) {
+            return $this->effectiveStartingPrice();
+        }
+        return $this->currentHighBid() + $this->effectiveMinIncrement();
+    }
+
+    /** L'enchère est-elle ouverte aux offres maintenant ? */
+    public function isLive(): bool
+    {
+        if ($this->status && $this->status !== 'live') {
+            return false;
+        }
+        $now = now();
+        if ($this->starts_at && $now->lt($this->starts_at)) {
+            return false;
+        }
+        if ($this->ends_at && $now->gt($this->ends_at)) {
+            return false;
+        }
+        return true;
     }
 }
