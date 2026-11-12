@@ -101,8 +101,8 @@
                 <span class="pp-slider-val" data-display="priceVal">{{ number_format(request('prix', 800000), 0, ',', ' ') }} MAD</span>
             </div>
             <input type="range" name="prix" id="priceRange-{{ $formId ?? 'f' }}" class="pp-range"
-                min="0" max="5000000" step="50000" value="{{ request('prix', 800000) }}">
-            <div class="pp-slider-ticks"><span>0</span><span>5 000 000 MAD</span></div>
+                min="0" max="2000000" step="50000" value="{{ request('prix', 800000) }}">
+            <div class="pp-slider-ticks"><span>0</span><span>2 000 000 MAD</span></div>
         </div>
 
         {{-- 5. Kilométrage --}}
@@ -120,8 +120,8 @@
                 <span class="pp-slider-val" data-display="kmVal">{{ number_format(request('km', 150000), 0, ',', ' ') }} KM</span>
             </div>
             <input type="range" name="km" id="kmRange-{{ $formId ?? 'f' }}" class="pp-range"
-                min="0" max="250000" step="5000" value="{{ request('km', 150000) }}">
-            <div class="pp-slider-ticks"><span>0</span><span>250 000 KM</span></div>
+                min="0" max="300000" step="5000" value="{{ request('km', 150000) }}">
+            <div class="pp-slider-ticks"><span>0</span><span>300 000 KM</span></div>
         </div>
 
         {{-- 6. Localisation --}}
