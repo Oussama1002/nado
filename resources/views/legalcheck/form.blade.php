@@ -223,7 +223,33 @@
                 </div>
                 <div class="lc-field">
                     <label for="lc_m_letter">{{ __('messages.legalcheck.matricule_letter') }}</label>
-                    <input type="text" id="lc_m_letter" name="matricule_letter" maxlength="8" autocomplete="off">
+                    @php
+                        // Lettres de série utilisées sur les plaques marocaines (partie
+                        // centrale). On affiche la lettre arabe + son équivalent latin
+                        // officiel (réforme NARSA) quand il est fixé. La valeur postée
+                        // reste la lettre arabe (assainie côté contrôleur).
+                        $lcSeries = [
+                            'أ'   => 'A',
+                            'ب'   => 'B',
+                            'ج'   => 'J',
+                            'د'   => 'D',
+                            'ه'   => 'H',
+                            'و'   => 'E',
+                            'ط'   => 'T',
+                            'ش'   => 'C',
+                            'ق'   => 'Q',
+                            'م'   => 'M',
+                            'ن'   => 'N',
+                            'ي'   => 'Y',
+                            'و و' => 'WW',
+                        ];
+                    @endphp
+                    <select id="lc_m_letter" name="matricule_letter">
+                        <option value="">—</option>
+                        @foreach($lcSeries as $ar => $lat)
+                            <option value="{{ $ar }}">{{ $ar }} — {{ $lat }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="lc-field">
                     <label for="lc_m_region">{{ __('messages.legalcheck.matricule_region') }}</label>
