@@ -1471,10 +1471,13 @@
             text-align: left;
         }
 
-        /* Arabic: aligner le contenu (expertise / financement) à droite (RTL). */
+        /* Arabic: aligner le contenu (expertise / financement) à droite (RTL).
+           .expert-content is a COLUMN flex, so align-items is the horizontal
+           (inline) axis; in RTL flex-end is the LEFT edge, which pushed the
+           label/title/description to the left. flex-start = the right edge in RTL. */
         html[dir="rtl"] .expert-content {
             text-align: right;
-            align-items: flex-end;
+            align-items: flex-start;
         }
 
         .label-trust {
