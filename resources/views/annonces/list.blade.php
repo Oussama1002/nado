@@ -1431,19 +1431,22 @@ function run() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     // ===== RANGE SLIDERS =====
-    function setupSlider(rangeId, displayId, suffix, decimals) {
-        var range = document.getElementById(rangeId);
-        var disp  = document.querySelectorAll('[data-display="' + displayId + '"]');
-        if (!range) return;
+    // Bind EVERY range input (the desktop sidebar and the mobile drawer each
+    // render the filter form, so there are two of each), scoping the display
+    // update to the slider's own form. Using getElementById here used to bind
+    // only the first (hidden desktop) slider, leaving the mobile sliders inert.
+    document.querySelectorAll('input[type="range"].pp-range').forEach(function(range) {
+        var form   = range.closest('form');
+        var isKm   = range.name === 'km';
+        var suffix = isKm ? 'KM' : 'MAD';
+        var disp   = form ? form.querySelectorAll('[data-display="' + (isKm ? 'kmVal' : 'priceVal') + '"]') : [];
         function update() {
             var val = parseInt(range.value).toLocaleString('fr-FR') + ' ' + suffix;
             disp.forEach(function(el){ el.textContent = val; });
         }
         range.addEventListener('input', update);
         update();
-    }
-    setupSlider('priceRange', 'priceVal', 'MAD', 0);
-    setupSlider('kmRange',    'kmVal',    'KM',  0);
+    });
 
     // ===== ENERGY CHIPS =====
     document.querySelectorAll('[data-fuel]').forEach(function(btn) {
