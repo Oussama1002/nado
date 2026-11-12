@@ -119,6 +119,17 @@ class SettingsSeeder extends Seeder
                 ['auto_extend_minutes', 'int', 2, 'Prolongation auto (minutes)'],
             ],
 
+            // ──────────── enchere (enchère compétitive live) ─────────────
+            'enchere' => [
+                ['live_bidding', 'bool', false, 'Enchère compétitive live activée (master on/off)'],
+                ['default_min_increment', 'decimal', 1000, 'Incrément min. par défaut (MAD)'],
+                ['antisnipe_seconds', 'int', 120, 'Fenêtre anti-sniping (secondes)'],
+                ['max_extensions', 'int', 10, 'Nombre max. de prolongations anti-snipe'],
+                ['outbid_email', 'bool', true, 'Email « vous avez été surenchéri »'],
+                ['poll_seconds', 'int', 4, 'Fréquence de rafraîchissement live (secondes)'],
+                ['deposit_threshold', 'decimal', 0, 'Seuil exigeant une caution (0 = désactivé)'],
+            ],
+
             // ───────────────────────── finance ──────────────────────────
             'finance' => [
                 ['enabled', 'bool', true, 'Module financement activé'],

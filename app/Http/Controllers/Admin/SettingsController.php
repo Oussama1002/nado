@@ -22,6 +22,7 @@ class SettingsController extends Controller
         'pro_plans'  => ['label' => 'Abonnements Pro',         'icon' => 'bi-person-badge'],
         'boosts'     => ['label' => 'Boosts & Upsells',        'icon' => 'bi-rocket-takeoff'],
         'auctions'   => ['label' => 'Enchères',                'icon' => 'bi-hammer'],
+        'enchere'    => ['label' => 'Auto-Enchère live',       'icon' => 'bi-lightning-charge'],
         'finance'    => ['label' => 'Financement',             'icon' => 'bi-cash-coin'],
         'leads'      => ['label' => 'Leads & Wallet',          'icon' => 'bi-envelope-paper'],
         'ads'        => ['label' => 'Publicité',               'icon' => 'bi-megaphone'],
