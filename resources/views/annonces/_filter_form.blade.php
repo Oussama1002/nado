@@ -103,6 +103,16 @@
             <input type="range" name="prix" id="priceRange-{{ $formId ?? 'f' }}" class="pp-range"
                 min="0" max="2000000" step="50000" value="{{ request('prix', 800000) }}">
             <div class="pp-slider-ticks"><span>0</span><span>2 000 000 MAD</span></div>
+
+            @if(feature_on('discovery.monthly_filter'))
+            {{-- Achat par capacité : mensualité max → prix max équivalent (même formule financement) --}}
+            <div style="margin-top:12px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:#64748b;margin-bottom:6px;">{{ __('messages.discovery.monthly_max') }}</label>
+                <input type="number" name="mensualite_max" inputmode="numeric" min="0" step="100"
+                    value="{{ request('mensualite_max') }}" placeholder="3 000"
+                    class="pp-select" style="margin-bottom:0;width:100%;padding:10px 12px;">
+            </div>
+            @endif
         </div>
 
         {{-- 5. Kilométrage --}}
