@@ -284,14 +284,50 @@
         {{-- Pricing card --}}
         <div class="bg-white rounded-3xl border border-slate-100 card-shadow overflow-hidden">
           <div class="p-6">
-            <div class="text-[10px] font-black uppercase tracking-widest text-[#F37021] mb-2">{{ __('messages.nadoae.best_offer') }}</div>
+            <div class="text-[10px] font-black uppercase tracking-widest text-[#F37021] mb-2">
+              {{ $liveBidding ? __('messages.enchere.current_bid') : __('messages.nadoae.best_offer') }}
+            </div>
             <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-4xl font-black tracking-tighter text-slate-900">{{ number_format($prixTarget, 0, ',', ' ') }}</span>
+              <span id="liveCurrentPrice" class="text-4xl font-black tracking-tighter text-slate-900">{{ number_format($liveBidding ? $enchere->currentHighBid() : $prixTarget, 0, ',', ' ') }}</span>
               <span class="text-lg font-bold text-slate-500">DH</span>
             </div>
             <div class="text-xs text-slate-400 font-medium line-through">
               {{ __('messages.nadoae.estimated_price') }} {{ number_format($enchere->prix, 0, ',', ' ') }} DH
             </div>
+
+            @if($liveBidding)
+            {{-- Stats enchère live (mises à jour par polling) --}}
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ __('messages.enchere.min_next') }}</div>
+                <div id="liveMinNext" class="text-sm font-black text-slate-900">{{ number_format($enchere->minNextBid(), 0, ',', ' ') }} DH</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ __('messages.enchere.leader') }}</div>
+                <div class="flex items-baseline gap-2">
+                  <span id="liveBidsCount" class="text-sm font-black text-slate-900">{{ $bidsCount }}</span>
+                  <span class="text-[10px] text-slate-400">{{ __('messages.enchere.bids_count') }}</span>
+                  <span class="text-[10px] text-slate-300">·</span>
+                  <span id="liveBiddersCount" class="text-sm font-black text-slate-900">{{ $bidderCount }}</span>
+                  <span class="text-[10px] text-slate-400">{{ __('messages.enchere.bidders_count') }}</span>
+                </div>
+              </div>
+            </div>
+
+            @if($youBid)
+            <div id="liveStatusBadge" class="mt-3 px-3 py-2 rounded-xl text-xs font-black text-center {{ $youLead ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-orange-50 text-orange-700 border border-orange-200' }}">
+              {{ $youLead ? __('messages.enchere.you_lead') : __('messages.enchere.you_outbid') }}
+            </div>
+            @else
+            <div id="liveStatusBadge" class="mt-3 px-3 py-2 rounded-xl text-xs font-black text-center bg-slate-50 text-slate-500 border border-slate-200" style="display:none;"></div>
+            @endif
+
+            @if($enchere->reserve_price)
+            <div class="mt-2 text-[11px] font-bold text-center {{ $enchere->currentHighBid() >= (float)$enchere->reserve_price ? 'text-green-600' : 'text-slate-400' }}">
+              {{ $enchere->currentHighBid() >= (float)$enchere->reserve_price ? __('messages.enchere.reserve_met') : __('messages.enchere.reserve_not_met') }}
+            </div>
+            @endif
+            @endif
 
             @if($endsTs)
             <div class="mt-5 p-4 rounded-2xl bg-slate-900 text-white">
@@ -307,24 +343,29 @@
 
             {{-- Bid form --}}
             @if($status === 'En cours')
-            @php $minBid = (int) $prixTarget + 1000; @endphp
+            @php $minBid = $liveBidding ? (int) $enchere->minNextBid() : (int) $prixTarget + 1000; @endphp
             <form id="bidForm"
                   action="{{ route('nadoautoenchere.proposerPrix', $enchere->id) }}"
                   method="POST" class="mt-5"
-                  data-min-bid="{{ $minBid }}">
+                  data-live="{{ $liveBidding ? '1' : '0' }}"
+                  data-min-bid="{{ $minBid }}"
+                  data-state-url="{{ route('nadoautoenchere.state', $enchere->id) }}"
+                  data-csrf-url="{{ route('csrf.token') }}">
               @csrf
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">{{ __('messages.nadoae.your_max_bid') }}</label>
+              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">
+                {{ $liveBidding ? __('messages.enchere.your_max') : __('messages.nadoae.your_max_bid') }}
+              </label>
               <div class="flex gap-2">
                 <input id="bidInput" type="number" name="p" step="1000" min="{{ $minBid }}" required
                        placeholder="{{ number_format($minBid, 0, ',', ' ') }}"
                        class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold focus:border-[#1459DD] focus:outline-none">
-                <button type="submit" class="px-5 py-3 rounded-xl bg-[#1459DD] text-white text-sm font-black uppercase tracking-widest hover:bg-[#0f47b5] transition">
-                  {{ __('messages.nadoae.bid') }}
+                <button type="submit" id="bidBtn" class="px-5 py-3 rounded-xl bg-[#1459DD] text-white text-sm font-black uppercase tracking-widest hover:bg-[#0f47b5] transition">
+                  {{ $liveBidding ? __('messages.enchere.place_bid') : __('messages.nadoae.bid') }}
                 </button>
               </div>
               <p class="text-[11px] text-slate-500 mt-2 flex items-start gap-1.5">
                 <i data-lucide="info" class="w-3.5 h-3.5 flex-shrink-0 mt-0.5"></i>
-                <span>{{ __('messages.nadoae.bid_info') }}</span>
+                <span>{{ $liveBidding ? __('messages.enchere.proxy_hint') : __('messages.nadoae.bid_info') }}</span>
               </p>
             </form>
 
@@ -332,14 +373,64 @@
             (function () {
                 var form  = document.getElementById('bidForm');
                 var input = document.getElementById('bidInput');
+                var btn   = document.getElementById('bidBtn');
                 if (!form || !input || typeof Swal === 'undefined') return;
 
+                var isLive = form.getAttribute('data-live') === '1';
+
+                function currentMin() { return parseInt(form.getAttribute('data-min-bid'), 10) || 0; }
+
+                // Récupère un jeton CSRF frais (session partagée avec le login client).
+                async function freshToken() {
+                    try {
+                        var r = await fetch(form.getAttribute('data-csrf-url'), { headers: { 'Accept': 'application/json' } });
+                        var j = await r.json();
+                        return j.token;
+                    } catch (e) {
+                        return document.querySelector('input[name="_token"]').value;
+                    }
+                }
+
+                async function submitLive(raw) {
+                    btn.disabled = true;
+                    var prevLabel = btn.textContent;
+                    btn.textContent = @json(__('messages.enchere.placing'));
+                    try {
+                        var token = await freshToken();
+                        var fd = new FormData();
+                        fd.append('_token', token);
+                        fd.append('p', raw);
+                        var res = await fetch(form.getAttribute('action'), {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                            body: fd
+                        });
+                        var data = await res.json().catch(function () { return {}; });
+                        if (res.ok && data.success) {
+                            if (window.applyAuctionState) window.applyAuctionState(data);
+                            input.value = '';
+                            Swal.fire({
+                                icon: data.is_leader ? 'success' : 'warning',
+                                title: data.is_leader ? @json(__('messages.enchere.you_lead')) : @json(__('messages.enchere.you_outbid')),
+                                text: data.message || '',
+                                confirmButtonColor: '#1459DD'
+                            });
+                        } else {
+                            Swal.fire({ icon: 'error', title: @json(__('messages.nadoae.bid_invalid')), text: (data && data.message) || '', confirmButtonColor: '#1459DD' });
+                        }
+                    } catch (e) {
+                        Swal.fire({ icon: 'error', title: @json(__('messages.nadoae.bid_invalid')), confirmButtonColor: '#1459DD' });
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = prevLabel;
+                    }
+                }
+
                 form.addEventListener('submit', function (e) {
-                    // Si le navigateur a déjà bloqué (ex: input vide / min non respecté), on laisse faire.
                     if (!form.reportValidity()) return;
 
                     var raw = parseInt(input.value, 10);
-                    var min = parseInt(form.getAttribute('data-min-bid'), 10) || 0;
+                    var min = currentMin();
                     if (isNaN(raw) || raw < min) {
                         e.preventDefault();
                         Swal.fire({
@@ -351,13 +442,12 @@
                         return;
                     }
 
-                    // Formulaire valide : on demande confirmation avant d'envoyer.
                     if (form.dataset.confirmed === '1') return;
                     e.preventDefault();
 
                     Swal.fire({
-                        title: @json(__('messages.nadoae.confirm_title')),
-                        html: @json(__('messages.nadoae.confirm_about')) + ' '
+                        title: isLive ? @json(__('messages.enchere.confirm_title')) : @json(__('messages.nadoae.confirm_title')),
+                        html: (isLive ? @json(__('messages.enchere.confirm_text')) : @json(__('messages.nadoae.confirm_about'))) + ' '
                             + '<strong style="color:#1459DD;font-size:1.3em">'
                             + raw.toLocaleString('fr-FR') + ' DH</strong>.'
                             + '<br><br><small style="color:#64748b">'
@@ -365,14 +455,17 @@
                             + '<br>' + @json(__('messages.nadoae.confirm_final')) + '</small>',
                         icon: 'question',
                         showCancelButton: true,
-                        confirmButtonText: @json(__('messages.nadoae.yes_bid')),
-                        cancelButtonText: @json(__('messages.nadoae.cancel')),
+                        confirmButtonText: isLive ? @json(__('messages.enchere.yes_bid')) : @json(__('messages.nadoae.yes_bid')),
+                        cancelButtonText: isLive ? @json(__('messages.enchere.cancel')) : @json(__('messages.nadoae.cancel')),
                         confirmButtonColor: '#1459DD',
                         cancelButtonColor: '#64748b',
                         reverseButtons: true,
                         focusCancel: true
                     }).then(function (result) {
-                        if (result.isConfirmed) {
+                        if (!result.isConfirmed) return;
+                        if (isLive) {
+                            submitLive(raw);
+                        } else {
                             form.dataset.confirmed = '1';
                             form.submit();
                         }
@@ -513,13 +606,13 @@
     });
   });
 
-  // ===== Countdown =====
+  // ===== Countdown ===== (lit data-end à chaque tick → l'anti-snipe peut prolonger)
   document.querySelectorAll('.countdown').forEach(el => {
-    const endTime = new Date(el.dataset.end).getTime();
     const startTime = el.dataset.start ? new Date(el.dataset.start).getTime() : null;
     function tick() {
       const now = Date.now();
-      let target = endTime, label = '';
+      const endTime = new Date(el.dataset.end).getTime();
+      let target = endTime;
       if (startTime && startTime > now) target = startTime;
       const diff = target - now;
       if (diff <= 0) { el.textContent = 'Terminé'; return; }
@@ -531,6 +624,58 @@
     }
     tick(); setInterval(tick, 1000);
   });
+
+  @if($liveBidding)
+  // ===== Enchère live : polling JSON (pas de WebSocket) =====
+  // Pour passer au temps réel : remplacer ce poll par un abonnement Laravel Echo
+  // (Pusher/Reverb) alimenté par un event diffusé après placeBid(). Même UI.
+  (function () {
+    var POLL_MS = {{ (int) max(2, settings('enchere.poll_seconds', 4)) }} * 1000;
+    var fmt = function (n) { return Number(n).toLocaleString('fr-FR'); };
+    var $price   = document.getElementById('liveCurrentPrice');
+    var $minNext = document.getElementById('liveMinNext');
+    var $bids    = document.getElementById('liveBidsCount');
+    var $bidders = document.getElementById('liveBiddersCount');
+    var $badge   = document.getElementById('liveStatusBadge');
+    var $count   = document.querySelector('.countdown');
+    var form     = document.getElementById('bidForm');
+
+    window.applyAuctionState = function (d) {
+      if (d.current_price != null && $price) $price.textContent = fmt(d.current_price);
+      if (d.min_next != null) {
+        if ($minNext) $minNext.textContent = fmt(d.min_next) + ' DH';
+        if (form) { form.setAttribute('data-min-bid', Math.round(d.min_next)); }
+        var inp = document.getElementById('bidInput');
+        if (inp) { inp.setAttribute('min', Math.round(d.min_next)); inp.setAttribute('placeholder', fmt(d.min_next)); }
+      }
+      if (d.bids_count != null && $bids) $bids.textContent = d.bids_count;
+      if (d.bidder_count != null && $bidders) $bidders.textContent = d.bidder_count;
+      if (d.ends_at && $count) { $count.dataset.end = d.ends_at; }
+      // Statut « vous êtes en tête / surenchéri »
+      if ($badge && (typeof d.you_lead !== 'undefined' || typeof d.is_leader !== 'undefined')) {
+        var lead = (typeof d.is_leader !== 'undefined') ? d.is_leader : d.you_lead;
+        $badge.style.display = 'block';
+        $badge.className = 'mt-3 px-3 py-2 rounded-xl text-xs font-black text-center ' +
+          (lead ? 'bg-green-50 text-green-700 border border-green-200'
+                : 'bg-orange-50 text-orange-700 border border-orange-200');
+        $badge.textContent = lead ? @json(__('messages.enchere.you_lead')) : @json(__('messages.enchere.you_outbid'));
+      }
+    };
+
+    async function poll() {
+      try {
+        var r = await fetch(@json(route('nadoautoenchere.state', $enchere->id)), { headers: { 'Accept': 'application/json' } });
+        if (!r.ok) return;
+        var d = await r.json();
+        window.applyAuctionState(d);
+        if (d.status && d.status !== 'live' && d.status !== 'scheduled') {
+          // Enchère clôturée : on laisse le countdown afficher « Terminé ».
+        }
+      } catch (e) { /* réseau : on réessaie au prochain tick */ }
+    }
+    setInterval(poll, POLL_MS);
+  })();
+  @endif
   // ===== Share =====
   function openSharePopup(url) {
     Swal.fire({
