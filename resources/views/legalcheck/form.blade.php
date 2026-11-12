@@ -331,7 +331,17 @@
     channelRadios.forEach(function (r) { r.addEventListener('change', syncChannel); });
     syncChannel();
 
-    function openModal() { errBox.style.display = 'none'; overlay.classList.add('open'); }
+    function openModal() {
+        // Réinitialise à l'état « formulaire » (après un envoi réussi, le formulaire
+        // était masqué et le message de succès affiché — on remet tout à zéro).
+        errBox.style.display = 'none';
+        okBox.style.display = 'none';
+        form.style.display = '';
+        sendBtn.disabled = false;
+        sendBtn.textContent = TXT_SEND;
+        syncChannel();
+        overlay.classList.add('open');
+    }
     function closeModal() { overlay.classList.remove('open'); }
 
     openBtn.addEventListener('click', openModal);
@@ -360,6 +370,7 @@
             const data = await res.json().catch(() => ({}));
 
             if (res.ok && data.success) {
+                form.reset();
                 form.style.display = 'none';
                 okBox.textContent = data.message || '';
                 okBox.style.display = 'block';
