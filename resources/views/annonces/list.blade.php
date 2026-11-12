@@ -533,6 +533,11 @@
         padding:9px 16px; border-radius:10px; white-space:nowrap; }
     .pp-compare-tray button.pp-ct-clear { background:transparent; border:1px solid rgba(255,255,255,.3); color:#fff;
         font-size:12px; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    .pp-save-search { display:inline-flex; align-items:center; gap:6px; margin-left:10px; cursor:pointer;
+        background:#eff5ff; color:#1459DD; border:1px solid #cfe0ff; border-radius:9999px; padding:6px 14px;
+        font-size:12px; font-weight:800; text-decoration:none; }
+    html[dir="rtl"] .pp-save-search { margin-left:0; margin-right:10px; }
+    .pp-save-search:hover { background:#1459DD; color:#fff; border-color:#1459DD; }
 
     .pp-status {
         position: absolute;
@@ -1078,6 +1083,30 @@
                     @if(request()->except('page'))
                         <a href="{{ route('achat.index') }}" class="pp-af-clear">{{ __('messages.catalog.clear_all') }}</a>
                     @endif
+
+                    @if(feature_on('discovery.saved_searches'))
+                        @php
+                            $ssParams = collect(request()->only(['marque','modele','carburant','box','ville','annee_min','annee_max','annee','bodywork','prix','km','mensualite_max']))
+                                ->filter(fn($v) => $v !== null && $v !== '');
+                        @endphp
+                        @auth('client')
+                            <form action="{{ route('saved-searches.store') }}" method="POST" style="display:inline;">
+                                @csrf
+                                @foreach($ssParams as $k => $v)
+                                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                @endforeach
+                                <button type="submit" class="pp-save-search">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                                    {{ __('messages.discovery.save_search') }}
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('client.login') }}?redirect={{ urlencode(request()->fullUrl()) }}" class="pp-save-search">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                                {{ __('messages.discovery.save_search') }}
+                            </a>
+                        @endauth
+                    @endif
                 </div>
 
                 {{-- All results are sold / non-disponible → show the demande card above the grid --}}
@@ -1202,6 +1231,13 @@
                                 <div class="pp-price-overlay">
                                     <span>{{ number_format($ad->prix ?? 0, 0, ',', ' ') }} MAD</span>
                                 </div>
+                                @php $drop = method_exists($ad, 'priceDropAmount') ? $ad->priceDropAmount() : 0; @endphp
+                                @if($drop > 0)
+                                <div class="pp-drop-badge">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="19 12 12 19 5 12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
+                                    {{ __('messages.discovery.price_drop') }} −{{ number_format($drop, 0, ',', ' ') }} MAD
+                                </div>
+                                @endif
                             </div>
                             <div class="pp-card-body">
                                 <div class="pp-card-title-row">

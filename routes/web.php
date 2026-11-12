@@ -333,6 +333,13 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::middleware('auth:client')->group(function () {
     Route::post('/annonce/{id}/favorite', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
+
+    // Recherches sauvegardées (discovery.saved_searches)
+    Route::get('/mes-recherches', [\App\Http\Controllers\Client\SavedSearchController::class, 'index'])->name('saved-searches.index');
+    Route::post('/mes-recherches', [\App\Http\Controllers\Client\SavedSearchController::class, 'store'])->name('saved-searches.store');
+    Route::post('/mes-recherches/{id}/rename', [\App\Http\Controllers\Client\SavedSearchController::class, 'rename'])->whereNumber('id')->name('saved-searches.rename');
+    Route::post('/mes-recherches/{id}/toggle', [\App\Http\Controllers\Client\SavedSearchController::class, 'toggle'])->whereNumber('id')->name('saved-searches.toggle');
+    Route::delete('/mes-recherches/{id}', [\App\Http\Controllers\Client\SavedSearchController::class, 'destroy'])->whereNumber('id')->name('saved-searches.destroy');
 });
 
 Route::middleware('auth')->get('/annonce', function () {
