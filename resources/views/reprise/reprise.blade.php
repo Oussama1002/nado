@@ -323,10 +323,18 @@
                     .top-bar .custom-container { padding: 0 10px !important; }
                     .top-bar-actions { gap: 10px !important; }
                     /* Unwrap the actions group so the phone, Nado Radio and FR/AR become
-                       three direct flex items of the space-between top bar — Nado Radio
-                       ends up centred between the phone and the switch (same as the
-                       homepage top bar), instead of colliding with the phone. */
+                       three direct flex items of the top bar, then pin Nado Radio to the
+                       TRUE centre so its position is identical in FR and AR (space-between
+                       alone shifts it because the phone/switch widths differ). */
                     .top-bar-actions { display: contents !important; }
+                    .top-bar .custom-container { position: relative !important; }
+                    .nd-radio-link {
+                        position: absolute !important;
+                        left: 50% !important;
+                        top: 50% !important;
+                        transform: translate(-50%, -50%) !important;
+                        margin: 0 !important;
+                    }
                     .contact-info { gap: 10px !important; }
                     .info-item { font-size: 9px !important; letter-spacing: .02em !important; gap: 5px !important; }
                     /* free up room so عربي is always fully visible */
