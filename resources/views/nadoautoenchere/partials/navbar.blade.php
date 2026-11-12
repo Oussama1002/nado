@@ -18,7 +18,11 @@
                     <a href="tel:+212520070611" class="hover:text-[#1459DD] transition-colors">+212 520 070 611</a>
                 </div>
             </div>
-            <div class="flex items-center gap-3 sm:gap-5 flex-shrink-0">
+            {{-- Sur mobile, `contents` sort le groupe de son conteneur : le téléphone,
+                 Nado Radio et le switch FR/AR deviennent 3 éléments flex directs de la
+                 barre justify-between → Nado Radio se place au centre, à l'écart du
+                 téléphone (évite le chevauchement). `sm:flex` rétablit le groupe. --}}
+            <div class="contents sm:flex sm:items-center sm:gap-5 sm:flex-shrink-0">
                 {{-- Réseaux sociaux : masqués sur mobile pour libérer de la place --}}
                 <div class="hidden sm:flex items-center gap-5">
                     <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="facebook" class="w-5 h-5" stroke-width="1.5"></i></a>
@@ -26,7 +30,7 @@
                     <a href="#" class="hover:text-[#1459DD] transition-colors opacity-60 hover:opacity-100"><i data-lucide="linkedin" class="w-5 h-5" stroke-width="1.5"></i></a>
                 </div>
                 @if(feature_on('radio.enabled'))
-                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 ml-3 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0">
+                    <a href="{{ route('nado-radio.index') }}" title="Nado Radio" aria-label="Nado Radio" class="flex items-center gap-1.5 sm:ml-3 text-[11px] font-black uppercase tracking-widest opacity-80 hover:text-[#1459DD] hover:opacity-100 transition-colors flex-shrink-0">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" aria-hidden="true"><path d="M7 8 18 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="2.5" fill="#e11d48" stroke="#e11d48"/><path d="M7 12h5M7 16h4"/></svg><span class="text-[9px] sm:text-[11px]">Nado Radio</span>
                     </a>
                 @endif
