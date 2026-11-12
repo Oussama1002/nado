@@ -35,53 +35,24 @@ class BuyController extends Controller
             return Imgslider::where('active', 1)->limit(6)->get();
         });
 
-        $data = Annonces::with(['client', 'brand', 'modeleRelation'])
-            ->where('active', 1)
-            ->orderBy('status', 'ASC')
-            ->orderBy('id', 'DESC');
+        // Source UNIQUE des filtres (partagée avec les recherches sauvegardées).
+        $data = \App\Support\AnnonceFilter::apply(
+            Annonces::with(['client', 'brand', 'modeleRelation'])
+                ->where('active', 1)
+                ->orderBy('status', 'ASC')
+                ->orderBy('id', 'DESC'),
+            $request->all()
+        );
+
+        // Modèles de la marque sélectionnée (données de la vue, pas un filtre).
         $models = collect();
         if ($marque = trim((string) $request->marque)) {
-            $marque = str_replace('-', ' ', $marque);
-            $data = $data->whereRaw('UPPER(mark) = ?', [mb_strtoupper($marque)]);
-            $brand = Brand::whereRaw('UPPER(name) = ?', [mb_strtoupper($marque)])->first();
+            $brand = Brand::whereRaw('UPPER(name) = ?', [mb_strtoupper(str_replace('-', ' ', $marque))])->first();
             if ($brand) {
                 $models = Modele::where('brand_id', $brand->id)
                     ->orderBy('name', 'asc')
                     ->get(['id', 'name']);
             }
-        }
-        if ($modele = trim((string) $request->modele)) {
-            $modele = ucwords(str_replace('_', ' ', $modele));
-            $data = $data->where('modele', $modele);
-        }
-        if ($carburant = trim((string) $request->carburant)) {
-            $data = $data->where('carburant', $carburant);
-        }
-        if ($box = trim((string) $request->box)) {
-            $data = $data->where('box', $box);
-        }
-        if ($ville = trim((string) $request->ville)) {
-            $ville = str_replace('_', ' ', $ville);
-            $data = $data->where('city', $ville);
-        }
-        if ($anneeMin = (int) $request->annee_min) {
-            $data = $data->where('year', '>=', $anneeMin);
-        }
-        if ($anneeMax = (int) $request->annee_max) {
-            $data = $data->where('year', '<=', $anneeMax);
-        }
-        if ($annee = trim((string) $request->annee)) {
-            $data = $data->where('year', $annee);
-        }
-        if ($bodywork = trim((string) $request->bodywork)) {
-            $bodywork = str_replace('-', ' ', $bodywork);
-            $data = $data->where('bodywork', $bodywork);
-        }
-        if ($request->filled('prix')) {
-            $data = $data->where('prix', '<=', (int) $request->prix);
-        }
-        if ($request->filled('km')) {
-            $data = $data->where('km', '<=', (int) $request->km);
         }
 
         $paginated = $data->paginate(10)->withQueryString();

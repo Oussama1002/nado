@@ -15,19 +15,25 @@ class FavoriteController extends Controller
     return view('client.favorites', compact('favorites'));
 }
 
-    public function toggle($id)
+    public function toggle($id, \Illuminate\Http\Request $request)
     {
-         $annonce = Annonces::findOrFail($id);
-    $user = Auth::guard('client')->user();
+        $annonce = Annonces::findOrFail($id);
+        $user = Auth::guard('client')->user();
 
-    if ($user->favorites()->where('annonce_id', $id)->exists()) {
-        $user->favorites()->detach($id);
-        $message = 'Retiré des favoris ❌';
-    } else {
-        $user->favorites()->attach($id);
-        $message = 'Ajouté aux favoris ✅';
-    }
+        if ($user->favorites()->where('annonce_id', $id)->exists()) {
+            $user->favorites()->detach($id);
+            $favorited = false;
+            $message = __('messages.discovery.fav_removed');
+        } else {
+            $user->favorites()->attach($id);
+            $favorited = true;
+            $message = __('messages.discovery.fav_added');
+        }
 
-    return back()->with('success', $message);
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'favorited' => $favorited, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 }

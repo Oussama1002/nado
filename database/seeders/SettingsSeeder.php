@@ -119,6 +119,17 @@ class SettingsSeeder extends Seeder
                 ['auto_extend_minutes', 'int', 2, 'Prolongation auto (minutes)'],
             ],
 
+            // ──────────── discovery (expérience acheteur / catalogue) ────
+            'discovery' => [
+                ['favorites_on_cards', 'bool', false, 'Favoris (cœur) sur les cartes du catalogue'],
+                ['compare', 'bool', false, 'Comparateur (barre de comparaison)'],
+                ['saved_searches', 'bool', false, 'Recherches sauvegardées + alertes'],
+                ['price_alerts', 'bool', false, 'Alertes baisse de prix (favoris)'],
+                ['monthly_filter', 'bool', false, 'Filtre « mensualité max » + mensualité sur cartes'],
+                ['smart_search', 'bool', false, 'Recherche marque/modèle tolérante (alias FR/AR/EN + ID)'],
+                ['saved_search_max_matches', 'int', 12, 'Nb max de véhicules par email de recherche'],
+            ],
+
             // ──────────── enchere (enchère compétitive live) ─────────────
             'enchere' => [
                 ['live_bidding', 'bool', false, 'Enchère compétitive live activée (master on/off)'],
