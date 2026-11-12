@@ -20,6 +20,8 @@ class LegalCheck extends Model
         'matricule_region',
         'matricule_full',
         'declared_status',
+        'contact_channel',
+        'contact_whatsapp',
         'screenshot_path',
         'checked_at',
         'admin_status',

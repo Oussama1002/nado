@@ -142,6 +142,8 @@ class LegalCheckController extends Controller
             'matricule_number' => ['required', 'string', 'max:10'],
             'matricule_letter' => ['required', 'string', 'max:8'],
             'matricule_region' => ['required', 'string', 'max:6'],
+            'contact_channel'  => ['nullable', 'in:email,whatsapp,both'],
+            'contact_whatsapp' => ['nullable', 'string', 'max:30'],
             'annonce_id'       => ['nullable', 'integer'],
         ], [
             'matricule_number.required' => __('messages.legalcheck.err_number'),
@@ -163,6 +165,23 @@ class LegalCheckController extends Controller
 
         $full = trim($number . ' ' . $letter . ' ' . $region);
 
+        // Canal de réception du résultat : email (défaut), WhatsApp ou les deux.
+        $channel  = $validated['contact_channel'] ?? 'email';
+        // Numéro WhatsApp : on garde chiffres, +, espaces ; par défaut le téléphone du compte.
+        $whatsapp = trim(preg_replace('/[^0-9+\s]/', '', $validated['contact_whatsapp'] ?? ''));
+        if ($channel === 'email') {
+            $whatsapp = null;
+        } elseif ($whatsapp === '') {
+            // Canal WhatsApp demandé mais numéro vide → on retombe sur le téléphone du compte.
+            $whatsapp = $client->phone ?: null;
+            if (! $whatsapp) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('messages.legalcheck.err_whatsapp'),
+                ], 422);
+            }
+        }
+
         // Rattachement annonce : seulement si elle appartient au vendeur connecté.
         $annonceId = null;
         if (! empty($validated['annonce_id'])) {
@@ -182,22 +201,32 @@ class LegalCheckController extends Controller
             'matricule_region' => $region,
             'matricule_full'   => $full,
             'declared_status'  => 'unknown',
+            'contact_channel'  => $channel,
+            'contact_whatsapp' => $whatsapp,
             'screenshot_path'  => null,
             'checked_at'       => null,
             'admin_status'     => 'pending',
-            'notes'            => 'Demande différée (service NARSA indisponible) — résultat à envoyer par email.',
+            'notes'            => 'Demande différée (service NARSA indisponible) — résultat à envoyer au client.',
         ]);
 
         // Notifie l'équipe (traitement manuel). Email best-effort : un échec SMTP
         // ne doit pas faire échouer la demande du vendeur.
+        $channelLabel = [
+            'email'    => 'Email',
+            'whatsapp' => 'WhatsApp',
+            'both'     => 'Email + WhatsApp',
+        ][$channel] ?? 'Email';
+
         try {
             Mail::raw(
                 "Nouvelle demande de vérification légale (service NARSA en panne).\n\n"
                 . "Matricule : {$full}\n"
                 . "Client : {$client->name} <{$client->email}>\n"
+                . "Canal souhaité : {$channelLabel}\n"
+                . ($whatsapp ? "WhatsApp : {$whatsapp}\n" : '')
                 . ($annonceId ? "Annonce : #{$annonceId}\n" : '')
                 . "Demande #{$check->id}\n\n"
-                . "À traiter puis renvoyer le résultat au client par email.",
+                . "À traiter puis renvoyer le résultat au client via le canal souhaité.",
                 function ($m) {
                     $m->to('contact@nado.ma')->subject('Demande vérification légale (NARSA en panne)');
                 }
@@ -206,9 +235,16 @@ class LegalCheckController extends Controller
             report($e);
         }
 
+        // Accusé de réception adapté au canal choisi.
+        $ackKey = match ($channel) {
+            'whatsapp' => 'messages.legalcheck.request_ack_whatsapp',
+            'both'     => 'messages.legalcheck.request_ack_both',
+            default    => 'messages.legalcheck.request_ack',
+        };
+
         return response()->json([
             'success' => true,
-            'message' => __('messages.legalcheck.request_ack', ['email' => $client->email]),
+            'message' => __($ackKey, ['email' => $client->email, 'phone' => $whatsapp]),
         ]);
     }
 }

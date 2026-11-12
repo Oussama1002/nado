@@ -32,6 +32,16 @@
     .lc-field input:focus,
     .lc-field select:focus { outline: none; border-color: #1459DD; }
     .lc-hint { color: #94a3b8; font-size: .82rem; margin-top: .5rem; }
+    .lc-channel { margin-top: 1rem; }
+    .lc-channel-legend { display: block; font-size: .8rem; font-weight: 700; color: #64748b; margin-bottom: .45rem; }
+    .lc-channel-opts { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .lc-channel-opt { flex: 1 1 110px; display: flex; align-items: center; gap: .4rem; cursor: pointer;
+        border: 1.5px solid #cbd5e1; border-radius: 10px; padding: .55rem .7rem; font-size: .9rem; color: #0f172a; }
+    .lc-channel-opt input { accent-color: #1459DD; margin: 0; }
+    .lc-channel-opt:has(input:checked) { border-color: #1459DD; background: #eff5ff; }
+    .lc-channel-opt .fa-whatsapp { color: #25D366; }
+    .lc-wa-field { margin-top: .75rem; }
+    html[dir="rtl"] .lc-channel-opt { flex-direction: row-reverse; }
     .lc-preview-box {
         margin-top: 1rem; background: #0f172a; color: #fff; border-radius: 12px;
         padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
@@ -258,6 +268,33 @@
             </div>
             <p class="lc-hint">{{ __('messages.legalcheck.matricule_hint') }}</p>
 
+            {{-- Canal de réception du résultat : email et/ou WhatsApp. --}}
+            <div class="lc-channel">
+                <span class="lc-channel-legend">{{ __('messages.legalcheck.channel_legend') }}</span>
+                <div class="lc-channel-opts">
+                    <label class="lc-channel-opt">
+                        <input type="radio" name="contact_channel" value="email" checked>
+                        <span><i class="fa-solid fa-envelope"></i> {{ __('messages.legalcheck.channel_email') }}</span>
+                    </label>
+                    <label class="lc-channel-opt">
+                        <input type="radio" name="contact_channel" value="whatsapp">
+                        <span><i class="fa-brands fa-whatsapp"></i> {{ __('messages.legalcheck.channel_whatsapp') }}</span>
+                    </label>
+                    <label class="lc-channel-opt">
+                        <input type="radio" name="contact_channel" value="both">
+                        <span>{{ __('messages.legalcheck.channel_both') }}</span>
+                    </label>
+                </div>
+            </div>
+
+            {{-- Numéro WhatsApp (affiché si WhatsApp choisi). Pré-rempli avec le téléphone du compte. --}}
+            <div class="lc-field lc-wa-field" id="lc_wa_wrap" style="display:none;">
+                <label for="lc_m_whatsapp"><i class="fa-brands fa-whatsapp"></i> {{ __('messages.legalcheck.whatsapp_label') }}</label>
+                <input type="tel" id="lc_m_whatsapp" name="contact_whatsapp" maxlength="30" autocomplete="off"
+                       placeholder="{{ __('messages.legalcheck.whatsapp_hint') }}"
+                       value="{{ optional(Auth::guard('client')->user())->phone }}">
+            </div>
+
             <div class="lc-modal-actions">
                 <button type="submit" class="lc-modal-send" id="lc_request_send">{{ __('messages.legalcheck.request_send') }}</button>
                 <button type="button" class="lc-modal-cancel" id="lc_request_cancel">{{ __('messages.legalcheck.request_cancel') }}</button>
@@ -283,6 +320,16 @@
     const TXT_SEND = @json(__('messages.legalcheck.request_send'));
     const TXT_GENERIC_ERR = @json(__('messages.legalcheck.request_error'));
     const ENDPOINT = @json(route('legalcheck.request'));
+
+    // Affiche le champ WhatsApp quand le canal « WhatsApp » ou « les deux » est choisi.
+    const waWrap = document.getElementById('lc_wa_wrap');
+    const channelRadios = form.querySelectorAll('input[name="contact_channel"]');
+    function syncChannel() {
+        const val = (form.querySelector('input[name="contact_channel"]:checked') || {}).value;
+        if (waWrap) waWrap.style.display = (val === 'whatsapp' || val === 'both') ? 'block' : 'none';
+    }
+    channelRadios.forEach(function (r) { r.addEventListener('change', syncChannel); });
+    syncChannel();
 
     function openModal() { errBox.style.display = 'none'; overlay.classList.add('open'); }
     function closeModal() { overlay.classList.remove('open'); }
