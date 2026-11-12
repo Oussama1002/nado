@@ -90,6 +90,11 @@
         <a class="cs-link {{ $active('client.favorites') }}" href="{{ route('client.favorites') }}">
             <i class="fa fa-heart"></i> Mes Favoris
         </a>
+        @if(feature_on('discovery.saved_searches'))
+        <a class="cs-link {{ $active('saved-searches.index') }}" href="{{ route('saved-searches.index') }}">
+            <i class="fa fa-bell"></i> {{ __('messages.discovery.saved_searches') }}
+        </a>
+        @endif
         <a class="cs-link {{ $active('client.discussions.index') }}" href="{{ route('client.discussions.index') }}">
             <i class="fa fa-comments"></i> Mes Discussions
         </a>
