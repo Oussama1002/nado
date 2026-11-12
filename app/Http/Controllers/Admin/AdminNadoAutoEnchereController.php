@@ -41,6 +41,122 @@ class AdminNadoAutoEnchereController extends Controller
         ]);
     }
 
+    /**
+     * Écran de gestion d'une enchère compétitive : réglages (mise à prix,
+     * réserve, incrément, fenêtre), actions cycle de vie, et historique des
+     * enchères. (Enchère compétitive — flag enchere.live_bidding.)
+     */
+    public function manage($id)
+    {
+        $enchere = NadoAutoEnchere::with(['winner'])->findOrFail($id);
+
+        $bids = $enchere->bids()
+            ->with('client')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('admin.nadoautoenchere.manage', [
+            'enchere' => $enchere,
+            'bids'    => $bids,
+        ]);
+    }
+
+    /** Enregistre les paramètres d'enchère (prix + fenêtre). */
+    public function setAuction(Request $request, $id)
+    {
+        $enchere = NadoAutoEnchere::findOrFail($id);
+
+        $data = $request->validate([
+            'starting_price' => ['nullable', 'numeric', 'min:0'],
+            'reserve_price'  => ['nullable', 'numeric', 'min:0'],
+            'min_increment'  => ['nullable', 'numeric', 'min:0'],
+            'starts_at'      => ['nullable', 'date'],
+            'ends_at'        => ['nullable', 'date', 'after:starts_at'],
+        ]);
+
+        $enchere->starting_price = $data['starting_price'] ?? $enchere->starting_price ?? $enchere->prix;
+        $enchere->reserve_price  = $data['reserve_price'] ?? null;
+        $enchere->min_increment  = $data['min_increment'] ?? $enchere->min_increment ?? 1000;
+        if (array_key_exists('starts_at', $data)) $enchere->starts_at = $data['starts_at'] ?: null;
+        if (array_key_exists('ends_at', $data))   $enchere->ends_at   = $data['ends_at'] ?: null;
+
+        // Initialise le prix courant si aucune enchère n'a encore été placée.
+        if ($enchere->current_price === null || (float) $enchere->current_price <= 0) {
+            $enchere->current_price = $enchere->starting_price;
+        }
+
+        // Si l'enchère est en brouillon et qu'une fenêtre est définie → planifiée.
+        if (in_array($enchere->status, [null, 'draft'], true) && $enchere->starts_at) {
+            $enchere->status = 'scheduled';
+        }
+
+        $enchere->save();
+
+        return back()->with('success', 'Paramètres d\'enchère enregistrés ✅');
+    }
+
+    /**
+     * Actions cycle de vie : start (live) / pause (draft) / cancel (cancelled).
+     */
+    public function auctionAction(Request $request, $id)
+    {
+        $enchere = NadoAutoEnchere::findOrFail($id);
+        $action  = $request->input('action');
+
+        switch ($action) {
+            case 'start':
+                $enchere->status = 'live';
+                if (! $enchere->starts_at) $enchere->starts_at = now();
+                if ($enchere->current_price === null || (float) $enchere->current_price <= 0) {
+                    $enchere->current_price = $enchere->effectiveStartingPrice();
+                }
+                $enchere->active = 1;
+                break;
+            case 'pause':
+                $enchere->status = 'draft'; // bloque les enchères (assertOpen → fermé)
+                break;
+            case 'schedule':
+                $enchere->status = 'scheduled';
+                break;
+            case 'cancel':
+                $enchere->status = 'cancelled';
+                $enchere->active = 0;
+                break;
+            default:
+                return back()->with('error', 'Action inconnue.');
+        }
+
+        $enchere->save();
+
+        return back()->with('success', 'Enchère mise à jour : ' . $action . ' ✅');
+    }
+
+    /** Désignation manuelle du gagnant (clôture). */
+    public function declareWinner(Request $request, $id)
+    {
+        $enchere = NadoAutoEnchere::findOrFail($id);
+
+        $data = $request->validate([
+            'bid_id' => ['required', 'integer'],
+        ]);
+
+        $bid = $enchere->bids()->where('id', $data['bid_id'])->first();
+        if (! $bid) {
+            return back()->with('error', 'Enchère introuvable pour ce véhicule.');
+        }
+
+        $enchere->winner_client_id = $bid->client_id;
+        $enchere->winning_bid_id   = $bid->id;
+        $enchere->status           = 'ended';
+        $enchere->save();
+
+        // Notifie le gagnant + l'équipe (best-effort).
+        $winner = Client::find($bid->client_id);
+        \App\Services\EnchereNotifier::winnerDeclared($enchere, $winner, (float) ($enchere->current_price ?: $bid->proposition));
+
+        return back()->with('success', 'Gagnant désigné ✅');
+    }
+
     public function create()
     {
         return view('admin.nadoautoenchere.form', [

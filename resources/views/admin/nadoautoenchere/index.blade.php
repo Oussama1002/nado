@@ -70,6 +70,7 @@
                       </td>
                       <td>
                         <div class="d-flex gap-2 w-100 justify-content-end">
+                         <a href="{{ route("admin.nadoautoenchere.manage" , $enchere->id)}}" class="btn btn-warning"><i class="bi bi-hammer"></i> Enchère</a>
                          <a href="{{ route("admin.nadoautoenchere.edit" , $enchere)}}" class="btn btn-info">Update</a>
 @include('admin.partials.deleteBtn', [ "url" =>  route('admin.nadoautoenchere.destroy' , $enchere) ])
   </div>
