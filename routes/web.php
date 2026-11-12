@@ -213,6 +213,9 @@ Route::middleware(['flotte.enchere'])->group(function () {
         ->name('nadoautoenchere.filterCategories');
 
     Route::get('/nadoautoenchere', [NadoAutoEnchereController::class, 'index'])->name('nadoautoenchere.index');
+    // Endpoint JSON léger pour le polling live du front (doit précéder {id} générique).
+    Route::get('/nadoautoenchere/{id}/state', [NadoAutoEnchereController::class, 'state'])
+        ->whereNumber('id')->name('nadoautoenchere.state');
     Route::get('/nadoautoenchere/{id}', [NadoAutoEnchereController::class, 'show'])->name('nadoautoenchere.show');
     Route::post('/nadoautoenchere/{id}/proposer-prix', [NadoAutoEnchereController::class, 'proposerPrix'])
         ->name('nadoautoenchere.proposerPrix');
@@ -432,6 +435,15 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
         ->name('nadoautoenchere.resolveMaps');
     Route::post('nadoautoenchere/{id}/toggle-active', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'toggleActive'])
         ->name('nadoautoenchere.toggleActive');
+    // Gestion enchère compétitive (doivent précéder la resource).
+    Route::get('nadoautoenchere/{id}/manage', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'manage'])
+        ->whereNumber('id')->name('nadoautoenchere.manage');
+    Route::post('nadoautoenchere/{id}/set-auction', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'setAuction'])
+        ->whereNumber('id')->name('nadoautoenchere.setAuction');
+    Route::post('nadoautoenchere/{id}/action', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'auctionAction'])
+        ->whereNumber('id')->name('nadoautoenchere.action');
+    Route::post('nadoautoenchere/{id}/declare-winner', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'declareWinner'])
+        ->whereNumber('id')->name('nadoautoenchere.declareWinner');
     Route::resource('nadoautoenchere', \App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class);
 
     Route::resource('videoads', VideoAdsController::class); // <-- this line

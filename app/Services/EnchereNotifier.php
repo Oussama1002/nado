@@ -220,6 +220,101 @@ class EnchereNotifier
     }
 
     /**
+     * Prévient l'ancien leader qu'il vient d'être surenchéri (enchère compétitive).
+     * Gated par le réglage enchere.outbid_email. Best-effort.
+     *
+     * @return bool true si l'email est parti.
+     */
+    public static function outbid(Client $client, NadoAutoEnchere $enchere, float $newPrice): bool
+    {
+        if (! feature_on('enchere.outbid_email')) {
+            return false;
+        }
+        if (! $client->email) {
+            return false;
+        }
+
+        $vehicule = self::vehicleLabel($enchere);
+        $price    = number_format($newPrice, 0, ',', ' ') . ' MAD';
+        $url      = route('nadoautoenchere.show', $enchere->id);
+
+        $html = '<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">'
+            . '<div style="max-width:560px;margin:0 auto;padding:24px;">'
+            . '<div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(15,23,42,.25);">'
+            . '<div style="background:#F37021;padding:20px 24px;color:#fff;">'
+            . '<div style="font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;opacity:.9;">NADO Auto Enchère</div>'
+            . '<div style="font-size:20px;font-weight:900;margin-top:4px;">Vous avez été surenchéri</div>'
+            . '</div>'
+            . '<div style="padding:24px;">'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Bonjour ' . e($client->name ?: '') . ',</p>'
+            . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Une nouvelle enchère a dépassé la vôtre sur <strong>' . e($vehicule) . '</strong>. Le prix courant est désormais de <strong>' . e($price) . '</strong>.</p>'
+            . '<a href="' . e($url) . '" style="display:inline-block;background:#1459DD;color:#fff;text-decoration:none;font-weight:900;font-size:14px;padding:14px 24px;border-radius:12px;">Renchérir maintenant</a>'
+            . '<p style="color:#94a3b8;font-size:12px;line-height:1.6;margin:20px 0 0;">Vous recevez cet email car vous participez à cette enchère NADO.</p>'
+            . '</div></div></div></body></html>';
+
+        try {
+            Mail::html($html, function ($m) use ($client, $vehicule) {
+                $m->to($client->email, $client->name ?: '')
+                  ->subject('NADO Auto Enchère — vous avez été surenchéri : ' . $vehicule);
+            });
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Email surenchère échoué (client #' . $client->id . ') : ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Prévient le gagnant (et contact@nado.ma) à la clôture d'une enchère.
+     * Best-effort.
+     */
+    public static function winnerDeclared(NadoAutoEnchere $enchere, ?Client $winner, float $amount): void
+    {
+        $vehicule = self::vehicleLabel($enchere);
+        $price    = number_format($amount, 0, ',', ' ') . ' MAD';
+        $url      = route('nadoautoenchere.show', $enchere->id);
+
+        if ($winner && $winner->email) {
+            $html = '<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">'
+                . '<div style="max-width:560px;margin:0 auto;padding:24px;">'
+                . '<div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(15,23,42,.25);">'
+                . '<div style="background:#16a34a;padding:20px 24px;color:#fff;">'
+                . '<div style="font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;opacity:.9;">NADO Auto Enchère</div>'
+                . '<div style="font-size:20px;font-weight:900;margin-top:4px;">Félicitations, vous avez remporté l\'enchère</div>'
+                . '</div>'
+                . '<div style="padding:24px;">'
+                . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Bonjour ' . e($winner->name ?: '') . ',</p>'
+                . '<p style="color:#334155;font-size:14px;line-height:1.6;margin:0 0 16px;">Vous avez remporté l\'enchère sur <strong>' . e($vehicule) . '</strong> au prix de <strong>' . e($price) . '</strong>. Notre équipe vous contactera pour finaliser la transaction.</p>'
+                . '<a href="' . e($url) . '" style="display:inline-block;background:#1459DD;color:#fff;text-decoration:none;font-weight:900;font-size:14px;padding:14px 24px;border-radius:12px;">Voir l\'enchère</a>'
+                . '</div></div></div></body></html>';
+            try {
+                Mail::html($html, function ($m) use ($winner, $vehicule) {
+                    $m->to($winner->email, $winner->name ?: '')
+                      ->subject('NADO Auto Enchère — vous avez remporté : ' . $vehicule);
+                });
+            } catch (\Throwable $e) {
+                Log::error('Email gagnant enchère #' . $enchere->id . ' échoué : ' . $e->getMessage());
+            }
+        }
+
+        // Notification équipe/vendeur.
+        try {
+            $body = "Enchère #{$enchere->id} clôturée.\n\n"
+                . "Véhicule : {$vehicule}\n"
+                . ($winner
+                    ? "Gagnant : " . ($winner->name ?: '—') . " <" . ($winner->email ?: '—') . "> / " . ($winner->phone ?: '—') . "\n"
+                      . "Prix adjugé : {$price}\n"
+                    : "Résultat : réserve non atteinte (aucun gagnant).\n")
+                . "\n" . $url;
+            Mail::raw($body, function ($m) use ($enchere, $vehicule) {
+                $m->to('contact@nado.ma')->subject('Auto Enchère clôturée #' . $enchere->id . ' : ' . $vehicule);
+            });
+        } catch (\Throwable $e) {
+            Log::error('Email clôture enchère #' . $enchere->id . ' (admin) échoué : ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Informe contact@nado.ma qu'un client attend la validation de son accès
      * Auto Enchère. N'interrompt jamais le flux si l'envoi échoue.
      */

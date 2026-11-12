@@ -249,18 +249,73 @@ public function proposerPrix(Request $request, $id)
 
     $client = Auth::guard('client')->user();
     $enchere = NadoAutoEnchere::findOrFail($id);
-    $montant = $request->input('p');
+    $montant = (float) preg_replace('/[^0-9.]/', '', (string) $request->input('p'));
 
-    // Save the bid
+    // ── Enchère compétitive chronométrée (flag enchere.live_bidding) ──────────
+    // Placement atomique via AuctionService (verrou + proxy + anti-snipe).
+    if (feature_on('enchere.live_bidding')) {
+        try {
+            $result = app(\App\Services\AuctionService::class)->placeBid($enchere, $client, $montant);
+        } catch (\App\Exceptions\BidException $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+            }
+            return back()->with('error', $e->getMessage());
+        }
+
+        // On conserve les notifications admin + client existantes (même format).
+        $this->dispatchBidNotifications($enchere, $client, $montant);
+
+        // Email de surenchère à l'ancien leader (après réponse, best-effort, gated).
+        if (! empty($result['previous_leader_id'])) {
+            $prevId   = $result['previous_leader_id'];
+            $newPrice = $result['current_price'];
+            $encId    = $enchere->id;
+            dispatch(function () use ($prevId, $encId, $newPrice) {
+                $prev = \App\Models\Client::find($prevId);
+                $enc  = NadoAutoEnchere::find($encId);
+                if ($prev && $enc) {
+                    \App\Services\EnchereNotifier::outbid($prev, $enc, (float) $newPrice);
+                }
+            })->afterResponse();
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'       => true,
+                'is_leader'     => $result['is_leader'],
+                'current_price' => $result['current_price'],
+                'min_next'      => $result['min_next'],
+                'extended'      => $result['extended'],
+                'message'       => $result['is_leader']
+                    ? __('messages.enchere.you_lead')
+                    : __('messages.enchere.you_outbid'),
+            ]);
+        }
+
+        $msg = $result['is_leader'] ? __('messages.enchere.bid_placed_lead') : __('messages.enchere.bid_placed_outbid');
+        return back()->with($result['is_leader'] ? 'success' : 'warning', $msg);
+    }
+
+    // ── Legacy : proposition scellée (flag OFF) ───────────────────────────────
     \App\Models\NadoAutoEncheresBid::create([
         'enchere_id'  => $id,
         'client_id'   => $client->id,
         'proposition' => $montant,
     ]);
 
-    // Même format d'email que la proposition sur annonce classique
-    // (AnnoncesController@proposerPrix) : NouvellePropositionNotification + payload
-    // structuré, envoi après-réponse pour que le visiteur n'attende jamais le SMTP.
+    $this->dispatchBidNotifications($enchere, $client, $montant);
+
+    return back()->with('success', 'Votre proposition a été envoyée avec succès ✅ Un email de confirmation vous a été envoyé.');
+}
+
+/**
+ * Notifications admin + client après une enchère (même format que la proposition
+ * sur annonce classique : NouvellePropositionNotification, envoi après-réponse
+ * pour ne jamais faire attendre le SMTP au visiteur — QUEUE=sync).
+ */
+private function dispatchBidNotifications(NadoAutoEnchere $enchere, $client, $montant): void
+{
     $brandName = $enchere->brand?->name
         ?? (is_numeric($enchere->mark ?? null) ? null : $enchere->mark);
     $modelName = $enchere->modeleRelation?->name
@@ -268,7 +323,6 @@ public function proposerPrix(Request $request, $id)
     $vehicule = trim(($brandName ?? '').' '.($modelName ?? '')) ?: ($enchere->titre ?: 'Enchère #'.$enchere->id);
 
     $payload = [
-        // Libellés spécifiques au flux enchère (lus par la Notification).
         'title'        => 'Nouvelle enchère',
         'intro'        => 'Un client vient de placer une enchère.',
         'action_text'  => 'Voir l\'enchère',
@@ -288,7 +342,6 @@ public function proposerPrix(Request $request, $id)
         'url'          => route('admin.nadoautoencherebid.index'),
     ];
 
-    // Admin notification (contact@nado.ma)
     dispatch(function () use ($payload) {
         try {
             Notification::route('mail', config('mail.admin_address', 'contact@nado.ma'))
@@ -298,7 +351,6 @@ public function proposerPrix(Request $request, $id)
         }
     })->afterResponse();
 
-    // Client confirmation — same template, labels addressed to the bidder.
     if (!empty($client->email)) {
         $clientPayload = array_merge($payload, [
             'title'       => 'Confirmation de votre enchère',
@@ -316,8 +368,44 @@ public function proposerPrix(Request $request, $id)
             }
         })->afterResponse();
     }
+}
 
-    return back()->with('success', 'Votre proposition a été envoyée avec succès ✅ Un email de confirmation vous a été envoyé.');
+/**
+ * GET nadoautoenchere/{id}/state — endpoint JSON léger pour le polling du front
+ * (pas de WebSocket : adapté à l'hébergement mutualisé LiteSpeed, QUEUE=sync).
+ * Pour passer au temps réel plus tard : diffuser un événement Echo/Reverb après
+ * placeBid() et remplacer le polling par un abonnement — sans toucher au service.
+ */
+public function state($id)
+{
+    $enchere = NadoAutoEnchere::findOrFail($id);
+
+    $bidsCount   = $enchere->bids()->count();
+    $bidderCount = $enchere->bids()->distinct('client_id')->count('client_id');
+
+    // Leader masqué (anonymat des concurrents) : initiales + id tronqué.
+    $leaderId   = app(\App\Services\AuctionService::class)->leaderClientId($enchere->id);
+    $leaderMask = null;
+    $youLead    = false;
+    if ($leaderId) {
+        $leader = \App\Models\Client::find($leaderId);
+        $name   = $leader->company ?: $leader->name ?: 'Enchérisseur';
+        $leaderMask = mb_substr($name, 0, 1) . '••• #' . $leaderId;
+        $client = Auth::guard('client')->user();
+        $youLead = $client && $client->id === $leaderId;
+    }
+
+    return response()->json([
+        'current_price' => (float) $enchere->currentHighBid(),
+        'min_next'      => (float) $enchere->minNextBid(),
+        'bids_count'    => $bidsCount,
+        'bidder_count'  => $bidderCount,
+        'leader_masked' => $leaderMask,
+        'you_lead'      => $youLead,
+        'ends_at'       => $enchere->ends_at ? $enchere->ends_at->toIso8601String() : null,
+        'status'        => $enchere->status,
+        'extended'      => (int) $enchere->extensions_count,
+    ]);
 }
 
 
@@ -447,12 +535,26 @@ if ($rapport && file_exists(storage_path('app/public/nadoautoenchere/pdf/' . $ra
     
                 $leftondetailBanner = Publication::where('placement', 'leftondetailenchere-banner')->where('status', true)->first();
 
+        // Données enchère compétitive (flag enchere.live_bidding).
+        $liveBidding = feature_on('enchere.live_bidding');
+        $bidsCount   = $enchere->bids()->count();
+        $bidderCount = $enchere->bids()->distinct('client_id')->count('client_id');
+        $leaderId    = $liveBidding ? app(\App\Services\AuctionService::class)->leaderClientId($enchere->id) : null;
+        $me          = Auth::guard('client')->user();
+        $youLead     = $leaderId && $me && $me->id === $leaderId;
+        $youBid      = $me ? $enchere->bids()->where('client_id', $me->id)->exists() : false;
+
         return view('nadoautoenchere.detail', [
         'enchere' => $enchere,
         'equipements' =>$equipements,
         'clientTypes' =>$clientTypes,
 'prixTarget' =>$prixTarget,
-        'leftondetailBanner' => $leftondetailBanner, 
+        'liveBidding' => $liveBidding,
+        'bidsCount'   => $bidsCount,
+        'bidderCount' => $bidderCount,
+        'youLead'     => $youLead,
+        'youBid'      => $youBid,
+        'leftondetailBanner' => $leftondetailBanner,
                 'pdfName' => $pdfName,
         'pdfExists' => $pdfExists,
         'brands'   => Brand::all(),
