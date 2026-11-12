@@ -4126,7 +4126,7 @@
 
                 <div class="listings-grid">
                     @foreach ($latestAds->take(6) as $ad)
-                        <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $ad->mark), 'modele' => str_replace(' ', '', $ad->modele), 'id' => $ad['id']]) }}"
+                        <a href="{{ route('achat.detail', ['marque' => str_replace([' ', '_'], '', (string) ($ad->mark ?? '')) ?: 'voiture', 'modele' => str_replace([' ', '_'], '', (string) ($ad->modele ?? '')) ?: 'auto', 'id' => $ad['id']]) }}"
                             class="listing-card" style="text-decoration: none; color: inherit; display: block;">
                             <div class="listing-image-container">
                                 <img src="{{ asset('storage/ads/' . $ad->pathImageAds()) }}" class="listing-main-img"
@@ -4371,7 +4371,7 @@
 
                 <div class="listings-grid">
                     @foreach ($similar_ads->take(3) as $ad)
-                        <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $ad->mark), 'modele' => str_replace(' ', '', $ad->modele), 'id' => $ad['id']]) }}"
+                        <a href="{{ route('achat.detail', ['marque' => str_replace([' ', '_'], '', (string) ($ad->mark ?? '')) ?: 'voiture', 'modele' => str_replace([' ', '_'], '', (string) ($ad->modele ?? '')) ?: 'auto', 'id' => $ad['id']]) }}"
                             class="listing-card" style="text-decoration: none; color: inherit; display: block;">
                             <div class="listing-image-container">
                                 <img src="{{ asset('storage/ads/' . $ad->pathImageAds()) }}" class="listing-main-img"
@@ -4476,10 +4476,22 @@
 
                 <div class="listings-grid">
                     @foreach ($similar_adsp->take(3) as $ad)
-                        <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $ad->mark), 'modele' => str_replace(' ', '', $ad->modele), 'id' => $ad['id']]) }}"
+                        @php
+                            // Main image: prefer the images[] column, fall back to the media
+                            // relation (older rows keep photos there), then a default. Avoids
+                            // a broken thumbnail when images is empty (e.g. ad 218).
+                            $adImgFile = !empty($ad->images[0]) ? $ad->images[0] : optional($ad->media->first())->name;
+                            $adImg = !empty($adImgFile) ? asset('storage/ads/' . $adImgFile) : asset('images/default.jpg');
+                            // URL segments must be non-empty or the {marque}_{modele}_{id}
+                            // route fails to match (404). Substitute placeholders when the
+                            // brand/model columns are empty; show() resolves by id anyway.
+                            $adUrlMarque = str_replace([' ', '_'], '', (string) ($ad->mark ?? '')) ?: 'voiture';
+                            $adUrlModele = str_replace([' ', '_'], '', (string) ($ad->modele ?? '')) ?: 'auto';
+                        @endphp
+                        <a href="{{ route('achat.detail', ['marque' => $adUrlMarque, 'modele' => $adUrlModele, 'id' => $ad['id']]) }}"
                             class="listing-card" style="text-decoration: none; color: inherit; display: block;">
                             <div class="listing-image-container">
-                                <img src="{{ isset($ad->images[0]) ? asset('storage/ads/' . $ad->images[0]) : asset('images/default.jpg') }}"
+                                <img src="{{ $adImg }}"
                                     class="listing-main-img" alt="Annonce"
                                     style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
@@ -4495,7 +4507,7 @@
                                         MAD</span>
                                 </div>
                                 <div class="listing-video-preview">
-                                    <img src="{{ isset($ad->images[0]) ? asset('storage/ads/' . $ad->images[0]) : asset('images/default.jpg') }}"
+                                    <img src="{{ $adImg }}"
                                         style="width: 100%; height: 100%; object-fit: cover;" />
                                     <div class="listing-play-btn">
                                         <div class="listing-play-icon">
@@ -4586,10 +4598,16 @@
                 </div>
                 <div class="listings-grid">
                     @foreach (($similar_ads_pro ?? collect())->take(3) as $ad)
-                        <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $ad->mark), 'modele' => str_replace(' ', '', $ad->modele), 'id' => $ad['id']]) }}"
+                        @php
+                            $adImgFile = !empty($ad->images[0]) ? $ad->images[0] : optional($ad->media->first())->name;
+                            $adImg = !empty($adImgFile) ? asset('storage/ads/' . $adImgFile) : asset('images/default.jpg');
+                            $adUrlMarque = str_replace([' ', '_'], '', (string) ($ad->mark ?? '')) ?: 'voiture';
+                            $adUrlModele = str_replace([' ', '_'], '', (string) ($ad->modele ?? '')) ?: 'auto';
+                        @endphp
+                        <a href="{{ route('achat.detail', ['marque' => $adUrlMarque, 'modele' => $adUrlModele, 'id' => $ad['id']]) }}"
                             class="listing-card" style="text-decoration: none; color: inherit; display: block;">
                             <div class="listing-image-container">
-                                <img src="{{ isset($ad->images[0]) ? asset('storage/ads/' . $ad->images[0]) : asset('images/default.jpg') }}"
+                                <img src="{{ $adImg }}"
                                     class="listing-main-img" alt="Annonce"
                                     style="width: 100%; height: 100%; object-fit: cover;" />
                                 <div class="listing-status-badge status-available">DISPONIBLE</div>
@@ -4605,7 +4623,7 @@
                                         MAD</span>
                                 </div>
                                 <div class="listing-video-preview">
-                                    <img src="{{ isset($ad->images[0]) ? asset('storage/ads/' . $ad->images[0]) : asset('images/default.jpg') }}"
+                                    <img src="{{ $adImg }}"
                                         style="width: 100%; height: 100%; object-fit: cover;" />
                                     <div class="listing-play-btn">
                                         <div class="listing-play-icon">
