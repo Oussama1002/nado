@@ -3000,7 +3000,7 @@
                     </div>
                 </div>
 
-                <div style="display:flex;align-items:center;gap:16px;">
+                <div class="top-bar-right" style="display:flex;align-items:center;gap:16px;">
                     <div class="social-links">
                         <a href="#"><i data-lucide="facebook"></i></a>
                         <a href="#"><i data-lucide="instagram"></i></a>
@@ -3873,6 +3873,10 @@
                    margin, so just drop that instead of hiding the text. */
                 .nd-radio-txt { display: inline !important; font-size: 9px !important; }
                 .nd-radio-link { margin-left: 0 !important; margin-right: 0 !important; }
+                /* Unwrap the right cluster so the phone, Nado Radio and FR/AR become
+                   three direct flex items of the top bar. With space-between this puts
+                   Nado Radio in the centre, between the phone (left) and FR/AR (right). */
+                .top-bar-right { display: contents !important; }
                 .top-bar { padding: 8px 0 !important; }
                 .top-bar .custom-container { padding: 0 10px !important; }
                 .contact-info { gap: 10px !important; }
