@@ -510,6 +510,30 @@
     }
     .pp-card:hover .pp-card-media img { transform: scale(1.1); }
 
+    /* Favoris + comparateur (découverte acheteur) */
+    .pp-card-tools { position:absolute; top:16px; right:16px; display:flex; flex-direction:column; gap:8px; z-index:6; }
+    html[dir="rtl"] .pp-card-tools { right:auto; left:16px; }
+    .pp-tool-btn { width:40px; height:40px; border-radius:9999px; border:none; cursor:pointer;
+        background:rgba(255,255,255,.92); box-shadow:0 2px 10px rgba(15,23,42,.18);
+        display:flex; align-items:center; justify-content:center; color:#64748b; transition:transform .15s, color .15s, background .15s; }
+    .pp-tool-btn:hover { transform:scale(1.1); }
+    .pp-fav.active { color:#e11d48; }
+    .pp-fav.active svg { fill:#e11d48; }
+    .pp-cmp.active { background:#1459DD; color:#fff; }
+    .pp-drop-badge { position:absolute; bottom:16px; left:16px; z-index:6; background:#16a34a; color:#fff;
+        font-size:11px; font-weight:800; padding:5px 10px; border-radius:9999px; display:inline-flex; align-items:center; gap:5px; }
+    html[dir="rtl"] .pp-drop-badge { left:auto; right:16px; }
+    /* Barre de comparaison flottante */
+    .pp-compare-tray { position:fixed; left:50%; transform:translateX(-50%); bottom:-100px; z-index:60;
+        background:#0f172a; color:#fff; border-radius:16px; padding:12px 16px; display:flex; align-items:center; gap:14px;
+        box-shadow:0 12px 40px rgba(15,23,42,.35); transition:bottom .3s ease; max-width:94vw; }
+    .pp-compare-tray.open { bottom:20px; }
+    .pp-compare-tray .pp-ct-count { font-weight:900; }
+    .pp-compare-tray a.pp-ct-go { background:#1459DD; color:#fff; text-decoration:none; font-weight:800; font-size:13px;
+        padding:9px 16px; border-radius:10px; white-space:nowrap; }
+    .pp-compare-tray button.pp-ct-clear { background:transparent; border:1px solid rgba(255,255,255,.3); color:#fff;
+        font-size:12px; padding:8px 12px; border-radius:10px; cursor:pointer; }
+
     .pp-status {
         position: absolute;
         top: 24px;
@@ -1071,6 +1095,26 @@
                         <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $ad->mark), 'modele' => str_replace(' ', '', $ad->modele), 'id' => $ad->id]) }}"
                            class="pp-card">
                             <div class="pp-card-media">
+                                @if(feature_on('discovery.favorites_on_cards') || feature_on('discovery.compare'))
+                                <div class="pp-card-tools">
+                                    @if(feature_on('discovery.favorites_on_cards'))
+                                    <button type="button" class="pp-tool-btn pp-fav {{ in_array($ad->id, $favIds ?? []) ? 'active' : '' }}"
+                                            data-id="{{ $ad->id }}" aria-label="{{ __('messages.discovery.add_fav') }}">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 10-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/>
+                                        </svg>
+                                    </button>
+                                    @endif
+                                    @if(feature_on('discovery.compare'))
+                                    <button type="button" class="pp-tool-btn pp-cmp" data-id="{{ $ad->id }}"
+                                            aria-label="{{ __('messages.discovery.compare') }}">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M12 2v20"/>
+                                        </svg>
+                                    </button>
+                                    @endif
+                                </div>
+                                @endif
                                 @php
                                     // Inline placeholder: a data URI can never 404, unlike a file in public/.
                                     $noPhoto = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iNDQwIiB2aWV3Qm94PSIwIDAgNjQwIDQ0MCI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSI0NDAiIGZpbGw9IiNmMWY1ZjkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNjYmQ1ZTEiIHN0cm9rZS13aWR0aD0iMTIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE4OCAyNjJ2LTM2YTE2IDE2IDAgMCAxIDE2LTE2aDEybDI0LTQwaDE2MGwyNCA0MGgxMmExNiAxNiAwIDAgMSAxNiAxNnYzNnoiLz48Y2lyY2xlIGN4PSIyMzIiIGN5PSIyNjIiIHI9IjIyIi8+PGNpcmNsZSBjeD0iNDA4IiBjeT0iMjYyIiByPSIyMiIvPjwvZz48dGV4dCB4PSIzMjAiIHk9IjMzMCIgZm9udC1mYW1pbHk9IkhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iYm9sZCIgbGV0dGVyLXNwYWNpbmc9IjIiIGZpbGw9IiM5NGEzYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBIT1RPIElORElTUE9OSUJMRTwvdGV4dD48L3N2Zz4=';
@@ -1196,7 +1240,7 @@
                                     <div>
                                         <div class="pp-monthly-eye">{{ __('messages.catalog.monthly') }}</div>
                                         <div class="pp-monthly-val">
-                                            {{ number_format(($ad->prix ?? 0) / 84, 0, ',', ' ') }}
+                                            {{ number_format(feature_on('discovery.monthly_filter') ? monthly_estimate($ad->prix ?? 0) : (($ad->prix ?? 0) / 84), 0, ',', ' ') }}
                                             <small> {{ __('messages.catalog.per_month') }}</small>
                                         </div>
                                     </div>
@@ -1412,10 +1456,96 @@
         </div>
     </div>
 
+@if(feature_on('discovery.compare'))
+{{-- Barre de comparaison flottante (sélection persistée en localStorage) --}}
+<div class="pp-compare-tray" id="ppCompareTray" aria-live="polite">
+    <span class="pp-ct-count"><span id="ppCtNum">0</span>/3</span>
+    <a href="#" class="pp-ct-go" id="ppCtGo">{{ __('messages.discovery.compare_open') }}</a>
+    <button type="button" class="pp-ct-clear" id="ppCtClear">{{ __('messages.discovery.compare_clear') }}</button>
+</div>
+@endif
 </div>{{-- end .purchase-page --}}
 @endsection
 
 @section('script')
+<script>
+// ===== Découverte acheteur : favoris (AJAX) + comparateur (localStorage) =====
+(function () {
+    var LOGGED   = @json(\Illuminate\Support\Facades\Auth::guard('client')->check());
+    var LOGIN_URL= @json(route('client.login'));
+    var CSRF_URL = @json(route('csrf.token'));
+    var FAV_TPL  = @json(url('/annonce/__ID__/favorite'));
+    var CMP_URL  = @json(route('comparison.index'));
+    var MSG = {
+        max: @json(__('messages.discovery.compare_max')),
+        loginFav: @json(__('messages.discovery.login_to_fav')),
+        empty: @json(__('messages.discovery.compare_empty'))
+    };
+
+    function toast(msg, ok) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({ toast:true, position:'top-end', timer:1800, showConfirmButton:false,
+                icon: ok===false?'error':'success', title: msg });
+        }
+    }
+
+    // --- Favoris ---
+    async function freshToken() {
+        try { var r = await fetch(CSRF_URL, {headers:{'Accept':'application/json'}}); return (await r.json()).token; }
+        catch(e){ var i=document.querySelector('meta[name="csrf-token"]'); return i?i.content:''; }
+    }
+    document.addEventListener('click', async function (e) {
+        var fav = e.target.closest('.pp-fav');
+        if (fav) {
+            e.preventDefault(); e.stopPropagation();
+            if (!LOGGED) { toast(MSG.loginFav, false); window.location.href = LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href); return; }
+            var id = fav.getAttribute('data-id');
+            fav.classList.toggle('active'); // optimiste
+            try {
+                var token = await freshToken();
+                var fd = new FormData(); fd.append('_token', token);
+                var res = await fetch(FAV_TPL.replace('__ID__', id), {
+                    method:'POST', headers:{'X-CSRF-TOKEN':token,'Accept':'application/json','X-Requested-With':'XMLHttpRequest'}, body:fd
+                });
+                var data = await res.json().catch(function(){return {};});
+                if (!res.ok || !data.success) { fav.classList.toggle('active'); toast((data&&data.message)||'', false); }
+                else { fav.classList.toggle('active', data.favorited); toast(data.message, true); }
+            } catch(err) { fav.classList.toggle('active'); }
+            return;
+        }
+        var cmp = e.target.closest('.pp-cmp');
+        if (cmp) {
+            e.preventDefault(); e.stopPropagation();
+            toggleCompare(cmp.getAttribute('data-id'), cmp);
+        }
+    });
+
+    // --- Comparateur (localStorage, max 3) ---
+    var KEY = 'nado_compare';
+    function getSel(){ try { return JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){ return []; } }
+    function setSel(a){ try { localStorage.setItem(KEY, JSON.stringify(a)); } catch(e){} }
+    function toggleCompare(id, btn) {
+        var sel = getSel(); id = String(id);
+        var i = sel.indexOf(id);
+        if (i >= 0) { sel.splice(i,1); }
+        else { if (sel.length >= 3) { toast(MSG.max, false); return; } sel.push(id); }
+        setSel(sel); syncCompare();
+    }
+    function syncCompare() {
+        var sel = getSel();
+        document.querySelectorAll('.pp-cmp').forEach(function(b){ b.classList.toggle('active', sel.indexOf(String(b.getAttribute('data-id')))>=0); });
+        var tray = document.getElementById('ppCompareTray');
+        var num  = document.getElementById('ppCtNum');
+        if (num) num.textContent = sel.length;
+        if (tray) tray.classList.toggle('open', sel.length > 0);
+    }
+    var go = document.getElementById('ppCtGo');
+    if (go) go.addEventListener('click', function(e){ e.preventDefault(); var sel=getSel(); if(!sel.length){toast(MSG.empty,false);return;} window.location.href = CMP_URL + '?ids=' + sel.join(','); });
+    var clr = document.getElementById('ppCtClear');
+    if (clr) clr.addEventListener('click', function(){ setSel([]); syncCompare(); });
+    syncCompare();
+})();
+</script>
 <script>
 (function init() {
   // Run immediately if DOM is ready, otherwise wait

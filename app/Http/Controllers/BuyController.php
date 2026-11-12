@@ -61,10 +61,17 @@ class BuyController extends Controller
         $noAvailable = $paginated->total() > 0
             && $paginated->getCollection()->every(fn ($a) => strtolower((string) $a->status) !== 'disponible');
 
+        // IDs favoris du client connecté (pour l'état initial du cœur sur les cartes).
+        $favIds = [];
+        if ($client = \Illuminate\Support\Facades\Auth::guard('client')->user()) {
+            $favIds = $client->favorites()->pluck('annonces.id')->all();
+        }
+
         return view('annonces.list', [
             'ads'                => $paginated,
             'count'              => $paginated->total(),
             'noAvailable'        => $noAvailable,
+            'favIds'             => $favIds,
             'imgslider'          => $imgslider,
             'brands'             => $brands,
             'firstBanner'        => $firstBanner,

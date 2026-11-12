@@ -74,9 +74,17 @@
                             <p class="cardx-meta">{{ $annonce->year ?? '—' }} · {{ number_format($annonce->km ?? 0, 0, ',', ' ') }} km · {{ $annonce->city ?? '—' }}</p>
                             <div class="row2">
                                 <div class="price">{{ number_format($annonce->prix ?? 0, 0, ',', ' ') }} MAD</div>
-                                <a class="btnx" href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $annonce->mark), 'modele' => str_replace(' ', '', $annonce->modele), 'id' => $annonce->id]) }}">
-                                    <i class="fa fa-eye"></i>
-                                </a>
+                                <div style="display:flex;gap:8px;">
+                                    <a class="btnx" href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $annonce->mark), 'modele' => str_replace(' ', '', $annonce->modele), 'id' => $annonce->id]) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <form action="{{ route('favorite.toggle', $annonce->id) }}" method="POST" onsubmit="return confirm('{{ __('messages.discovery.remove_fav') }} ?');">
+                                        @csrf
+                                        <button type="submit" class="btnx" style="color:#e11d48;border-color:#fecdd3;background:#fff1f2;" aria-label="{{ __('messages.discovery.remove_fav') }}">
+                                            <i class="fa fa-heart-broken"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

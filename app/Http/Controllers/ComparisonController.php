@@ -10,11 +10,32 @@ class ComparisonController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('comparison', ['ads' => Annonces::where('active', 1)->orderBy('id', 'desc')->get(), 'formatDate' => function ($date) {
-            return $this->formatDateLabel($date);
-        }]);
+        // Véhicules sélectionnés depuis la barre de comparaison (?ids=1,2,3), max 3.
+        $ids = collect(explode(',', (string) $request->query('ids')))
+            ->map(fn ($v) => (int) trim($v))
+            ->filter()
+            ->unique()
+            ->take(3)
+            ->values();
+
+        $compareAds = $ids->isNotEmpty()
+            ? Annonces::with(['brand', 'modeleRelation'])
+                ->where('active', 1)
+                ->whereIn('id', $ids->all())
+                ->get()
+                ->sortBy(fn ($a) => $ids->search($a->id))
+                ->values()
+            : collect();
+
+        return view('comparison', [
+            'compareAds' => $compareAds,
+            'ads'        => Annonces::where('active', 1)->orderBy('id', 'desc')->get(),
+            'formatDate' => function ($date) {
+                return $this->formatDateLabel($date);
+            },
+        ]);
     }
 
     /**
