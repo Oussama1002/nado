@@ -24,6 +24,7 @@ class SettingsController extends Controller
         'auctions'   => ['label' => 'Enchères',                'icon' => 'bi-hammer'],
         'enchere'    => ['label' => 'Auto-Enchère live',       'icon' => 'bi-lightning-charge'],
         'discovery'  => ['label' => 'Découverte acheteur',     'icon' => 'bi-search-heart'],
+        'community'  => ['label' => 'Communauté & contenu',    'icon' => 'bi-chat-square-heart'],
         'finance'    => ['label' => 'Financement',             'icon' => 'bi-cash-coin'],
         'leads'      => ['label' => 'Leads & Wallet',          'icon' => 'bi-envelope-paper'],
         'ads'        => ['label' => 'Publicité',               'icon' => 'bi-megaphone'],

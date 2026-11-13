@@ -119,6 +119,16 @@ class SettingsSeeder extends Seeder
                 ['auto_extend_minutes', 'int', 2, 'Prolongation auto (minutes)'],
             ],
 
+            // ──────────── community (confiance & contenu) ────────────────
+            'community' => [
+                ['seller_reviews', 'bool', false, 'Avis vendeurs / notes étoiles'],
+                ['reviews_on_cards', 'bool', false, 'Badge note vendeur sur les cartes catalogue'],
+                ['listing_qa', 'bool', false, 'Questions / réponses sur les annonces'],
+                ['model_guides', 'bool', false, 'Guides modèles (SEO)'],
+                ['blog_comments', 'bool', false, 'Commentaires publics sur le blog'],
+                ['radio_episodes', 'bool', false, 'Épisodes / podcast Nado Radio'],
+            ],
+
             // ──────────── discovery (expérience acheteur / catalogue) ────
             'discovery' => [
                 ['favorites_on_cards', 'bool', false, 'Favoris (cœur) sur les cartes du catalogue'],
