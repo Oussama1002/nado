@@ -3875,20 +3875,14 @@
                 /* Keep the "NADO RADIO" label; the overlap came from the old 28px
                    margin, so just drop that instead of hiding the text. */
                 .nd-radio-txt { display: inline !important; font-size: 9px !important; }
-                /* Unwrap the right cluster so the phone, Nado Radio and FR/AR become
-                   three direct flex items of the top bar. */
+                /* Unwrap the right cluster so the phone (contact-info), Nado Radio and
+                   FR/AR become three direct flex items, distributed by space-between:
+                   phone at the left edge, Nado Radio in the middle, FR/AR at the right.
+                   No absolute positioning → the items can never overlap. */
                 .top-bar-right { display: contents !important; }
-                /* Pin Nado Radio to the TRUE centre (not space-between, whose gaps depend
-                   on the phone/switch widths) so its position is identical in FR and AR.
-                   The phone and FR/AR switch sit at the two edges. */
-                .top-bar .custom-container { position: relative !important; }
-                .nd-radio-link {
-                    position: absolute !important;
-                    left: 50% !important;
-                    top: 50% !important;
-                    transform: translate(-50%, -50%) !important;
-                    margin: 0 !important;
-                }
+                .top-bar .custom-container { gap: 8px !important; flex-wrap: nowrap !important; }
+                .nd-radio-link { margin: 0 !important; flex: 0 0 auto !important; min-width: 0 !important; }
+                .contact-info { flex: 0 1 auto !important; min-width: 0 !important; }
                 .top-bar { padding: 8px 0 !important; }
                 .top-bar .custom-container { padding: 0 10px !important; }
                 .contact-info { gap: 10px !important; }
