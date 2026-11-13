@@ -29,7 +29,11 @@ class DemandeReply extends Model
     public function proposalData(): ?array
     {
         if (is_array($this->meta) && !empty($this->meta)) {
-            return $this->meta;
+            $meta = $this->meta;
+            if (empty($meta['images'])) {
+                $meta['images'] = $this->uploadedProposalImages();
+            }
+            return $meta;
         }
 
         $msg = (string) $this->message;
@@ -37,7 +41,7 @@ class DemandeReply extends Model
             return null;
         }
 
-        $data = ['images' => []];
+        $data = ['images' => $this->uploadedProposalImages()];
         if (preg_match('/-\s*(.+?)\s*\((\d{4})\)/u', $msg, $m)) {
             $data['title'] = trim($m[1]);
             $data['year']  = $m[2];
@@ -54,5 +58,21 @@ class DemandeReply extends Model
         if (preg_match('/Contact\s*:\s*(.+?)(?:\s*—.*)?$/mu', $msg, $m)) { $data['proposer_name'] = trim($m[1]); }
 
         return $data;
+    }
+
+    /**
+     * Récupère les photos déposées pour cette proposition depuis le disque
+     * (storage/app/public/propositions/{demande_id}), pour les anciennes
+     * propositions dont les chemins n'avaient pas été enregistrés en base.
+     */
+    protected function uploadedProposalImages(): array
+    {
+        try {
+            $dir = 'propositions/' . $this->demande_id;
+            $files = \Illuminate\Support\Facades\Storage::disk('public')->files($dir);
+            return array_values(array_filter($files, fn ($f) => preg_match('/\.(jpe?g|png|webp|gif)$/i', $f)));
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
