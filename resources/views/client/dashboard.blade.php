@@ -6,6 +6,9 @@
      haut comme la navbar NADO) ; sinon navbar NADO standard. --}}
 @section('navbar')
     @php $navIsFlotte = Auth::guard('client')->user()?->type === 'flotte&enchere'; @endphp
+    {{-- Pas de spacer ici : la navbar est fixe (hors flux) et .dash-main a déjà
+         padding-top: var(--navH) à tous les breakpoints → un seul espacement,
+         aligné avec le haut de la sidebar (évite la bande vide en haut). --}}
     @if($navIsFlotte)
         <script src="https://cdn.tailwindcss.com/3.4.16"></script>
         {{-- preflight OFF : évite que le reset global de Tailwind casse le CSS du dashboard --}}
@@ -13,10 +16,8 @@
         <div style="position:fixed;top:0;left:0;width:100%;z-index:1000;">
             @include('nadoautoenchere.partials.navbar')
         </div>
-        <div style="height:116px;"></div>
     @else
         @include('partials.nado-navbar')
-        <div style="height:110px;"></div>
     @endif
 @endsection
 
@@ -472,7 +473,8 @@ table.dash-table tr:hover td { background: #fafbfd; }
    page down, so the extra padding-top left a big empty band above the dashboard. */
 @media (max-width: 1023px) {
     :root { --navH: {{ $isFlotte ? '116px' : '94px' }}; }
-    .dash-main { padding-top: 0; }
+    /* La navbar fixe n'a plus de spacer → on garde l'espacement via dash-main. */
+    .dash-main { padding-top: var(--navH); }
 }
 @media (max-width: 640px) {
     /* Top bar: not sticky on phones — its sticky offset assumed a fixed navbar height,
