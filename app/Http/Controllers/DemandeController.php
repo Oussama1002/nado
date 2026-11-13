@@ -73,6 +73,19 @@ class DemandeController extends Controller
         return view('demandes.show', compact('demande', 'matches', 'villes', 'brands', 'prefillModeles'));
     }
 
+    /** Détail d'une proposition de véhicule — page façon « détail annonce ». */
+    public function showProposition($demandeId, $replyId)
+    {
+        $demande = Demande::public()->findOrFail($demandeId);
+        $reply   = \App\Models\DemandeReply::where('demande_id', $demande->id)
+            ->where('status', 'visible')
+            ->findOrFail($replyId);
+
+        abort_unless(is_array($reply->meta) && !empty($reply->meta), 404);
+
+        return view('demandes.proposition', compact('demande', 'reply'));
+    }
+
     public function create(Request $request)
     {
         $prefill = $request->query();

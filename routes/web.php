@@ -597,6 +597,9 @@ Route::prefix('demandes')->name('demandes.')->group(function () {
     Route::post('/',                  [DemandeController::class, 'store'])->name('store');
     Route::get('/confirmation/{id}',  [DemandeController::class, 'confirmation'])->name('confirmation');
     Route::get('/{demande}',          [DemandeController::class, 'show'])->name('show');
+    // Détail d'une proposition de véhicule (page type « détail annonce »).
+    Route::get('/{demande}/proposition/{reply}', [DemandeController::class, 'showProposition'])
+         ->whereNumber('reply')->name('proposition.show');
     Route::post('/{demande}/propose', [DemandeController::class, 'propose'])
          ->middleware('throttle:10,60')->name('propose');
     Route::post('/{demande}/replies', [DemandeController::class, 'storeReply'])

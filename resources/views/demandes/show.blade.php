@@ -256,9 +256,14 @@
                                 <div class="prop-contact-name">{{ $meta['proposer_name'] ?? ($r->client?->name ?? __('messages.demande_show.member')) }}</div>
                                 <div class="prop-phone" id="propPhone{{ $r->id }}">📞 {{ $pMasked }}</div>
                             </div>
-                            <button type="button" class="prop-reveal" data-full="{{ $r->contact_phone }}" data-target="propPhone{{ $r->id }}" onclick="revealPropPhone(this)">
-                                {{ __('messages.demande_show.show_number') }}
-                            </button>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <a href="{{ route('demandes.proposition.show', [$demande->id, $r->id]) }}" class="prop-reveal" style="background:#0f172a;text-decoration:none;">
+                                    {{ __('messages.demande_show.see_detail') }}
+                                </a>
+                                <button type="button" class="prop-reveal" data-full="{{ $r->contact_phone }}" data-target="propPhone{{ $r->id }}" onclick="revealPropPhone(this)">
+                                    {{ __('messages.demande_show.show_number') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
