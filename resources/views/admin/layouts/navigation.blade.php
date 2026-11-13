@@ -40,6 +40,13 @@
                         </a>
                     </li>
 
+                    <li @class(['sidebar-item', 'active' => request()->routeIs('admin.nadoautoenchere.sellRequests')])>
+                        <a href="{{ route('admin.nadoautoenchere.sellRequests') }}" class="sidebar-link">
+                            <i class="bi bi-truck"></i>
+                            <span>Demandes de vente</span>
+                        </a>
+                    </li>
+
                     <li @class(['sidebar-item', 'active' => request()->routeIs('admin.nadoautoenchere.clients') && request('role') === 'acheteur'])>
                         <a href="{{ route('admin.nadoautoenchere.clients', ['role' => 'acheteur']) }}" class="sidebar-link">
                             <i class="bi bi-cart"></i>
