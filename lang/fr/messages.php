@@ -1217,6 +1217,7 @@ return [
         'vehicle'          => 'Véhicule',
         'show_number'      => 'Afficher le numéro',
         'see_detail'       => 'Voir le détail',
+        'reveal_info'      => 'Afficher les infos',
         'year'             => 'Année',
         'city'             => 'Ville',
         'report'         => '⚑ Signaler cette demande',

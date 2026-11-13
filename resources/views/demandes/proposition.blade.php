@@ -70,14 +70,14 @@
         <div class="pp-info">
             <span class="pp-badge">{{ __('messages.demande_show.vehicle_proposal') }}</span>
             <h1 class="pp-title">{{ $title }}</h1>
-            <div class="pp-price">{{ number_format((int) ($meta['prix'] ?? 0), 0, ',', ' ') }} DH</div>
+            <div class="pp-price"><span class="pp-hidden" data-real="{{ number_format((int) ($meta['prix'] ?? 0), 0, ',', ' ') }} DH">**** DH</span></div>
 
             <div class="pp-specs">
-                @if(!empty($meta['year']))      <div class="pp-spec"><div class="k">{{ __('messages.demande_show.year') ?? 'Année' }}</div><div class="v">{{ $meta['year'] }}</div></div> @endif
-                @if(isset($meta['km']))         <div class="pp-spec"><div class="k">{{ __('messages.demande_show.km') }}</div><div class="v">{{ number_format((int) $meta['km'], 0, ',', ' ') }} km</div></div> @endif
+                @if(!empty($meta['year']))      <div class="pp-spec"><div class="k">{{ __('messages.demande_show.year') }}</div><div class="v"><span class="pp-hidden" data-real="{{ $meta['year'] }}">****</span></div></div> @endif
+                @if(isset($meta['km']))         <div class="pp-spec"><div class="k">{{ __('messages.demande_show.km') }}</div><div class="v"><span class="pp-hidden" data-real="{{ number_format((int) $meta['km'], 0, ',', ' ') }} km">**** km</span></div></div> @endif
                 @if(!empty($meta['carburant'])) <div class="pp-spec"><div class="k">{{ __('messages.ventemodal.fuel') }}</div><div class="v">{{ $meta['carburant'] }}</div></div> @endif
                 @if(!empty($meta['box']))       <div class="pp-spec"><div class="k">{{ __('messages.ventemodal.box') }}</div><div class="v">{{ $meta['box'] }}</div></div> @endif
-                @if(!empty($meta['city']))      <div class="pp-spec"><div class="k">{{ __('messages.demande_show.city') ?? 'Ville' }}</div><div class="v">{{ $meta['city'] }}</div></div> @endif
+                @if(!empty($meta['city']))      <div class="pp-spec"><div class="k">{{ __('messages.demande_show.city') }}</div><div class="v">{{ $meta['city'] }}</div></div> @endif
             </div>
 
             @if(!empty($meta['description']))
@@ -86,10 +86,10 @@
 
             <div class="pp-contact">
                 <div class="pp-contact-name">{{ $meta['proposer_name'] ?? ($reply->client?->name ?? __('messages.demande_show.member')) }}</div>
-                <div class="pp-phone" id="ppPhone" dir="ltr">📞 {{ $masked }}</div>
-                <button type="button" class="pp-reveal" data-full="{{ $reply->contact_phone }}" onclick="ppReveal(this)">
+                <div class="pp-phone" id="ppPhone" dir="ltr"><span class="pp-hidden" data-real="📞 {{ $reply->contact_phone }}">📞 ****</span></div>
+                <button type="button" class="pp-reveal" onclick="ppReveal(this)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
-                    {{ __('messages.demande_show.show_number') }}
+                    {{ __('messages.demande_show.reveal_info') }}
                 </button>
             </div>
         </div>
@@ -112,9 +112,9 @@
         document.getElementById('ppLightbox').classList.add('open');
     }
     function ppReveal(btn) {
-        var full = btn.getAttribute('data-full');
-        var el = document.getElementById('ppPhone');
-        if (el && full) { el.textContent = '📞 ' + full; }
+        document.querySelectorAll('.pp-hidden').forEach(function (el) {
+            if (el.dataset.real) el.textContent = el.dataset.real;
+        });
         btn.style.display = 'none';
     }
 </script>

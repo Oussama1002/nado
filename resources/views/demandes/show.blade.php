@@ -240,10 +240,10 @@
                     @endif
                     <div class="prop-body">
                         <h3 class="prop-title">{{ $pTitle ?: __('messages.demande_show.vehicle') }}</h3>
-                        <div class="prop-price">{{ number_format((int)($meta['prix'] ?? 0), 0, ',', ' ') }} DH</div>
+                        <div class="prop-price"><span class="prop-hidden" data-real="{{ number_format((int)($meta['prix'] ?? 0), 0, ',', ' ') }} DH">**** DH</span></div>
                         <div class="prop-specs">
-                            @if(!empty($meta['year']))<span>📅 {{ $meta['year'] }}</span>@endif
-                            @if(isset($meta['km']))<span>🛣️ {{ number_format((int)$meta['km'], 0, ',', ' ') }} km</span>@endif
+                            @if(!empty($meta['year']))<span>📅 <span class="prop-hidden" data-real="{{ $meta['year'] }}">****</span></span>@endif
+                            @if(isset($meta['km']))<span>🛣️ <span class="prop-hidden" data-real="{{ number_format((int)$meta['km'], 0, ',', ' ') }} km">**** km</span></span>@endif
                             @if(!empty($meta['carburant']))<span>⛽ {{ $meta['carburant'] }}</span>@endif
                             @if(!empty($meta['box']))<span>⚙️ {{ $meta['box'] }}</span>@endif
                             @if(!empty($meta['city']))<span>📍 {{ $meta['city'] }}</span>@endif
@@ -254,14 +254,14 @@
                         <div class="prop-contact">
                             <div>
                                 <div class="prop-contact-name">{{ $meta['proposer_name'] ?? ($r->client?->name ?? __('messages.demande_show.member')) }}</div>
-                                <div class="prop-phone" id="propPhone{{ $r->id }}">📞 {{ $pMasked }}</div>
+                                <div class="prop-phone"><span class="prop-hidden" data-real="📞 {{ $r->contact_phone }}">📞 ****</span></div>
                             </div>
                             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                                 <a href="{{ route('demandes.proposition.show', [$demande->id, $r->id]) }}" class="prop-reveal" style="background:#0f172a;text-decoration:none;">
                                     {{ __('messages.demande_show.see_detail') }}
                                 </a>
-                                <button type="button" class="prop-reveal" data-full="{{ $r->contact_phone }}" data-target="propPhone{{ $r->id }}" onclick="revealPropPhone(this)">
-                                    {{ __('messages.demande_show.show_number') }}
+                                <button type="button" class="prop-reveal" onclick="revealProp(this)">
+                                    {{ __('messages.demande_show.reveal_info') }}
                                 </button>
                             </div>
                         </div>
@@ -470,14 +470,13 @@
         </style>
 
         <script>
-            // Révèle le numéro de téléphone masqué d'une proposition de véhicule.
-            function revealPropPhone(btn) {
-                var full = btn.getAttribute('data-full');
-                var el   = document.getElementById(btn.getAttribute('data-target'));
-                if (el && full) {
-                    el.textContent = '📞 ' + full;
-                    el.setAttribute('dir', 'ltr');
-                    el.style.display = 'inline-block';
+            // Révèle les infos masquées (année, km, prix, téléphone) d'une proposition.
+            function revealProp(btn) {
+                var card = btn.closest('.prop-card');
+                if (card) {
+                    card.querySelectorAll('.prop-hidden').forEach(function (el) {
+                        if (el.dataset.real) el.textContent = el.dataset.real;
+                    });
                 }
                 btn.style.display = 'none';
             }
