@@ -58,11 +58,15 @@
         $accentColor   = $isAutoEnchere ? '#F37021' : '#FDD817';
     @endphp
 
-    {{-- Full NADO navbar (same partial as the home page) --}}
-    @include('partials.nado-navbar')
-
-    {{-- Spacer so content never sits under the fixed navbar --}}
-    <div style="height:110px;"></div>
+    {{-- Navbar : surchargée par @section('navbar') (ex. dashboard enchère →
+         navbar Auto-Enchère) ; sinon navbar NADO standard. --}}
+    @hasSection('navbar')
+        @yield('navbar')
+    @else
+        @include('partials.nado-navbar')
+        {{-- Spacer so content never sits under the fixed navbar --}}
+        <div style="height:110px;"></div>
+    @endif
 
     <main>
         @yield('content')

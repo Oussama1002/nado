@@ -2,6 +2,24 @@
 
 @section('title', 'Mon Espace | NADO')
 
+{{-- Navbar : client enchère (flotte&enchere) → navbar Auto-Enchère (fixée en
+     haut comme la navbar NADO) ; sinon navbar NADO standard. --}}
+@section('navbar')
+    @php $navIsFlotte = Auth::guard('client')->user()?->type === 'flotte&enchere'; @endphp
+    @if($navIsFlotte)
+        <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+        {{-- preflight OFF : évite que le reset global de Tailwind casse le CSS du dashboard --}}
+        <script>tailwind.config = { corePlugins: { preflight: false } };</script>
+        <div style="position:fixed;top:0;left:0;width:100%;z-index:1000;">
+            @include('nadoautoenchere.partials.navbar')
+        </div>
+        <div style="height:116px;"></div>
+    @else
+        @include('partials.nado-navbar')
+        <div style="height:110px;"></div>
+    @endif
+@endsection
+
 @section('content')
 @php
     $isFlotte = Auth::guard('client')->user()->type === 'flotte&enchere';
@@ -26,7 +44,7 @@
     --white:   #ffffff;
     --radius:  14px;
     --shadow:  0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
-    --navH: 140px; /* global fixed navbar height (client navbar is tall) */
+    --navH: {{ $isFlotte ? '116px' : '140px' }}; /* hauteur navbar fixe (AE plus courte) */
 }
 
 body { background: var(--slate-50); font-family: 'Inter', sans-serif; color: var(--slate-900); }
@@ -453,7 +471,7 @@ table.dash-table tr:hover td { background: #fafbfd; }
    The global navbar is shorter below 1024px and its own spacer already pushes the
    page down, so the extra padding-top left a big empty band above the dashboard. */
 @media (max-width: 1023px) {
-    :root { --navH: 94px; }
+    :root { --navH: {{ $isFlotte ? '116px' : '94px' }}; }
     .dash-main { padding-top: 0; }
 }
 @media (max-width: 640px) {
