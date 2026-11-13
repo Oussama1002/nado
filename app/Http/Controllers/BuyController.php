@@ -236,9 +236,23 @@ class BuyController extends Controller
             ['date' => '2023-08-01', 'type' => 'Contrôle technique', 'garage' => 'CT Nador Auto', 'km' => '105 000'],
         ];
 
+        // Community : vendeur (par téléphone), note agrégée, Q&A publiques.
+        $sellerClient = \App\Models\Client::where('phone', $annonce->phone)->first();
+        $sellerAgg = ($sellerClient && feature_on('community.seller_reviews'))
+            ? \App\Models\SellerReview::aggregateFor($sellerClient->id)
+            : ['count' => 0, 'avg' => 0];
+        $questions = feature_on('community.listing_qa')
+            ? \App\Models\ListingQuestion::publicApproved()->where('annonce_id', $annonce->id)->latest()->get()
+            : collect();
+        $isSellerViewing = $sellerClient && \Illuminate\Support\Facades\Auth::guard('client')->id() === $sellerClient->id;
+
         return view('annonces.detail', [
             'annonce' => $annonce,
             'accessoires' => $accessoires,
+            'sellerClient'   => $sellerClient,
+            'sellerAgg'      => $sellerAgg,
+            'questions'      => $questions,
+            'isSellerViewing' => $isSellerViewing,
             'leftondetailBanner' => $leftondetailBanner,
             'equipements' => $equipements,
             'similar_ads' => $similar_adsAll,

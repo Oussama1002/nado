@@ -2662,6 +2662,26 @@
                                 </button>
                             </div>
 
+                            @if(feature_on('community.seller_reviews') && !empty($sellerClient))
+                            {{-- Badge note vendeur (community.seller_reviews) --}}
+                            <a href="{{ route('sellers.profile', $sellerClient->id) }}"
+                               style="display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;background:#fff8ec;border:1px solid #fde4b8;border-radius:12px;text-decoration:none;color:#0f172a;">
+                                <span style="color:#f59e0b;font-size:16px;letter-spacing:1px;">
+                                    @php $av = round($sellerAgg['avg']); @endphp
+                                    {{ str_repeat('★', (int)$av) }}{{ str_repeat('☆', 5-(int)$av) }}
+                                </span>
+                                <span style="font-weight:800;">
+                                    @if($sellerAgg['count'] > 0)
+                                        {{ number_format($sellerAgg['avg'],1) }}
+                                        <span style="font-weight:600;color:#64748b;font-size:13px;">· {{ __('messages.community.based_on', ['count' => $sellerAgg['count']]) }}</span>
+                                    @else
+                                        <span style="font-weight:600;color:#64748b;font-size:13px;">{{ __('messages.community.leave_review') }}</span>
+                                    @endif
+                                </span>
+                                <i class="fas fa-chevron-right" style="margin-left:auto;color:#94a3b8;"></i>
+                            </a>
+                            @endif
+
                             {{-- Inline Offer Panel --}}
                             <div id="offerPanel" style="display:none; margin-top:14px; background:#f0f6ff; border:1.5px solid #1459DD; border-radius:14px; padding:18px 20px; animation: fadeInPanel .25s ease;">
                                 <style>
@@ -2794,6 +2814,52 @@
                                 <span class="info-tag">{{ __('messages.detail.tag_warranty_incl') }}</span>
                             @endif
                         </div>
+
+                        @if(feature_on('community.listing_qa'))
+                        {{-- Q&A publiques (community.listing_qa) --}}
+                        <div id="qa" style="margin-top:28px;">
+                            <style>
+                                .qa-h { font-size:18px; font-weight:900; color:#0f172a; margin:0 0 14px; }
+                                .qa-item { background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+                                .qa-q { font-weight:800; color:#0f172a; }
+                                .qa-a { margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0; color:#334155; }
+                                .qa-a b { color:#1459DD; }
+                                .qa-form { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin-top:12px; }
+                                .qa-form textarea { width:100%; border:1.5px solid #cbd5e1; border-radius:10px; padding:10px 12px; font-size:14px; margin-bottom:10px; }
+                                .qa-btn { background:#1459DD; color:#fff; border:none; border-radius:10px; padding:10px 20px; font-weight:800; cursor:pointer; }
+                            </style>
+                            <div class="qa-h">{{ __('messages.community.questions_title') }}</div>
+
+                            @forelse($questions as $q)
+                                <div class="qa-item">
+                                    <div class="qa-q"><i class="fas fa-question-circle" style="color:#1459DD;"></i> {{ $q->question }}</div>
+                                    @if($q->answer)
+                                        <div class="qa-a"><b>{{ __('messages.community.answered_by_seller') }} :</b> {{ $q->answer }}</div>
+                                    @elseif($isSellerViewing)
+                                        <form class="qa-form" method="POST" action="{{ route('listing-qa.answer', $q->id) }}">
+                                            @csrf
+                                            <textarea name="answer" rows="2" required placeholder="{{ __('messages.community.your_answer') }}"></textarea>
+                                            <button class="qa-btn">{{ __('messages.community.submit_answer') }}</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @empty
+                                <p style="color:#64748b;">{{ __('messages.community.no_questions') }}</p>
+                            @endforelse
+
+                            @auth('client')
+                                @unless($isSellerViewing)
+                                <form class="qa-form" method="POST" action="{{ route('listing-qa.store', $annonce->id) }}">
+                                    @csrf
+                                    <textarea name="question" rows="2" required maxlength="500" placeholder="{{ __('messages.community.your_question') }}"></textarea>
+                                    <button class="qa-btn">{{ __('messages.community.submit_question') }}</button>
+                                </form>
+                                @endunless
+                            @else
+                                <p style="color:#64748b;margin-top:10px;">{{ __('messages.community.login_to_ask') }}</p>
+                            @endauth
+                        </div>
+                        @endif
 
                         <div class="expert-card" role="button" tabindex="0" style="cursor:pointer;"
                              onclick="openExpertModal()"
@@ -4739,6 +4805,22 @@
 
     @include('partials.site-footer')
 
+@if(feature_on('community.seller_reviews') && !empty($sellerClient) && $sellerAgg['count'] > 0)
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'Product',
+    'name' => trim(($brandName ?? '').' '.($modelName ?? '')) ?: ('Annonce #'.$annonce->id),
+    'offers' => ['@type' => 'Offer', 'price' => (int) $annonce->prix, 'priceCurrency' => 'MAD'],
+    'aggregateRating' => [
+        '@type' => 'AggregateRating',
+        'ratingValue' => $sellerAgg['avg'],
+        'reviewCount' => $sellerAgg['count'],
+        'bestRating' => 5, 'worstRating' => 1,
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+@endif
 </body>
 
 
