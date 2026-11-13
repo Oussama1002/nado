@@ -231,7 +231,9 @@ class DemandeController extends Controller
         }
         $imageUrls = array_map(fn ($p) => asset('storage/' . $p), $imagePaths);
 
-        // Save as a reply so admins can see it on the demande page.
+        // Save as a reply so admins can see it on the demande page. On stocke
+        // aussi les données structurées (meta) pour l'affichage en carte, et on
+        // NE met PAS le téléphone dans le message (il est masqué sur la carte).
         DemandeReply::create([
             'demande_id'    => $demande->id,
             'client_id'     => Auth::guard('client')->id(),
@@ -244,9 +246,22 @@ class DemandeController extends Controller
                 ($data['carburant'] ? "- Carburant : {$data['carburant']}\n" : '') .
                 ($data['box']       ? "- Boîte : {$data['box']}\n" : '') .
                 ($data['description'] ? "\n{$data['description']}\n" : '') .
-                "\nContact : {$data['proposer_name']} — {$proposerPhone}",
+                "\nContact : {$data['proposer_name']}",
             'contact_phone' => $proposerPhone,
             'status'        => 'visible',
+            'meta'          => [
+                'proposer_name' => $data['proposer_name'],
+                'mark'          => $data['mark'],
+                'modele'        => $data['modele'],
+                'year'          => $data['year'],
+                'km'            => $data['km'],
+                'prix'          => $data['prix'],
+                'city'          => $data['city'] ?? null,
+                'carburant'     => $data['carburant'] ?? null,
+                'box'           => $data['box'] ?? null,
+                'description'   => $data['description'] ?? null,
+                'images'        => $imagePaths,
+            ],
         ]);
         $demande->increment('replies_count');
 

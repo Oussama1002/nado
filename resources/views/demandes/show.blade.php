@@ -85,7 +85,25 @@
         background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:14px; margin-bottom:10px;
     }
     .dmd-reply .meta { font-size:12px; color:#94a3b8; margin-bottom:6px; }
-    .dmd-reply p { margin:0; font-size:14px; line-height:1.5; color:#334155; }
+    .dmd-reply p { margin:0; font-size:14px; line-height:1.5; color:#334155; white-space:pre-line; }
+
+    /* Carte proposition de véhicule */
+    .prop-card { background:#fff; border:1px solid #e2e8f0; border-radius:18px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.05); margin-bottom:16px; }
+    .prop-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-bottom:1px solid #f1f5f9; }
+    .prop-badge { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:#1459DD; background:#eff4ff; padding:4px 10px; border-radius:999px; }
+    .prop-time { font-size:12px; color:#94a3b8; }
+    .prop-gallery { display:flex; gap:8px; padding:12px 16px 0; overflow-x:auto; }
+    .prop-gallery img { width:160px; height:110px; object-fit:cover; border-radius:12px; flex-shrink:0; cursor:pointer; border:1px solid #e2e8f0; }
+    .prop-body { padding:14px 16px 16px; }
+    .prop-title { margin:0; font-size:17px; font-weight:800; color:#0f172a; }
+    .prop-price { font-size:18px; font-weight:900; color:#1459DD; margin:2px 0 10px; }
+    .prop-specs { display:flex; flex-wrap:wrap; gap:8px 14px; font-size:13px; color:#475569; font-weight:600; margin-bottom:10px; }
+    .prop-desc { margin:0 0 12px; font-size:13.5px; color:#334155; line-height:1.55; white-space:pre-line; }
+    .prop-contact { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; border-top:1px solid #f1f5f9; padding-top:12px; }
+    .prop-contact-name { font-size:13px; font-weight:800; color:#0f172a; }
+    .prop-phone { font-size:14px; font-weight:800; color:#334155; letter-spacing:.04em; }
+    .prop-reveal { background:#1459DD; color:#fff; border:0; border-radius:12px; padding:9px 16px; font-size:13px; font-weight:800; cursor:pointer; white-space:nowrap; }
+    .prop-reveal:hover { background:#1047b8; }
 
     .dmd-report { margin-top:20px; }
     .dmd-report button {
@@ -200,13 +218,59 @@
         </div>
 
         @forelse($demande->replies->where('status','visible') as $r)
-            <div class="dmd-reply">
-                <div class="meta">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }} · {{ $r->client?->name ?? __('messages.demande_show.member') }}</div>
-                <p>{{ $r->message }}</p>
-                @if($r->annonce)
-                    <a href="{{ route('achat.detail', ['marque' => $r->annonce->mark, 'modele' => $r->annonce->modele, 'id' => $r->annonce->id]) }}" style="font-size:13px;color:#1459DD;">{{ __('messages.demande_show.see_ad') }}</a>
-                @endif
-            </div>
+            @php $meta = is_array($r->meta) ? $r->meta : null; @endphp
+            @if($meta)
+                @php
+                    $pImgs   = collect($meta['images'] ?? [])->map(fn($p) => asset('storage/'.$p));
+                    $pDigits = preg_replace('/\D+/', '', (string) $r->contact_phone);
+                    $pMasked = strlen($pDigits) >= 6 ? substr($pDigits,0,2).' •• •• '.substr($pDigits,-2) : '•• •• ••';
+                    $pTitle  = trim(($meta['mark'] ?? '').' '.($meta['modele'] ?? ''));
+                @endphp
+                <div class="prop-card">
+                    <div class="prop-head">
+                        <span class="prop-badge">{{ __('messages.demande_show.vehicle_proposal') }}</span>
+                        <span class="prop-time">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }}</span>
+                    </div>
+                    @if($pImgs->count())
+                        <div class="prop-gallery">
+                            @foreach($pImgs as $u)
+                                <img src="{{ $u }}" alt="{{ $pTitle }}" loading="lazy" onclick="window.open(this.src,'_blank')">
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="prop-body">
+                        <h3 class="prop-title">{{ $pTitle ?: __('messages.demande_show.vehicle') }}</h3>
+                        <div class="prop-price">{{ number_format((int)($meta['prix'] ?? 0), 0, ',', ' ') }} DH</div>
+                        <div class="prop-specs">
+                            @if(!empty($meta['year']))<span>📅 {{ $meta['year'] }}</span>@endif
+                            @if(isset($meta['km']))<span>🛣️ {{ number_format((int)$meta['km'], 0, ',', ' ') }} km</span>@endif
+                            @if(!empty($meta['carburant']))<span>⛽ {{ $meta['carburant'] }}</span>@endif
+                            @if(!empty($meta['box']))<span>⚙️ {{ $meta['box'] }}</span>@endif
+                            @if(!empty($meta['city']))<span>📍 {{ $meta['city'] }}</span>@endif
+                        </div>
+                        @if(!empty($meta['description']))
+                            <p class="prop-desc">{{ $meta['description'] }}</p>
+                        @endif
+                        <div class="prop-contact">
+                            <div>
+                                <div class="prop-contact-name">{{ $meta['proposer_name'] ?? ($r->client?->name ?? __('messages.demande_show.member')) }}</div>
+                                <div class="prop-phone" id="propPhone{{ $r->id }}">📞 {{ $pMasked }}</div>
+                            </div>
+                            <button type="button" class="prop-reveal" data-full="{{ $r->contact_phone }}" data-target="propPhone{{ $r->id }}" onclick="revealPropPhone(this)">
+                                {{ __('messages.demande_show.show_number') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="dmd-reply">
+                    <div class="meta">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }} · {{ $r->client?->name ?? __('messages.demande_show.member') }}</div>
+                    <p>{{ $r->message }}</p>
+                    @if($r->annonce)
+                        <a href="{{ route('achat.detail', ['marque' => $r->annonce->mark, 'modele' => $r->annonce->modele, 'id' => $r->annonce->id]) }}" style="font-size:13px;color:#1459DD;">{{ __('messages.demande_show.see_ad') }}</a>
+                    @endif
+                </div>
+            @endif
         @empty
             <p style="color:#64748b;">{{ __('messages.demande_show.no_replies') }}</p>
         @endforelse
@@ -400,6 +464,19 @@
             }
         </style>
 
+        <script>
+            // Révèle le numéro de téléphone masqué d'une proposition de véhicule.
+            function revealPropPhone(btn) {
+                var full = btn.getAttribute('data-full');
+                var el   = document.getElementById(btn.getAttribute('data-target'));
+                if (el && full) {
+                    el.textContent = '📞 ' + full;
+                    el.setAttribute('dir', 'ltr');
+                    el.style.display = 'inline-block';
+                }
+                btn.style.display = 'none';
+            }
+        </script>
         <script>
             (function () {
                 var dz      = document.getElementById('proposeDropzone');

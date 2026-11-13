@@ -9,7 +9,11 @@ class DemandeReply extends Model
 {
     protected $fillable = [
         'demande_id', 'client_id', 'annonce_id',
-        'message', 'contact_phone', 'status',
+        'message', 'contact_phone', 'status', 'meta',
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
     ];
 
     public function demande(): BelongsTo { return $this->belongsTo(Demande::class); }
