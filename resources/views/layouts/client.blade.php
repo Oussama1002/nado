@@ -139,6 +139,26 @@
     .client-body .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
     .client-body .alert-danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
+    /* Formulaires (classes Bootstrap non chargées) + conteneur en carte. */
+    .client-body .container {
+        max-width: 640px; margin-left: 0; background: #fff;
+        border: 1px solid var(--slate-200); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 24px;
+    }
+    .client-body .my-5 { margin-top: 0; margin-bottom: 0; }
+    .client-body .mb-3 { margin-bottom: 16px; }
+    .client-body h2 { font-size: 18px; font-weight: 800; color: var(--slate-900); margin: 0 0 18px; }
+    .client-body .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--slate-700); margin-bottom: 6px; }
+    .client-body .form-control {
+        width: 100%; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--slate-200);
+        font-size: 14px; background: #fff; color: var(--slate-900);
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .client-body .form-control:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,89,221,.12); }
+    .client-body .btn-success { background: #16a34a; border-color: #16a34a; color: #fff; }
+    .client-body .btn-success:hover { background: #15803d; color: #fff; }
+    .client-body .text-danger { color: #dc2626; font-size: 12px; }
+
     /* En-tête de page (titre + sous-titre + actions comme « Ajouter »). */
     .client-head {
         display: flex; align-items: flex-start; justify-content: space-between;
