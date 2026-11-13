@@ -27,10 +27,13 @@
           <div class="card-body">
             @php
               $fmtDt = fn($d) => $d ? \Carbon\Carbon::parse($d)->format('Y-m-d\TH:i') : '';
-              $statusColors = ['draft'=>'secondary','scheduled'=>'info','live'=>'success','ended'=>'dark','cancelled'=>'danger'];
+              // Libellés FR + fonds clairs avec écriture noire.
+              $statusLabels = ['draft'=>'Brouillon','scheduled'=>'Programmée','live'=>'En cours','ended'=>'Terminée','cancelled'=>'Annulée'];
+              $statusBg     = ['draft'=>'#e2e8f0','scheduled'=>'#cfe2ff','live'=>'#d1e7dd','ended'=>'#e2e8f0','cancelled'=>'#f8d7da'];
+              $stKey = $enchere->status ?? 'draft';
             @endphp
             <p>
-              <span class="badge bg-{{ $statusColors[$enchere->status] ?? 'secondary' }}">{{ strtoupper($enchere->status ?? 'draft') }}</span>
+              <span class="badge" style="background:{{ $statusBg[$stKey] ?? '#e2e8f0' }};color:#000;">{{ $statusLabels[$stKey] ?? 'Brouillon' }}</span>
               @if($enchere->extensions_count) <span class="badge bg-warning text-dark">Prolongée ×{{ $enchere->extensions_count }}</span> @endif
             </p>
 
