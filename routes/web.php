@@ -601,6 +601,53 @@ Route::prefix('admin/demandes')->name('admin.demandes.')
         Route::delete('/{demande}',       [DemandeAdminController::class, 'destroy'])->name('destroy');
     });
 
+// ─────────────────────── Community & content ───────────────────────
+// Avis vendeurs (community.seller_reviews)
+Route::prefix('vendeur')->name('sellers.')->group(function () {
+    Route::get('/{seller}/avis', [\App\Http\Controllers\SellerReviewController::class, 'profile'])->whereNumber('seller')->name('profile');
+    Route::post('/{seller}/avis', [\App\Http\Controllers\SellerReviewController::class, 'store'])
+        ->whereNumber('seller')->middleware(['auth:client', 'throttle:10,60'])->name('review.store');
+    Route::post('/avis/{review}/report', [\App\Http\Controllers\SellerReviewController::class, 'report'])
+        ->middleware('throttle:5,60')->name('review.report');
+});
+
+// Q&A sur les annonces (community.listing_qa)
+Route::prefix('annonces')->name('listing-qa.')->group(function () {
+    Route::post('/{annonce}/questions', [\App\Http\Controllers\ListingQuestionController::class, 'store'])
+        ->whereNumber('annonce')->middleware(['auth:client', 'throttle:10,60'])->name('store');
+    Route::post('/questions/{question}/answer', [\App\Http\Controllers\ListingQuestionController::class, 'answer'])
+        ->whereNumber('question')->middleware(['auth:client', 'throttle:20,60'])->name('answer');
+});
+
+// Guides modèles (community.model_guides)
+Route::prefix('guides')->name('guides.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ModelGuideController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\ModelGuideController::class, 'show'])->name('show');
+    Route::post('/{guide}/avis', [\App\Http\Controllers\ModelGuideController::class, 'storeReview'])
+        ->whereNumber('guide')->middleware(['auth:client', 'throttle:10,60'])->name('review.store');
+});
+
+// Sitemap (annonces + articles + guides)
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
+// Admin modération community
+Route::prefix('admin/community')->name('admin.community.')
+    ->middleware(['auth:admin', 'role:admin'])
+    ->group(function () {
+        Route::get('/seller-reviews', [\App\Http\Controllers\Admin\SellerReviewController::class, 'index'])->name('seller-reviews.index');
+        Route::post('/seller-reviews/{review}/approve', [\App\Http\Controllers\Admin\SellerReviewController::class, 'approve'])->name('seller-reviews.approve');
+        Route::post('/seller-reviews/{review}/reject', [\App\Http\Controllers\Admin\SellerReviewController::class, 'reject'])->name('seller-reviews.reject');
+        Route::delete('/seller-reviews/{review}', [\App\Http\Controllers\Admin\SellerReviewController::class, 'destroy'])->name('seller-reviews.destroy');
+
+        Route::get('/questions', [\App\Http\Controllers\Admin\ListingQuestionController::class, 'index'])->name('questions.index');
+        Route::post('/questions/{question}/approve', [\App\Http\Controllers\Admin\ListingQuestionController::class, 'approve'])->name('questions.approve');
+        Route::post('/questions/{question}/reject', [\App\Http\Controllers\Admin\ListingQuestionController::class, 'reject'])->name('questions.reject');
+        Route::delete('/questions/{question}', [\App\Http\Controllers\Admin\ListingQuestionController::class, 'destroy'])->name('questions.destroy');
+
+        Route::resource('guides', \App\Http\Controllers\Admin\ModelGuideController::class)->except(['show']);
+        Route::resource('episodes', \App\Http\Controllers\Admin\EpisodeController::class)->except(['show']);
+    });
+
 Route::get('/fix-symlink', function () {
     // 1. The source of the images
     $target = storage_path('app/public');
