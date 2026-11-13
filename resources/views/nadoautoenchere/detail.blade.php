@@ -24,7 +24,7 @@
     }
 @endphp
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,6 +38,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   body { font-family: 'Inter', sans-serif; background:#F8FAFC; color:#0F172A; }
+  /* Arabe : les mini-labels (10/11px) + le letter-spacing large sont illisibles
+     en écriture arabe. On agrandit les petites tailles et on neutralise le
+     tracking, sans toucher à la mise en page (on reste en LTR). */
+  html[lang="ar"] .text-\[9px\]  { font-size: 12px !important; }
+  html[lang="ar"] .text-\[10px\] { font-size: 13px !important; line-height: 1.5 !important; }
+  html[lang="ar"] .text-\[11px\] { font-size: 14px !important; line-height: 1.5 !important; }
+  html[lang="ar"] .text-xs        { font-size: 14px !important; }
+  html[lang="ar"] [class*="tracking-"] { letter-spacing: normal !important; }
   .font-black { font-weight: 900; }
   .card-shadow { box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 4px 20px rgba(15,23,42,0.04); }
   .card-shadow-hover { box-shadow: 0 8px 30px rgba(20,89,221,0.12); }
