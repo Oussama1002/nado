@@ -217,6 +217,9 @@ Route::middleware(['flotte.enchere'])->group(function () {
         ->name('nadoautoenchere.filterCategories');
 
     Route::get('/nadoautoenchere', [NadoAutoEnchereController::class, 'index'])->name('nadoautoenchere.index');
+    // Favori d'enchère (toggle). Doit précéder la route générique {id}.
+    Route::post('/nadoautoenchere/{id}/favorite', [NadoAutoEnchereController::class, 'favorite'])
+        ->whereNumber('id')->name('nadoautoenchere.favorite');
     // Endpoint JSON léger pour le polling live du front (doit précéder {id} générique).
     Route::get('/nadoautoenchere/{id}/state', [NadoAutoEnchereController::class, 'state'])
         ->whereNumber('id')->name('nadoautoenchere.state');

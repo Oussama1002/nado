@@ -429,6 +429,36 @@ private function dispatchBidNotifications(NadoAutoEnchere $enchere, $client, $mo
  * Pour passer au temps réel plus tard : diffuser un événement Echo/Reverb après
  * placeBid() et remplacer le polling par un abonnement — sans toucher au service.
  */
+/**
+ * Toggle favori d'enchère (table enchere_favorites, propre aux enchères).
+ */
+public function favorite(Request $request, $id)
+{
+    if (! Auth::guard('client')->check()) {
+        if ($request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => 'login'], 401);
+        }
+        return redirect()->route('client.login');
+    }
+
+    $client  = Auth::guard('client')->user();
+    $enchere = NadoAutoEnchere::findOrFail($id);
+
+    if ($client->enchereFavorites()->where('enchere_id', $enchere->id)->exists()) {
+        $client->enchereFavorites()->detach($enchere->id);
+        $favorited = false;
+    } else {
+        $client->enchereFavorites()->attach($enchere->id);
+        $favorited = true;
+    }
+
+    if ($request->expectsJson()) {
+        return response()->json(['success' => true, 'favorited' => $favorited]);
+    }
+
+    return back()->with('success', $favorited ? 'Ajouté aux favoris ✅' : 'Retiré des favoris ❌');
+}
+
 public function state($id)
 {
     $enchere = NadoAutoEnchere::findOrFail($id);

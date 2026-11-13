@@ -117,10 +117,18 @@
         </div>
       </div>
       <div class="flex items-center gap-2">
-        {{-- Pas de « Favori » ici : les favoris sont une fonctionnalité des annonces
-             (table favorites → annonces.id), pas des enchères. Le bouton copié depuis
-             la fiche annonce pointait vers /annonce/{id}/favorite avec l'id d'enchère
-             (route POST + mauvais enregistrement) → erreur. Retiré. --}}
+        {{-- Favori d'ENCHÈRE (route dédiée nadoautoenchere.favorite + table
+             enchere_favorites). Distinct des favoris d'annonces. --}}
+        <form action="{{ route('nadoautoenchere.favorite', ['id' => $enchere->id]) }}" method="POST">
+          @csrf
+          <button type="submit" class="w-11 h-11 rounded-xl border border-slate-200 bg-white hover:border-[#F37021] hover:text-[#F37021] transition flex items-center justify-center" title="Favori">
+            @if(Auth::guard('client')->check() && Auth::guard('client')->user()->enchereFavorites->contains($enchere->id))
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#F37021" stroke="#F37021" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+            @else
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+            @endif
+          </button>
+        </form>
         <button onclick="openSharePopup('{{ urlencode(request()->fullUrl()) }}')" class="w-11 h-11 rounded-xl border border-slate-200 bg-white hover:border-[#1459DD] hover:text-[#1459DD] transition flex items-center justify-center" title="Partager">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
         </button>

@@ -71,6 +71,17 @@ class Client extends Authenticatable
             'annonce_id'       // clé étrangère dans favorites vers annonce
         )->withTimestamps();
     }
+
+    /** Favoris d'ENCHÈRES (table pivot enchere_favorites, distincte des favoris d'annonces). */
+    public function enchereFavorites()
+    {
+        return $this->belongsToMany(
+            \App\Models\NadoAutoEnchere::class,
+            'enchere_favorites',
+            'client_id',
+            'enchere_id'
+        )->withTimestamps();
+    }
     
     public function annonces()
     {
