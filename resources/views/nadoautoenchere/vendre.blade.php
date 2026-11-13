@@ -329,6 +329,9 @@
 
     <script>
     var BRANDS = {!! $brandsJson !!};
+    var SELL_SUBMIT_URL = @json(route('nadoautoenchere.vendre.submit'));
+    var SELL_CSRF_URL   = @json(route('csrf.token'));
+    var SELL_IS_AUTH    = {{ $authClient ? 'true' : 'false' }};
 
     document.addEventListener('DOMContentLoaded', function () {
         if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -541,12 +544,15 @@
             }
 
             text += '\n' + VEN_I18N.waVehicles + ' (' + cards.length + ')* :\n';
+            var vehiclesPayload = [];
             cards.forEach(function (card, i) {
                 var marque = card.querySelector('.vehicule-marque') ? card.querySelector('.vehicule-marque').value.trim() : '';
                 var modele = card.querySelector('.vehicule-modele') ? card.querySelector('.vehicule-modele').value.trim() : '';
                 var km     = card.querySelector('.vehicule-kilometrage') ? card.querySelector('.vehicule-kilometrage').value.trim() : '';
                 var annee  = card.querySelector('.vehicule-annee') ? card.querySelector('.vehicule-annee').value.trim() : '';
                 var etat   = card.querySelector('.vehicule-etat') ? card.querySelector('.vehicule-etat').value : '';
+
+                vehiclesPayload.push({ marque: marque, modele: modele, annee: annee, km: km, etat: etat });
 
                 text += '\n  ' + (i + 1) + '. ' + [marque, modele, annee].filter(Boolean).join(' ');
                 if (km)   text += ' — ' + parseInt(km).toLocaleString('fr-FR') + ' km';
@@ -556,7 +562,26 @@
 
             if (msg) text += '\n💬 ' + msg + '\n';
 
-            window.open('https://wa.me/212637916134?text=' + encodeURIComponent(text), '_blank');
+            // Persiste la demande côté serveur (best-effort) PUIS ouvre WhatsApp.
+            function openWhatsApp() {
+                window.open('https://wa.me/212637916134?text=' + encodeURIComponent(text), '_blank');
+            }
+
+            if (SELL_IS_AUTH) {
+                fetch(SELL_CSRF_URL, { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (j) {
+                        return fetch(SELL_SUBMIT_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': j.token, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                            body: JSON.stringify({ name: nom, phone: tel, message: msg, vehicles: vehiclesPayload })
+                        });
+                    })
+                    .catch(function () { /* on n'empêche jamais l'envoi WhatsApp */ })
+                    .finally(openWhatsApp);
+            } else {
+                openWhatsApp();
+            }
         });
     });
     </script>

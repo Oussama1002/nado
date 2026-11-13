@@ -206,6 +206,10 @@ Route::get('/nadoautoenchere/vendre', function () {
     return view('nadoautoenchere.vendre', ['brandsJson' => json_encode($brandsData)]);
 })->name('nadoautoenchere.vendre');
 
+// Persiste une demande de vente (véhicules soumis depuis le modal vendre).
+Route::post('/nadoautoenchere/vendre/submit', [NadoAutoEnchereController::class, 'storeSellRequest'])
+    ->middleware(['auth:client', 'throttle:10,60'])->name('nadoautoenchere.vendre.submit');
+
 // ✅ Use controller with middleware
 Route::middleware(['flotte.enchere'])->group(function () {
     Route::get('/nadoautoenchere/categories', [NadoAutoEnchereController::class, 'categories'])->name('nadoautoenchere.categories');
@@ -451,6 +455,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
         ->whereNumber('id')->name('nadoautoenchere.action');
     Route::post('nadoautoenchere/{id}/declare-winner', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'declareWinner'])
         ->whereNumber('id')->name('nadoautoenchere.declareWinner');
+    // Demandes de vente (véhicules soumis par les vendeurs).
+    Route::get('nadoautoenchere-sell-requests', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'sellRequests'])
+        ->name('nadoautoenchere.sellRequests');
+    Route::post('nadoautoenchere-sell-requests/{id}/status', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'sellRequestStatus'])
+        ->whereNumber('id')->name('nadoautoenchere.sellRequests.status');
+    Route::delete('nadoautoenchere-sell-requests/{id}', [\App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class, 'sellRequestDestroy'])
+        ->whereNumber('id')->name('nadoautoenchere.sellRequests.destroy');
     Route::resource('nadoautoenchere', \App\Http\Controllers\Admin\AdminNadoAutoEnchereController::class);
 
     Route::resource('videoads', VideoAdsController::class); // <-- this line

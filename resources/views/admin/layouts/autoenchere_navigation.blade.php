@@ -30,6 +30,16 @@
             </div>
         </div>
 
+        <!-- Demandes de vente (vendeurs) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 text-center">
+                <i class="bi bi-truck fs-1 text-primary mb-3"></i>
+                <h5>Demandes de vente</h5>
+                <p class="text-muted">Véhicules soumis par les vendeurs (« Soumettre mes véhicules »).</p>
+                <a href="{{ route('admin.nadoautoenchere.sellRequests') }}" class="btn btn-primary btn-sm">Accéder</a>
+            </div>
+        </div>
+
     </div>
 </div>
 

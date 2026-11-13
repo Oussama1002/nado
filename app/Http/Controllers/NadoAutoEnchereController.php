@@ -86,6 +86,59 @@ public function index(Request $request)
     ]);
 }
 
+/**
+ * Enregistre une « demande de vente » (véhicules soumis depuis le modal
+ * « Soumettre mes véhicules » de /nadoautoenchere/vendre). L'UI continue
+ * d'ouvrir WhatsApp ; ici on persiste la demande pour la liste admin.
+ */
+public function storeSellRequest(Request $request)
+{
+    $data = $request->validate([
+        'name'              => ['nullable', 'string', 'max:120'],
+        'phone'             => ['nullable', 'string', 'max:30'],
+        'message'           => ['nullable', 'string', 'max:1000'],
+        'vehicles'          => ['required', 'array', 'min:1', 'max:30'],
+        'vehicles.*.marque' => ['nullable', 'string', 'max:80'],
+        'vehicles.*.modele' => ['nullable', 'string', 'max:80'],
+        'vehicles.*.annee'  => ['nullable', 'string', 'max:10'],
+        'vehicles.*.km'     => ['nullable', 'string', 'max:15'],
+        'vehicles.*.etat'   => ['nullable', 'string', 'max:40'],
+    ]);
+
+    $client = Auth::guard('client')->user();
+
+    $req = \App\Models\EnchereSellRequest::create([
+        'client_id' => $client?->id,
+        'name'      => $data['name']  ?? $client?->name,
+        'phone'     => $data['phone'] ?? $client?->phone,
+        'message'   => $data['message'] ?? null,
+        'vehicles'  => array_values($data['vehicles']),
+        'status'    => 'new',
+    ]);
+
+    // Notifie l'équipe (best-effort, après réponse — QUEUE=sync).
+    dispatch(function () use ($req) {
+        try {
+            $lines = ["Nouvelle demande de vente Auto-Enchère (#{$req->id}).", ''];
+            $lines[] = 'Vendeur : ' . ($req->name ?: '—') . ' — ' . ($req->phone ?: '—');
+            $lines[] = 'Véhicules : ' . $req->vehicleCount();
+            foreach ((array) $req->vehicles as $i => $v) {
+                $lines[] = '  ' . ($i + 1) . '. ' . trim(($v['marque'] ?? '') . ' ' . ($v['modele'] ?? '') . ' ' . ($v['annee'] ?? ''))
+                    . (($v['km'] ?? '') !== '' ? ' — ' . $v['km'] . ' km' : '')
+                    . (($v['etat'] ?? '') !== '' ? ' — ' . $v['etat'] : '');
+            }
+            if ($req->message) { $lines[] = ''; $lines[] = 'Message : ' . $req->message; }
+            \Illuminate\Support\Facades\Mail::raw(implode("\n", $lines), function ($m) use ($req) {
+                $m->to('contact@nado.ma')->subject('Auto-Enchère — demande de vente #' . $req->id);
+            });
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Sell request email failed: ' . $e->getMessage());
+        }
+    })->afterResponse();
+
+    return response()->json(['success' => true, 'id' => $req->id]);
+}
+
 public function searchCompanies(Request $request)
 {
     $search = $request->get('q');

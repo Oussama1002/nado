@@ -157,6 +157,36 @@ class AdminNadoAutoEnchereController extends Controller
         return back()->with('success', 'Gagnant désigné ✅');
     }
 
+    /** Liste des demandes de vente (véhicules soumis par les vendeurs). */
+    public function sellRequests(Request $request)
+    {
+        $q = \App\Models\EnchereSellRequest::with('client')->latest();
+        if ($status = $request->get('status')) {
+            $q->where('status', $status);
+        }
+
+        return view('admin.nadoautoenchere.sell-requests', [
+            'requests' => $q->paginate(20)->withQueryString(),
+            'status'   => $status,
+        ]);
+    }
+
+    /** Change le statut d'une demande (new / processed / archived). */
+    public function sellRequestStatus(Request $request, $id)
+    {
+        $req = \App\Models\EnchereSellRequest::findOrFail($id);
+        $data = $request->validate(['status' => ['required', 'in:new,processed,archived']]);
+        $req->update(['status' => $data['status']]);
+
+        return back()->with('success', 'Statut mis à jour ✅');
+    }
+
+    public function sellRequestDestroy($id)
+    {
+        \App\Models\EnchereSellRequest::findOrFail($id)->delete();
+        return back()->with('success', 'Demande supprimée.');
+    }
+
     public function create()
     {
         return view('admin.nadoautoenchere.form', [
