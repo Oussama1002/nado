@@ -1,8 +1,24 @@
 @extends('layouts.app')
 
+{{-- Navbar : client enchère → navbar Auto-Enchère (fixe, sans spacer car
+     .client-main a déjà padding-top:var(--navH)) ; sinon navbar NADO. --}}
+@section('navbar')
+    @php $navIsFlotte = Auth::guard('client')->user()?->type === 'flotte&enchere'; @endphp
+    @if($navIsFlotte)
+        <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+        <script>tailwind.config = { corePlugins: { preflight: false } };</script>
+        <div style="position:fixed;top:0;left:0;width:100%;z-index:1000;">
+            @include('nadoautoenchere.partials.navbar')
+        </div>
+    @else
+        @include('partials.nado-navbar')
+    @endif
+@endsection
+
 @section('content')
 @php
-    $client = Auth::guard('client')->user();
+    $client   = Auth::guard('client')->user();
+    $isFlotte = $client?->type === 'flotte&enchere';
 @endphp
 
 <style>
@@ -15,7 +31,7 @@
         --white:   #ffffff;
         --radius:  14px;
         --shadow:  0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
-        --navH: 140px; /* global fixed navbar height (client navbar is tall) */
+        --navH: {{ $isFlotte ? '116px' : '140px' }}; /* hauteur navbar fixe (AE plus courte) */
     }
 
     .client-shell { display:flex; min-height: 100vh; }
