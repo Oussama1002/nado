@@ -49,10 +49,18 @@
                                     <div class="col-12 col-md-6 my-2">
                                         <div class="form-group col">
                                             <label for="client-select">Client (remplit le téléphone)</label>
+                                            @php
+                                                // Normalise pour comparer le téléphone de l'enchère à celui du client
+                                                // (les numéros sont stockés avec des espaces : "+212 6 ...").
+                                                $enchPhone = preg_replace('/\s+/', '', (string) ($encheres->phone ?? ''));
+                                            @endphp
                                             <select id="client-select" class="form-select round">
                                                 <option value="">— Sélectionner un client —</option>
                                                 @foreach(($clients ?? []) as $c)
-                                                    <option value="{{ $c->phone }}">{{ $c->name }}@if($c->phone) — {{ $c->phone }}@endif</option>
+                                                    <option value="{{ $c->phone }}"
+                                                        @selected($enchPhone !== '' && preg_replace('/\s+/', '', (string) $c->phone) === $enchPhone)>
+                                                        {{ $c->name }}@if($c->phone) — {{ $c->phone }}@endif
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
