@@ -53,7 +53,8 @@ class ClientDashboardController extends Controller
             $publiees = $vehicules->filter(fn($v) => ($v->active == 1) && strtolower(trim($v->status)) === 'disponible')->count();
             $enAttente = $vehicules->count() - $publiees;
 
-            $favoris = method_exists($client, 'favorites') ? $client->favorites()->get() : collect();
+            // Client enchère → ses favoris sont des ENCHÈRES (table enchere_favorites).
+            $favoris = method_exists($client, 'enchereFavorites') ? $client->enchereFavorites()->get() : collect();
 
             // 🔹 Préparer les données des offres (enchères)
             $offersLabels = [];

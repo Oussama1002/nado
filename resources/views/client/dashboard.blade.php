@@ -844,7 +844,9 @@ table.dash-table tr:hover td { background: #fafbfd; }
                                         <td style="font-weight:700;">{{ $fav->titre ?? 'N/A' }}</td>
                                         <td data-label="{{ __('messages.dashboard.added_on') }}" style="font-size:12px;color:var(--slate-500);">{{ optional($fav->pivot->created_at)->format('d/m/Y') ?? '—' }}</td>
                                         <td class="td-actions" style="text-align:right;">
-                                            <a href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $fav->mark), 'modele' => str_replace(' ', '', $fav->modele), 'id' => $fav['id']]) }}"
+                                            <a href="{{ $isFlotte
+                                                    ? route('nadoautoenchere.show', $fav->id)
+                                                    : route('achat.detail', ['marque' => str_replace(' ', '', $fav->mark), 'modele' => str_replace(' ', '', $fav->modele), 'id' => $fav['id']]) }}"
                                                class="tbl-btn tbl-btn-edit">
                                                 <i class="fa fa-eye"></i> {{ __('messages.dashboard.view') }}
                                             </a>
