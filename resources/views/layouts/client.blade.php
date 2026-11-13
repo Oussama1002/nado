@@ -138,6 +138,15 @@
     }
     .client-body .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
     .client-body .alert-danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+    /* En-tête de page (titre + sous-titre + actions comme « Ajouter »). */
+    .client-head {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .client-head-title { font-size: 22px; font-weight: 900; color: var(--slate-900); margin: 0; }
+    .client-head-sub { font-size: 13.5px; color: var(--slate-500); margin: 4px 0 0; }
+    .client-head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 </style>
 
 <div class="client-shell">
@@ -146,6 +155,15 @@
 
     <main class="client-main">
         <div class="client-body">
+            @hasSection('client_title')
+            <div class="client-head">
+                <div>
+                    <h1 class="client-head-title">@yield('client_title')</h1>
+                    @hasSection('client_subtitle')<p class="client-head-sub">@yield('client_subtitle')</p>@endif
+                </div>
+                @hasSection('client_actions')<div class="client-head-actions">@yield('client_actions')</div>@endif
+            </div>
+            @endif
             @yield('client_content')
         </div>
     </main>
