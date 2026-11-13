@@ -81,7 +81,7 @@ class DemandeController extends Controller
             ->where('status', 'visible')
             ->findOrFail($replyId);
 
-        abort_unless(is_array($reply->meta) && !empty($reply->meta), 404);
+        abort_unless($reply->proposalData() !== null, 404);
 
         return view('demandes.proposition', compact('demande', 'reply'));
     }

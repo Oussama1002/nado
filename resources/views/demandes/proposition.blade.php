@@ -4,10 +4,10 @@
 
 @section('content')
 @php
-    $meta   = is_array($reply->meta) ? $reply->meta : [];
+    $meta   = $reply->proposalData() ?? [];
     $imgs   = collect($meta['images'] ?? [])->map(fn ($p) => asset('storage/' . $p))->values();
     $main   = $imgs->first();
-    $title  = trim(($meta['mark'] ?? '') . ' ' . ($meta['modele'] ?? '')) ?: __('messages.demande_show.vehicle');
+    $title  = $meta['title'] ?? (trim(($meta['mark'] ?? '') . ' ' . ($meta['modele'] ?? '')) ?: __('messages.demande_show.vehicle'));
     $digits = preg_replace('/\D+/', '', (string) $reply->contact_phone);
     $masked = strlen($digits) >= 6 ? substr($digits, 0, 2) . ' •• •• ' . substr($digits, -2) : '•• •• ••';
 @endphp

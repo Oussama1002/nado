@@ -218,13 +218,11 @@
         </div>
 
         @forelse($demande->replies->where('status','visible') as $r)
-            @php $meta = is_array($r->meta) ? $r->meta : null; @endphp
+            @php $meta = $r->proposalData(); @endphp
             @if($meta)
                 @php
                     $pImgs   = collect($meta['images'] ?? [])->map(fn($p) => asset('storage/'.$p));
-                    $pDigits = preg_replace('/\D+/', '', (string) $r->contact_phone);
-                    $pMasked = strlen($pDigits) >= 6 ? substr($pDigits,0,2).' •• •• '.substr($pDigits,-2) : '•• •• ••';
-                    $pTitle  = trim(($meta['mark'] ?? '').' '.($meta['modele'] ?? ''));
+                    $pTitle  = $meta['title'] ?? trim(($meta['mark'] ?? '').' '.($meta['modele'] ?? ''));
                 @endphp
                 <div class="prop-card">
                     <div class="prop-head">
