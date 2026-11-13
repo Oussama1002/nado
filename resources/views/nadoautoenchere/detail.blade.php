@@ -124,9 +124,6 @@
         <button onclick="openSharePopup('{{ urlencode(request()->fullUrl()) }}')" class="w-11 h-11 rounded-xl border border-slate-200 bg-white hover:border-[#1459DD] hover:text-[#1459DD] transition flex items-center justify-center" title="Partager">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
         </button>
-        <button onclick="window.print()" class="w-11 h-11 rounded-xl border border-slate-200 bg-white hover:border-[#1459DD] hover:text-[#1459DD] transition flex items-center justify-center" title="Imprimer">
-          <i data-lucide="printer" class="w-4 h-4"></i>
-        </button>
       </div>
     </div>
   </div>
