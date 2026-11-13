@@ -2541,7 +2541,11 @@
                                 ? (str_starts_with($annonce->video, 'http') ? $annonce->video : asset('storage/' . ltrim($annonce->video, '/')))
                                 : null;
 
-                            $totalMedia = $imageCount + ($annonce->reel ? 1 : 0) + ($hasVideoFile ? 1 : 0);
+                            // Une seule vidéo : si un fichier vidéo est présent, on l'utilise et
+                            // on n'affiche PAS le reel YouTube (évite deux vidéos sur la fiche).
+                            $showReel = !empty($annonce->reel) && !$hasVideoFile;
+
+                            $totalMedia = $imageCount + ($showReel ? 1 : 0) + ($hasVideoFile ? 1 : 0);
                         @endphp
 
                         <div class="image-counter">1 / {{ $totalMedia }}</div>
@@ -2550,7 +2554,7 @@
                             <img id="mainImage" src="{{ $mainImage }}" alt="Image véhicule">
                         @endif
 
-                        @if ($annonce->reel || $hasVideoFile)
+                        @if ($showReel || $hasVideoFile)
                             <div class="live-view-thumbnail" onclick="document.querySelector('.thumb-video').click()">
                                 @php
                                     $thumbImage = null;
@@ -2595,7 +2599,7 @@
                                     data-type="image" class="thumb {{ $index === 0 ? 'active' : '' }}">
                             @endforeach
                         @endif
-                        @if ($annonce->reel)
+                        @if ($showReel)
                             <div class="thumb thumb-video"
                                 data-index="{{ $imageCount }}"
                                 data-type="video">
@@ -2605,7 +2609,7 @@
                         @endif
                         @if ($hasVideoFile)
                             <div class="thumb thumb-video"
-                                data-index="{{ $imageCount + ($annonce->reel ? 1 : 0) }}"
+                                data-index="{{ $imageCount + ($showReel ? 1 : 0) }}"
                                 data-type="videofile">
                                 <img src="{{ asset('assets/images/play-thumbnail.png') }}"
                                     style="width:100%;height:100%;object-fit:cover;border-radius:0.5rem;">
@@ -3472,7 +3476,7 @@
                     mediaList.push({ type: 'image', src: "{{ asset('storage/ads/' . $m->name) }}" });
                 @endforeach
             @endif
-            @if ($annonce->reel)
+            @if ($showReel)
                 mediaList.push({
                     type: 'video',
                     videoId: "{{ $annonce->reel }}"
