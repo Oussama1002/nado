@@ -1360,6 +1360,11 @@ return [
     ],
 
     'nadoae' => [
+        'nav_categories'   => 'Catégories',
+        'nav_all_vehicles' => 'Tous les véhicules',
+        'nav_achat_now'    => 'Achat immédiat',
+        'nav_my_space'     => 'Mon espace',
+        'nav_logout'       => 'Déconnexion',
         'hero_badge'       => 'Véhicules aux enchères',
         'all_prefix'       => 'Tous les',
         'vehicles'         => 'véhicules',

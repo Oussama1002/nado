@@ -1354,6 +1354,11 @@ return [
     ],
 
     'nadoae' => [
+        'nav_categories'   => 'الفئات',
+        'nav_all_vehicles' => 'كل المركبات',
+        'nav_achat_now'    => 'شراء فوري',
+        'nav_my_space'     => 'مساحتي',
+        'nav_logout'       => 'تسجيل الخروج',
         'hero_badge'       => 'مركبات في المزاد',
         'all_prefix'       => 'جميع',
         'vehicles'         => 'المركبات',

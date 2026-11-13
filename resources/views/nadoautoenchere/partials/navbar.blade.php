@@ -51,11 +51,11 @@
                     @else
                         <a href="{{ route('nadoautoenchere.categories') }}"
                            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#1459DD] hover:bg-slate-100">
-                            Catégories
+                            {{ __("messages.nadoae.nav_categories") }}
                         </a>
                         <a href="{{ route('nadoautoenchere.index') }}"
                            class="text-[13px] font-bold uppercase tracking-wide px-3 py-2 rounded-2xl transition-all text-slate-700 hover:text-[#1459DD] hover:bg-slate-100">
-                            Tous les véhicules
+                            {{ __("messages.nadoae.nav_all_vehicles") }}
                         </a>
                     @endif
                 </div>
@@ -65,9 +65,9 @@
                 {{-- Retour au site NADO (front) : achat immédiat (hors enchère) --}}
                 <a href="{{ route('index') }}"
                    class="flex items-center gap-2 px-3 py-2 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 text-[12px] font-black uppercase tracking-wide transition-all no-underline shrink-0"
-                   title="Achat immédiat">
+                   title="{{ __("messages.nadoae.nav_achat_now") }}">
                     <img src="{{ asset('storage/logos/UAfjepY72Xe7grWDva9cqSlRFsRKNZPV3HBDbBP1.png') }}" alt="NADO" class="h-5 w-auto object-contain" />
-                    <span class="hidden sm:inline">Achat immédiat</span>
+                    <span class="hidden sm:inline">{{ __("messages.nadoae.nav_achat_now") }}</span>
                 </a>
                 @if($authClient)
                     {{-- Compte : le nom de l'entreprise ouvre le menu (Mon espace / Déconnexion) --}}
@@ -89,14 +89,14 @@
                             <a href="{{ route('client.dashboard') }}"
                                class="flex items-center gap-3 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-slate-50 transition-colors no-underline">
                                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                                Mon espace
+                                {{ __("messages.nadoae.nav_my_space") }}
                             </a>
                             <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 m-0">
                                 @csrf
                                 <button type="submit"
                                     class="flex items-center gap-3 w-full px-4 py-3 text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors text-left bg-transparent border-0 cursor-pointer">
                                     <i data-lucide="log-out" class="w-4 h-4"></i>
-                                    Déconnexion
+                                    {{ __("messages.nadoae.nav_logout") }}
                                 </button>
                             </form>
                         </div>
