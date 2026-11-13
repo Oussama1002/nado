@@ -140,11 +140,26 @@ public function articleShow(string $slug)
         ->where('is_active', 1)
         ->firstOrFail();
 
+    // Compteur de vues (comme les annonces), best-effort si la colonne existe.
+    try {
+        if (\Illuminate\Support\Facades\Schema::hasColumn('articles', 'views')) {
+            $article->increment('views');
+        }
+    } catch (\Throwable $e) {
+        // colonne absente avant migration → on ignore
+    }
+
+    // Articles liés : même catégorie (sinon les plus récents).
+    $related = Article::where('is_active', 1)
+        ->where('id', '!=', $article->id)
+        ->when($article->category ?? null, fn ($q) => $q->where('category', $article->category))
+        ->latest()->limit(3)->get();
+
     $formatDate = function ($date) {
         return $this->formatDateLabel($date);
     };
 
-    return view('articles.article-show', compact('article', 'formatDate'));
+    return view('articles.article-show', compact('article', 'related', 'formatDate'));
 }
 
 public function estimateView()

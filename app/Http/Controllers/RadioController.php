@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
+use App\Models\Episode;
 
 /**
  * Nado Radio — page publique de lecture (opt-in, lifestyle).
@@ -16,10 +17,22 @@ class RadioController extends Controller
 
         $songs = Song::activeOrdered()->get();
 
+        // Épisodes / podcast (community.radio_episodes).
+        $episodes = collect();
+        $latestEpisode = null;
+        if (feature_on('community.radio_episodes')) {
+            $episodes = Episode::published()
+                ->orderByDesc('published_at')->orderByDesc('id')
+                ->get();
+            $latestEpisode = $episodes->first();
+        }
+
         return view('radio.index', [
-            'songs'   => $songs,
-            'title'   => settings('radio.title', 'Nado Radio'),
-            'tagline' => settings('radio.tagline', ''),
+            'songs'         => $songs,
+            'episodes'      => $episodes,
+            'latestEpisode' => $latestEpisode,
+            'title'         => settings('radio.title', 'Nado Radio'),
+            'tagline'       => settings('radio.tagline', ''),
         ]);
     }
 }

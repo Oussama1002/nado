@@ -1,5 +1,31 @@
 @extends('layouts.app')
 
+@section('title', ($article->meta_title ?: $article->title) . ' | NADO.ma')
+
+@section('link')
+@php $ogImg = $article->image ? asset($article->image) : asset('assets/images/logo.png'); @endphp
+<meta name="description" content="{{ $article->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($article->excerpt ?: $article->content), 160) }}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ $article->meta_title ?: $article->title }}">
+<meta property="og:description" content="{{ $article->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($article->excerpt ?: $article->content), 160) }}">
+<meta property="og:image" content="{{ $ogImg }}">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{!! json_encode(array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'Article',
+    'headline' => $article->title,
+    'image' => $ogImg,
+    'datePublished' => optional($article->created_at)->toAtomString(),
+    'dateModified' => optional($article->updated_at)->toAtomString(),
+    'author' => ['@type' => 'Organization', 'name' => $article->author ?: 'NADO.ma'],
+    'publisher' => ['@type' => 'Organization', 'name' => 'NADO.ma'],
+    'description' => $article->meta_description ?: \Illuminate\Support\Str::limit(strip_tags((string) $article->content), 160),
+]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+@endsection
+
 @section('content')
 <section class="article-detail-section">
     <div class="container">
@@ -15,7 +41,11 @@
             <header class="article-header">
                 <h1 class="article-title">{{ $article->title }}</h1>
                 <div class="article-meta">
+                    @if($article->category)<span style="color:#1459DD;font-weight:800;">{{ $article->category }}</span> · @endif
+                    {{ $article->author ? $article->author . ' · ' : '' }}
                     Publié {{ $formatDate($article->created_at) }}
+                    · {{ $article->readingTime() }} {{ __('messages.community.reading_time') }}
+                    @isset($article->views) · {{ number_format($article->views ?? 0, 0, ',', ' ') }} {{ __('messages.community.views') }} @endisset
                 </div>
             </header>
 
@@ -31,6 +61,22 @@
             <div class="article-content">
                 {!! $article->content !!}
             </div>
+
+            @isset($related)
+            @if($related->isNotEmpty())
+            <div style="margin-top:40px;border-top:1px solid #e2e8f0;padding-top:24px;">
+                <h3 style="font-size:18px;font-weight:900;color:#0f172a;margin:0 0 16px;">{{ __('messages.community.related_articles') }}</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+                    @foreach($related as $rel)
+                        <a href="{{ route('articles.show', $rel->slug) }}" style="display:block;text-decoration:none;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+                            @if($rel->image)<img src="{{ asset($rel->image) }}" alt="" style="width:100%;height:110px;object-fit:cover;" loading="lazy">@endif
+                            <div style="padding:12px;"><div style="font-weight:800;color:#0f172a;font-size:14px;line-height:1.3;">{{ \Illuminate\Support\Str::limit($rel->title, 70) }}</div></div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            @endisset
 
         </article>
 

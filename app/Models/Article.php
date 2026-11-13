@@ -11,6 +11,9 @@ class Article extends Model
     protected $fillable = [
         'title',
         'slug',
+        'category',
+        'views',
+        'author',
         'image',
         'excerpt',
         'content',
@@ -19,6 +22,13 @@ class Article extends Model
         'meta_title',
         'meta_description',
     ];
+
+    /** Temps de lecture estimé (≈ 200 mots/min), minimum 1 min. */
+    public function readingTime(): int
+    {
+        $words = str_word_count(strip_tags((string) $this->content));
+        return max(1, (int) ceil($words / 200));
+    }
 
     protected $casts = [
         'is_premium' => 'boolean',

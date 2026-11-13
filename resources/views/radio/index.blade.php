@@ -70,6 +70,47 @@
     </div>
 </section>
 
+@if(feature_on('community.radio_episodes') && $episodes->isNotEmpty())
+{{-- Épisodes / podcast (community.radio_episodes) --}}
+<section class="radio-page" style="padding-top:0;">
+    <style>
+        .ep-h { font-size:20px; font-weight:900; color:#0f172a; margin:0 0 16px; }
+        .ep-latest { background:#0f172a; color:#fff; border-radius:18px; padding:20px; margin-bottom:20px; }
+        .ep-latest .ep-eye { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.12em; color:#FDD817; }
+        .ep-latest h3 { font-size:20px; font-weight:900; margin:6px 0 8px; }
+        .ep-latest p { color:#cbd5e1; font-size:14px; line-height:1.6; margin:0 0 12px; }
+        .ep-latest audio { width:100%; }
+        .ep-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+        .ep-card h4 { font-size:15px; font-weight:800; color:#0f172a; margin:0 0 4px; }
+        .ep-card .ep-meta { color:#94a3b8; font-size:12px; margin-bottom:8px; }
+        .ep-card audio { width:100%; }
+    </style>
+    <div class="ep-h">{{ __('messages.community.episodes') }}</div>
+
+    @if($latestEpisode)
+    <div class="ep-latest">
+        <div class="ep-eye">{{ __('messages.community.latest_episode') }}</div>
+        <h3>{{ $latestEpisode->title }}</h3>
+        @if($latestEpisode->description)<p>{{ \Illuminate\Support\Str::limit($latestEpisode->description, 180) }}</p>@endif
+        @if($latestEpisode->audio_path)
+            <audio controls preload="none" src="{{ asset('storage/'.$latestEpisode->audio_path) }}"></audio>
+        @endif
+    </div>
+    @endif
+
+    @foreach($episodes->slice(1) as $ep)
+        <div class="ep-card">
+            <h4>{{ $ep->title }}</h4>
+            <div class="ep-meta">
+                @if($ep->published_at){{ __('messages.community.published_on') }} {{ $ep->published_at->format('d/m/Y') }}@endif
+                @if($ep->duration) · {{ $ep->duration }}@endif
+            </div>
+            @if($ep->audio_path)<audio controls preload="none" src="{{ asset('storage/'.$ep->audio_path) }}"></audio>@endif
+        </div>
+    @endforeach
+</section>
+@endif
+
 <style>
     .radio-page { max-width: 760px; margin: 0 auto; padding: 24px 16px 80px; }
     .radio-head { text-align: center; margin-bottom: 32px; }
