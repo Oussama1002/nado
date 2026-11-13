@@ -603,23 +603,12 @@ table.dash-table tr:hover td { background: #fafbfd; }
     {{-- ══ MAIN ═══════════════════════════════════════════════ --}}
     <div class="dash-main">
 
-        {{-- ── Top bar ─────────────────────────────────────── --}}
-        <div class="dash-topbar">
-            <div style="display:flex;align-items:center;gap:12px;">
-                <button class="dash-mobile-toggle" onclick="toggleSidebar()">
-                    <i class="fa fa-bars"></i> {{ __('messages.dashboard.menu') }}
-                </button>
-                <span class="dash-topbar-title">{{ __('messages.dashboard.overview_label') }}</span>
-            </div>
-            <div class="dash-topbar-actions">
-                <a href="javascript:void(0)" class="btn-primary-dash" onclick="openVenteFrame('{{ route('vente.form', ['open_modal' => 1]) }}')">
-                    <i class="fa fa-plus"></i> {{ __('messages.dashboard.publish_ad') }}
-                </a>
-                <a href="{{ route('index') }}" class="btn-outline-dash">
-                    <i class="fa fa-home"></i> {{ __('messages.dashboard.site') }}
-                </a>
-            </div>
-        </div>
+        {{-- Barre supérieure retirée. On conserve uniquement le bouton « Menu »
+             (mobile) pour ouvrir la sidebar ; .dash-mobile-toggle est masqué sur
+             desktop, donc rien ne s'affiche en haut sur grand écran. --}}
+        <button class="dash-mobile-toggle" onclick="toggleSidebar()" style="margin:14px 16px 0;">
+            <i class="fa fa-bars"></i> {{ __('messages.dashboard.menu') }}
+        </button>
 
         {{-- ── Body ───────────────────────────────────────── --}}
         <div class="dash-body">
