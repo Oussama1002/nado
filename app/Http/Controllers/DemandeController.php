@@ -313,6 +313,33 @@ class DemandeController extends Controller
             Log::warning('Demande propose email failed: ' . $e->getMessage());
         }
 
+        // Notifier le CHERCHEUR (auteur de la demande) qu'une proposition a été
+        // reçue — par email si la demande a été créée par un client connecté.
+        try {
+            $seekerEmail = $demande->client?->email;
+            if (!empty($seekerEmail)) {
+                $demandeUrl = route('demandes.show', $demande->id);
+                $carLabel   = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
+                if ($carLabel === '') $carLabel = 'votre recherche';
+
+                $sBody =
+                    "Bonjour {$demande->nom},\n\n" .
+                    "Bonne nouvelle : un vendeur vient de proposer un véhicule pour {$carLabel}.\n\n" .
+                    "PROPOSITION\n" .
+                    "- {$data['mark']} {$data['modele']} ({$data['year']})\n" .
+                    "- {$data['km']} km · " . number_format($data['prix'], 0, ',', ' ') . " DH\n" .
+                    ($data['city'] ? "- Ville : {$data['city']}\n" : '') .
+                    "\nConsultez la proposition ici :\n{$demandeUrl}\n\n" .
+                    "L'équipe NADO.";
+
+                Mail::raw($sBody, function ($m) use ($seekerEmail) {
+                    $m->to($seekerEmail)->subject('Une proposition a été faite pour votre demande — NADO');
+                });
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Demande propose seeker notification failed: ' . $e->getMessage());
+        }
+
         return redirect()->route('demandes.show', $demande->id)
             ->with('propose_success', 'Merci ! Votre proposition a bien été envoyée. Un agent va vous contacter.');
     }
