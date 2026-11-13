@@ -317,13 +317,16 @@
                 <div id="liveMinNext" class="text-sm font-black text-slate-900" dir="ltr">{{ number_format($enchere->minNextBid(), 0, ',', ' ') }} DH</div>
               </div>
               <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ __('messages.enchere.leader') }}</div>
+                <div class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-red-500">
+                  <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                  </span>
+                  {{ __('messages.enchere.live_now') }}
+                </div>
                 <div class="flex items-baseline gap-2">
-                  <span id="liveBidsCount" class="text-sm font-black text-slate-900">{{ $bidsCount }}</span>
-                  <span class="text-[10px] text-slate-400">{{ __('messages.enchere.bids_count') }}</span>
-                  <span class="text-[10px] text-slate-300">·</span>
                   <span id="liveBiddersCount" class="text-sm font-black text-slate-900">{{ $bidderCount }}</span>
-                  <span class="text-[10px] text-slate-400">{{ __('messages.enchere.bidders_count') }}</span>
+                  <span class="text-[10px] text-slate-400">{{ __('messages.enchere.participants') }}</span>
                 </div>
               </div>
             </div>

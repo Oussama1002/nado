@@ -1330,6 +1330,8 @@ return [
         'min_next'         => 'Enchère minimum suivante',
         'bids_count'       => 'enchères',
         'bidders_count'    => 'enchérisseurs',
+        'live_now'         => 'En direct',
+        'participants'     => 'participants',
         'your_max'         => 'Votre enchère maximum',
         'place_bid'        => 'Enchérir',
         'placing'          => 'Envoi…',

@@ -1325,6 +1325,8 @@ return [
         'min_next'         => 'الحد الأدنى للعرض التالي',
         'bids_count'       => 'عروض',
         'bidders_count'    => 'مزايدون',
+        'live_now'         => 'مباشر',
+        'participants'     => 'مشاركون',
         'your_max'         => 'الحد الأقصى لعرضك',
         'place_bid'        => 'زايد',
         'placing'          => 'جارٍ الإرسال…',
