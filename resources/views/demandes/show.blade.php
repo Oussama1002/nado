@@ -220,13 +220,6 @@
                         <span class="prop-badge">{{ __('messages.demande_show.vehicle_proposal') }}</span>
                         <span class="prop-time">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }}</span>
                     </div>
-                    @if($pImgs->count())
-                        <div class="prop-gallery">
-                            @foreach($pImgs as $u)
-                                <img src="{{ $u }}" alt="{{ $pTitle }}" loading="lazy" onclick="window.open(this.src,'_blank')">
-                            @endforeach
-                        </div>
-                    @endif
                     <div class="prop-body">
                         <h3 class="prop-title">{{ $pTitle ?: __('messages.demande_show.vehicle') }}</h3>
                         <div class="prop-price"><span class="prop-hidden" data-real="{{ number_format((int)($meta['prix'] ?? 0), 0, ',', ' ') }} DH">**** DH</span></div>
@@ -249,9 +242,6 @@
                                 <a href="{{ route('demandes.proposition.show', [$demande->id, $r->id]) }}" class="prop-reveal" style="background:#0f172a;text-decoration:none;">
                                     {{ __('messages.demande_show.see_detail') }}
                                 </a>
-                                <button type="button" class="prop-reveal" onclick="revealProp(this)">
-                                    {{ __('messages.demande_show.reveal_info') }}
-                                </button>
                             </div>
                         </div>
                     </div>
