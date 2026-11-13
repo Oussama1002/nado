@@ -8,9 +8,16 @@
     $endsTs    = $enchere->ends_at ? \Carbon\Carbon::parse($enchere->ends_at)->timestamp : null;
     $startsTs  = $enchere->starts_at ? \Carbon\Carbon::parse($enchere->starts_at)->timestamp : null;
     $now       = now();
-    if (!$endsTs || \Carbon\Carbon::createFromTimestamp($endsTs)->isPast()) {
+    // Le statut en base (draft/scheduled/live/ended/cancelled) fait foi quand il
+    // est renseigné ; on ne retombe sur les dates que pour les lignes anciennes.
+    // IMPORTANT : une enchère SANS date de fin n'est PAS « Terminée » — elle est
+    // en cours tant qu'aucune fin passée ni statut ended/cancelled ne l'arrête.
+    $dbStatus    = $enchere->status ?? null;
+    $endPast     = $endsTs && \Carbon\Carbon::createFromTimestamp($endsTs)->isPast();
+    $startFuture = $startsTs && \Carbon\Carbon::createFromTimestamp($startsTs)->isFuture();
+    if (in_array($dbStatus, ['ended', 'cancelled'], true) || $endPast) {
         $status = 'Terminé'; $statusClass = 'bg-slate-100 text-slate-600 border-slate-200';
-    } elseif ($startsTs && \Carbon\Carbon::createFromTimestamp($startsTs)->isFuture()) {
+    } elseif ($dbStatus === 'scheduled' || $startFuture) {
         $status = 'À venir'; $statusClass = 'bg-blue-50 text-blue-700 border-blue-200';
     } else {
         $status = 'En cours'; $statusClass = 'bg-green-50 text-green-700 border-green-200';
@@ -612,6 +619,8 @@
     function tick() {
       const now = Date.now();
       const endTime = new Date(el.dataset.end).getTime();
+      // Pas de date de fin valide → enchère non chronométrée : pas de « Terminé ».
+      if (isNaN(endTime)) { el.textContent = '—'; return; }
       let target = endTime;
       if (startTime && startTime > now) target = startTime;
       const diff = target - now;
