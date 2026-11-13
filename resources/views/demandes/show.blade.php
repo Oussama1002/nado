@@ -207,15 +207,6 @@
 
     <div class="dmd-section">
         <h2>{{ __('messages.demande_show.replies') }} ({{ $demande->replies_count }})</h2>
-        <div class="dmd-reply-form" style="text-align:center;">
-            <p style="margin:0 0 12px;color:#334155;font-size:14px;">
-                {{ __('messages.demande_show.reply_cta') }}
-            </p>
-            <button type="button" class="dmd-reveal-btn" style="text-decoration:none;" onclick="document.getElementById('proposeModal').style.display='flex';">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                {{ __('messages.demande_show.propose') }}
-            </button>
-        </div>
 
         @forelse($demande->replies->where('status','visible') as $r)
             @php $meta = $r->proposalData(); @endphp
