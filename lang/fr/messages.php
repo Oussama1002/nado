@@ -147,6 +147,7 @@ return [
         'search'         => 'Rechercher',
         'available'      => 'DISPONIBLE',
         'reserved'       => 'RÉSERVÉ',
+        'sold'           => 'VENDU',
         'certified'      => 'Certifié',
         'particulier'    => 'Particulier',
         'pro'            => 'Pro',

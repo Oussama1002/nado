@@ -146,6 +146,7 @@ return [
         'search'         => 'بحث',
         'available'      => 'متوفّرة',
         'reserved'       => 'محجوزة',
+        'sold'           => 'مباعة',
         'certified'      => 'معتمدة',
         'particulier'    => 'فرد',
         'pro'            => 'محترف',

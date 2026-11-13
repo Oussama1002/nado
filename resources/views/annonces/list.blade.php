@@ -1211,14 +1211,27 @@
                                         <b>src:</b> {{ str_starts_with($adImage, 'data:') ? '[placeholder]' : $adImage }}
                                     </div>
                                 @endif
-                                @php $st = strtolower($ad->status ?? 'disponible'); @endphp
-                                <span class="pp-status {{ $st }}">
-                                    @if($ad->status == 'réserve')
+                                @php
+                                    // Normalise le statut (accents/casse/variantes) → clé CSS stable.
+                                    $rawSt = strtolower(trim((string) ($ad->status ?? '')));
+                                    $asciiSt = strtr($rawSt, ['é' => 'e', 'è' => 'e', 'ê' => 'e']);
+                                    if ($asciiSt === '' ) {
+                                        $stKey = 'disponible';
+                                    } elseif (str_starts_with($asciiSt, 'vend') || $asciiSt === 'sold') {
+                                        $stKey = 'vendu';
+                                    } elseif (str_starts_with($asciiSt, 'reserv')) {
+                                        $stKey = 'reserve';
+                                    } else {
+                                        $stKey = 'disponible';
+                                    }
+                                @endphp
+                                <span class="pp-status {{ $stKey }}">
+                                    @if($stKey === 'reserve')
                                         {{ __('messages.catalog.reserved') }}
-                                    @elseif(empty($ad->status) || $st === 'disponible')
-                                        {{ __('messages.catalog.available') }}
+                                    @elseif($stKey === 'vendu')
+                                        {{ __('messages.catalog.sold') }}
                                     @else
-                                        {{ strtoupper($ad->status) }}
+                                        {{ __('messages.catalog.available') }}
                                     @endif
                                 </span>
                                 @if(!empty($ad->certifie))
