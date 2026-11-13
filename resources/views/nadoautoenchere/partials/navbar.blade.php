@@ -62,6 +62,13 @@
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
+                {{-- Retour au site NADO (front) : achat immédiat (hors enchère) --}}
+                <a href="{{ route('index') }}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#FDD817] hover:bg-[#f5ce00] text-slate-900 text-[12px] font-black uppercase tracking-wide transition-all no-underline shrink-0"
+                   title="Achat immédiat">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Achat immédiat</span>
+                </a>
                 @if($authClient)
                     {{-- Compte : le nom de l'entreprise ouvre le menu (Mon espace / Déconnexion) --}}
                     <div class="na-account" style="position:relative;">
