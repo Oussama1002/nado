@@ -394,13 +394,15 @@
 
             // Design & Extérieur
             'jantesA' => 'Jantes aluminium',
-            'sellerie_similicuir_tissu' => 'Sellerie Similicuir / Tissu',
+            'sellerie_similicuir_tissu' => 'Sellerie similicuir',
+            'sellerie_tissu' => 'Sellerie tissu',
             'volant_cuir' => 'Volant cuir',
             'follow_me_home' => 'Follow-me home',
             'lumiere_ambiance' => "Lumière d'ambiance",
             'feux_jour_led' => 'Feux de jour LED',
             'phares_full_led' => 'Phares Full LED',
-            'toit_panoramique' => 'Toit Panoramique ouvrant',
+            'toit_ouvrant' => 'Toit ouvrant',
+            'toit_panoramique' => 'Toit panoramique',
             'barres_de_toit' => 'Barres de toit',
             'vitres_surteintees' => 'Vitres sur-teintées',    ];
     @endphp

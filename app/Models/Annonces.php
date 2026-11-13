@@ -121,6 +121,7 @@ protected $fillable = [
     'apple_carplay_android_auto',
     'chargeur_sans_fil',
     'sellerie_similicuir_tissu',
+    'sellerie_tissu',
     'volant_cuir',
     'follow_me_home',
     'lumiere_ambiance',
