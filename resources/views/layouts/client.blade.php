@@ -97,6 +97,47 @@
         .client-fab { display: inline-flex; }
         .client-body { padding: 18px 16px 72px; }
     }
+
+    /* Bootstrap n'est pas chargé ici : on style localement .table/.btn/.alert
+       pour que les pages client (équipe, mes offres, etc.) ne soient pas brutes. */
+    .client-body .table {
+        width: 100%; border-collapse: collapse; background: #fff;
+        border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+        font-size: 13.5px; margin-bottom: 20px;
+    }
+    .client-body .table th, .client-body .table td {
+        padding: 12px 16px; text-align: left; vertical-align: middle;
+        border-bottom: 1px solid var(--slate-100); color: var(--slate-700);
+    }
+    .client-body .table thead th {
+        background: var(--slate-50); color: var(--slate-500); font-size: 11px;
+        font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+        border-bottom: 1px solid var(--slate-200);
+    }
+    .client-body .table.table-bordered th,
+    .client-body .table.table-bordered td { border: 1px solid var(--slate-200); }
+    .client-body .table.table-striped tbody tr:nth-child(odd) td { background: #fafbfd; }
+    .client-body .table tbody tr:hover td { background: #f1f5f9; }
+    .client-body .table td.text-center, .client-body .table th.text-center { text-align: center; }
+
+    .client-body .btn {
+        display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px;
+        border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none;
+        border: 1px solid var(--slate-200); background: #fff; color: var(--slate-700);
+        cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .client-body .btn:hover { background: var(--slate-100); }
+    .client-body .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .client-body .btn-primary:hover { background: #0f4bcc; color: #fff; }
+    .client-body .btn-danger { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+    .client-body .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .client-body .alert {
+        padding: 12px 16px; border-radius: 12px; margin-bottom: 20px;
+        font-size: 13.5px; font-weight: 600;
+    }
+    .client-body .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .client-body .alert-danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 </style>
 
 <div class="client-shell">
