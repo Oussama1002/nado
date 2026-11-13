@@ -61,7 +61,21 @@
             <div class="grid">
                 @foreach($favorites as $annonce)
                     @php
-                        $img = $annonce->image ? asset('storage/ads/' . $annonce->image) : null;
+                        $flotteFav = !empty($isFlotte);
+                        if ($flotteFav) {
+                            // Favori d'enchère.
+                            $imgs  = is_array($annonce->images) ? $annonce->images : [];
+                            $img   = !empty($imgs[0]) ? asset('storage/nadoautoenchere/' . $imgs[0]) : null;
+                            $title = trim(($annonce->brand?->name ?? $annonce->mark ?? '') . ' ' . ($annonce->modeleRelation?->name ?? $annonce->modele ?? '')) ?: ($annonce->titre ?? 'Enchère');
+                            $detailUrl = route('nadoautoenchere.show', $annonce->id);
+                            $removeUrl = route('nadoautoenchere.favorite', $annonce->id);
+                        } else {
+                            // Favori d'annonce.
+                            $img   = $annonce->image ? asset('storage/ads/' . $annonce->image) : null;
+                            $title = trim(($annonce->mark ?? '') . ' ' . ($annonce->modele ?? ''));
+                            $detailUrl = route('achat.detail', ['marque' => str_replace(' ', '', $annonce->mark), 'modele' => str_replace(' ', '', $annonce->modele), 'id' => $annonce->id]);
+                            $removeUrl = route('favorite.toggle', $annonce->id);
+                        }
                     @endphp
                     <div class="cardx">
                         @if($img)
@@ -70,15 +84,15 @@
                             <div class="cardx-img" style="display:flex;align-items:center;justify-content:center;color:var(--slate-400);font-size:32px;">❤️</div>
                         @endif
                         <div class="cardx-body">
-                            <h3 class="cardx-title">{{ $annonce->mark }} {{ $annonce->modele }}</h3>
+                            <h3 class="cardx-title">{{ $title }}</h3>
                             <p class="cardx-meta">{{ $annonce->year ?? '—' }} · {{ number_format($annonce->km ?? 0, 0, ',', ' ') }} km · {{ $annonce->city ?? '—' }}</p>
                             <div class="row2">
                                 <div class="price">{{ number_format($annonce->prix ?? 0, 0, ',', ' ') }} MAD</div>
                                 <div style="display:flex;gap:8px;">
-                                    <a class="btnx" href="{{ route('achat.detail', ['marque' => str_replace(' ', '', $annonce->mark), 'modele' => str_replace(' ', '', $annonce->modele), 'id' => $annonce->id]) }}">
+                                    <a class="btnx" href="{{ $detailUrl }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <form action="{{ route('favorite.toggle', $annonce->id) }}" method="POST" onsubmit="return confirm('{{ __('messages.discovery.remove_fav') }} ?');">
+                                    <form action="{{ $removeUrl }}" method="POST" onsubmit="return confirm('{{ __('messages.discovery.remove_fav') }} ?');">
                                         @csrf
                                         <button type="submit" class="btnx" style="color:#e11d48;border-color:#fecdd3;background:#fff1f2;" aria-label="{{ __('messages.discovery.remove_fav') }}">
                                             <i class="fa fa-heart-broken"></i>

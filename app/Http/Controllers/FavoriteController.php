@@ -10,9 +10,16 @@ class FavoriteController extends Controller
     public function index()
 {
     $user = Auth::guard('client')->user();
-    $favorites = $user->favorites()->latest()->get();
 
-    return view('client.favorites', compact('favorites'));
+    // Client enchère → favoris d'ENCHÈRES ; sinon favoris d'annonces.
+    $isFlotte = $user->type === 'flotte&enchere';
+    if ($isFlotte && method_exists($user, 'enchereFavorites')) {
+        $favorites = $user->enchereFavorites()->latest()->get();
+    } else {
+        $favorites = $user->favorites()->latest()->get();
+    }
+
+    return view('client.favorites', compact('favorites', 'isFlotte'));
 }
 
     public function toggle($id, \Illuminate\Http\Request $request)
