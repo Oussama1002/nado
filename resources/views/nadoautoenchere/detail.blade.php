@@ -111,7 +111,7 @@
         </h1>
         <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-slate-500 font-medium">
           <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4"></i> {{ $enchere->year }}</span>
-          <span class="flex items-center gap-1.5"><i data-lucide="gauge" class="w-4 h-4"></i> {{ number_format($enchere->km, 0, ',', ' ') }} km</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="gauge" class="w-4 h-4"></i> <bdi>{{ number_format($enchere->km, 0, ',', ' ') }} km</bdi></span>
           <span class="flex items-center gap-1.5"><i data-lucide="fuel" class="w-4 h-4"></i> {{ $enchere->carburant }}</span>
           <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ $enchere->city ?? '—' }}</span>
         </div>
@@ -200,7 +200,7 @@
                     </div>
                     <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">{{ $label }}</span>
                   </div>
-                  <div class="text-sm font-bold text-slate-900">{{ $value ?? '—' }}</div>
+                  <div class="text-sm font-bold text-slate-900"><bdi>{{ $value ?? '—' }}</bdi></div>
                 </div>
               @endforeach
             </div>
@@ -302,12 +302,12 @@
             <div class="text-[10px] font-black uppercase tracking-widest text-[#F37021] mb-2">
               {{ $liveBidding ? __('messages.enchere.current_bid') : __('messages.nadoae.best_offer') }}
             </div>
-            <div class="flex items-baseline gap-1 mb-1">
+            <div class="flex items-baseline gap-1 mb-1" dir="ltr">
               <span id="liveCurrentPrice" class="text-4xl font-black tracking-tighter text-slate-900">{{ number_format($liveBidding ? $enchere->currentHighBid() : $prixTarget, 0, ',', ' ') }}</span>
               <span class="text-lg font-bold text-slate-500">DH</span>
             </div>
             <div class="text-xs text-slate-400 font-medium line-through">
-              {{ __('messages.nadoae.estimated_price') }} {{ number_format($enchere->prix, 0, ',', ' ') }} DH
+              {{ __('messages.nadoae.estimated_price') }} <bdi dir="ltr">{{ number_format($enchere->prix, 0, ',', ' ') }} DH</bdi>
             </div>
 
             @if($liveBidding)
@@ -315,7 +315,7 @@
             <div class="mt-4 grid grid-cols-2 gap-2">
               <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ __('messages.enchere.min_next') }}</div>
-                <div id="liveMinNext" class="text-sm font-black text-slate-900">{{ number_format($enchere->minNextBid(), 0, ',', ' ') }} DH</div>
+                <div id="liveMinNext" class="text-sm font-black text-slate-900" dir="ltr">{{ number_format($enchere->minNextBid(), 0, ',', ' ') }} DH</div>
               </div>
               <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ __('messages.enchere.leader') }}</div>
