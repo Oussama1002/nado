@@ -20,7 +20,12 @@
     @media (max-width: 880px) { .pp-grid { grid-template-columns: 1fr; } }
 
     .pp-gallery { background:#fff; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+    .pp-main-wrap { position:relative; }
     .pp-main { width:100%; aspect-ratio: 4/3; object-fit:cover; display:block; background:#f1f5f9; cursor:zoom-in; }
+    .pp-nav { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; border:0; background:rgba(15,23,42,.55); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .15s; }
+    .pp-nav:hover { background:rgba(15,23,42,.8); }
+    .pp-nav-prev { left:12px; }
+    .pp-nav-next { right:12px; }
     .pp-main-ph { width:100%; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; background:#f1f5f9; color:#94a3b8; font-size:48px; }
     .pp-thumbs { display:flex; gap:8px; padding:12px; overflow-x:auto; }
     .pp-thumbs img { width:84px; height:62px; object-fit:cover; border-radius:10px; cursor:pointer; border:2px solid transparent; flex-shrink:0; }
@@ -54,11 +59,21 @@
     <div class="pp-grid">
         <div class="pp-gallery">
             @if($main)
-                <img src="{{ $main }}" id="ppMain" class="pp-main" alt="{{ $title }}" onclick="ppOpenLightbox()">
+                <div class="pp-main-wrap">
+                    <img src="{{ $main }}" id="ppMain" class="pp-main" alt="{{ $title }}" onclick="ppOpenLightbox()">
+                    @if($imgs->count() > 1)
+                        <button type="button" class="pp-nav pp-nav-prev" onclick="ppNav(-1)" aria-label="Précédent">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <button type="button" class="pp-nav pp-nav-next" onclick="ppNav(1)" aria-label="Suivant">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    @endif
+                </div>
                 @if($imgs->count() > 1)
                     <div class="pp-thumbs">
                         @foreach($imgs as $i => $u)
-                            <img src="{{ $u }}" class="{{ $i === 0 ? 'active' : '' }}" alt="" onclick="ppSetMain(this, '{{ $u }}')">
+                            <img src="{{ $u }}" class="{{ $i === 0 ? 'active' : '' }}" data-idx="{{ $i }}" alt="" onclick="ppSetMain(this, '{{ $u }}')">
                         @endforeach
                     </div>
                 @endif
@@ -101,12 +116,20 @@
 </div>
 
 <script>
-    function ppSetMain(el, url) {
+    var ppImages = @json($imgs);
+    var ppIdx = 0;
+    function ppShow(i) {
+        if (!ppImages.length) return;
+        ppIdx = (i + ppImages.length) % ppImages.length;
+        var url = ppImages[ppIdx];
         document.getElementById('ppMain').src = url;
         document.getElementById('ppLightboxImg').src = url;
-        document.querySelectorAll('.pp-thumbs img').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
+        document.querySelectorAll('.pp-thumbs img').forEach(function (t) {
+            t.classList.toggle('active', parseInt(t.dataset.idx) === ppIdx);
+        });
     }
+    function ppNav(dir) { ppShow(ppIdx + dir); }
+    function ppSetMain(el, url) { ppShow(parseInt(el.dataset.idx)); }
     function ppOpenLightbox() {
         document.getElementById('ppLightboxImg').src = document.getElementById('ppMain').src;
         document.getElementById('ppLightbox').classList.add('open');
