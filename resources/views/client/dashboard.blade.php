@@ -550,7 +550,12 @@ table.dash-table tr:hover td { background: #fafbfd; }
             @endif
             <div style="overflow:hidden;">
                 <div class="dash-profile-name">{{ $client->name }}</div>
-                <div class="dash-profile-type">{{ $client->type ?? 'Particulier' }}</div>
+                <div class="dash-profile-type">
+                    {{ $client->type ?? 'Particulier' }}
+                    @if($isFlotte && $client->ae_role)
+                        <span style="margin-left:6px;padding:1px 8px;border-radius:99px;background:rgba(255,255,255,.16);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;">{{ $client->ae_role === 'vendeur' ? 'Vendeur' : 'Acheteur' }}</span>
+                    @endif
+                </div>
             </div>
         </div>
 
