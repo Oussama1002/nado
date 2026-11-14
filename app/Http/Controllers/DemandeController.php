@@ -78,29 +78,9 @@ class DemandeController extends Controller
         }
 
         foreach ($byCar as $list) {
-            // Trie par année min effective pour un clustering glouton.
-            usort($list, fn ($a, $b) => ($a->year_min ?? 0) <=> ($b->year_min ?? 0));
-
-            $clusters = [];
-            foreach ($list as $d) {
-                $ymin = $d->year_min ?? 1980;
-                $ymax = $d->year_max ?? $curYear;
-
-                $placed = false;
-                foreach ($clusters as &$c) {
-                    if ($ymin <= $c['max'] + $threshold && $ymax >= $c['min'] - $threshold) {
-                        $c['items'][] = $d;
-                        $c['min'] = min($c['min'], $ymin);
-                        $c['max'] = max($c['max'], $ymax);
-                        $placed = true;
-                        break;
-                    }
-                }
-                unset($c);
-                if (! $placed) {
-                    $clusters[] = ['min' => $ymin, 'max' => $ymax, 'items' => [$d]];
-                }
-            }
+            // Même voiture (marque+modèle) = un seul groupe, peu importe les années
+            // (on affiche l'étendue des années). Les lignes « solo_ » restent seules.
+            $clusters = [['items' => $list]];
 
             foreach ($clusters as $c) {
                 $items = collect($c['items']);

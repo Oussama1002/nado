@@ -37,24 +37,14 @@ class Demande extends Model
             return collect([$this]);
         }
 
-        $threshold = 2;
-        $curYear   = (int) date('Y') + 1;
-        $dmin = $this->year_min ?? 1980;
-        $dmax = $this->year_max ?? $curYear;
-
+        // Même voiture (marque+modèle) = même groupe, toutes années confondues.
         return static::query()
             ->whereIn('status', ['approved', 'pending'])
             ->where(fn ($x) => $x->whereNull('expires_at')->orWhere('expires_at', '>', now()))
             ->where('brand_id', $this->brand_id)
             ->where('modele_id', $this->modele_id)
             ->with('client')
-            ->get()
-            ->filter(function ($o) use ($dmin, $dmax, $threshold, $curYear) {
-                $omin = $o->year_min ?? 1980;
-                $omax = $o->year_max ?? $curYear;
-                return $omin <= $dmax + $threshold && $omax >= $dmin - $threshold;
-            })
-            ->values();
+            ->get();
     }
 
     /** Personnes distinctes du groupe (déduplique par client/téléphone). */
