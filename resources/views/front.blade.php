@@ -2745,25 +2745,36 @@
         $logoText = $isAutoEnchere ? 'AUTO ENCHÈRE' : 'NADO';
 
         // Recent demandes for the live-notification toast (bottom-left).
-        $recentDemandes = \App\Models\Demande::public()
+        // Dédupe par groupe voiture (marque+modèle) et joint le nb de personnes.
+        $recentRaw = \App\Models\Demande::public()
             ->with(['brand', 'modele', 'ville'])
             ->latest()
-            ->limit(8)
-            ->get()
-            ->map(function ($d) {
-                $firstName = trim(explode(' ', (string) $d->nom)[0]) ?: __('messages.demandes.a_buyer');
-                $car = trim(($d->brand?->name ?? '') . ' ' . ($d->modele?->name ?? ''));
-                return [
-                    'name' => $firstName,
-                    'car'  => $car !== '' ? $car : __('messages.demandes.a_car'),
-                    'ville'=> $d->ville?->name,
-                    'url'  => route('demandes.show', $d->id),
-                    // Honour the active locale so the time reads in Arabic too.
-                    'ago'  => $d->created_at->locale(app()->getLocale())->diffForHumans(),
-                ];
-            })
-            ->values()
-            ->toArray();
+            ->limit(24)
+            ->get();
+
+        $seenCars = [];
+        $recentDemandes = [];
+        foreach ($recentRaw as $d) {
+            $key = ($d->brand_id && $d->modele_id) ? ('car_' . $d->brand_id . '_' . $d->modele_id) : ('solo_' . $d->id);
+            if (isset($seenCars[$key])) {
+                continue;
+            }
+            $seenCars[$key] = true;
+
+            $firstName = trim(explode(' ', (string) $d->nom)[0]) ?: __('messages.demandes.a_buyer');
+            $car = trim(($d->brand?->name ?? '') . ' ' . ($d->modele?->name ?? ''));
+            $recentDemandes[] = [
+                'name'  => $firstName,
+                'count' => $d->groupPersons()->count(),
+                'car'   => $car !== '' ? $car : __('messages.demandes.a_car'),
+                'ville' => $d->ville?->name,
+                'url'   => route('demandes.show', $d->id),
+                'ago'   => $d->created_at->locale(app()->getLocale())->diffForHumans(),
+            ];
+            if (count($recentDemandes) >= 8) {
+                break;
+            }
+        }
     @endphp
 
     {{-- ============== DEMANDE LIVE FEED (bottom-left) ============== --}}
@@ -2937,11 +2948,15 @@
                 function pushCard(d) {
                     var card = document.createElement('div');
                     card.className = 'dmd-live-card';
+                    var avatar = (d.count && d.count > 1) ? String(d.count) : ((d.name.charAt(0) || '?').toUpperCase());
+                    var seekingText = (d.count && d.count > 1)
+                        ? '<strong>' + d.count + ' {{ __('messages.demandes.people_seeking') }}</strong> ' + escapeHtml(d.car)
+                        : '<strong>' + escapeHtml(d.name) + '</strong> {{ __('messages.demandes.live_seeking') }} ' + escapeHtml(d.car) + (d.ville ? ' {{ __('messages.demandes.live_in') }} ' + escapeHtml(d.ville) : '');
                     card.innerHTML =
-                        '<div class="dmd-live-av">' + escapeHtml((d.name.charAt(0) || '?').toUpperCase()) + '</div>' +
+                        '<div class="dmd-live-av">' + escapeHtml(avatar) + '</div>' +
                         '<div style="min-width:0;flex:1;">' +
                             '<div class="dmd-live-tag"><span class="dmd-live-dot"></span>{{ __('messages.demandes.live_new') }}</div>' +
-                            '<div class="dmd-live-text"><strong>' + escapeHtml(d.name) + '</strong> {{ __('messages.demandes.live_seeking') }} ' + escapeHtml(d.car) + (d.ville ? ' {{ __('messages.demandes.live_in') }} ' + escapeHtml(d.ville) : '') + '</div>' +
+                            '<div class="dmd-live-text">' + seekingText + '</div>' +
                             '<a class="dmd-live-link" href="' + d.url + '">{{ __('messages.demandes.live_view') }} →</a>' +
                             '<div class="dmd-live-ago">' + escapeHtml(d.ago) + '</div>' +
                         '</div>';

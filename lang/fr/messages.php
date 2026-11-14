@@ -483,6 +483,7 @@ return [
         'any_brand'=> 'Toute marque',
         'by'       => 'Par',
         'people_interested' => 'personnes intéressées',
+        'people_seeking' => 'personnes recherchent',
         'not_specified' => 'Non précisé',
         'all_years'     => 'Toutes années',
         'all_box'       => 'Toutes',

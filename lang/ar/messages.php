@@ -482,6 +482,7 @@ return [
         'any_brand'=> 'كل الماركات',
         'by'       => 'من طرف',
         'people_interested' => 'أشخاص مهتمون',
+        'people_seeking' => 'أشخاص يبحثون عن',
         'not_specified' => 'غير محدّد',
         'all_years'     => 'كل السنوات',
         'all_box'       => 'الكل',
