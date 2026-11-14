@@ -121,27 +121,28 @@
             <div class="dmd-cars" id="dmdCars">
                 {{-- initial row rendered by JS so brand + model stay in sync --}}
             </div>
+
+            <div style="margin-top:14px;">
+                <label>{{ __('messages.demande_form.year_range') }}</label>
+                <div style="display:flex;gap:10px;">
+                    <select name="year_min" style="flex:1;">
+                        <option value="">{{ __('messages.catalog.from') }}</option>
+                        @for($y = (int) date('Y'); $y >= 1980; $y--)
+                            <option value="{{ $y }}" {{ (string) old('year_min') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    <select name="year_max" style="flex:1;">
+                        <option value="">{{ __('messages.catalog.to') }}</option>
+                        @for($y = (int) date('Y'); $y >= 1980; $y--)
+                            <option value="{{ $y }}" {{ (string) old('year_max') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
+            </div>
+
             <button type="button" class="dmd-add-car" id="dmdAddCar" style="margin-top:12px;">
                 {{ __('messages.demande_form.add_car') }}
             </button>
-        </div>
-
-        <div>
-            <label>{{ __('messages.demande_form.year_range') }}</label>
-            <div style="display:flex;gap:10px;">
-                <select name="year_min" style="flex:1;">
-                    <option value="">{{ __('messages.catalog.from') }}</option>
-                    @for($y = (int) date('Y'); $y >= 1980; $y--)
-                        <option value="{{ $y }}" {{ (string) old('year_min') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
-                <select name="year_max" style="flex:1;">
-                    <option value="">{{ __('messages.catalog.to') }}</option>
-                    @for($y = (int) date('Y'); $y >= 1980; $y--)
-                        <option value="{{ $y }}" {{ (string) old('year_max') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
-            </div>
         </div>
 
         <button type="submit" class="dmd-btn">{{ __('messages.demande_form.submit') }}</button>
