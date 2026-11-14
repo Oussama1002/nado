@@ -260,10 +260,6 @@
         @endforelse
     </div>
 
-    <form method="POST" action="{{ route('demandes.report', $demande->id) }}" class="dmd-report">
-        @csrf
-        <button type="submit">{{ __('messages.demande_show.report') }}</button>
-    </form>
 </div>
 
 {{-- ============== PROPOSE VEHICLE MODAL ============== --}}
