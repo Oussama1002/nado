@@ -230,9 +230,9 @@
     @endif
 
     <div class="dmd-section">
-        <h2>{{ __('messages.demande_show.replies') }} ({{ $demande->replies_count }})</h2>
+        <h2>{{ __('messages.demande_show.replies') }} ({{ isset($groupReplies) ? $groupReplies->count() : $demande->replies_count }})</h2>
 
-        @forelse($demande->replies->where('status','visible') as $r)
+        @forelse(($groupReplies ?? $demande->replies->where('status','visible')) as $r)
             @php $meta = $r->proposalData(); @endphp
             @if($meta)
                 @php
@@ -263,7 +263,7 @@
                                 <div class="prop-phone"><span class="prop-hidden" data-real="📞 {{ $r->contact_phone }}">📞 ****</span></div>
                             </div>
                             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                <a href="{{ route('demandes.proposition.show', [$demande->id, $r->id]) }}" class="prop-reveal" style="background:#0f172a;text-decoration:none;">
+                                <a href="{{ route('demandes.proposition.show', [$r->demande_id, $r->id]) }}" class="prop-reveal" style="background:#0f172a;text-decoration:none;">
                                     {{ __('messages.demande_show.see_detail') }}
                                 </a>
                             </div>

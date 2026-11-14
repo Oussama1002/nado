@@ -131,9 +131,20 @@ class DemandeController extends Controller
             ? Modele::where('brand_id', $demande->brand_id)->orderBy('name')->get()
             : collect();
 
-        $groupPersons = $demande->groupPersons();
+        // Groupe « voiture » : personnes + réponses/propositions de TOUT le groupe
+        // (une proposition déposée sur n'importe quelle demande du groupe s'affiche).
+        $groupMembers = $demande->groupMembers();
+        $groupPersons = $groupMembers
+            ->groupBy(fn ($d) => preg_replace('/\D+/', '', (string) $d->telephone) ?: 'd' . $d->id)
+            ->map(fn ($g) => $g->first())
+            ->values();
+        $groupReplies = \App\Models\DemandeReply::whereIn('demande_id', $groupMembers->pluck('id'))
+            ->where('status', 'visible')
+            ->with(['client', 'annonce'])
+            ->latest()
+            ->get();
 
-        return view('demandes.show', compact('demande', 'matches', 'villes', 'brands', 'prefillModeles', 'groupPersons'));
+        return view('demandes.show', compact('demande', 'matches', 'villes', 'brands', 'prefillModeles', 'groupPersons', 'groupReplies'));
     }
 
     /** Détail d'une proposition de véhicule — page façon « détail annonce ». */
