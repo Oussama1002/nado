@@ -69,12 +69,16 @@
                         </div>
 
                         @if($meta)
-                            @php $pTitle = $meta['title'] ?? trim(($meta['mark'] ?? '').' '.($meta['modele'] ?? '')); @endphp
+                            @php
+                                $pTitle = $meta['title'] ?? trim(($meta['mark'] ?? '').' '.($meta['modele'] ?? ''));
+                                $bits = [];
+                                if (!empty($meta['year'])) { $bits[] = $meta['year']; }
+                                if (isset($meta['km']))    { $bits[] = number_format((int)$meta['km'], 0, ',', ' ').' km'; }
+                                if (!empty($meta['prix'])) { $bits[] = number_format((int)$meta['prix'], 0, ',', ' ').' DH'; }
+                            @endphp
                             <div class="md-rprop">
                                 <b>{{ $pTitle ?: 'Véhicule' }}</b>
-                                @if(!empty($meta['year'])) · {{ $meta['year'] }}@endif
-                                @if(isset($meta['km'])) · {{ number_format((int)$meta['km'], 0, ',', ' ') }} km@endif
-                                @if(!empty($meta['prix'])) · <b>{{ number_format((int)$meta['prix'], 0, ',', ' ') }} DH</b>@endif
+                                {{ count($bits) ? ' · '.implode(' · ', $bits) : '' }}
                             </div>
                             <a href="{{ route('demandes.proposition.show', [$d->id, $r->id]) }}" class="md-rlink">Voir le détail</a>
                         @else
