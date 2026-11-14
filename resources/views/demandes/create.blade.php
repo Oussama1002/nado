@@ -31,18 +31,18 @@
 
     .dmd-cars { display:grid; gap:14px; }
     .dmd-car-row {
-        display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end;
-        padding:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
+        display:grid; grid-template-columns:1fr; gap:12px; align-items:stretch;
+        padding:16px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
+        position:relative;
     }
-    .dmd-car-row.with-year { grid-template-columns:1fr 1fr 1fr 1fr auto; }
-    @media (max-width:600px) { .dmd-car-row, .dmd-car-row.with-year { grid-template-columns:1fr 1fr; } }
     .dmd-car-row label { margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:#475569; }
     .dmd-car-remove {
-        padding:10px 12px; background:#fff; color:#dc2626; border:1px solid #fecaca;
-        border-radius:10px; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center;
+        position:absolute; top:10px; right:10px; width:30px; height:30px; line-height:1;
+        padding:0; background:#fff; color:#dc2626; border:1px solid #fecaca;
+        border-radius:8px; cursor:pointer; font-weight:700; font-size:16px;
+        display:flex; align-items:center; justify-content:center;
     }
     .dmd-car-remove:hover { background:#fef2f2; }
-    @media (max-width:600px) { .dmd-car-remove { grid-column:1 / -1; } }
 
     .dmd-add-car {
         padding:12px 14px; background:#eff6ff; color:#1459DD; border:1px dashed #93c5fd;
