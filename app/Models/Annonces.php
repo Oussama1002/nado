@@ -265,6 +265,17 @@ public function videoAd()
      */
     protected static function booted(): void
     {
+        // Nouvelle annonce → la proposer aux demandes (recherches) correspondantes.
+        static::created(function ($ad) {
+            dispatch(function () use ($ad) {
+                try {
+                    \App\Services\DemandeMatcher::matchAnnonce($ad);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('DemandeMatcher failed: ' . $e->getMessage());
+                }
+            })->afterResponse();
+        });
+
         static::updating(function ($ad) {
             if (! $ad->isDirty('prix')) {
                 return;
