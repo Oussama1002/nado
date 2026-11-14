@@ -9,7 +9,7 @@
 
 {{-- Accès rapides : catégories, véhicules (flotte & enchère), annonces --}}
 <style>
-    .cv-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px; }
+    .cv-tiles { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:26px; }
     @media (max-width:700px){ .cv-tiles { grid-template-columns:1fr; } }
     .cv-tile { display:flex; align-items:center; gap:12px; text-decoration:none;
         background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 18px;
@@ -20,10 +20,6 @@
     .cv-tile .s { font-size:12px; color:#64748b; }
 </style>
 <div class="cv-tiles">
-    <a href="{{ route('nadoautoenchere.categories') }}" class="cv-tile">
-        <i class="fa fa-th-large"></i>
-        <div><div class="t">Catégories</div><div class="s">Parcourir par catégorie</div></div>
-    </a>
     <a href="{{ route('client.nadoautoencheres.index') }}" class="cv-tile">
         <i class="fa fa-gavel"></i>
         <div><div class="t">Mes véhicules</div><div class="s">Gestion (flotte &amp; enchère)</div></div>
