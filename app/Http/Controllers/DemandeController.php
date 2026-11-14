@@ -35,7 +35,20 @@ class DemandeController extends Controller
         if ($pmin = $request->integer('price_min')) $q->where('price_max', '>=', $pmin);
         if ($pmax = $request->integer('price_max')) $q->where('price_min', '<=', $pmax);
 
-        $demandes = $q->paginate(15)->withQueryString();
+        // Fusion : mêmes marque+modèle avec des plages d'années proches → une seule
+        // demande « collective » qui indique le nombre de personnes intéressées.
+        $all   = $q->limit(1000)->get();
+        $reps  = $this->mergeDemandes($all);
+
+        $page    = max(1, (int) $request->get('page', 1));
+        $perPage = 15;
+        $demandes = new \Illuminate\Pagination\LengthAwarePaginator(
+            array_slice($reps, ($page - 1) * $perPage, $perPage),
+            count($reps),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('demandes.index', [
             'demandes' => $demandes,
@@ -43,6 +56,75 @@ class DemandeController extends Controller
             'villes'   => Ville::orderBy('name')->get(),
             'filters'  => $request->all(),
         ]);
+    }
+
+    /**
+     * Fusionne les demandes par (marque, modèle) et par plages d'années proches
+     * (chevauchement ou écart <= seuil). Renvoie une demande représentative par
+     * groupe, enrichie de group_count (personnes distinctes), group_names et de
+     * la plage d'années fusionnée. Les demandes sans marque/modèle restent seules.
+     */
+    private function mergeDemandes($all): array
+    {
+        $threshold = 2;                       // années d'écart tolérées
+        $curYear   = (int) date('Y') + 1;
+        $reps      = [];
+
+        // Regroupe d'abord par voiture (marque+modèle). Sans l'un des deux → seul.
+        $byCar = [];
+        foreach ($all as $d) {
+            $key = ($d->brand_id && $d->modele_id) ? ('car_' . $d->brand_id . '_' . $d->modele_id) : ('solo_' . $d->id);
+            $byCar[$key][] = $d;
+        }
+
+        foreach ($byCar as $list) {
+            // Trie par année min effective pour un clustering glouton.
+            usort($list, fn ($a, $b) => ($a->year_min ?? 0) <=> ($b->year_min ?? 0));
+
+            $clusters = [];
+            foreach ($list as $d) {
+                $ymin = $d->year_min ?? 1980;
+                $ymax = $d->year_max ?? $curYear;
+
+                $placed = false;
+                foreach ($clusters as &$c) {
+                    if ($ymin <= $c['max'] + $threshold && $ymax >= $c['min'] - $threshold) {
+                        $c['items'][] = $d;
+                        $c['min'] = min($c['min'], $ymin);
+                        $c['max'] = max($c['max'], $ymax);
+                        $placed = true;
+                        break;
+                    }
+                }
+                unset($c);
+                if (! $placed) {
+                    $clusters[] = ['min' => $ymin, 'max' => $ymax, 'items' => [$d]];
+                }
+            }
+
+            foreach ($clusters as $c) {
+                $items = collect($c['items']);
+                $rep   = $items->sortByDesc('created_at')->first();
+
+                // Personnes distinctes (par client, sinon par téléphone normalisé).
+                $persons = $items
+                    ->map(fn ($x) => $x->client_id ?: preg_replace('/\D+/', '', (string) $x->telephone))
+                    ->filter()
+                    ->unique()
+                    ->count();
+
+                $rep->group_count    = max(1, $persons);
+                $rep->group_names    = $items->pluck('nom')->filter()->unique()->values()->all();
+                $rep->group_year_min = $items->min('year_min');
+                $rep->group_year_max = $items->max('year_max');
+                $reps[] = $rep;
+            }
+        }
+
+        // Tri final : les plus récentes d'abord.
+        usort($reps, fn ($a, $b) => $b->created_at <=> $a->created_at);
+
+        return $reps;
     }
 
     public function show($id)

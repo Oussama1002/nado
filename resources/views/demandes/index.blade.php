@@ -123,7 +123,14 @@
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
-                        {{ __('messages.demandes.by') }} <strong>{{ $d->nom }}</strong>
+                        @php $gc = $d->group_count ?? 1; $gn = $d->group_names ?? [$d->nom]; @endphp
+                        @if($gc >= 3)
+                            <strong>{{ $gc }} {{ __('messages.demandes.people_interested') }}</strong>
+                        @elseif($gc == 2)
+                            <strong>{{ implode(' & ', array_slice($gn, 0, 2)) }}</strong>
+                        @else
+                            {{ __('messages.demandes.by') }} <strong>{{ $d->nom }}</strong>
+                        @endif
                     </div>
 
                     @php
@@ -137,12 +144,14 @@
                             $priceLabel = __('messages.demandes.not_specified');
                         }
 
-                        if ($d->year_min && $d->year_max) {
-                            $yearLabel = $d->year_min . ' – ' . $d->year_max;
-                        } elseif ($d->year_max) {
-                            $yearLabel = __('messages.demandes.up_to') . ' ' . $d->year_max;
-                        } elseif ($d->year_min) {
-                            $yearLabel = __('messages.demandes.from') . ' ' . $d->year_min;
+                        $gyMin = $d->group_year_min ?? $d->year_min;
+                        $gyMax = $d->group_year_max ?? $d->year_max;
+                        if ($gyMin && $gyMax) {
+                            $yearLabel = $gyMin . ' – ' . $gyMax;
+                        } elseif ($gyMax) {
+                            $yearLabel = __('messages.demandes.up_to') . ' ' . $gyMax;
+                        } elseif ($gyMin) {
+                            $yearLabel = __('messages.demandes.from') . ' ' . $gyMin;
                         } else {
                             $yearLabel = __('messages.demandes.all_years');
                         }

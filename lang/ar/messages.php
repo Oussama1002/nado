@@ -481,6 +481,7 @@ return [
         'badge'    => 'بحث',
         'any_brand'=> 'كل الماركات',
         'by'       => 'من طرف',
+        'people_interested' => 'أشخاص مهتمون',
         'not_specified' => 'غير محدّد',
         'all_years'     => 'كل السنوات',
         'all_box'       => 'الكل',

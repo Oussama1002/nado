@@ -482,6 +482,7 @@ return [
         'badge'    => 'Recherche',
         'any_brand'=> 'Toute marque',
         'by'       => 'Par',
+        'people_interested' => 'personnes intéressées',
         'not_specified' => 'Non précisé',
         'all_years'     => 'Toutes années',
         'all_box'       => 'Toutes',
