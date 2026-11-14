@@ -50,7 +50,9 @@ class ProfileController extends Controller
     // ✅ Upload logo si présent
     if ($request->hasFile('logo')) {
         $filename = $user->id . '-' . rand(100000,999999) . '.' . $request->logo->getClientOriginalExtension();
-        $request->logo->storeAs('public/nadoautoenchere/logo', $filename);
+        // Disque "public" (= storage/app/public) → pas de préfixe "public/"
+        // (sinon double dossier public/ et l'URL asset('storage/...') renvoie 404).
+        $request->file('logo')->storeAs('nadoautoenchere/logo', $filename, 'public');
 
         $user->logo = $filename;
     }
