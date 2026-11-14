@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Demande extends Model
 {
     protected $fillable = [
-        'client_id', 'nom', 'telephone',
+        'client_id', 'nom', 'telephone', 'email',
         'brand_id', 'modele_id', 'ville_id', 'color_id',
         'year_min', 'year_max', 'price_min', 'price_max', 'km_max',
         'boite', 'carburant', 'raw_query', 'comment',

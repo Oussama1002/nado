@@ -123,6 +123,7 @@ class DemandeController extends Controller
         $data = $request->validate([
             'nom'         => ['required', 'string', 'max:120'],
             'telephone'   => ['required', 'string', 'regex:/^(?:\+?212|0)[\s\-]?[5-7]\d{8}$/'],
+            'email'       => ['nullable', 'email', 'max:160'],
             'brand_id'    => ['nullable', 'exists:brands,id'],
             'modele_id'   => ['nullable', 'exists:models,id'],
             'ville_id'    => ['nullable', 'exists:villes,id'],
@@ -152,6 +153,7 @@ class DemandeController extends Controller
             'client_id'  => $client?->id,
             'nom'        => $data['nom'],
             'telephone'  => $phone,
+            'email'      => $data['email'] ?? ($client?->email),
             'brand_id'   => $data['brand_id']  ?? null,
             'modele_id'  => $data['modele_id'] ?? null,
             'ville_id'   => $data['ville_id']  ?? null,
@@ -316,7 +318,7 @@ class DemandeController extends Controller
         // Notifier le CHERCHEUR (auteur de la demande) qu'une proposition a été
         // reçue — par email si la demande a été créée par un client connecté.
         try {
-            $seekerEmail = $demande->client?->email;
+            $seekerEmail = $demande->email ?: $demande->client?->email;
             if (!empty($seekerEmail)) {
                 $demandeUrl = route('demandes.show', $demande->id);
                 $carLabel   = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));

@@ -1186,6 +1186,8 @@ return [
         'intro'        => 'Dites-nous quelles voitures vous recherchez — vous pouvez en ajouter plusieurs (ex. BMW Série 5, Audi A4, Mercedes Classe A). Un agent NADO vous contactera rapidement.',
         'fullname'     => 'Nom complet',
         'fullname_ph'  => 'Votre nom et prénom',
+        'email'        => 'Email (pour être notifié)',
+        'email_ph'     => 'votre@email.com',
         'cars_label'   => 'Voitures recherchées',
         'add_car'      => '+ Ajouter une autre voiture',
         'submit'       => 'Envoyer ma demande',

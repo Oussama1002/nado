@@ -110,6 +110,13 @@
         </div>
 
         <div>
+            <label for="dmdEmail">{{ __('messages.demande_form.email') }}</label>
+            <input id="dmdEmail" type="email" name="email"
+                   value="{{ old('email', auth('client')->user()?->email) }}"
+                   placeholder="{{ __('messages.demande_form.email_ph') }}">
+        </div>
+
+        <div>
             <label>{{ __('messages.demande_form.cars_label') }}</label>
             <div class="dmd-cars" id="dmdCars">
                 {{-- initial row rendered by JS so brand + model stay in sync --}}
