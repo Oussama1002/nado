@@ -1185,6 +1185,7 @@ return [
         'page_title'   => 'Publier ma demande',
         'intro'        => 'Dites-nous quelles voitures vous recherchez — vous pouvez en ajouter plusieurs (ex. BMW Série 5, Audi A4, Mercedes Classe A). Un agent NADO vous contactera rapidement.',
         'fullname'     => 'Nom complet',
+        'year_range'   => 'Année (min — max)',
         'fullname_ph'  => 'Votre nom et prénom',
         'email'        => 'Email (pour être notifié)',
         'email_ph'     => 'votre@email.com',
