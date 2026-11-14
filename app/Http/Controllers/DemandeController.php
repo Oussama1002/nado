@@ -86,9 +86,10 @@ class DemandeController extends Controller
                 $items = collect($c['items']);
                 $rep   = $items->sortByDesc('created_at')->first();
 
-                // Une entrée par personne distincte (par client, sinon téléphone).
+                // Une entrée par personne distincte (par TÉLÉPHONE — un même compte
+                // peut déposer plusieurs demandes avec des numéros différents).
                 $persons = $items
-                    ->groupBy(fn ($x) => $x->client_id ?: preg_replace('/\D+/', '', (string) $x->telephone))
+                    ->groupBy(fn ($x) => preg_replace('/\D+/', '', (string) $x->telephone) ?: 'd' . $x->id)
                     ->map(fn ($g) => $g->first());
 
                 $rep->group_count    = max(1, $persons->count());

@@ -47,11 +47,11 @@ class Demande extends Model
             ->get();
     }
 
-    /** Personnes distinctes du groupe (déduplique par client/téléphone). */
+    /** Personnes distinctes du groupe (déduplique par TÉLÉPHONE). */
     public function groupPersons(): \Illuminate\Support\Collection
     {
         return $this->groupMembers()
-            ->groupBy(fn ($d) => $d->client_id ?: preg_replace('/\D+/', '', (string) $d->telephone))
+            ->groupBy(fn ($d) => preg_replace('/\D+/', '', (string) $d->telephone) ?: 'd' . $d->id)
             ->map(fn ($g) => $g->first())
             ->values();
     }
