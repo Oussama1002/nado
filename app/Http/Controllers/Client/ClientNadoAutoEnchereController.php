@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NadoAutoEnchere;
+use App\Models\Annonces;
 use App\Models\Brand;
 use App\Models\Modele;
 use App\Models\Ville;
@@ -17,12 +18,14 @@ class ClientNadoAutoEnchereController extends Controller
         $client = Auth::guard('client')->user();
 
         // Get all encheres belonging to the authenticated client by phone
-        $vehicules = NadoAutoEnchere::where('phone', $client->phone)->get();
+        $vehicules = NadoAutoEnchere::where('phone', $client->phone)->latest()->get();
+        // Ses annonces classiques (même téléphone).
+        $annonces  = Annonces::where('phone', $client->phone)->latest()->get();
 
         $brands = Brand::all();
         $cities = Ville::pluck('name');
 
-        return view('client.nadoautoencheres.index', compact('vehicules', 'brands', 'cities'));
+        return view('client.nadoautoencheres.index', compact('vehicules', 'annonces', 'brands', 'cities'));
     }
 
     /** Show edit form */
