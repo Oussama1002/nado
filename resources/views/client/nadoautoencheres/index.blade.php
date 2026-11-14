@@ -4,7 +4,6 @@
 @section('title', 'Mes Vehicules')
 
 @section('client_title', 'Mes véhicules')
-@section('client_subtitle', 'Gestion de vos véhicules (flotte & enchère).')
 @section('client_content')
 
 {{-- Accès rapides : catégories, véhicules (flotte & enchère), annonces --}}
