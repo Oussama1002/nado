@@ -34,7 +34,8 @@
         display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end;
         padding:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
     }
-    @media (max-width:600px) { .dmd-car-row { grid-template-columns:1fr 1fr; } }
+    .dmd-car-row.with-year { grid-template-columns:1fr 1fr 1fr 1fr auto; }
+    @media (max-width:600px) { .dmd-car-row, .dmd-car-row.with-year { grid-template-columns:1fr 1fr; } }
     .dmd-car-row label { margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:#475569; }
     .dmd-car-remove {
         padding:10px 12px; background:#fff; color:#dc2626; border:1px solid #fecaca;
@@ -122,24 +123,6 @@
                 {{-- initial row rendered by JS so brand + model stay in sync --}}
             </div>
 
-            <div style="margin-top:14px;">
-                <label>{{ __('messages.demande_form.year_range') }}</label>
-                <div style="display:flex;gap:10px;">
-                    <select name="year_min" style="flex:1;">
-                        <option value="">{{ __('messages.catalog.from') }}</option>
-                        @for($y = (int) date('Y'); $y >= 1980; $y--)
-                            <option value="{{ $y }}" {{ (string) old('year_min') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
-                    <select name="year_max" style="flex:1;">
-                        <option value="">{{ __('messages.catalog.to') }}</option>
-                        @for($y = (int) date('Y'); $y >= 1980; $y--)
-                            <option value="{{ $y }}" {{ (string) old('year_max') === (string) $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
-                </div>
-            </div>
-
             <button type="button" class="dmd-add-car" id="dmdAddCar" style="margin-top:12px;">
                 {{ __('messages.demande_form.add_car') }}
             </button>
@@ -159,7 +142,13 @@
             marque:      @json(__('messages.ventemodal.marque')),
             modele:      @json(__('messages.ventemodal.modele')),
             remove:      @json(__('messages.ventemodal.remove')),
+            yearMin:     @json(__('messages.catalog.from')),
+            yearMax:     @json(__('messages.catalog.to')),
+            yearLabel:   @json(__('messages.demande_form.year_range')),
         };
+        // Options d'années (une seule fois), injectées dans la 1re ligne.
+        var YEAR_OPTS = '';
+        (function(){ for (var y = {{ (int) date('Y') }}; y >= 1980; y--) { YEAR_OPTS += '<option value="'+y+'">'+y+'</option>'; } })();
         var brandsData = @json($brands->map(fn($b) => ['id' => $b->id, 'name' => $b->name])->values());
         var prefillBrandId  = @json((string)($prefill['brand_id']  ?? ''));
         var prefillModeleId = @json((string)($prefill['modele_id'] ?? ''));
@@ -179,12 +168,22 @@
             return html;
         }
 
-        function newRow(preBrandId, preModeleId) {
+        function newRow(preBrandId, preModeleId, isFirst) {
             rowId++;
             var id = 'r' + rowId;
             var row = document.createElement('div');
-            row.className = 'dmd-car-row';
+            row.className = 'dmd-car-row' + (isFirst ? ' with-year' : '');
             row.dataset.rowId = id;
+            var yearHtml = isFirst
+                ? ('<div>'
+                     + '<label>' + DMD_I18N.yearMin + '</label>'
+                     + '<select name="year_min"><option value="">' + DMD_I18N.yearMin + '</option>' + YEAR_OPTS + '</select>'
+                   + '</div>'
+                   + '<div>'
+                     + '<label>' + DMD_I18N.yearMax + '</label>'
+                     + '<select name="year_max"><option value="">' + DMD_I18N.yearMax + '</option>' + YEAR_OPTS + '</select>'
+                   + '</div>')
+                : '';
             row.innerHTML =
                 '<div>'
                  + '<label>' + DMD_I18N.marque + '</label>'
@@ -194,6 +193,7 @@
                  + '<label>' + DMD_I18N.modele + '</label>'
                  + '<select class="dmd-modele"><option value="">' + DMD_I18N.chooseModel + '</option></select>'
                 + '</div>'
+                + yearHtml
                 + '<button type="button" class="dmd-car-remove" title="' + DMD_I18N.remove + '">×</button>';
 
             container.appendChild(row);
@@ -231,9 +231,9 @@
         }
 
         // Start with one row — pre-filled if the user came from the filter page
-        newRow(prefillBrandId, prefillModeleId);
+        newRow(prefillBrandId, prefillModeleId, true);
 
-        addBtn.addEventListener('click', function () { newRow('', ''); });
+        addBtn.addEventListener('click', function () { newRow('', '', false); });
 
         // On submit: first row → brand_id / modele_id. Extra rows → comment field.
         form.addEventListener('submit', function () {
