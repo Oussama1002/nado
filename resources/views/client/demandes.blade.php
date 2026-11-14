@@ -48,6 +48,7 @@
             <div class="md-head">
                 <div>
                     <h3 class="md-title">{{ $dTitle }}</h3>
+                    <div class="md-meta" style="font-weight:700;color:#0f172a;">👤 {{ $d->nom }} @if($d->telephone)<span dir="ltr" style="color:#1459DD;">· 📞 {{ $d->telephone }}</span>@endif</div>
                     <div class="md-meta">
                         <a href="{{ route('demandes.show', $d->id) }}" style="color:#1459DD;font-weight:700;">Voir la demande</a>
                         · {{ $d->ville?->name ?? '—' }}
