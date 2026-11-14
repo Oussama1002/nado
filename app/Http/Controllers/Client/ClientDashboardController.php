@@ -131,6 +131,23 @@ class ClientDashboardController extends Controller
         return view('client.demandes', compact('demandes'));
     }
 
+    /** Renouveler une demande : la remonte en 1re place + prolonge l'échéance. */
+    public function renewDemande(Request $request, $id)
+    {
+        $client  = Auth::guard('client')->user();
+        $demande = Demande::where('client_id', $client->id)->findOrFail($id);
+
+        // created_at = maintenant → premier dans les listes triées par date.
+        $demande->created_at = now();
+        $demande->expires_at = now()->addDays(30);
+        if (in_array($demande->status, [null, 'expired', 'rejected'], true)) {
+            $demande->status = 'approved';
+        }
+        $demande->save();
+
+        return back()->with('success', 'Demande renouvelée ✅');
+    }
+
     public function favorites()
     {
         $client = Auth::guard('client')->user();

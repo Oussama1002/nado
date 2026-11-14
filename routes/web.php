@@ -131,6 +131,7 @@ Route::middleware(['auth:client'])->prefix('client')->name('client.')->group(fun
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::get('/mes-demandes', [ClientDashboardController::class, 'myDemandes'])->name('mes-demandes');
+    Route::post('/mes-demandes/{id}/renew', [ClientDashboardController::class, 'renewDemande'])->whereNumber('id')->name('demandes.renew');
     Route::resource('equipe', \App\Http\Controllers\Client\EquipeController::class);
     Route::resource('nadoautoencheresbid', \App\Http\Controllers\Client\ClientNadoAutoEncheresBidController::class);
 

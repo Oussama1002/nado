@@ -9,6 +9,9 @@
 @endsection
 
 @section('client_content')
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 <style>
     .md-list { display:flex; flex-direction:column; gap:18px; }
     .md-card { background:#fff; border:1px solid #e2e8f0; border-radius:18px; box-shadow:0 1px 3px rgba(0,0,0,.05); overflow:hidden; }
@@ -16,6 +19,8 @@
     .md-title { font-size:16px; font-weight:900; color:#0f172a; margin:0; }
     .md-meta { font-size:12.5px; color:#64748b; margin-top:4px; }
     .md-count { background:#eff4ff; color:#1459DD; font-size:12px; font-weight:800; padding:5px 12px; border-radius:999px; white-space:nowrap; }
+    .md-renew { background:#0f172a; color:#fff; border:0; border-radius:999px; font-size:12px; font-weight:800; padding:6px 14px; cursor:pointer; white-space:nowrap; }
+    .md-renew:hover { background:#1e293b; }
     .md-replies { padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
     .md-reply { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; }
     .md-reply-top { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
@@ -55,7 +60,13 @@
                         · {{ $d->created_at->locale(app()->getLocale())->isoFormat('D MMM Y') }}
                     </div>
                 </div>
-                <span class="md-count">{{ $visible->count() }} {{ $visible->count() > 1 ? 'réponses' : 'réponse' }}</span>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <span class="md-count">{{ $visible->count() }} {{ $visible->count() > 1 ? 'réponses' : 'réponse' }}</span>
+                    <form method="POST" action="{{ route('client.demandes.renew', $d->id) }}" style="margin:0;">
+                        @csrf
+                        <button type="submit" class="md-renew" title="Remonter en 1re place">🔄 Renouveler</button>
+                    </form>
+                </div>
             </div>
 
             <div class="md-replies">
