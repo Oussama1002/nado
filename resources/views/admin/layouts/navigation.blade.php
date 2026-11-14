@@ -316,6 +316,28 @@
             <li @class(['submenu-item', 'active' => request()->routeIs('admin.songs.create')])>
                 <a href="{{ route("admin.songs.create") }}">New</a>
             </li>
+            <li @class(['submenu-item', 'active' => request()->routeIs('admin.community.episodes.index')])>
+                <a href="{{ route("admin.community.episodes.index") }}">Épisodes / Podcast</a>
+            </li>
+        </ul>
+    </li>
+
+
+    <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "community.")]) >
+        <a href="#" class='sidebar-link'>
+            <i class="bi bi-chat-square-heart"></i>
+            <span>Communauté</span>
+        </a>
+        <ul @class(['submenu', 'active' => str_contains( $current_route , "community.")]) >
+            <li @class(['submenu-item', 'active' => request()->routeIs('admin.community.seller-reviews.index')])>
+                <a href="{{ route("admin.community.seller-reviews.index") }}">Avis vendeurs</a>
+            </li>
+            <li @class(['submenu-item', 'active' => request()->routeIs('admin.community.questions.index')])>
+                <a href="{{ route("admin.community.questions.index") }}">Questions / réponses</a>
+            </li>
+            <li @class(['submenu-item', 'active' => request()->routeIs('admin.community.guides.index')])>
+                <a href="{{ route("admin.community.guides.index") }}">Guides modèles (blog)</a>
+            </li>
         </ul>
     </li>
 
