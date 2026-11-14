@@ -36,8 +36,16 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
 {
     $user = $request->user();
+    $data = $request->validated();
 
-    $user->fill($request->validated());
+    $user->name  = $data['name'];
+    $user->email = $data['email'];
+    $user->phone = $request->input('phone');
+
+    // Mot de passe : seulement s'il est renseigné.
+    if (! empty($data['password'])) {
+        $user->password = \Illuminate\Support\Facades\Hash::make($data['password']);
+    }
 
     // ✅ Upload logo si présent
     if ($request->hasFile('logo')) {
@@ -47,8 +55,8 @@ class ProfileController extends Controller
         $user->logo = $filename;
     }
 
-    // ✅ Gérer company seulement si flotte&enchere ou pro
-    if (in_array($user->account_type, ['flotte&enchere', 'pro'])) {
+    // ✅ Gérer company seulement pour flotte&enchere ou pro (colonne clients.type).
+    if (in_array($user->type, ['flotte&enchere', 'pro'])) {
         $user->company = $request->input('company');
     }
 
