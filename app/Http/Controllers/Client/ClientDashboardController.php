@@ -112,13 +112,21 @@ class ClientDashboardController extends Controller
         $client = Auth::guard('client')->user();
 
         $demandes = Demande::where('client_id', $client->id)
-            ->with([
-                'brand', 'modele', 'ville',
-                'replies' => fn ($q) => $q->where('status', 'visible')->latest(),
-                'replies.client',
-            ])
+            ->with(['brand', 'modele', 'ville'])
             ->latest()
             ->get();
+
+        // Pour chaque demande : les réponses/propositions de TOUT le groupe voiture.
+        foreach ($demandes as $d) {
+            $memberIds = $d->groupMembers()->pluck('id');
+            $d->setRelation('groupReplies',
+                \App\Models\DemandeReply::whereIn('demande_id', $memberIds)
+                    ->where('status', 'visible')
+                    ->with(['client', 'annonce'])
+                    ->latest()
+                    ->get()
+            );
+        }
 
         return view('client.demandes', compact('demandes'));
     }

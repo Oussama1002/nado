@@ -41,7 +41,7 @@
     @foreach($demandes as $d)
         @php
             $dTitle = trim(($d->brand?->name ?? '') . ' ' . ($d->modele?->name ?? '')) ?: 'Toutes marques';
-            $visible = $d->replies;
+            $visible = $d->groupReplies ?? $d->replies;
         @endphp
         <div class="md-card">
             <div class="md-head">
@@ -80,7 +80,7 @@
                                 <b>{{ $pTitle ?: 'Véhicule' }}</b>
                                 {{ count($bits) ? ' · '.implode(' · ', $bits) : '' }}
                             </div>
-                            <a href="{{ route('demandes.proposition.show', [$d->id, $r->id]) }}" class="md-rlink">Voir le détail</a>
+                            <a href="{{ route('demandes.proposition.show', [$r->demande_id, $r->id]) }}" class="md-rlink">Voir le détail</a>
                         @else
                             <p class="md-rmsg">{{ $r->message }}</p>
                         @endif
