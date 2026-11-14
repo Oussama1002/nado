@@ -20,6 +20,7 @@
     .md-reply { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; }
     .md-reply-top { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
     .md-rname { font-weight:800; color:#0f172a; font-size:13.5px; }
+    .md-rphone { font-size:13px; font-weight:700; color:#1459DD; margin:2px 0 6px; letter-spacing:.03em; }
     .md-rtime { font-size:12px; color:#94a3b8; }
     .md-rbadge { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#1459DD; background:#eff4ff; padding:3px 9px; border-radius:999px; }
     .md-rprop { margin-top:8px; font-size:13.5px; color:#334155; }
@@ -61,12 +62,15 @@
                     @php $meta = $r->proposalData(); @endphp
                     <div class="md-reply">
                         <div class="md-reply-top">
-                            <span class="md-rname">{{ ($meta['proposer_name'] ?? null) ?: ($r->client?->name ?? 'Membre') }}</span>
+                            <span class="md-rname">👤 {{ ($meta['proposer_name'] ?? null) ?: ($r->client?->name ?? 'Membre') }}</span>
                             <span>
                                 @if($meta)<span class="md-rbadge">Proposition</span>@endif
                                 <span class="md-rtime">{{ $r->created_at->locale(app()->getLocale())->diffForHumans() }}</span>
                             </span>
                         </div>
+                        @if($r->contact_phone)
+                            <div class="md-rphone" dir="ltr">📞 {{ $r->contact_phone }}</div>
+                        @endif
 
                         @if($meta)
                             @php
