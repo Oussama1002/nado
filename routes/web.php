@@ -130,6 +130,7 @@ Route::middleware(['auth:client'])->prefix('client')->name('client.')->group(fun
     Route::resource('annonces', ClientAnnonceController::class); // <-- this should exist
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::get('/mes-demandes', [ClientDashboardController::class, 'myDemandes'])->name('mes-demandes');
     Route::resource('equipe', \App\Http\Controllers\Client\EquipeController::class);
     Route::resource('nadoautoencheresbid', \App\Http\Controllers\Client\ClientNadoAutoEncheresBidController::class);
 

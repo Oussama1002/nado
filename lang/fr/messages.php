@@ -686,6 +686,7 @@ return [
         'account'            => 'Compte',
         'my_profile'         => 'Mon Profil',
         'my_favorites'       => 'Mes Favoris',
+        'my_demandes'        => 'Mes demandes',
         'discussions'        => 'Discussions',
         'logout'             => 'Déconnexion',
         'menu'               => 'Menu',

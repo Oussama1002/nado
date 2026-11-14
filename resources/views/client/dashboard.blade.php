@@ -609,6 +609,9 @@ table.dash-table tr:hover td { background: #fafbfd; }
                 <a href="{{ route('client.favorites') }}" class="dash-nav-link">
                     <i class="fa fa-heart"></i> {{ __('messages.dashboard.my_favorites') }}
                 </a>
+                <a href="{{ route('client.mes-demandes') }}" class="dash-nav-link">
+                    <i class="fa fa-search"></i> {{ __('messages.dashboard.my_demandes') }}
+                </a>
                 <a href="{{ route('client.discussions.index') }}" class="dash-nav-link">
                     <i class="fa fa-comments"></i> {{ __('messages.dashboard.discussions') }}
                 </a>

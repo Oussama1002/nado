@@ -9,6 +9,7 @@ use App\Models\NadoAutoEnchere;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\NadoAutoEncheresBid;
+use App\Models\Demande;
 
 class ClientDashboardController extends Controller
 {
@@ -103,6 +104,23 @@ class ClientDashboardController extends Controller
                 'offersData'
             ));
         }
+    }
+
+    /** Mes demandes (recherches) + les réponses/propositions reçues. */
+    public function myDemandes()
+    {
+        $client = Auth::guard('client')->user();
+
+        $demandes = Demande::where('client_id', $client->id)
+            ->with([
+                'brand', 'modele', 'ville',
+                'replies' => fn ($q) => $q->where('status', 'visible')->latest(),
+                'replies.client',
+            ])
+            ->latest()
+            ->get();
+
+        return view('client.demandes', compact('demandes'));
     }
 
     public function favorites()

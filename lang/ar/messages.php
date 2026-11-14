@@ -685,6 +685,7 @@ return [
         'account'            => 'الحساب',
         'my_profile'         => 'ملفي الشخصي',
         'my_favorites'       => 'مفضّلتي',
+        'my_demandes'        => 'طلباتي',
         'discussions'        => 'المحادثات',
         'logout'             => 'تسجيل الخروج',
         'menu'               => 'القائمة',
