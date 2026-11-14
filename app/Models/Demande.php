@@ -27,6 +27,45 @@ class Demande extends Model
     public function client(): BelongsTo  { return $this->belongsTo(Client::class); }
     public function replies(): HasMany   { return $this->hasMany(DemandeReply::class); }
 
+    /**
+     * Toutes les demandes du même groupe « voiture » : même marque+modèle et
+     * plage d'années proche (chevauchement ou écart <= seuil). Inclut celle-ci.
+     */
+    public function groupMembers(): \Illuminate\Support\Collection
+    {
+        if (! $this->brand_id || ! $this->modele_id) {
+            return collect([$this]);
+        }
+
+        $threshold = 2;
+        $curYear   = (int) date('Y') + 1;
+        $dmin = $this->year_min ?? 1980;
+        $dmax = $this->year_max ?? $curYear;
+
+        return static::query()
+            ->whereIn('status', ['approved', 'pending'])
+            ->where(fn ($x) => $x->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+            ->where('brand_id', $this->brand_id)
+            ->where('modele_id', $this->modele_id)
+            ->with('client')
+            ->get()
+            ->filter(function ($o) use ($dmin, $dmax, $threshold, $curYear) {
+                $omin = $o->year_min ?? 1980;
+                $omax = $o->year_max ?? $curYear;
+                return $omin <= $dmax + $threshold && $omax >= $dmin - $threshold;
+            })
+            ->values();
+    }
+
+    /** Personnes distinctes du groupe (déduplique par client/téléphone). */
+    public function groupPersons(): \Illuminate\Support\Collection
+    {
+        return $this->groupMembers()
+            ->groupBy(fn ($d) => $d->client_id ?: preg_replace('/\D+/', '', (string) $d->telephone))
+            ->map(fn ($g) => $g->first())
+            ->values();
+    }
+
     public function scopePublic($q)
     {
         return $q->where('status', 'approved')

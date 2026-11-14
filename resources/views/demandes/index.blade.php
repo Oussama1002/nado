@@ -124,10 +124,9 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
                         @php $gc = $d->group_count ?? 1; $gn = $d->group_names ?? [$d->nom]; @endphp
-                        @if($gc >= 3)
+                        @if($gc >= 2)
                             <strong>{{ $gc }} {{ __('messages.demandes.people_interested') }}</strong>
-                        @elseif($gc == 2)
-                            <strong>{{ implode(' & ', array_slice($gn, 0, 2)) }}</strong>
+                            : {{ implode(', ', $gn) }}
                         @else
                             {{ __('messages.demandes.by') }} <strong>{{ $d->nom }}</strong>
                         @endif

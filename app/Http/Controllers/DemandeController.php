@@ -106,15 +106,13 @@ class DemandeController extends Controller
                 $items = collect($c['items']);
                 $rep   = $items->sortByDesc('created_at')->first();
 
-                // Personnes distinctes (par client, sinon par téléphone normalisé).
+                // Une entrée par personne distincte (par client, sinon téléphone).
                 $persons = $items
-                    ->map(fn ($x) => $x->client_id ?: preg_replace('/\D+/', '', (string) $x->telephone))
-                    ->filter()
-                    ->unique()
-                    ->count();
+                    ->groupBy(fn ($x) => $x->client_id ?: preg_replace('/\D+/', '', (string) $x->telephone))
+                    ->map(fn ($g) => $g->first());
 
-                $rep->group_count    = max(1, $persons);
-                $rep->group_names    = $items->pluck('nom')->filter()->unique()->values()->all();
+                $rep->group_count    = max(1, $persons->count());
+                $rep->group_names    = $persons->pluck('nom')->filter()->values()->all();
                 $rep->group_year_min = $items->min('year_min');
                 $rep->group_year_max = $items->max('year_max');
                 $reps[] = $rep;
@@ -152,7 +150,9 @@ class DemandeController extends Controller
             ? Modele::where('brand_id', $demande->brand_id)->orderBy('name')->get()
             : collect();
 
-        return view('demandes.show', compact('demande', 'matches', 'villes', 'brands', 'prefillModeles'));
+        $groupPersons = $demande->groupPersons();
+
+        return view('demandes.show', compact('demande', 'matches', 'villes', 'brands', 'prefillModeles', 'groupPersons'));
     }
 
     /** Détail d'une proposition de véhicule — page façon « détail annonce ». */
@@ -397,17 +397,23 @@ class DemandeController extends Controller
             Log::warning('Demande propose email failed: ' . $e->getMessage());
         }
 
-        // Notifier le CHERCHEUR (auteur de la demande) qu'une proposition a été
-        // reçue — par email si la demande a été créée par un client connecté.
+        // Notifier TOUS les chercheurs du même groupe (même voiture + années
+        // proches), pas seulement l'auteur de cette demande — par email.
         try {
-            $seekerEmail = $demande->email ?: $demande->client?->email;
-            if (!empty($seekerEmail)) {
-                $demandeUrl = route('demandes.show', $demande->id);
-                $carLabel   = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
-                if ($carLabel === '') $carLabel = 'votre recherche';
+            $demandeUrl = route('demandes.show', $demande->id);
+            $carLabel   = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
+            if ($carLabel === '') $carLabel = 'votre recherche';
 
+            // Destinataires distincts (nom + email) sur tout le groupe.
+            $recipients = $demande->groupPersons()
+                ->map(fn ($p) => ['nom' => $p->nom, 'email' => ($p->email ?: $p->client?->email)])
+                ->filter(fn ($r) => ! empty($r['email']))
+                ->unique('email')
+                ->values();
+
+            foreach ($recipients as $r) {
                 $sBody =
-                    "Bonjour {$demande->nom},\n\n" .
+                    "Bonjour {$r['nom']},\n\n" .
                     "Bonne nouvelle : un vendeur vient de proposer un véhicule pour {$carLabel}.\n\n" .
                     "PROPOSITION\n" .
                     "- {$data['mark']} {$data['modele']} ({$data['year']})\n" .
@@ -416,8 +422,8 @@ class DemandeController extends Controller
                     "\nConsultez la proposition ici :\n{$demandeUrl}\n\n" .
                     "L'équipe NADO.";
 
-                Mail::raw($sBody, function ($m) use ($seekerEmail) {
-                    $m->to($seekerEmail)->subject('Une proposition a été faite pour votre demande — NADO');
+                Mail::raw($sBody, function ($m) use ($r) {
+                    $m->to($r['email'])->subject('Une proposition a été faite pour votre demande — NADO');
                 });
             }
         } catch (\Throwable $e) {

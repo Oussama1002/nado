@@ -189,6 +189,30 @@
                 {{ __('messages.demande_show.propose') }}
             </button>
         </div>
+
+        @if(isset($groupPersons) && $groupPersons->count() > 1)
+            <style>
+                .dmd-group { margin-top:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; }
+                .dmd-group-head { font-size:13px; font-weight:800; color:#0f172a; margin-bottom:10px; }
+                .dmd-group-person { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid #eef2f7; }
+                .dmd-group-person:first-of-type { border-top:0; }
+                .dmd-group-person .g-name { font-weight:700; color:#0f172a; font-size:13.5px; }
+                .dmd-group-person .g-phone { color:#64748b; font-size:13px; letter-spacing:.03em; }
+            </style>
+            <div class="dmd-group">
+                <div class="dmd-group-head">{{ $groupPersons->count() }} {{ __('messages.demandes.people_interested') }}</div>
+                @foreach($groupPersons as $p)
+                    @php
+                        $pd = preg_replace('/\D+/', '', (string) $p->telephone);
+                        $pm = strlen($pd) >= 6 ? substr($pd,0,2).' •• •• '.substr($pd,-2) : '•• •• ••';
+                    @endphp
+                    <div class="dmd-group-person">
+                        <span class="g-name">{{ $p->nom }}</span>
+                        <span class="g-phone" dir="ltr">📞 {{ $pm }}</span>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 
     @if($matches->count())
