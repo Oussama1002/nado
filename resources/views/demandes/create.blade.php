@@ -172,18 +172,21 @@
             rowId++;
             var id = 'r' + rowId;
             var row = document.createElement('div');
-            row.className = 'dmd-car-row' + (isFirst ? ' with-year' : '');
+            row.className = 'dmd-car-row';
             row.dataset.rowId = id;
-            var yearHtml = isFirst
-                ? ('<div>'
-                     + '<label>' + DMD_I18N.yearMin + '</label>'
-                     + '<select name="year_min"><option value="">' + DMD_I18N.yearMin + '</option>' + YEAR_OPTS + '</select>'
-                   + '</div>'
-                   + '<div>'
-                     + '<label>' + DMD_I18N.yearMax + '</label>'
-                     + '<select name="year_max"><option value="">' + DMD_I18N.yearMax + '</option>' + YEAR_OPTS + '</select>'
-                   + '</div>')
-                : '';
+            // Toutes les lignes ont une plage d'années ; seule la 1re est stockée
+            // (name=year_min/max) — les autres sont ajoutées au commentaire au submit.
+            var nameMin = isFirst ? ' name="year_min"' : '';
+            var nameMax = isFirst ? ' name="year_max"' : '';
+            var yearHtml =
+                  '<div>'
+                   + '<label>' + DMD_I18N.yearMin + '</label>'
+                   + '<select class="dmd-year-min"' + nameMin + '><option value="">' + DMD_I18N.yearMin + '</option>' + YEAR_OPTS + '</select>'
+                 + '</div>'
+                 + '<div>'
+                   + '<label>' + DMD_I18N.yearMax + '</label>'
+                   + '<select class="dmd-year-max"' + nameMax + '><option value="">' + DMD_I18N.yearMax + '</option>' + YEAR_OPTS + '</select>'
+                 + '</div>';
             row.innerHTML =
                 '<div>'
                  + '<label>' + DMD_I18N.marque + '</label>'
@@ -248,10 +251,17 @@
                 var r = rows[i];
                 var bSel = r.querySelector('.dmd-brand');
                 var mSel = r.querySelector('.dmd-modele');
+                var yMin = r.querySelector('.dmd-year-min');
+                var yMax = r.querySelector('.dmd-year-max');
                 var bTxt = bSel.options[bSel.selectedIndex]?.text || '';
                 var mTxt = mSel.options[mSel.selectedIndex]?.text || '';
                 if (bSel.value) {
-                    extras.push(bTxt + (mSel.value ? ' ' + mTxt : ''));
+                    var label = bTxt + (mSel.value ? ' ' + mTxt : '');
+                    var yr = '';
+                    if (yMin && yMin.value && yMax && yMax.value) yr = ' (' + yMin.value + '-' + yMax.value + ')';
+                    else if (yMin && yMin.value) yr = ' (≥' + yMin.value + ')';
+                    else if (yMax && yMax.value) yr = ' (≤' + yMax.value + ')';
+                    extras.push(label + yr);
                 }
             }
             if (extras.length) {
