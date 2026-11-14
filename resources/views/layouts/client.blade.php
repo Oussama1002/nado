@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+{{-- Pas de footer sur les pages de l'espace client. --}}
+@section('no_footer')@endsection
+
 {{-- Navbar : client enchère → navbar Auto-Enchère (fixe, sans spacer car
      .client-main a déjà padding-top:var(--navH)) ; sinon navbar NADO. --}}
 @section('navbar')
