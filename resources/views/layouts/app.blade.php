@@ -72,8 +72,12 @@
         @yield('content')
     </main>
 
-    {{-- Shared site footer (self-contained partial) --}}
-    @include('partials.site-footer')
+    {{-- Shared site footer (self-contained partial). Les pages peuvent le masquer
+         via @section('no_footer') (ex. tableau de bord client). --}}
+    @hasSection('no_footer')
+    @else
+        @include('partials.site-footer')
+    @endif
 
     {{-- Nado Radio mini-player is injected site-wide by InjectRadioMiniPlayer middleware --}}
     @yield('script')

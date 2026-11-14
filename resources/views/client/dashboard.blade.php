@@ -2,6 +2,9 @@
 
 @section('title', 'Mon Espace | NADO')
 
+{{-- Pas de footer sur le tableau de bord. --}}
+@section('no_footer')@endsection
+
 {{-- Navbar : client enchère (flotte&enchere) → navbar Auto-Enchère (fixée en
      haut comme la navbar NADO) ; sinon navbar NADO standard. --}}
 @section('navbar')
