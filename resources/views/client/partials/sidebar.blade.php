@@ -95,7 +95,7 @@
         @if(feature_on('tokens.enabled'))
         <a class="cs-link {{ $active('client.tokens') }}" href="{{ route('client.tokens') }}">
             <i class="fa fa-coins"></i> {{ __('messages.tokens.my_tokens') }}
-            <span style="margin-{{ app()->getLocale()==='ar' ? 'right' : 'left' }}:auto;background:#1459DD;color:#fff;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:800;">{{ (int) (auth('client')->user()->tokens_balance ?? 0) }}</span>
+            <span style="margin-{{ app()->getLocale()==='ar' ? 'right' : 'left' }}:auto;background:#1459DD;color:#fff;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:800;">{{ optional(auth('client')->user())->hasUnlimitedTokens() ? '∞' : (int) (auth('client')->user()->tokens_balance ?? 0) }}</span>
         </a>
         @endif
         <a class="cs-link {{ $active('client.favorites') }}" href="{{ route('client.favorites') }}">

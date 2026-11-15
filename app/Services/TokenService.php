@@ -43,6 +43,10 @@ class TokenService
     /** Can this client afford `cost` tokens right now? */
     public static function canAfford(Client $client, int $cost): bool
     {
+        if ($client->hasUnlimitedTokens()) {
+            return true;
+        }
+
         return self::balance($client) >= $cost;
     }
 
@@ -111,11 +115,21 @@ class TokenService
             return null;
         }
 
+        // Full-access clients use everything free — no debit, no ledger row.
+        if ($client->hasUnlimitedTokens()) {
+            return null;
+        }
+
         return DB::transaction(function () use ($client, $cost, $reason, $reference, $meta) {
             /** @var Client $locked */
             $locked = Client::whereKey($client->getKey())->lockForUpdate()->first();
             if (! $locked) {
                 throw new InsufficientTokensException($cost, 0);
+            }
+
+            // Re-check the flag under lock (admin may have just granted it).
+            if ($locked->hasUnlimitedTokens()) {
+                return null;
             }
 
             if ((int) $locked->tokens_balance < $cost) {

@@ -1819,6 +1819,7 @@ return [
         'subtitle'        => 'Vos crédits pour accéder aux fonctionnalités du site.',
         'current_balance' => 'Solde actuel',
         'unit'            => 'tokens',
+        'unlimited'       => 'Accès illimité',
         'topup_title'     => 'Recharger mes tokens',
         'topup_note'      => '1 token = 1 MAD. Le paiement en ligne sera bientôt disponible.',
         'topup_pending'   => 'Votre recharge de :tokens tokens a été enregistrée. Le paiement en ligne sera bientôt disponible.',

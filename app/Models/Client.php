@@ -76,6 +76,7 @@ class Client extends Authenticatable
         'otp_code',
         'otp_expires_at',
         'tokens_balance',
+        'unlimited_tokens',
     ];
 
     protected $casts = [
@@ -83,7 +84,14 @@ class Client extends Authenticatable
         'ae_approved'              => 'boolean',
         'caution_reminder_sent_at' => 'datetime',
         'tokens_balance'           => 'integer',
+        'unlimited_tokens'         => 'boolean',
     ];
+
+    /** Admin-granted full access: paid features never debit this client. */
+    public function hasUnlimitedTokens(): bool
+    {
+        return (bool) $this->unlimited_tokens;
+    }
 
     // ✅ Si tu utilises des mots de passe, ajoute aussi un cast
     protected $hidden = [

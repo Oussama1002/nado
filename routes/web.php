@@ -368,6 +368,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/admin/clients/{id}/update-type', [ClientController::class, 'updateType'])
         ->name('admin.clients.updateType');
 
+    // Accès illimité (tokens illimités) accordé/retiré par l'admin.
+    Route::patch('/admin/clients/{id}/unlimited', [ClientController::class, 'toggleUnlimited'])
+        ->name('admin.clients.toggleUnlimited');
+
     Route::post('/admin/clients/approve/{id}', [ClientApprovalController::class, 'approve'])->name('admin.clients.approve');
 
     Route::get('/admin/clients/{id}', [ClientController::class, 'show'])->name('admin.clients.show');

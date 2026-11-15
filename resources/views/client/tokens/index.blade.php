@@ -58,12 +58,16 @@
     <div class="tk-balance">
         <div>
             <p class="lbl">{{ __('messages.tokens.current_balance') }}</p>
-            <p class="amt">{{ number_format($balance, 0, ',', ' ') }} <small>{{ __('messages.tokens.unit') }}</small></p>
+            @if($client->hasUnlimitedTokens())
+                <p class="amt">∞ <small>{{ __('messages.tokens.unlimited') }}</small></p>
+            @else
+                <p class="amt">{{ number_format($balance, 0, ',', ' ') }} <small>{{ __('messages.tokens.unit') }}</small></p>
+            @endif
         </div>
         <div style="font-size:48px;opacity:.9;">🪙</div>
     </div>
 
-    @if($enabled)
+    @if($enabled && !$client->hasUnlimitedTokens())
     <div class="tk-card">
         <h3>{{ __('messages.tokens.topup_title') }}</h3>
         <form method="POST" action="{{ route('client.tokens.checkout') }}" id="tkForm">

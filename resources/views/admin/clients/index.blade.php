@@ -24,6 +24,7 @@
                 <th>Entreprise</th>
 
                 <th>Date d’inscription</th>
+                <th>Accès illimité</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -40,6 +41,16 @@
                     <td>{{ $client->company }}</td>
 
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-inline-block" title="Accès illimité à toutes les fonctions payantes">
+                            <input class="form-check-input unlimited-toggle" type="checkbox"
+                                   data-id="{{ $client->id }}"
+                                   {{ $client->unlimited_tokens ? 'checked' : '' }}>
+                        </div>
+                        <span class="unlimited-label badge {{ $client->unlimited_tokens ? 'bg-success' : 'bg-secondary' }}">
+                            {{ $client->unlimited_tokens ? 'Illimité' : 'Standard' }}
+                        </span>
+                    </td>
                     <td>
                         <form action="{{ route('admin.clients.destroy', $client->id) }}" method="POST"
                             onsubmit="return confirm('Supprimer ce client ?')">
@@ -56,6 +67,41 @@
     </table>
 </div>
 <script>
+document.querySelectorAll('.unlimited-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+        const clientId  = this.dataset.id;
+        const unlimited = this.checked ? 1 : 0;
+        const label     = this.closest('td').querySelector('.unlimited-label');
+
+        fetch(`/admin/clients/${clientId}/unlimited`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ unlimited })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (label) {
+                    label.textContent = data.unlimited ? 'Illimité' : 'Standard';
+                    label.classList.toggle('bg-success', data.unlimited);
+                    label.classList.toggle('bg-secondary', !data.unlimited);
+                }
+            } else {
+                alert('Erreur lors de la mise à jour.');
+                this.checked = !this.checked;
+            }
+        })
+        .catch(() => {
+            alert('Erreur réseau.');
+            this.checked = !this.checked;
+        });
+    });
+});
+
 document.querySelectorAll('.verify-toggle').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         const clientId = this.dataset.id;
