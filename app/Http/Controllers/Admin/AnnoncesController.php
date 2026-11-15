@@ -129,7 +129,7 @@ public function toggleHomepage(Request $request)
     
     public function approve($id)
     {
-        $ad = Annonces::findOrFail($id);
+        $ad = Annonces::with('pack')->findOrFail($id);
         $ad->active = true;
         $ad->save();
 
@@ -139,7 +139,49 @@ public function toggleHomepage(Request $request)
         Cache::forget('similar_ads_pro');
         Cache::forget('similar_ads');
 
-        return back()->with('success', 'Annonce approuvée avec succès.');
+        // Premium pack → débiter les tokens du propriétaire À L'APPROBATION, une
+        // seule fois (premium_charged_at). Si le propriétaire n'est pas un client
+        // ou n'a pas assez de tokens, on approuve quand même mais on prévient
+        // l'admin (aucun premium offert en silence).
+        $warning = $this->chargePremiumOnApproval($ad);
+
+        $msg = back()->with('success', 'Annonce approuvée avec succès.');
+        return $warning ? $msg->with('warning', $warning) : $msg;
+    }
+
+    /**
+     * Charge the owning client for a premium pack when an annonce is approved.
+     * Returns a warning string for the admin when the charge could not be taken
+     * (no client account, or insufficient balance), else null.
+     */
+    private function chargePremiumOnApproval(Annonces $ad): ?string
+    {
+        if (! \App\Services\TokenService::enabled()) {
+            return null;
+        }
+        if (! $ad->isPremiumPack() || $ad->isPremiumCharged()) {
+            return null; // free pack, or already charged
+        }
+
+        $cost = \App\Services\TokenService::cost('annonce_premium');
+        if ($cost <= 0) {
+            return null;
+        }
+
+        $client = $ad->client; // resolved by phone
+        if (! $client) {
+            return "Annonce premium approuvée, mais le propriétaire ({$ad->phone}) n'a pas de compte client — aucun token débité.";
+        }
+
+        try {
+            \App\Services\TokenService::spend($client, $cost, 'annonce_premium', $ad);
+            $ad->premium_charged_at = now();
+            $ad->save();
+            return null;
+        } catch (\App\Exceptions\InsufficientTokensException $e) {
+            return "Annonce premium approuvée, mais {$client->name} n'a pas assez de tokens "
+                . "({$e->available}/{$e->required}) — débit non effectué.";
+        }
     }
     /**
      * Store a newly created resource in storage.

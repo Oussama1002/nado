@@ -132,6 +132,11 @@ Route::middleware(['auth:client'])->prefix('client')->name('client.')->group(fun
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::get('/mes-demandes', [ClientDashboardController::class, 'myDemandes'])->name('mes-demandes');
     Route::post('/mes-demandes/{id}/renew', [ClientDashboardController::class, 'renewDemande'])->whereNumber('id')->name('demandes.renew');
+
+    // Tokens (crédits) — solde, historique, recharge (paiement branché en phase 2)
+    Route::get('/tokens', [\App\Http\Controllers\Client\TokenController::class, 'index'])->name('tokens');
+    Route::post('/tokens/checkout', [\App\Http\Controllers\Client\TokenController::class, 'checkout'])
+        ->middleware('throttle:10,60')->name('tokens.checkout');
     Route::resource('equipe', \App\Http\Controllers\Client\EquipeController::class);
     Route::resource('nadoautoencheresbid', \App\Http\Controllers\Client\ClientNadoAutoEncheresBidController::class);
 
@@ -362,6 +367,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/clients/approval', [ClientApprovalController::class, 'index'])->name('admin.clients.approval');
     Route::patch('/admin/clients/{id}/update-type', [ClientController::class, 'updateType'])
         ->name('admin.clients.updateType');
+
+    // Accès illimité (tokens illimités) accordé/retiré par l'admin.
+    Route::patch('/admin/clients/{id}/unlimited', [ClientController::class, 'toggleUnlimited'])
+        ->name('admin.clients.toggleUnlimited');
 
     Route::post('/admin/clients/approve/{id}', [ClientApprovalController::class, 'approve'])->name('admin.clients.approve');
 

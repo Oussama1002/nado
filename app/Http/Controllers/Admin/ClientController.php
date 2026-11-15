@@ -76,6 +76,25 @@ class ClientController extends Controller
 
     return response()->json(['success' => true]);
 }
+
+/**
+ * Accorde / retire l'accès illimité (tokens illimités) à un client. Quand il
+ * est actif, le client utilise toutes les fonctions payantes sans jamais être
+ * débité (voir TokenService::spend / canAfford).
+ */
+public function toggleUnlimited(Request $request, $id)
+{
+    $client = Client::findOrFail($id);
+
+    $client->unlimited_tokens = $request->boolean('unlimited');
+    $client->save();
+
+    return response()->json([
+        'success'   => true,
+        'unlimited' => (bool) $client->unlimited_tokens,
+    ]);
+}
+
 public function updateType(Request $request, $id)
 {
     $client = Client::findOrFail($id);

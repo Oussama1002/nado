@@ -15,9 +15,46 @@ class Client extends Authenticatable
 
     protected $guard_name = 'web'; // important for Spatie to know which guard
 
+    /**
+     * Grant the one-time token signup bonus on account creation, from ONE place
+     * so every registration path is covered (email, phone, admin). Idempotent —
+     * TokenService checks the ledger before granting, so it never double-grants.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (Client $client) {
+            try {
+                \App\Services\TokenService::grantSignupBonus($client);
+            } catch (\Throwable $e) {
+                // Never let a token hiccup block account creation.
+                \Illuminate\Support\Facades\Log::warning(
+                    'Token signup bonus failed for client '.$client->id.': '.$e->getMessage()
+                );
+            }
+        });
+    }
+
     public function autoencheres()
     {
         return $this->hasMany(Autoenchere::class);
+    }
+
+    /** Token ledger (source of truth for the balance). */
+    public function tokenTransactions()
+    {
+        return $this->hasMany(TokenTransaction::class)->latest();
+    }
+
+    /** Token top-up / payment attempts. */
+    public function tokenPurchases()
+    {
+        return $this->hasMany(TokenPurchase::class)->latest();
+    }
+
+    /** Spendable token balance (cached column; ledger is authoritative). */
+    public function tokens(): int
+    {
+        return (int) $this->tokens_balance;
     }
     
 
@@ -38,13 +75,23 @@ class Client extends Authenticatable
         'caution_reminder_sent_at',
         'otp_code',
         'otp_expires_at',
+        'tokens_balance',
+        'unlimited_tokens',
     ];
 
     protected $casts = [
         'otp_expires_at'           => 'datetime',
         'ae_approved'              => 'boolean',
         'caution_reminder_sent_at' => 'datetime',
+        'tokens_balance'           => 'integer',
+        'unlimited_tokens'         => 'boolean',
     ];
+
+    /** Admin-granted full access: paid features never debit this client. */
+    public function hasUnlimitedTokens(): bool
+    {
+        return (bool) $this->unlimited_tokens;
+    }
 
     // ✅ Si tu utilises des mots de passe, ajoute aussi un cast
     protected $hidden = [
