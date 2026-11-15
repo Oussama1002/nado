@@ -23,6 +23,7 @@
                         <form action="{{ route($ads->exists ? 'admin.annonces.update' : 'admin.annonces.store' , $ads) }}"  method="post" class="form form-vertical" enctype="multipart/form-data">
                             @csrf
                             @method($ads->exists ? 'PUT' : 'POST')
+                            @php $req = !$ads->exists; @endphp
                             <div class="form-body">
                                 <div class="row">
                                     @if($ads->exists)
@@ -37,14 +38,14 @@
                                         @include('admin.partials.input', ["class" => 'col', "label" => "Téléphone" , "type" => "text",  "value" => $ads->phone, "name" => 'phone', ])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.input', ["class" => 'col', "label" => "Prix" , "type" => "text",  "value" => $ads->prix, "name" => 'prix', ])
+                                        @include('admin.partials.input', ["class" => 'col', "label" => "Prix" , "type" => "text",  "value" => $ads->prix, "name" => 'prix', "required" => $req, ])
                                     </div>
                                     <div class="col-6 my-2">
     <div class="form-group">
         <label for="brand-select">Marque</label>
         <select id="brand-select"
                 name="mark"
-                class="form-control @error('mark') is-invalid @enderror">
+                class="form-control @error('mark') is-invalid @enderror" @required($req)>
             <option value="">Sélectionnez une marque</option>
             @foreach($brands as $brand)
                 <option value="{{ $brand->id }}"
@@ -64,7 +65,7 @@
         <label for="model-select">Modèle</label>
         <select id="model-select"
                 name="modele"
-                class="form-control @error('modele') is-invalid @enderror">
+                class="form-control @error('modele') is-invalid @enderror" @required($req)>
             <option value="">Sélectionnez un modèle</option>
             {{-- Les modèles seront chargés dynamiquement par JS --}}
         </select>
@@ -133,7 +134,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.input', ["class" => 'col', "label" => "Km" , "type" => "text", "name" => 'km', "value" => $ads->km, ])
+                                        @include('admin.partials.input', ["class" => 'col', "label" => "Km" , "type" => "text", "name" => 'km', "value" => $ads->km, "required" => $req, ])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
                                         <div class="form-group col">
@@ -156,10 +157,10 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.select', ["class" => 'col', "label" => "Carburant" ,"name" => 'carburant', "value" => old('carburant', $ads->carburant),  "data" => ["" => "Sélectionner", "essence" => "Essence", "diesel" => "Diesel", "electrique" => "Electrique", "hybride" => "Hybride"]])
+                                        @include('admin.partials.select', ["class" => 'col', "label" => "Carburant" ,"name" => 'carburant', "value" => old('carburant', $ads->carburant), "required" => $req, "data" => ["" => "Sélectionner", "essence" => "Essence", "diesel" => "Diesel", "electrique" => "Electrique", "hybride" => "Hybride"]])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.select', ["class" => 'col', "label" => "Boite de vitesses" ,"name" => 'box', "value" => old('box', $ads->box), "data" => ["" => "Sélectionner", "manuelle" => "Manuelle", "automatique" => "Automatique"]])
+                                        @include('admin.partials.select', ["class" => 'col', "label" => "Boite de vitesses" ,"name" => 'box', "value" => old('box', $ads->box), "required" => $req, "data" => ["" => "Sélectionner", "manuelle" => "Manuelle", "automatique" => "Automatique"]])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
 @include('admin.partials.select', [
@@ -167,6 +168,7 @@
     "label" => "État",
     "name" => 'etat',
     "value" => old('etat', $ads->etat),
+    "required" => $req,
     "data" => [
         "" => "Sélectionner",
         "excellent" => "Excellent",
@@ -179,7 +181,7 @@
 ])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.select', ["class" => 'col', "label" => "Origine" ,"name" => 'origine', "value" => old('origine', $ads->origine), "data" => ["" => "Sélectionner", "dédouané" => "Dédouané", "WW au Maroc" => "WW au Maroc", "importé neuf" => "Importé neuf", "pas encore dédouané" => "Pas encore dédouané"]])
+                                        @include('admin.partials.select', ["class" => 'col', "label" => "Origine" ,"name" => 'origine', "value" => old('origine', $ads->origine), "required" => $req, "data" => ["" => "Sélectionner", "dédouané" => "Dédouané", "WW au Maroc" => "WW au Maroc", "importé neuf" => "Importé neuf", "pas encore dédouané" => "Pas encore dédouané"]])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
                                         <div class="form-group col">
@@ -204,7 +206,7 @@
                                     <div class="col-12 col-md-6 my-2">
                                         <div class="form-group col">
                                             <label for="bodywork">Carrosserie</label>
-                                            <select class="form-control" id="bodywork" name="bodywork" >
+                                            <select class="form-control" id="bodywork" name="bodywork" @required($req)>
                                                 <option value="">Sélectionner</option>
                                                 <option title="Cabriolet" value="coupé cabriolet" @selected(old('bodywork', $ads->bodywork )== "coupé cabriolet" )>COUPé CABRIOLET</option>
                                                 <option title="Suv et 4x4" value="suv et 4x4" @selected(old('bodywork', $ads->bodywork )== "suv et 4x4" )>SUV ET 4X4</option>
@@ -243,6 +245,7 @@
     "label" => "Première main",
     "name" => 'premiere_main',
     "value" => $premiereMain,
+    "required" => $req,
     "data" => $premiereMainOptions
 ])
                                     </div>
@@ -280,7 +283,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
-                                        @include('admin.partials.input', ["class" => 'col', "label" => "Titre" , "type" => "text",  "value" => $ads->titre, "name" => 'titre', ])
+                                        @include('admin.partials.input', ["class" => 'col', "label" => "Titre" , "type" => "text",  "value" => $ads->titre, "name" => 'titre', "required" => $req, ])
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
                                         @include('admin.partials.input', ["class" => 'col', "label" => "Video" , "type" => "text",  "value" => $ads->video, "name" => 'video', ])
@@ -452,7 +455,7 @@
                name="matricule" 
                class="form-control @error('matricule') is-invalid @enderror"
                placeholder="ex: 71134-H-6"
-               value="{{ old('matricule', $ads->matricule) }}">
+               value="{{ old('matricule', $ads->matricule) }}" @required($req)>
         @error('matricule')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
