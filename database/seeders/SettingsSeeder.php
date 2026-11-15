@@ -67,6 +67,30 @@ class SettingsSeeder extends Seeder
                 ['test_mode', 'bool', true, 'Mode test / sandbox'],
             ],
 
+            // ───────────────────────── tokens ───────────────────────────
+            // Monnaie interne : 1 token = 1 MAD. Les COÛTS ci-dessous sont une
+            // monnaie d'essai (volontairement < au tarif MAD réel) pour que les
+            // 100 tokens offerts laissent tester plusieurs fonctions. Tout est
+            // réglable ici sans redéploiement. Coût = 0 → action gratuite.
+            'tokens' => [
+                ['enabled', 'bool', true, 'Système de tokens activé'],
+                ['signup_bonus', 'int', 100, 'Tokens offerts à l\'inscription'],
+                ['cost.estimation', 'int', 20, 'Coût — Estimation / Argus'],
+                ['cost.demande', 'int', 10, 'Coût — Déposer une demande'],
+                ['cost.annonce_premium', 'int', 50, 'Coût — Annonce premium (à l\'approbation)'],
+                ['cost.legalcheck', 'int', 30, 'Coût — Vérification légale (NARSA)'],
+                ['cost.boost_badge', 'int', 25, 'Coût — Badge « Vérifié »'],
+                ['cost.boost_video', 'int', 50, 'Coût — Mise en avant vidéo'],
+                ['cost.boost_highlight', 'int', 50, 'Coût — Mise en avant (highlight)'],
+                ['cost.boost_homepage_24h', 'int', 15, 'Coût — Boost homepage 24h'],
+                ['cost.boost_homepage_7d', 'int', 60, 'Coût — Boost homepage 7j'],
+                ['cost.boost_top_category', 'int', 40, 'Coût — Top catégorie 7j'],
+                ['cost.banner', 'int', 300, 'Coût — Bannière (1 mois)'],
+                ['cost.lead_buyer', 'int', 60, 'Coût — Lead acheteur'],
+                ['cost.lead_finance', 'int', 80, 'Coût — Lead financement'],
+                ['cost.lead_reprise', 'int', 50, 'Coût — Lead reprise'],
+            ],
+
             // ───────────────────────── packs ────────────────────────────
             'packs' => [
                 ['enabled', 'bool', true, 'Système de packs activé'],

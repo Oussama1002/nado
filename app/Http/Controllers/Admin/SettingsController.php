@@ -18,6 +18,7 @@ class SettingsController extends Controller
      */
     public const GROUPS = [
         'payments'   => ['label' => 'Paiements & Passerelles', 'icon' => 'bi-credit-card'],
+        'tokens'     => ['label' => 'Tokens (crédits)',        'icon' => 'bi-coin'],
         'packs'      => ['label' => 'Packs annonces',          'icon' => 'bi-box-seam'],
         'pro_plans'  => ['label' => 'Abonnements Pro',         'icon' => 'bi-person-badge'],
         'boosts'     => ['label' => 'Boosts & Upsells',        'icon' => 'bi-rocket-takeoff'],

@@ -14,6 +14,7 @@ class Annonces extends Model
 protected $fillable = [
     'phone',
     'pack_id',
+    'premium_charged_at',
     'titre',
     'prix',
     'mark',
@@ -141,6 +142,7 @@ protected $fillable = [
         'climatisation' => 'integer',
         'pro' => 'boolean',
     'images' => 'array', // now Laravel will automatically decode JSON into a PHP array
+    'premium_charged_at' => 'datetime',
 ];
         // ... tu peux ajouter les autres si besoin
 
@@ -183,6 +185,21 @@ protected $fillable = [
     public function pack()
     {
         return $this->belongsTo(Pack::class);
+    }
+
+    /**
+     * A listing is "premium" when it carries a paid pack (price > 0). Used to
+     * decide whether to charge tokens on approval (tokens.cost.annonce_premium).
+     */
+    public function isPremiumPack(): bool
+    {
+        return $this->pack_id && optional($this->pack)->price > 0;
+    }
+
+    /** Has the premium token charge already been applied? */
+    public function isPremiumCharged(): bool
+    {
+        return ! is_null($this->premium_charged_at);
     }
 
    public function brand()

@@ -17,6 +17,8 @@ use Illuminate\Support\Str;
 
 class DemandeController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ChargesTokens;
+
     public function index(Request $request)
     {
         // Public forum: show every approved demande that isn't expired, regardless
@@ -162,6 +164,13 @@ class DemandeController extends Controller
 
     public function create(Request $request)
     {
+        // Déposer une demande coûte des tokens → connexion requise (bonus de
+        // bienvenue à l'inscription). Garde posée avant d'afficher le formulaire
+        // pour ne pas faire perdre sa saisie au visiteur.
+        if ($redirect = $this->requireTokens('demande')) {
+            return $redirect;
+        }
+
         $prefill = $request->query();
 
         // Resolve brand/modele/ville names coming from /achat into their IDs.
@@ -194,6 +203,11 @@ class DemandeController extends Controller
 
     public function store(Request $request)
     {
+        // Re-garde côté POST (connexion + solde) avant d'enregistrer.
+        if ($redirect = $this->requireTokens('demande')) {
+            return $redirect;
+        }
+
         $data = $request->validate([
             'nom'         => ['required', 'string', 'max:120'],
             'telephone'   => ['required', 'string', 'regex:/^(?:\+?212|0)[\s\-]?[5-7]\d{8}$/'],
@@ -246,6 +260,11 @@ class DemandeController extends Controller
             'ip_hash'    => hash('sha256', $request->ip() . config('app.key')),
             'expires_at' => now()->addDays(30),
         ]);
+
+        // Débite le client pour le dépôt de la demande (no-op si tokens off / coût 0).
+        if ($client) {
+            $this->chargeTokens($client, 'demande', $demande);
+        }
 
         return redirect()->route('demandes.confirmation', $demande->id)
             ->with('success', 'Votre demande a été soumise. L’administrateur vous contactera après validation.');

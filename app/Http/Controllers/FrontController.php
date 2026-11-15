@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Cache;
 
 class FrontController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ChargesTokens;
+
     /**
      * Display a listing of the resource.
      */
@@ -173,6 +175,13 @@ public function estimateView()
  */
 public function estimate(Request $r)
 {
+    // Token gate: estimation coûte des tokens (voir tokens.cost.estimation).
+    // Un invité est redirigé vers la connexion (100 tokens offerts), un client
+    // sans solde vers la recharge. Si tokens off / coût 0 → gratuit.
+    if ($redirect = $this->requireTokens('estimation')) {
+        return $redirect;
+    }
+
     $data = $r->validate([
         'brand'                => 'required|string|max:100',
         'model'                => 'required|string|max:100',
@@ -240,7 +249,7 @@ public function estimate(Request $r)
 
     // Keep a record so the team can review what clients estimated (admin > Estimations).
     try {
-        \App\Models\Estimation::create([
+        $estimation = \App\Models\Estimation::create([
             'client_id'          => \Illuminate\Support\Facades\Auth::guard('client')->id(),
             'brand'              => $data['brand'] ?? null,
             'model'              => $data['model'] ?? null,
@@ -258,6 +267,13 @@ public function estimate(Request $r)
             'confidence'         => $valuation['confidence']['label'] ?? null,
             'payload'            => $data,
         ]);
+
+        // Débite les tokens une fois l'estimation produite et enregistrée.
+        // requireTokens() a déjà garanti la connexion + le solde ; spend()
+        // reverrouille et revérifie (anti double-dépense).
+        if ($client = auth('client')->user()) {
+            $this->chargeTokens($client, 'estimation', $estimation);
+        }
     } catch (\Throwable $e) {
         // Never block the visitor's estimate because the record could not be stored.
         \Illuminate\Support\Facades\Log::error('Estimation not saved: ' . $e->getMessage());
