@@ -21,6 +21,7 @@
                 <th>Téléphone</th>
                 <th>Rôle</th>
                 <th>Accès enchères</th>
+                <th>Tokens</th>
                 <th>Date d’inscription</th>
                 <th>Action</th>
             </tr>
@@ -54,6 +55,19 @@
                             {{ $client->ae_approved ? 'Retirer' : 'Valider' }}
                         </button>
                     </td>
+                    <td class="text-center">
+                        <div>
+                            <span class="badge bg-primary">
+                                {{ $client->unlimited_tokens ? '∞' : number_format((int) $client->tokens_balance, 0, ',', ' ') }}
+                            </span>
+                        </div>
+                        <div class="form-check form-switch d-inline-block mt-1" title="Accès illimité à toutes les fonctions payantes">
+                            <input class="form-check-input unlimited-toggle" type="checkbox"
+                                   data-id="{{ $client->id }}"
+                                   {{ $client->unlimited_tokens ? 'checked' : '' }}>
+                            <small class="unlimited-label text-muted">{{ $client->unlimited_tokens ? 'Illimité' : 'Standard' }}</small>
+                        </div>
+                    </td>
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-info btn-sm">Voir</a>
@@ -67,7 +81,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
+                    <td colspan="10" class="text-center text-muted">Aucun client Auto Enchère pour le moment.</td>
                 </tr>
             @endforelse
         </tbody>
@@ -93,6 +107,37 @@ function aeApprove(url) {
         })
         .catch(() => { alert('Erreur réseau, réessayez.'); });
 }
+
+document.querySelectorAll('.unlimited-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+        const clientId  = this.dataset.id;
+        const unlimited = this.checked ? 1 : 0;
+        const label     = this.closest('.form-check').querySelector('.unlimited-label');
+
+        fetch(`/admin/clients/${clientId}/unlimited`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ unlimited })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (label) label.textContent = data.unlimited ? 'Illimité' : 'Standard';
+            } else {
+                alert('Erreur lors de la mise à jour.');
+                this.checked = !this.checked;
+            }
+        })
+        .catch(() => {
+            alert('Erreur réseau.');
+            this.checked = !this.checked;
+        });
+    });
+});
 
 document.querySelectorAll('.verify-toggle').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
