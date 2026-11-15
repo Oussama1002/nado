@@ -219,7 +219,7 @@
         .highlight-link:hover { background-color: #bfdbfe; }
         .nav-dropdown-wrapper { position: relative; }
         .dropdown-trigger { display: flex; align-items: center; gap: 8px; }
-        .nav-dropdown-menu { position: absolute; top: 100%; left: 0; margin-top: 8px; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.1); border: 1px solid var(--border-color); min-width: 200px; overflow: hidden; display: none; }
+        .nav-dropdown-menu { position: absolute; top: 100%; left: 0; margin-top: 8px; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.1); border: 1px solid var(--border-color); min-width: 200px; overflow: hidden; z-index: 2000; display: none; }
         .nav-dropdown-wrapper:hover .nav-dropdown-menu { display: block; }
         .nav-dropdown-menu a { display: block; padding: 16px 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--slate-700); text-decoration: none; transition: background .2s; }
         .nav-dropdown-menu a:hover { background-color: #fff7ed; color: #F37021; }
@@ -243,7 +243,7 @@
             .user-dropdown-wrapper .cta-button { padding: 8px 10px; gap: 4px; }
         }
         .user-dropdown-wrapper.open .user-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity .15s ease, transform .15s ease, visibility 0s; }
-        .user-dropdown-menu { position: absolute; right: 0; top: 100%; margin-top: 8px; width: 192px; background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); border: 1px solid var(--border-color); overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .18s ease .4s, transform .18s ease .4s, visibility 0s linear .58s; }
+        .user-dropdown-menu { position: absolute; right: 0; top: 100%; margin-top: 8px; width: 192px; background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); border: 1px solid var(--border-color); overflow: hidden; z-index: 2000; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .18s ease .4s, transform .18s ease .4s, visibility 0s linear .58s; }
         .user-dropdown-wrapper:hover .user-dropdown-menu, .user-dropdown-menu:hover { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity .15s ease, transform .15s ease, visibility 0s; }
         .user-dropdown-wrapper::after { content: ''; position: absolute; top: 100%; right: 0; width: 100%; height: 14px; }
         .user-name { display: inline-block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
