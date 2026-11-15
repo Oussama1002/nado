@@ -6277,6 +6277,93 @@
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     })();
 </script>
+{{-- ============ Pop-up Tokens (promo invité / bienvenue client) ============ --}}
+@if(feature_on('tokens.enabled'))
+    @php
+        $tkClient = Auth::guard('client')->user();
+        $tkBonus  = (int) settings('tokens.signup_bonus', 100);
+        // Invité → promo ; client (non illimité) → message de bienvenue une fois.
+        $tkShow   = false; $tkMode = null; $tkKey = null;
+        if ($tkClient && ! $tkClient->hasUnlimitedTokens()) {
+            $tkShow = true; $tkMode = 'welcome'; $tkKey = 'nado_tk_welcome_'.$tkClient->id;
+        } elseif (! $tkClient) {
+            $tkShow = true; $tkMode = 'promo';   $tkKey = 'nado_tk_promo';
+        }
+    @endphp
+    @if($tkShow)
+    <div id="tkPopupOverlay" data-mode="{{ $tkMode }}" data-key="{{ $tkKey }}" aria-hidden="true"
+         style="display:none;position:fixed;inset:0;z-index:99990;background:rgba(15,23,42,.6);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:18px;">
+        <div role="dialog" aria-modal="true" aria-labelledby="tkPopupTitle"
+             style="background:#fff;max-width:440px;width:100%;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35);animation:tkPop .28s ease;">
+            <div style="background:linear-gradient(135deg,#1459DD,#0b3fa6);color:#fff;padding:30px 26px 24px;text-align:center;">
+                <div style="font-size:52px;line-height:1;margin-bottom:6px;">🪙</div>
+                <h3 id="tkPopupTitle" style="margin:0;font-size:22px;font-weight:900;letter-spacing:-.02em;">
+                    @if($tkMode === 'welcome') {{ __('messages.tokens.welcome_title') }}
+                    @else {{ __('messages.tokens.promo_title', ['tokens' => $tkBonus]) }} @endif
+                </h3>
+            </div>
+            <div style="padding:22px 26px 26px;text-align:center;">
+                <p style="margin:0 0 20px;color:#334155;font-size:15.5px;font-weight:600;line-height:1.6;">
+                    @if($tkMode === 'welcome') {{ __('messages.tokens.welcome_text', ['tokens' => $tkBonus]) }}
+                    @else {{ __('messages.tokens.promo_text', ['tokens' => $tkBonus]) }} @endif
+                </p>
+                @if($tkMode === 'welcome')
+                    <a href="{{ route('client.tokens') }}" class="tk-pop-primary"
+                       style="display:block;background:#1459DD;color:#fff;text-decoration:none;border-radius:12px;padding:13px 18px;font-weight:800;font-size:15px;">
+                        {{ __('messages.tokens.welcome_cta') }}
+                    </a>
+                @else
+                    <a href="{{ route('client.register') }}" class="tk-pop-primary"
+                       style="display:block;background:#1459DD;color:#fff;text-decoration:none;border-radius:12px;padding:13px 18px;font-weight:800;font-size:15px;margin-bottom:10px;">
+                        {{ __('messages.tokens.promo_register') }}
+                    </a>
+                    <a href="{{ route('client.login') }}"
+                       style="display:inline-block;color:#1459DD;text-decoration:none;font-weight:700;font-size:14px;">
+                        {{ __('messages.tokens.promo_login') }}
+                    </a>
+                @endif
+                <div style="margin-top:14px;">
+                    <button type="button" id="tkPopupClose"
+                            style="background:none;border:none;color:#94a3b8;font-weight:700;font-size:13px;cursor:pointer;">
+                        {{ $tkMode === 'welcome' ? '✕' : __('messages.tokens.promo_later') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>@keyframes tkPop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}</style>
+    <script>
+        (function () {
+            var overlay = document.getElementById('tkPopupOverlay');
+            if (!overlay) return;
+            var key  = overlay.dataset.key;
+            var mode = overlay.dataset.mode;
+
+            // Déjà vu ? (bienvenue = une fois pour toujours ; promo = ré-affichée après 7 jours)
+            try {
+                var saved = localStorage.getItem(key);
+                if (saved) {
+                    if (mode === 'welcome') return;
+                    if (mode === 'promo' && (Date.now() - parseInt(saved, 10)) < 7 * 864e5) return;
+                }
+            } catch (e) {}
+
+            function markSeen() { try { localStorage.setItem(key, String(Date.now())); } catch (e) {} }
+            function open()  { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); markSeen(); }
+            function close() { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+
+            setTimeout(open, 1200);
+
+            document.getElementById('tkPopupClose').addEventListener('click', close);
+            overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+            // La CTA inscription/bienvenue marque aussi comme vu (déjà fait à l'ouverture).
+            var primary = overlay.querySelector('.tk-pop-primary');
+            primary && primary.addEventListener('click', markSeen);
+        })();
+    </script>
+    @endif
+@endif
 {{-- Nado Radio mini-player is injected site-wide by InjectRadioMiniPlayer middleware --}}
 </body>
 
