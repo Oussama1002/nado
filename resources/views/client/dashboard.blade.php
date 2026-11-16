@@ -562,6 +562,17 @@ table.dash-table tr:hover td { background: #fafbfd; }
             </div>
         </div>
 
+        @if(feature_on('tokens.enabled'))
+        <a href="{{ route('client.tokens') }}"
+           style="display:flex;align-items:center;gap:8px;margin:0 14px 10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-weight:800;">
+            <span style="font-size:18px;">🪙</span>
+            <span style="font-size:12px;opacity:.85;font-weight:700;">{{ __('messages.tokens.my_tokens') }}</span>
+            <span style="margin-left:auto;background:#F7C600;color:#0b1f44;border-radius:99px;padding:2px 10px;font-size:13px;font-weight:900;">
+                {{ $client->hasUnlimitedTokens() ? '∞' : number_format((int) $client->tokens_balance, 0, ',', ' ') }}
+            </span>
+        </a>
+        @endif
+
         <nav class="dash-nav">
             <div class="dash-nav-section">
                 <div class="dash-nav-label">{{ __('messages.dashboard.overview_label') }}</div>
@@ -615,6 +626,12 @@ table.dash-table tr:hover td { background: #fafbfd; }
                 <a href="{{ route('client.discussions.index') }}" class="dash-nav-link">
                     <i class="fa fa-comments"></i> {{ __('messages.dashboard.discussions') }}
                 </a>
+                @if(feature_on('tokens.enabled'))
+                <a href="{{ route('client.tokens') }}" class="dash-nav-link">
+                    <i class="fa fa-coins"></i> {{ __('messages.tokens.my_tokens') }}
+                    <span style="margin-left:auto;background:rgba(255,255,255,.16);border-radius:99px;padding:1px 9px;font-size:12px;font-weight:800;">{{ $client->hasUnlimitedTokens() ? '∞' : (int) $client->tokens_balance }}</span>
+                </a>
+                @endif
             </div>
 
             <div class="dash-nav-section" style="margin-top:auto;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);">
