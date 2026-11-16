@@ -370,8 +370,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/clients/approve/{id}', [ClientApprovalController::class, 'approve'])->name('admin.clients.approve');
 
-    Route::get('/admin/clients/{id}', [ClientController::class, 'show'])->name('admin.clients.show');
-    Route::delete('/admin/clients/{id}', [ClientController::class, 'destroy'])->name('admin.clients.destroy');
+    Route::get('/admin/clients/{id}', [ClientController::class, 'show'])->whereNumber('id')->name('admin.clients.show');
+    Route::delete('/admin/clients/{id}', [ClientController::class, 'destroy'])->whereNumber('id')->name('admin.clients.destroy');
 });
 
 
