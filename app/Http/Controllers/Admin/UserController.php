@@ -85,7 +85,7 @@ class UserController extends Controller
         $user->assignRole($data['role']);
         $this->syncModules($user, $request->input('modules', []));
 
-        return to_route('users.index')->with('success', 'user added successfully');
+        return to_route('admin.users.index')->with('success', 'user added successfully');
     }
 
     /**
@@ -136,7 +136,7 @@ class UserController extends Controller
         $user->syncRoles([$data['role']]);
         $this->syncModules($user, $request->input('modules', []));
 
-        return to_route('users.index')->with('success', 'user edits successfully');
+        return to_route('admin.users.index')->with('success', 'user edits successfully');
     }
 
     /**
@@ -193,6 +193,6 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return to_route('users.index')->with('success', 'user deleted successfully');
+        return to_route('admin.users.index')->with('success', 'user deleted successfully');
     }
 }
