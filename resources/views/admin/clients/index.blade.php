@@ -24,6 +24,7 @@
                 <th>Entreprise</th>
 
                 <th>Date d’inscription</th>
+                <th>Tokens</th>
                 <th>Accès illimité</th>
                 <th>Action</th>
             </tr>
@@ -41,6 +42,11 @@
                     <td>{{ $client->company }}</td>
 
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-primary" style="font-size:13px;">
+                            {{ $client->unlimited_tokens ? '∞' : number_format((int) $client->tokens_balance, 0, ',', ' ') }}
+                        </span>
+                    </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-inline-block" title="Accès illimité à toutes les fonctions payantes">
                             <input class="form-check-input unlimited-toggle" type="checkbox"
