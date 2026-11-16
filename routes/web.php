@@ -384,7 +384,7 @@ Route::prefix('admin')->name('admin.')->middleware('guest:admin')->group(functio
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
-Route::middleware(['auth:admin', 'role:admin'])->group(function () {
+Route::middleware(['auth:admin', 'module.access'])->group(function () {
     // Estimations soumises par les clients
     Route::get('/admin/estimations', [App\Http\Controllers\Admin\EstimationController::class, 'index'])
         ->name('admin.estimations.index');
@@ -574,7 +574,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin/settings')->name('admin.settings.')
-    ->middleware(['auth:admin', 'role:admin'])
+    ->middleware(['auth:admin', 'module.access'])
     ->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
@@ -588,7 +588,7 @@ Route::prefix('admin/settings')->name('admin.settings.')
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin/legal-checks')->name('admin.legalchecks.')
-    ->middleware(['auth:admin', 'role:admin'])
+    ->middleware(['auth:admin', 'module.access'])
     ->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\LegalCheckController::class, 'index'])->name('index');
         Route::get('/{legalCheck}', [\App\Http\Controllers\Admin\LegalCheckController::class, 'show'])->name('show');
@@ -620,7 +620,7 @@ Route::prefix('demandes')->name('demandes.')->group(function () {
 });
 
 Route::prefix('admin/demandes')->name('admin.demandes.')
-    ->middleware(['auth:admin', 'role:admin'])
+    ->middleware(['auth:admin', 'module.access'])
     ->group(function () {
         Route::get('/',                   [DemandeAdminController::class, 'index'])->name('index');
         Route::get('/pending',            [DemandeAdminController::class, 'pending'])->name('pending');
@@ -660,7 +660,7 @@ Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'ind
 
 // Admin modération community
 Route::prefix('admin/community')->name('admin.community.')
-    ->middleware(['auth:admin', 'role:admin'])
+    ->middleware(['auth:admin', 'module.access'])
     ->group(function () {
         Route::get('/seller-reviews', [\App\Http\Controllers\Admin\SellerReviewController::class, 'index'])->name('seller-reviews.index');
         Route::post('/seller-reviews/{review}/approve', [\App\Http\Controllers\Admin\SellerReviewController::class, 'approve'])->name('seller-reviews.approve');

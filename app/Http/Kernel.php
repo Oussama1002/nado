@@ -74,6 +74,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'flotte.enchere' => \App\Http\Middleware\EnsureClientCanAccessAutoEnchere::class,
+        'module.access' => \App\Http\Middleware\ModuleAccess::class,
 
     ];
 }

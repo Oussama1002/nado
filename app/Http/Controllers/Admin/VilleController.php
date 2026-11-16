@@ -10,7 +10,7 @@ class VilleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
+        $this->middleware('module.access', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
     }
 
     /**

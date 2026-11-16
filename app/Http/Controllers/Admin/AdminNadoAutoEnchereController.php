@@ -15,7 +15,7 @@ class AdminNadoAutoEnchereController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:admin', 'role:admin']);
+        $this->middleware(['auth:admin', 'module.access']);
     }
 
     public function index()

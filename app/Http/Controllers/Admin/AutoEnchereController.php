@@ -15,7 +15,7 @@ class AutoEnchereController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin');
+        $this->middleware('module.access');
     }
 
     public function index()

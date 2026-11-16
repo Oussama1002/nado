@@ -16,7 +16,7 @@ class ExportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin');
+        $this->middleware('module.access');
     }
 
     /** Slug du module → modèle Eloquent exporté. */

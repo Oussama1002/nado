@@ -25,7 +25,7 @@ class AnnoncesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy', 'archive', 'restore', 'forceDelete']]);
+        $this->middleware('module.access', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy', 'archive', 'restore', 'forceDelete']]);
     }
 
     /**

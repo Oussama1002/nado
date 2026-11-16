@@ -63,7 +63,7 @@
 
                 {{-- ✅ Otherwise: show the normal full admin sidebar --}}
                 @else
-                    @role('admin')
+                    {{-- Visible aux admins (tout) et aux « members » selon leurs modules (admin_can). --}}
                     <li @class(['sidebar-item', 'active' => request()->routeIs('admin.dashboard')])>
                         <a href="{{ route('admin.dashboard') }}" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
@@ -72,6 +72,7 @@
                     </li>
 
                     {{-- Annonces --}}
+                    @if(admin_can('annonces'))
                     <li @class(['sidebar-item','has-sub', 'active' => str_contains($current_route , "annonces.")])>
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-box"></i>
@@ -89,17 +90,20 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
                     {{-- Demandes --}}
+                    @if(admin_can('demandes'))
                     <li @class(['sidebar-item', 'active' => str_contains($current_route , "demandes.")])>
                         <a href="{{ route('admin.demandes.index') }}" class='sidebar-link'>
                             <i class="bi bi-megaphone"></i>
                             <span>Demandes</span>
                         </a>
                     </li>
+                    @endif
 
                     {{-- Situation légale (opposition NARSA) --}}
-                    @if(feature_on('legalcheck.enabled'))
+                    @if(feature_on('legalcheck.enabled') && admin_can('legalchecks'))
                     <li @class(['sidebar-item', 'active' => str_contains($current_route , "legalchecks.")])>
                         <a href="{{ route('admin.legalchecks.index') }}" class='sidebar-link'>
                             <i class="bi bi-shield-check"></i>
@@ -107,6 +111,9 @@
                         </a>
                     </li>
                     @endif
+
+                    {{-- Clients --}}
+                    @if(admin_can('clients'))
            <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "clients.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>
@@ -125,7 +132,9 @@
             </li>
         </ul>
     </li>
-    
+                    @endif
+
+    @if(admin_can('ventes'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "ventes.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-car-front"></i>
@@ -137,6 +146,8 @@
             </li>
         </ul>
     </li>
+    @endif
+    @if(admin_can('reprises'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "reprises.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-arrow-left-right"></i>
@@ -148,6 +159,8 @@
             </li>
         </ul>
     </li>
+    @endif
+    @if(admin_can('finances'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "finances.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-cash"></i>
@@ -170,6 +183,7 @@
             </li>
         </ul>
     </li>
+    @endif
     <!-- <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "offres.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-coin"></i>
@@ -181,7 +195,8 @@
             </li>
         </ul>
     </li> -->
-   
+
+    @if(admin_can('catalogue'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "brands.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-inbox"></i>
@@ -211,7 +226,9 @@
             </li>
         </ul>
     </li>
+    @endif
     {{-- stories  --}}
+    @if(admin_can('contenu'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "stories.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-diagram-3"></i>
@@ -242,7 +259,9 @@
             </li>
         </ul>
     </li>
+    @endif
 
+    @if(admin_can('catalogue'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "ville.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-pin-map"></i>
@@ -257,7 +276,7 @@
             </li>
         </ul>
     </li>
-    
+
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "colors.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-palette"></i>
@@ -272,7 +291,9 @@
             </li>
         </ul>
     </li>
+    @endif
 
+    @if(admin_can('publicite'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "videoads.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-film"></i>
@@ -287,7 +308,9 @@
             </li>
         </ul>
     </li>
+    @endif
 
+    @if(admin_can('contenu'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "imgslider.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-file-easel"></i>
@@ -340,8 +363,10 @@
             </li>
         </ul>
     </li>
+    @endif
 
 
+    @if(admin_can('annonces'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "entretiens.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>
@@ -351,10 +376,12 @@
             <li  @class(['submenu-item', 'active' => request()->routeIs('admin.entretiens.index')])>
                 <a href="{{ route("admin.entretiens.index") }}">List</a>
             </li>
-        
+
         </ul>
     </li>
+    @endif
 
+    @if(admin_can('contenu'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "avistext.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-file-earmark-font"></i>
@@ -384,6 +411,8 @@
             </li>
         </ul>
     </li>
+    @endif
+    @if(admin_can('users'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "users.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>
@@ -398,6 +427,8 @@
             </li>
         </ul>
     </li>
+    @endif
+    @if(admin_can('publicite'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "publications.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>
@@ -412,6 +443,8 @@
             </li>
         </ul>
     </li>
+    @endif
+    @if(admin_can('encheres'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "autoenchere.")]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-people"></i>
@@ -426,22 +459,28 @@
             </li> -->
         </ul>
     </li>
+    @endif
 
+    @if(admin_can('discussions'))
     <li @class(['sidebar-item', 'active' => str_contains($current_route, 'discussions.')])>
         <a href="{{ route('admin.discussions.index') }}" class="sidebar-link">
             <i class="bi bi-chat-dots-fill"></i>
             <span>Discussions</span>
         </a>
     </li>
+    @endif
 
+    @if(admin_can('estimations'))
     <li @class(['sidebar-item', 'active' => str_contains($current_route, 'estimations.')])>
         <a href="{{ route('admin.estimations.index') }}" class="sidebar-link">
             <i class="bi bi-calculator-fill"></i>
             <span>Estimations</span>
         </a>
     </li>
+    @endif
 
     {{-- Blog / Articles --}}
+    @if(admin_can('contenu'))
     <li @class(['sidebar-item','has-sub', 'active' => str_contains($current_route, 'articles.')]) >
         <a href="#" class='sidebar-link'>
             <i class="bi bi-journal-text"></i>
@@ -456,19 +495,20 @@
             </li>
         </ul>
     </li>
+    @endif
 
     {{-- Configuration du marketplace (prix, taux, modules) --}}
+    @if(admin_can('settings'))
     <li @class(['sidebar-item', 'active' => str_contains($current_route, 'settings.')])>
         <a href="{{ route('admin.settings.index') }}" class="sidebar-link">
             <i class="bi bi-gear-fill"></i>
             <span>Configuration</span>
         </a>
     </li>
+    @endif
 
     {{-- 🔹 End of Admin Sidebar --}}
-    @endrole
 @endif
             </ul>
         </div>
     </div>
-</div>
