@@ -110,32 +110,34 @@ function aeApprove(url) {
 
 document.querySelectorAll('.unlimited-toggle').forEach(checkbox => {
     checkbox.addEventListener('change', function () {
-        const clientId  = this.dataset.id;
-        const unlimited = this.checked ? 1 : 0;
-        const label     = this.closest('.form-check').querySelector('.unlimited-label');
+        const el        = this;
+        const clientId  = el.dataset.id;
+        const unlimited = el.checked ? 1 : 0;
+        const label     = el.closest('.form-check').querySelector('.unlimited-label');
 
-        fetch(`/admin/clients/${clientId}/unlimited`, {
-            method: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({ unlimited })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
+        fetch('{{ route('csrf.token') }}', { credentials: 'same-origin', cache: 'no-store' })
+            .then(r => r.json())
+            .then(tok => fetch(`/admin/clients/${clientId}/unlimited`, {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': tok.token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ unlimited })
+            }))
+            .then(async res => {
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || ('HTTP ' + res.status));
+                }
                 if (label) label.textContent = data.unlimited ? 'Illimité' : 'Standard';
-            } else {
-                alert('Erreur lors de la mise à jour.');
-                this.checked = !this.checked;
-            }
-        })
-        .catch(() => {
-            alert('Erreur réseau.');
-            this.checked = !this.checked;
-        });
+            })
+            .catch(err => {
+                alert('Erreur lors de la mise à jour : ' + err.message);
+                el.checked = !el.checked;
+            });
     });
 });
 
