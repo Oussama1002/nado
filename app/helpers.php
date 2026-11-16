@@ -7,6 +7,34 @@ use App\Models\Setting;
  * Chargés via l'autoload "files" de composer.json.
  */
 
+if (! function_exists('admin_can')) {
+    /**
+     * Vrai si l'admin connecté peut accéder à un module donné.
+     * Un rôle « admin » a tout ; sinon on vérifie la permission "access.<module>".
+     * Tolérant aux erreurs (permission inexistante, invité) → false.
+     */
+    function admin_can(string $module): bool
+    {
+        $user = auth('admin')->user();
+        if (! $user) {
+            return false;
+        }
+
+        try {
+            if (method_exists($user, 'isAdmin') && $user->isAdmin()) {
+                return true;
+            }
+            if (method_exists($user, 'hasRole') && $user->hasRole('admin')) {
+                return true;
+            }
+            return method_exists($user, 'hasPermissionTo')
+                && $user->hasPermissionTo('access.'.$module);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+}
+
 if (! function_exists('settings')) {
     /**
      * Lit une valeur de configuration typée.

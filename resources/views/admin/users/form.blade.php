@@ -32,6 +32,27 @@
                                     <div class="col-12 col-md-12 my-2">
                                         @include('admin.partials.select', ["class" => 'col', "label" => "Role" ,"name" => 'role', "value" => $user->role, "data" => ["admin" => "Admin", "member" => "Member"], "hasicon" => "building" ])
                                     </div>
+
+                                    {{-- Accès aux modules (ignoré pour un admin, qui a tout) --}}
+                                    <div class="col-12 my-2">
+                                        <label class="form-label fw-bold d-block mb-1">Accès aux modules</label>
+                                        <small class="text-muted d-block mb-2">
+                                            Un utilisateur « Admin » a accès à tout. Pour un « Member », cochez les modules autorisés.
+                                        </small>
+                                        <div class="row">
+                                            @foreach(($modules ?? []) as $key => $label)
+                                                <div class="col-12 col-md-6 col-lg-4 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="modules[]" value="{{ $key }}"
+                                                               id="mod_{{ $key }}"
+                                                               @checked(in_array($key, old('modules', $userModules ?? []), true))>
+                                                        <label class="form-check-label" for="mod_{{ $key }}">{{ $label }}</label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                     <div class="col-12 col-md-6 my-2">
                                         @include('admin.partials.input', ["class" => 'col', "label" => "Password" , "type" => "password", "name" => 'password', "hasicon" => "lock" ])
                                     </div>
