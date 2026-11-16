@@ -134,6 +134,12 @@
     </form>
 </div>
 
+@include('partials.token-cost-confirm', [
+    'formId'  => 'dmdForm',
+    'costKey' => 'demande',
+    'service' => __('messages.tokens.reason.demande'),
+])
+
 <script>
     (function () {
         var DMD_I18N = {

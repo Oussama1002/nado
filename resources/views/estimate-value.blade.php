@@ -614,7 +614,7 @@
         $selectedOptions = (array) old('options', $input['options'] ?? []);
     @endphp
     <div class="form-card" id="estimation-form">
-        <form method="POST" action="{{ route('estimate.value') }}">
+        <form method="POST" action="{{ route('estimate.value') }}" id="estimateForm">
             @csrf
             <div class="form-grid">
 
@@ -1011,5 +1011,10 @@
         });
     })();
 </script>
+@include('partials.token-cost-confirm', [
+    'formId'  => 'estimateForm',
+    'costKey' => 'estimation',
+    'service' => __('messages.tokens.reason.estimation'),
+])
 </body>
 </html>
