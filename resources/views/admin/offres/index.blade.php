@@ -76,7 +76,7 @@
 								      </td>
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.offres.destroy' , $offre) ])
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.offres.destroy' , $offre), "module" => "encheres" ])
                                         </div>
                                       </td>
                                   </tr>

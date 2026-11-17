@@ -62,7 +62,7 @@
                             onsubmit="return confirm('Supprimer ce client ?')">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-sm btn-danger">Supprimer</button>
+                            @if(admin_can('clients','delete'))<button class="btn btn-sm btn-danger">Supprimer</button>@endif
                                                 <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-info btn-sm">Voir</a>
 
                         </form>

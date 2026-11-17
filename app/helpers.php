@@ -9,11 +9,18 @@ use App\Models\Setting;
 
 if (! function_exists('admin_can')) {
     /**
-     * Vrai si l'admin connecté peut accéder à un module donné.
-     * Un rôle « admin » a tout ; sinon on vérifie la permission "access.<module>".
+     * Contrôle d'accès admin par module et, en option, par action.
+     *
+     *   admin_can('clients')            → l'admin peut-il voir/toucher le module ?
+     *   admin_can('clients', 'delete')  → … peut-il précisément SUPPRIMER ?
+     *
+     * Un rôle « admin » a tout. Sinon on lit les permissions Spatie :
+     *   - granulaire "access.<module>.<ability>" (explore|add|modify|delete) ;
+     *   - ancienne "access.<module>" (sans granulaire) = accès complet hérité,
+     *     tant qu'aucune permission granulaire n'existe pour ce module.
      * Tolérant aux erreurs (permission inexistante, invité) → false.
      */
-    function admin_can(string $module): bool
+    function admin_can(string $module, ?string $ability = null): bool
     {
         $user = auth('admin')->user();
         if (! $user) {
@@ -27,8 +34,28 @@ if (! function_exists('admin_can')) {
             if (method_exists($user, 'hasRole') && $user->hasRole('admin')) {
                 return true;
             }
-            return method_exists($user, 'hasPermissionTo')
-                && $user->hasPermissionTo('access.'.$module);
+            if (! method_exists($user, 'getPermissionNames')) {
+                return false;
+            }
+
+            $names    = $user->getPermissionNames();
+            $base     = 'access.'.$module;
+            $hasBase  = $names->contains($base);
+            $granular = $names
+                ->filter(fn ($p) => str_starts_with($p, $base.'.'))
+                ->map(fn ($p) => substr($p, strlen($base.'.')));
+
+            // Pas d'action précise demandée : accès « au module » en général.
+            if ($ability === null) {
+                return $granular->isNotEmpty() || $hasBase;
+            }
+
+            if ($granular->contains($ability)) {
+                return true;
+            }
+
+            // Fallback hérité : ancienne perm « tout-en-un », sans granulaire.
+            return $granular->isEmpty() && $hasBase;
         } catch (\Throwable $e) {
             return false;
         }

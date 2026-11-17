@@ -44,7 +44,7 @@
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
                                           <a href="{{ route("admin.ventes.show" , $vente)}}" class="btn btn-info">Voire </a>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.ventes.destroy' , $vente) ])
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.ventes.destroy' , $vente), "module" => "ventes" ])
                                         </div>
                                       </td>
                                   </tr>

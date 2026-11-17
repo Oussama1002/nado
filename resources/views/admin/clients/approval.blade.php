@@ -48,11 +48,13 @@
                     <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-info btn-sm">Voir</a>
 
 <!-- Delete Button -->
+@if(admin_can('clients','delete'))
 <form action="{{ route('admin.clients.destroy', $client->id) }}" method="POST" style="display:inline;">
     @csrf
     @method('DELETE')
     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
 </form>
+@endif
                     </td>
                 </tr>
             @endforeach

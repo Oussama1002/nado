@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Avis text</h4>
-                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'avistext') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.avistext.create')}}" class="btn btn-primary">New Avis text</a></div>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'avistext') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('contenu','add'))<a href="{{ route('admin.avistext.create')}}" class="btn btn-primary">New Avis text</a>@endif</div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">
@@ -43,8 +43,8 @@
                                       </td>
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
-                                          <a href="{{ route("admin.avistext.edit" , $av)}}" class="btn btn-info">Update</a>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.avistext.destroy' , $av) ])
+                                          @if(admin_can('contenu','modify'))<a href="{{ route("admin.avistext.edit" , $av)}}" class="btn btn-info">Update</a>@endif
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.avistext.destroy' , $av), "module" => "contenu" ])
                                         </div>
                                       </td>
                                   </tr>

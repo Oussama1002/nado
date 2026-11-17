@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Brands</h4>
-                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'brands') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.brands.create')}}" class="btn btn-primary">New brand</a></div>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'brands') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('catalogue','add'))<a href="{{ route('admin.brands.create')}}" class="btn btn-primary">New brand</a>@endif</div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">
@@ -39,8 +39,8 @@
                                       </td>
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
-                                          <a href="{{ route("admin.brands.edit" , $b)}}" class="btn btn-info">Update</a>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.brands.destroy' , $b) ])
+                                          @if(admin_can('catalogue','modify'))<a href="{{ route("admin.brands.edit" , $b)}}" class="btn btn-info">Update</a>@endif
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.brands.destroy' , $b), "module" => "catalogue" ])
                                         </div>
                                       </td>
                                   </tr>

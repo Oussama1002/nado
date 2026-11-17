@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Image slider</h4>
-                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'imgslider') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.imgslider.create')}}" class="btn btn-primary">New Image slider</a></div>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'imgslider') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('contenu','add'))<a href="{{ route('admin.imgslider.create')}}" class="btn btn-primary">New Image slider</a>@endif</div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">
@@ -43,8 +43,8 @@
                                       <td class="text-center"> @if ($av->active == 1) <i class="bi bi-check text-success"></i> @else <i class="bi bi-dash-circle text-danger"></i> @endif </td>
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
-                                          <a href="{{ route("admin.imgslider.edit" , $av)}}" class="btn btn-info">Update</a>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.imgslider.destroy' , $av) ])
+                                          @if(admin_can('contenu','modify'))<a href="{{ route("admin.imgslider.edit" , $av)}}" class="btn btn-info">Update</a>@endif
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.imgslider.destroy' , $av), "module" => "contenu" ])
                                         </div>
                                       </td>
                                   </tr>

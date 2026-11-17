@@ -71,12 +71,14 @@
                     <td>{{ $client->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-info btn-sm">Voir</a>
+                        @if(admin_can('clients','delete'))
                         <form action="{{ route('admin.clients.destroy', $client->id) }}" method="POST"
                             onsubmit="return confirm('Supprimer ce client ?')" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger">Supprimer</button>
                         </form>
+                        @endif
                     </td>
                 </tr>
             @empty

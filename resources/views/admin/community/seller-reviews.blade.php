@@ -29,7 +29,7 @@
                             <td class="d-flex gap-1">
                                 @if($r->status !== 'approved')<form method="POST" action="{{ route('admin.community.seller-reviews.approve', $r->id) }}">@csrf<button class="btn btn-sm btn-success">✓</button></form>@endif
                                 @if($r->status !== 'rejected')<form method="POST" action="{{ route('admin.community.seller-reviews.reject', $r->id) }}">@csrf<button class="btn btn-sm btn-warning">✕</button></form>@endif
-                                <form method="POST" action="{{ route('admin.community.seller-reviews.destroy', $r->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>
+                                @if(admin_can('contenu','delete'))<form method="POST" action="{{ route('admin.community.seller-reviews.destroy', $r->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>@endif
                             </td>
                         </tr>
                     @empty

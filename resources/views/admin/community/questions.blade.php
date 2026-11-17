@@ -28,7 +28,7 @@
                             <td class="d-flex gap-1">
                                 @if($q->status !== 'approved')<form method="POST" action="{{ route('admin.community.questions.approve', $q->id) }}">@csrf<button class="btn btn-sm btn-success">✓</button></form>@endif
                                 @if($q->status !== 'rejected')<form method="POST" action="{{ route('admin.community.questions.reject', $q->id) }}">@csrf<button class="btn btn-sm btn-warning">✕</button></form>@endif
-                                <form method="POST" action="{{ route('admin.community.questions.destroy', $q->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>
+                                @if(admin_can('contenu','delete'))<form method="POST" action="{{ route('admin.community.questions.destroy', $q->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>@endif
                             </td>
                         </tr>
                     @empty

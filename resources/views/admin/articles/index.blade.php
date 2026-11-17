@@ -4,9 +4,11 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Gestion des Articles</h1>
+        @if(admin_can('contenu','add'))
         <a href="{{ route('admin.articles.create') }}" class="btn btn-primary">
             + Nouvel article
         </a>
+        @endif
     </div>
 
     @if (session('success'))
@@ -52,13 +54,15 @@
                     </td>
                     <td>
                         <a href="{{ route('articles.show', $article->slug) }}" target="_blank" class="btn btn-sm btn-info">Voir</a>
-                        <a href="{{ route('admin.articles.edit', $article->id) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        @if(admin_can('contenu','modify'))<a href="{{ route('admin.articles.edit', $article->id) }}" class="btn btn-sm btn-warning">Modifier</a>@endif
+                        @if(admin_can('contenu','delete'))
                         <form action="{{ route('admin.articles.destroy', $article->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('Supprimer cet article ?')">Supprimer</button>
                         </form>
+                        @endif
                     </td>
                 </tr>
             @empty

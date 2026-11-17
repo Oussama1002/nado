@@ -62,12 +62,14 @@
                     </td>
                     <td>
                         <a href="{{ route('admin.estimations.show', $estimation->id) }}" class="btn btn-sm btn-info">Détails</a>
+                        @if(admin_can('estimations','delete'))
                         <form action="{{ route('admin.estimations.destroy', $estimation->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('Supprimer cette estimation ?')">Supprimer</button>
                         </form>
+                        @endif
                     </td>
                 </tr>
             @empty
