@@ -69,7 +69,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}">
+                                    <form method="POST" action="{{ route('admin.logout') }}">
                                         @csrf
                                         <a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
                                             <i class="bi bi-box-arrow-left me-2"></i> Logout
