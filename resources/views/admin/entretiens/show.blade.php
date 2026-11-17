@@ -40,10 +40,12 @@
            class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded shadow">
             Retour à la liste
         </a>
-        <a href="{{ route('admin.entretiens.edit', $entretien->id) }}" 
+        @if(admin_can('annonces','modify'))
+        <a href="{{ route('admin.entretiens.edit', $entretien->id) }}"
            class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow ml-4">
             Modifier
         </a>
+        @endif
     </div>
 </div>
 @endsection

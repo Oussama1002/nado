@@ -93,15 +93,51 @@ class ModuleAccess
             abort(403, "Accès réservé aux administrateurs.");
         }
 
-        try {
-            if ($user->hasPermissionTo('access.'.$module)) {
-                return $next($request);
-            }
-        } catch (\Throwable $e) {
-            // Permission inexistante → refus.
+        // Action requise (explore|add|modify|delete) déduite de la route, puis
+        // vérifiée via admin_can() — source de vérité unique (helper partagé
+        // avec la barre latérale et les boutons des vues).
+        $ability = $this->abilityForRoute($request);
+
+        if (admin_can($module, $ability)) {
+            return $next($request);
         }
 
         abort(403, "Vous n'avez pas accès à ce module.");
+    }
+
+    /**
+     * Déduit l'action (explore|add|modify|delete) depuis le dernier segment du
+     * nom de route (actions CRUD standard), sinon depuis le verbe HTTP :
+     *   GET/HEAD → explore, DELETE → delete, POST/PUT/PATCH → modify.
+     */
+    private function abilityForRoute(Request $request): string
+    {
+        $name   = optional($request->route())->getName();
+        $action = $name ? strtolower((string) last(explode('.', $name))) : null;
+
+        switch ($action) {
+            case 'index':
+            case 'show':
+                return 'explore';
+            case 'create':
+            case 'store':
+                return 'add';
+            case 'edit':
+            case 'update':
+                return 'modify';
+            case 'destroy':
+                return 'delete';
+        }
+
+        $method = strtoupper($request->method());
+        if (in_array($method, ['GET', 'HEAD'], true)) {
+            return 'explore';
+        }
+        if ($method === 'DELETE') {
+            return 'delete';
+        }
+
+        return 'modify'; // POST / PUT / PATCH et autres écritures
     }
 
     private static function isFullAdmin($user): bool

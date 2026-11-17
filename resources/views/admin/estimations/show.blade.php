@@ -75,12 +75,14 @@
     </div>
 
     <div class="mt-4">
+        @if(admin_can('estimations','delete'))
         <form action="{{ route('admin.estimations.destroy', $estimation->id) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger"
                     onclick="return confirm('Supprimer cette estimation ?')">Supprimer</button>
         </form>
+        @endif
     </div>
 </div>
 @endsection

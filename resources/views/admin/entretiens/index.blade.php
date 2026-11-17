@@ -30,7 +30,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4 class="card-title">Liste des entretiens</h4>
-                        <a href="{{ route('admin.entretiens.create', ['annonce' => 1]) }}" class="btn btn-primary">Nouvel entretien</a>
+                        @if(admin_can('annonces','add'))<a href="{{ route('admin.entretiens.create', ['annonce' => 1]) }}" class="btn btn-primary">Nouvel entretien</a>@endif
                         {{-- Remplacez '1' par un ID dynamique selon votre usage --}}
                     </div>
                     <div class="card-content">
@@ -61,13 +61,15 @@
                                         <td>{{ $e->professionnels }}</td>
                                         <td>
                                             <div class="d-flex gap-2 w-100 justify-content-end">
-                                            <a href="{{ route('admin.entretiens.edit', $e->id) }}" class="btn btn-info">Modifier</a>
+                                            @if(admin_can('annonces','modify'))<a href="{{ route('admin.entretiens.edit', $e->id) }}" class="btn btn-info">Modifier</a>@endif
 
+@if(admin_can('annonces','delete'))
 <form method="POST" action="{{ route('admin.entretiens.destroy', $e->id) }}" onsubmit="return confirm('Confirmer la suppression ?')" class="inline">
     @csrf
     @method('DELETE')
     <button type="submit" class="btn btn-danger">Supprimer</button>
 </form>
+@endif
 
                                             </div>
                                         </td>

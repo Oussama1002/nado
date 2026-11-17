@@ -4,7 +4,7 @@
 <div id="main-content">
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>Guides modèles</h3>
-        <a href="{{ route('admin.community.guides.create') }}" class="btn btn-primary">Nouveau guide</a>
+        @if(admin_can('contenu','add'))<a href="{{ route('admin.community.guides.create') }}" class="btn btn-primary">Nouveau guide</a>@endif
     </div>
     <div class="page-content">
         @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
@@ -20,8 +20,8 @@
                         <td>{{ $g->views }}</td>
                         <td>{!! $g->is_active ? '<span class="badge bg-success">Oui</span>' : '<span class="badge bg-secondary">Non</span>' !!}</td>
                         <td class="d-flex gap-1">
-                            <a href="{{ route('admin.community.guides.edit', $g->id) }}" class="btn btn-sm btn-info">Éditer</a>
-                            <form method="POST" action="{{ route('admin.community.guides.destroy', $g->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>
+                            @if(admin_can('contenu','modify'))<a href="{{ route('admin.community.guides.edit', $g->id) }}" class="btn btn-sm btn-info">Éditer</a>@endif
+                            @if(admin_can('contenu','delete'))<form method="POST" action="{{ route('admin.community.guides.destroy', $g->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>@endif
                         </td>
                     </tr>
                 @empty

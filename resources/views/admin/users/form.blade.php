@@ -37,20 +37,45 @@
                                     <div class="col-12 my-2">
                                         <label class="form-label fw-bold d-block mb-1">Accès aux modules</label>
                                         <small class="text-muted d-block mb-2">
-                                            Un utilisateur « Admin » a accès à tout. Pour un « Member », cochez les modules autorisés.
+                                            Un utilisateur « Admin » a accès à tout. Pour un « Member », cochez
+                                            pour chaque module les actions autorisées :
+                                            <b>Explorer</b> (voir), <b>Ajouter</b>, <b>Modifier</b>, <b>Supprimer</b>.
                                         </small>
-                                        <div class="row">
-                                            @foreach(($modules ?? []) as $key => $label)
-                                                <div class="col-12 col-md-6 col-lg-4 mb-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                               name="modules[]" value="{{ $key }}"
-                                                               id="mod_{{ $key }}"
-                                                               @checked(in_array($key, old('modules', $userModules ?? []), true))>
-                                                        <label class="form-check-label" for="mod_{{ $key }}">{{ $label }}</label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered align-middle mb-0" id="modules-access-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="min-width:200px;">Module</th>
+                                                        @foreach(($abilities ?? []) as $abKey => $abLabel)
+                                                            <th class="text-center">{{ $abLabel }}</th>
+                                                        @endforeach
+                                                        <th class="text-center">Tout</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach(($modules ?? []) as $key => $label)
+                                                        @php $rowAllowed = old('abilities.'.$key, $userAbilities[$key] ?? []); @endphp
+                                                        <tr>
+                                                            <td>{{ $label }}</td>
+                                                            @foreach(($abilities ?? []) as $abKey => $abLabel)
+                                                                <td class="text-center">
+                                                                    <input class="form-check-input mod-ability" type="checkbox"
+                                                                           name="abilities[{{ $key }}][]" value="{{ $abKey }}"
+                                                                           id="ab_{{ $key }}_{{ $abKey }}"
+                                                                           data-module="{{ $key }}"
+                                                                           @checked(in_array($abKey, (array) $rowAllowed, true))>
+                                                                </td>
+                                                            @endforeach
+                                                            <td class="text-center">
+                                                                <input class="form-check-input mod-ability-all" type="checkbox"
+                                                                       data-module="{{ $key }}"
+                                                                       aria-label="Tout cocher pour {{ $label }}">
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 my-2">
@@ -79,4 +104,40 @@
 </section>
 </div>
 </div>
+
+<script>
+(function () {
+    var table = document.getElementById('modules-access-table');
+    if (! table) { return; }
+
+    function rowBoxes(module) {
+        return table.querySelectorAll('.mod-ability[data-module="' + CSS.escape(module) + '"]');
+    }
+    function syncAll(module) {
+        var boxes = rowBoxes(module);
+        var all   = table.querySelector('.mod-ability-all[data-module="' + CSS.escape(module) + '"]');
+        if (! all) { return; }
+        var checked = 0;
+        boxes.forEach(function (b) { if (b.checked) { checked++; } });
+        all.checked = (checked === boxes.length && boxes.length > 0);
+        all.indeterminate = (checked > 0 && checked < boxes.length);
+    }
+
+    // État initial des cases « Tout ».
+    table.querySelectorAll('.mod-ability-all').forEach(function (all) {
+        syncAll(all.getAttribute('data-module'));
+    });
+
+    table.addEventListener('change', function (e) {
+        var el = e.target;
+        if (el.classList.contains('mod-ability-all')) {
+            var module = el.getAttribute('data-module');
+            rowBoxes(module).forEach(function (b) { b.checked = el.checked; });
+            el.indeterminate = false;
+        } else if (el.classList.contains('mod-ability')) {
+            syncAll(el.getAttribute('data-module'));
+        }
+    });
+})();
+</script>
 @endsection

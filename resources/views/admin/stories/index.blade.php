@@ -16,7 +16,7 @@
                                 <h4 class="card-title">List Stories</h4>
                                 <div class="d-flex" style="gap:8px;">
                                     <a href="{{ route('admin.export', 'stories') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
-                                    <a href="{{ route('admin.stories.create') }}" class="btn btn-primary">Add New Story</a>
+                                    @if(admin_can('contenu','add'))<a href="{{ route('admin.stories.create') }}" class="btn btn-primary">Add New Story</a>@endif
                                 </div>
                             </div>
                             <div class="card-content">
@@ -115,8 +115,11 @@
                                                         <td>{{ $story->expires_at }}</td>
                                                         <td>
                                                             <div class="d-flex gap-2 w-100 justify-content-end">
+                                                                @if(admin_can('contenu','modify'))
                                                                 <a href="{{ route('admin.stories.edit', $story->id) }}"
                                                                     class="btn btn-primary btn-sm">Modifier</a>
+                                                                @endif
+                                                                @if(admin_can('contenu','delete'))
                                                                 <form
                                                                     action="{{ route('admin.stories.destroy', $story->id) }}"
                                                                     method="POST" class="d-inline">
@@ -125,6 +128,7 @@
                                                                     <button type="submit" class="btn btn-danger btn-sm"
                                                                         onclick="return confirm('Are you sure?')">Delete</button>
                                                                 </form>
+                                                                @endif
                                                             </div>
                                                         </td>
                                                     </tr>

@@ -15,7 +15,7 @@
               <div class="card">
                   <div class="card-header d-flex justify-content-between">
                       <h4 class="card-title">List Videos Ads</h4>
-                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'videoads') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.videoads.create')}}" class="btn btn-primary">New Videos Ads</a></div>
+                      <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'videoads') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('publicite','add'))<a href="{{ route('admin.videoads.create')}}" class="btn btn-primary">New Videos Ads</a>@endif</div>
                   </div>
                   <div class="card-content">
                       <div class="card-body">
@@ -37,8 +37,8 @@
                                       <td>{{ $av->video_key }}</td>
                                       <td>
                                         <div class="d-flex gap-2 w-100 justify-content-end">
-                                          <a href="{{ route("admin.videoads.edit" , $av)}}" class="btn btn-info">Update</a>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.videoads.destroy' , $av) ])
+                                          @if(admin_can('publicite','modify'))<a href="{{ route("admin.videoads.edit" , $av)}}" class="btn btn-info">Update</a>@endif
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('admin.videoads.destroy' , $av), "module" => "publicite" ])
                                         </div>
                                       </td>
                                   </tr>

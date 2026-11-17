@@ -68,7 +68,7 @@
                                               data-bs-target="#repriseDetail{{ $reprise->id }}">
                                               Détails
                                           </button>
-                                          @include('admin.partials.deleteBtn', ["url" =>  route('reprises.destroy' , $reprise) ])
+                                          @include('admin.partials.deleteBtn', ["url" =>  route('reprises.destroy' , $reprise), "module" => "reprises" ])
                                         </div>
                                       </td>
                                   </tr>

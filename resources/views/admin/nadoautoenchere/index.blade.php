@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h4 class="card-title">List Auto Encheres</h4>
-            <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'nadoautoenchere') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.nadoautoenchere.create')}}" class="btn btn-primary">New Auto Encheres</a></div>
+            <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'nadoautoenchere') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('encheres','add'))<a href="{{ route('admin.nadoautoenchere.create')}}" class="btn btn-primary">New Auto Encheres</a>@endif</div>
         </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -71,8 +71,8 @@
                       <td>
                         <div class="d-flex gap-2 w-100 justify-content-end">
                          <a href="{{ route("admin.nadoautoenchere.manage" , $enchere->id)}}" class="btn btn-warning"><i class="bi bi-hammer"></i> Enchère</a>
-                         <a href="{{ route("admin.nadoautoenchere.edit" , $enchere)}}" class="btn btn-info">Update</a>
-@include('admin.partials.deleteBtn', [ "url" =>  route('admin.nadoautoenchere.destroy' , $enchere) ])
+                         @if(admin_can('encheres','modify'))<a href="{{ route("admin.nadoautoenchere.edit" , $enchere)}}" class="btn btn-info">Update</a>@endif
+@include('admin.partials.deleteBtn', [ "url" =>  route('admin.nadoautoenchere.destroy' , $enchere), "module" => "encheres" ])
   </div>
                       </td>
                     </tr>

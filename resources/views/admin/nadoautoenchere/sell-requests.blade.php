@@ -61,7 +61,7 @@
                                     @if($r->status !== 'archived')
                                         <form method="POST" action="{{ route('admin.nadoautoenchere.sellRequests.status', $r->id) }}">@csrf<input type="hidden" name="status" value="archived"><button class="btn btn-sm btn-secondary" title="Archiver">⇩</button></form>
                                     @endif
-                                    <form method="POST" action="{{ route('admin.nadoautoenchere.sellRequests.destroy', $r->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>
+                                    @if(admin_can('encheres','delete'))<form method="POST" action="{{ route('admin.nadoautoenchere.sellRequests.destroy', $r->id) }}" onsubmit="return confirm('Supprimer ?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">🗑</button></form>@endif
                                 </td>
                             </tr>
                         @empty

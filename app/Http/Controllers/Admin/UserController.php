@@ -37,6 +37,19 @@ class UserController extends Controller
         'settings'    => 'Réglages',
     ];
 
+    /**
+     * Actions autorisables par module (= permission "access.<module>.<clé>").
+     * Mappées aux actions de route par le middleware ModuleAccess :
+     *   explore → index/show (+ GET),  add → create/store,
+     *   modify  → edit/update (+ POST/PUT/PATCH),  delete → destroy (+ DELETE).
+     */
+    public const ABILITIES = [
+        'explore' => 'Explorer',
+        'add'     => 'Ajouter',
+        'modify'  => 'Modifier',
+        'delete'  => 'Supprimer',
+    ];
+
     public function __construct()
     {
         $this->middleware('module.access', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
@@ -57,9 +70,10 @@ class UserController extends Controller
     {
 
         return view('admin.users.form', [
-            'user'        => new User,
-            'modules'     => self::MODULES,
-            'userModules' => [],
+            'user'          => new User,
+            'modules'       => self::MODULES,
+            'abilities'     => self::ABILITIES,
+            'userAbilities' => [],
         ]);
 
     }
@@ -74,16 +88,17 @@ class UserController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()->min(4)],
-            'modules'   => ['nullable', 'array'],
-            'modules.*' => ['string', Rule::in(array_keys(self::MODULES))],
+            'abilities'     => ['nullable', 'array'],
+            'abilities.*'   => ['array'],
+            'abilities.*.*' => ['string', Rule::in(array_keys(self::ABILITIES))],
         ]);
 
         $data['password'] = Hash::make($request->password);
-        $user = User::create(collect($data)->except('modules')->all());
+        $user = User::create(collect($data)->except('abilities')->all());
 
         $this->ensureRole($user, $data['role']);
         $user->assignRole($data['role']);
-        $this->syncModules($user, $request->input('modules', []));
+        $this->syncAbilities($user, $request->input('abilities', []));
 
         return to_route('admin.users.index')->with('success', 'user added successfully');
     }
@@ -103,9 +118,10 @@ class UserController extends Controller
     {
 
         return view('admin.users.form', [
-            'user'        => $user,
-            'modules'     => self::MODULES,
-            'userModules' => $this->currentModules($user),
+            'user'          => $user,
+            'modules'       => self::MODULES,
+            'abilities'     => self::ABILITIES,
+            'userAbilities' => $this->currentAbilities($user),
         ]);
     }
 
@@ -119,8 +135,9 @@ class UserController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255',  Rule::unique(User::class)->ignore($user->id)],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()->min(4)],
-            'modules'   => ['nullable', 'array'],
-            'modules.*' => ['string', Rule::in(array_keys(self::MODULES))],
+            'abilities'     => ['nullable', 'array'],
+            'abilities.*'   => ['array'],
+            'abilities.*.*' => ['string', Rule::in(array_keys(self::ABILITIES))],
         ]);
         // Only change the password when a new one was actually typed; otherwise
         // the previous behaviour overwrote it with Hash::make(null) on every edit.
@@ -130,11 +147,11 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        $user->update(collect($data)->except('modules')->all());
+        $user->update(collect($data)->except('abilities')->all());
 
         $this->ensureRole($user, $data['role']);
         $user->syncRoles([$data['role']]);
-        $this->syncModules($user, $request->input('modules', []));
+        $this->syncAbilities($user, $request->input('abilities', []));
 
         return to_route('admin.users.index')->with('success', 'user edits successfully');
     }
@@ -154,34 +171,79 @@ class UserController extends Controller
     }
 
     /**
-     * Les clés de modules actuellement autorisées pour un utilisateur
-     * (dérivées de ses permissions "access.<clé>").
+     * Actions actuellement autorisées par module pour un utilisateur, sous la
+     * forme [module => [abilities]], pour (re)cocher le formulaire.
+     *
+     * - Permissions granulaires "access.<module>.<ability>" → telles quelles.
+     * - Ancienne permission "access.<module>" SANS granulaire → accès complet
+     *   (les 4 actions) : un « member » créé avant cette fonctionnalité garde
+     *   tous ses droits tant qu'un admin ne l'a pas réédité.
      */
-    private function currentModules(User $user): array
+    private function currentAbilities(User $user): array
     {
-        return $user->getPermissionNames()
-            ->filter(fn ($p) => str_starts_with($p, 'access.'))
-            ->map(fn ($p) => substr($p, strlen('access.')))
-            ->values()
-            ->all();
+        $granular   = []; // module => [abilities]
+        $legacyBase = []; // module => true (ancienne perm "access.<module>")
+
+        foreach ($user->getPermissionNames() as $perm) {
+            if (! str_starts_with($perm, 'access.')) {
+                continue;
+            }
+            $parts  = explode('.', substr($perm, strlen('access.')));
+            $module = $parts[0];
+
+            if (isset($parts[1])) {
+                $granular[$module][] = $parts[1];
+            } else {
+                $legacyBase[$module] = true;
+            }
+        }
+
+        $out = [];
+        foreach (self::MODULES as $module => $label) {
+            if (isset($granular[$module])) {
+                // Ordonné et filtré selon ABILITIES, dédoublonné.
+                $out[$module] = array_values(array_intersect(
+                    array_keys(self::ABILITIES),
+                    array_unique($granular[$module])
+                ));
+            } elseif (isset($legacyBase[$module])) {
+                $out[$module] = array_keys(self::ABILITIES); // accès complet hérité
+            }
+        }
+
+        return $out;
     }
 
     /**
-     * Remplace les permissions d'accès d'un utilisateur par la liste de modules
-     * cochés. Les permissions sont créées au besoin sur le guard de l'utilisateur
-     * (admin), comme ensureRole() le fait pour les rôles.
+     * Remplace les permissions d'accès d'un utilisateur par les actions cochées
+     * (payload "abilities[module][] = explore|add|modify|delete").
+     *
+     * On n'écrit QUE des permissions granulaires "access.<module>.<ability>"
+     * (jamais la base "access.<module>") : ainsi l'absence d'une action = refus
+     * strict côté middleware, sans fallback hérité qui rouvrirait l'accès.
+     * Les permissions sont créées au besoin sur le guard de l'utilisateur (admin).
      */
-    private function syncModules(User $user, array $modules): void
+    private function syncAbilities(User $user, array $abilities): void
     {
-        $guard   = Guard::getDefaultName($user);
-        $modules = array_values(array_intersect($modules, array_keys(self::MODULES)));
+        $guard = Guard::getDefaultName($user);
+        $names = [];
 
-        $permissions = array_map(function ($module) use ($guard) {
+        foreach ($abilities as $module => $abList) {
+            if (! array_key_exists($module, self::MODULES) || ! is_array($abList)) {
+                continue;
+            }
+            $abList = array_intersect($abList, array_keys(self::ABILITIES));
+            foreach ($abList as $ability) {
+                $names['access.'.$module.'.'.$ability] = true;
+            }
+        }
+
+        $permissions = array_map(function ($name) use ($guard) {
             return Permission::firstOrCreate([
-                'name'       => 'access.'.$module,
+                'name'       => $name,
                 'guard_name' => $guard,
             ]);
-        }, $modules);
+        }, array_keys($names));
 
         $user->syncPermissions($permissions);
     }

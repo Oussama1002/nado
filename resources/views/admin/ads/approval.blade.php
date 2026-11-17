@@ -25,7 +25,7 @@
                     <td>{{ $annonce->created_at->format('d/m/Y') }}</td>
                     <td>
                     <a href="{{ route('admin.annonces.show', $annonce->id) }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Voir</a>
-                    <a href="{{ route('admin.annonces.edit', $annonce->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    @if(admin_can('annonces','modify'))<a href="{{ route('admin.annonces.edit', $annonce->id) }}" class="btn btn-warning btn-sm">Modifier</a>@endif
                         <form method="POST" action="{{ route('admin.annonces.approve', $annonce->id) }}" style="display:inline-block;">
                             @csrf
                             @method('PATCH')

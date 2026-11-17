@@ -13,9 +13,11 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Liste</h4>
+                        @if(admin_can('contenu','add'))
                         <a href="{{ route('admin.social-posts.create') }}" class="btn btn-primary">
                             + Ajouter une publication
                         </a>
+                        @endif
                     </div>
 
                     <div class="card-body">
@@ -72,14 +74,18 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-end">
+                                                    @if(admin_can('contenu','modify'))
                                                     <a href="{{ route('admin.social-posts.edit', $post) }}"
                                                        class="btn btn-sm btn-warning">Modifier</a>
+                                                    @endif
+                                                    @if(admin_can('contenu','delete'))
                                                     <form action="{{ route('admin.social-posts.destroy', $post) }}"
                                                           method="POST" class="d-inline"
                                                           onsubmit="return confirm('Supprimer cette publication ?');">
                                                         @csrf @method('DELETE')
                                                         <button class="btn btn-sm btn-danger">Supprimer</button>
                                                     </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

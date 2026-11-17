@@ -15,7 +15,7 @@
             <h4 class="card-title">List Annonces</h4>
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.annonces.archive') }}" class="btn btn-secondary"><i class="bi bi-archive"></i> Archive</a>
-                <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'annonces') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a><a href="{{ route('admin.annonces.create')}}" class="btn btn-primary">New Annonce</a></div>
+                <div class="d-flex" style="gap:8px;"><a href="{{ route('admin.export', 'annonces') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>@if(admin_can('annonces','add'))<a href="{{ route('admin.annonces.create')}}" class="btn btn-primary">New Annonce</a>@endif</div>
             </div>
         </div>
           <div class="card-body">
@@ -54,8 +54,8 @@
                       <td class="text-center"> @if ($ad->active == 1) <i class="bi bi-check text-success"></i> @else <i class="bi bi-dash-circle text-danger"></i> @endif </td>
                       <td>
                         <div class="d-flex gap-2 w-100 justify-content-end">
-                          <a href="{{ route("admin.annonces.edit" , $ad)}}" class="btn btn-info">Update</a>
-                          @include('admin.partials.deleteBtn', [  "url" =>  route('admin.annonces.destroy' , $ad) ])
+                          @if(admin_can('annonces','modify'))<a href="{{ route("admin.annonces.edit" , $ad)}}" class="btn btn-info">Update</a>@endif
+                          @include('admin.partials.deleteBtn', [  "url" =>  route('admin.annonces.destroy' , $ad), "module" => "annonces" ])
                         </div>
                       </td>
                     </tr>

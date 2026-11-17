@@ -45,12 +45,14 @@
             <td>{{ $enchere->created_at->format('d/m/Y H:i') }}</td>
             <td>
                 <a href="{{ route('admin.nadoautoencherebid.show', $enchere->id) }}" class="btn btn-sm btn-info">Voir</a>
+                @if(admin_can('encheres','delete'))
                 <form action="{{ route('admin.nadoautoencherebid.destroy', $enchere->id) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Supprimer cette enchère ?')">
                     @csrf
                     @method('DELETE')
                     <button class="btn btn-sm btn-danger">Supprimer</button>
                 </form>
+                @endif
             </td>
         </tr>
     @endforeach

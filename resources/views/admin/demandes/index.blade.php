@@ -102,11 +102,13 @@
                                                         <button class="btn btn-sm btn-warning" title="Rejeter"><i class="bi bi-x-lg"></i></button>
                                                     </form>
                                                 @endif
+                                                @if(admin_can('demandes','delete'))
                                                 <form method="POST" action="{{ route('admin.demandes.destroy', $d->id) }}" class="d-inline"
                                                       onsubmit="return confirm('Supprimer définitivement cette demande ?');">
                                                     @csrf @method('DELETE')
                                                     <button class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                                                 </form>
+                                                @endif
                                             </td>
                                         </tr>
 
