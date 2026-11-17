@@ -508,7 +508,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 
     Route::get('entretiens/create/{annonce}', [EntretienController::class, 'create'])->name('entretiens.create');
     Route::get('entretiens', [\App\Http\Controllers\Admin\EntretienController::class, 'index'])->name('entretiens.index');
-    Route::get('/clients/{id}', [ClientController::class, 'show'])->name('clients.show');
+    Route::get('/clients/{id}', [ClientController::class, 'show'])->whereNumber('id')->name('clients.show');
     Route::get('annonces/approval', [AnnoncesController::class, 'approval'])->name('annonces.approval');
     Route::patch('annonces/{id}/approve', [AnnoncesController::class, 'approve'])->name('annonces.approve');
     Route::get('clients/approval', [ClientController::class, 'approval'])->name('clients.approval');
