@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\Mail;
  */
 class DemandeMatcher
 {
+    /**
+     * Message des lignes DemandeReply créées automatiquement par le matcher
+     * (annonce NADO trouvée pour une recherche). Ces lignes servent au dédoublonnage
+     * et à la notification e-mail — elles ne doivent PAS s'afficher comme des
+     * propositions dans la page demande (sinon « notif vide »). Filtrées à l'affichage.
+     */
+    public const MATCH_MESSAGE = 'Annonce NADO correspondant à votre recherche.';
+
     /** Ajoute l'annonce aux demandes correspondantes. Renvoie le nb de demandes touchées. */
     public static function matchAnnonce(Annonces $annonce): int
     {
@@ -59,7 +67,7 @@ class DemandeMatcher
                 'demande_id'    => $demande->id,
                 'client_id'     => null,
                 'annonce_id'    => $annonce->id,
-                'message'       => 'Annonce NADO correspondant à votre recherche.',
+                'message'       => self::MATCH_MESSAGE,
                 'contact_phone' => $annonce->phone ?? null,
                 'status'        => 'visible',
             ]);

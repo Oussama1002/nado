@@ -142,6 +142,11 @@ class DemandeController extends Controller
             ->values();
         $groupReplies = \App\Models\DemandeReply::whereIn('demande_id', $groupMembers->pluck('id'))
             ->where('status', 'visible')
+            // Exclure les lignes auto-générées par le matcher (notif de correspondance),
+            // qui s'affichaient comme des « réponses » vides. NULL-safe : on garde les
+            // propositions sans message (message NULL).
+            ->where(fn ($q) => $q->whereNull('message')
+                ->orWhere('message', '!=', \App\Services\DemandeMatcher::MATCH_MESSAGE))
             ->with(['client', 'annonce'])
             ->latest()
             ->get();

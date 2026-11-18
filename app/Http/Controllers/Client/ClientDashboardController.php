@@ -126,6 +126,10 @@ class ClientDashboardController extends Controller
             $d->setRelation('groupReplies',
                 \App\Models\DemandeReply::whereIn('demande_id', $memberIds)
                     ->where('status', 'visible')
+                    // Masquer les lignes auto-générées par le matcher (notif de correspondance).
+                    // NULL-safe : garder les propositions sans message.
+                    ->where(fn ($q) => $q->whereNull('message')
+                        ->orWhere('message', '!=', \App\Services\DemandeMatcher::MATCH_MESSAGE))
                     ->with(['client', 'annonce'])
                     ->latest()
                     ->get()
