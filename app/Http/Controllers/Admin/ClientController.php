@@ -129,8 +129,21 @@ public function updateType(Request $request, $id)
         $client->ae_approved = ! $client->ae_approved;
         $client->save();
 
+        // Prévenir le client UNIQUEMENT quand l'accès vient d'être accordé
+        // (pas lors d'un retrait). Un échec d'envoi ne doit jamais bloquer
+        // l'action admin — on journalise et on continue.
+        if ($client->ae_approved && ! empty($client->email)) {
+            try {
+                $client->notify(new \App\Notifications\EnchereAccessApprovedNotification());
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error(
+                    'Notification accès Auto Enchère échouée pour client #' . $client->id . ' : ' . $e->getMessage()
+                );
+            }
+        }
+
         return back()->with('success', $client->ae_approved
-            ? 'Accès Auto Enchère validé.'
+            ? 'Accès Auto Enchère validé. Le client a été notifié par e-mail.'
             : 'Accès Auto Enchère retiré.');
     }
     public function show($id)
