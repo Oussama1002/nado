@@ -4036,16 +4036,6 @@
                     <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=2400"
                         alt="Hero" />
                 @endif
-                <div class="hero-overlay"></div>
-            </div>
-            <div class="container hero-content">
-                <div class="hero-badge">
-                    <span
-                        style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--secondary); display: inline-block;"></span>
-                    <span>{{ __('messages.hero.badge') }}</span>
-                </div>
-                <h1 class="hero-title">{{ __('messages.hero.title_1') }} <br /><span class="text-gradient">{{ __('messages.hero.title_2') }}</span></h1>
-                <p class="hero-desc">{{ __('messages.hero.desc') }}</p>
             </div>
         </section>
 
