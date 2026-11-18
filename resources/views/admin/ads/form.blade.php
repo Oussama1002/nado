@@ -311,10 +311,10 @@
                                     </div>
                                     <div class="col-6 col-md-3 my-2">
                                         <div class="form-check form-switch">
-                                            {{-- New admin annonces are always certifié (forced in AnnoncesController::store) --}}
+                                            {{-- Certifié : coché par défaut à la création, mais l'admin peut décocher
+                                                 (store() respecte désormais la case au lieu de forcer certifie=1). --}}
                                             <input class="form-check-input" type="checkbox" id="certifie" name="certifie"  value="1"
-                                                   @if(!$ads->exists || $ads->certifie == 1) checked @endif
-                                                   @unless($ads->exists) disabled @endunless>
+                                                   @if(!$ads->exists || $ads->certifie == 1) checked @endif>
                                             <label class="form-check-label" for="certifie">certifié</label>
                                         </div>
                                     </div>

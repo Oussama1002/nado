@@ -197,9 +197,10 @@ public function toggleHomepage(Request $request)
     $ads['active'] = 1;
     $ads['views'] = 0;
 
-    // Annonces created by the admin always go to the "certifié" section,
-    // never to "particuliers" / "pro" (those come from client annonces)
-    $ads['certifie']   = 1;
+    // Annonces created by the admin never go to "particuliers" / "pro"
+    // (those come from client annonces). "Certifié" is checked by default in
+    // the form but the admin can uncheck it, so honour the submitted value.
+    $ads['certifie']   = $request->has('certifie') ? 1 : 0;
     $ads['particulie'] = 0;
     $ads['pro']        = 0;
 
