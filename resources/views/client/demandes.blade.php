@@ -21,6 +21,10 @@
     .md-count { background:#eff4ff; color:#1459DD; font-size:12px; font-weight:800; padding:5px 12px; border-radius:999px; white-space:nowrap; }
     .md-renew { background:#0f172a; color:#fff; border:0; border-radius:999px; font-size:12px; font-weight:800; padding:6px 14px; cursor:pointer; white-space:nowrap; }
     .md-renew:hover { background:#1e293b; }
+    .md-edit { display:inline-block; background:#eff4ff; color:#1459DD; border:0; border-radius:999px; font-size:12px; font-weight:800; padding:6px 14px; cursor:pointer; white-space:nowrap; text-decoration:none; }
+    .md-edit:hover { background:#dce7ff; }
+    .md-delete { background:#fef2f2; color:#b91c1c; border:0; border-radius:999px; font-size:12px; font-weight:800; padding:6px 14px; cursor:pointer; white-space:nowrap; }
+    .md-delete:hover { background:#fee2e2; }
     .md-replies { padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
     .md-reply { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; }
     .md-reply-top { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
@@ -65,6 +69,13 @@
                     <form method="POST" action="{{ route('client.demandes.renew', $d->id) }}" style="margin:0;">
                         @csrf
                         <button type="submit" class="md-renew" title="Remonter en 1re place">🔄 Renouveler</button>
+                    </form>
+                    <a href="{{ route('client.demandes.edit', $d->id) }}" class="md-edit" title="Modifier la demande">✏️ Modifier</a>
+                    <form method="POST" action="{{ route('client.demandes.destroy', $d->id) }}" style="margin:0;"
+                          onsubmit="return confirm('Supprimer définitivement cette demande ?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="md-delete" title="Supprimer la demande">🗑️ Supprimer</button>
                     </form>
                 </div>
             </div>

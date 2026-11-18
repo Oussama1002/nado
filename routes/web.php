@@ -132,6 +132,10 @@ Route::middleware(['auth:client'])->prefix('client')->name('client.')->group(fun
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::get('/mes-demandes', [ClientDashboardController::class, 'myDemandes'])->name('mes-demandes');
     Route::post('/mes-demandes/{id}/renew', [ClientDashboardController::class, 'renewDemande'])->whereNumber('id')->name('demandes.renew');
+    // Le client peut modifier / supprimer SA propre demande (scoping par client_id dans le contrôleur).
+    Route::get('/mes-demandes/{id}/edit', [ClientDashboardController::class, 'editDemande'])->whereNumber('id')->name('demandes.edit');
+    Route::put('/mes-demandes/{id}', [ClientDashboardController::class, 'updateDemande'])->whereNumber('id')->name('demandes.update');
+    Route::delete('/mes-demandes/{id}', [ClientDashboardController::class, 'destroyDemande'])->whereNumber('id')->name('demandes.destroy');
 
     // Tokens (crédits) — solde, historique, recharge (paiement branché en phase 2)
     Route::get('/tokens', [\App\Http\Controllers\Client\TokenController::class, 'index'])->name('tokens');
