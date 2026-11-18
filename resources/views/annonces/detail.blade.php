@@ -2954,6 +2954,9 @@
                                 <div class="spec-item">
                                     <span>{{ __('messages.detail.spec_gearbox') }}</span><strong>{{ $boxRaw ? $boxLabel : 'N/A' }}</strong>
                                 </div>
+                                <div class="spec-item">
+                                    <span>{{ __('messages.detail.spec_carnet') }}</span><strong>{{ ($annonce->carnet_entretien ?? false) ? __('messages.detail.spec_carnet_yes') : __('messages.detail.spec_carnet_no') }}</strong>
+                                </div>
                             </div>
                         </div>
 

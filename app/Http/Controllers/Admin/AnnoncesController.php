@@ -194,6 +194,7 @@ public function toggleHomepage(Request $request)
     $ads = $request->validated();
 
     $ads['is_homepage'] = $request->has('is_homepage') ? 1 : 0;
+    $ads['carnet_entretien'] = $request->has('carnet_entretien') ? 1 : 0;
     $ads['active'] = 1;
     $ads['views'] = 0;
 
@@ -380,7 +381,7 @@ public function showAnnonce($id)
 $adsData['is_homepage'] = $request->has('is_homepage') ? 1 : 0;
 
 $checkboxes = [
-    'active', 'garantie','certifie','showroom','finance','particulie','pro',
+    'active', 'garantie','carnet_entretien','certifie','showroom','finance','particulie','pro',
     // Sécurité
     'airbags','abs','esp','antipatinage','aide_freinage_urgence',
     'antidemarrage_electronique','aide_demarrage_cote','selecteur_mode_conduite',

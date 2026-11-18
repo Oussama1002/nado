@@ -299,6 +299,12 @@
                                     </div>
                                     <div class="col-6 col-md-3 my-2">
                                         <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="carnet_entretien" name="carnet_entretien"  value="1" @if($ads->carnet_entretien == 1) checked @endif>
+                                            <label class="form-check-label" for="carnet_entretien">Carnet d'entretien</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3 my-2">
+                                        <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="showroom" name="showroom"  value="1" @if($ads->showroom == 1) checked @endif>
                                             <label class="form-check-label" for="showroom">Showroom</label>
                                         </div>

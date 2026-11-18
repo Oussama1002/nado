@@ -71,6 +71,7 @@ protected $fillable = [
     'ordinateur',
     'verrouillage',
     'garantie',
+    'carnet_entretien',
     'views',
     'active',
     'verified',

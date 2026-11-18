@@ -49,6 +49,7 @@ class AdsRequest extends FormRequest
             'pro'        => ['nullable'],
             'showroom'   => ['nullable'],
             'garantie'   => ['nullable'],
+            'carnet_entretien' => ['nullable'],
             'finance'    => ['nullable'],
 
             // Options (booleans)
