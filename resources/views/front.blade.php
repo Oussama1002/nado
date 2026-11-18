@@ -252,6 +252,22 @@
             opacity: 1;
         }
 
+        /* Hero simplifié : juste l'image plein cadre. Annule le fond blanc en
+           dégradé, la largeur 62 % et le masque de fondu (base, responsive, RTL)
+           qui n'existaient que pour le texte désormais retiré. */
+        .hero { background: #000 !important; }
+        .hero-bg,
+        html[dir="rtl"] .hero-bg {
+            inset: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+        }
+        .hero-bg img,
+        html[dir="rtl"] .hero-bg img { object-position: center !important; }
+
         /* Hero Slider Styles */
         .hero-slider {
             width: 100%;
