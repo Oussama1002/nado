@@ -62,6 +62,17 @@
         </div>
     @endif
 
+    {{-- ⚠️ Erreurs de validation (sinon l'échec passe inaperçu) --}}
+    @if ($errors->any())
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+            <ul style="margin: 0; padding-right: 18px; padding-left: 18px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
    <form action="{{ route('client.profile.update') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')

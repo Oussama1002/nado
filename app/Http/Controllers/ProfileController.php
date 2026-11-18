@@ -35,7 +35,10 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
 {
-    $user = $request->user();
+    // Toujours viser le client connecté : le guard par défaut ("web") pointe
+    // sur les admins, donc $request->user() pourrait résoudre un admin quand
+    // les deux sessions coexistent dans le même navigateur.
+    $user = Auth::guard('client')->user();
     $data = $request->validated();
 
     $user->name  = $data['name'];
