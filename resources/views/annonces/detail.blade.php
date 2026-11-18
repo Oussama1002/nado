@@ -2545,6 +2545,21 @@
                             // on n'affiche PAS le reel YouTube (évite deux vidéos sur la fiche).
                             $showReel = !empty($annonce->reel) && !$hasVideoFile;
 
+                            // Normalise le reel YouTube en ID de 11 caractères : les admins
+                            // collent souvent une URL complète (youtu.be/…, watch?v=…, shorts/…,
+                            // embed/…), ce qui cassait l'embed (…/embed/https://… → 404).
+                            $reelId = null;
+                            if (!empty($annonce->reel)) {
+                                $r = trim($annonce->reel);
+                                if (preg_match('~^[A-Za-z0-9_-]{11}$~', $r)) {
+                                    $reelId = $r;
+                                } elseif (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/|v/))([A-Za-z0-9_-]{11})~', $r, $reelM)) {
+                                    $reelId = $reelM[1];
+                                } else {
+                                    $reelId = $r;
+                                }
+                            }
+
                             $totalMedia = $imageCount + ($showReel ? 1 : 0) + ($hasVideoFile ? 1 : 0);
                         @endphp
 
@@ -3492,7 +3507,7 @@
             @if ($showReel)
                 mediaList.push({
                     type: 'video',
-                    videoId: "{{ $annonce->reel }}"
+                    videoId: @json($reelId)
                 });
             @endif
             @if ($hasVideoFile)
