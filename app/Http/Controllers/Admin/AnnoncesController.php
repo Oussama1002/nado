@@ -23,6 +23,16 @@ use App\Models\Autoenchere;
 use Illuminate\Support\Facades\Auth;
 class AnnoncesController extends Controller
 {
+    /**
+     * Entête de purge du cache pleine page LiteSpeed. La page d'accueil est
+     * page-cachée : une modification d'annonce (retrait « certifié », suppression,
+     * approbation…) met à jour la base et le cache applicatif, mais la carte garde
+     * l'ancien HTML tant que LiteSpeed n'a pas purgé. LiteSpeed lit cet entête sur
+     * la réponse et purge tout le cache pleine page → les cartes reflètent le
+     * changement tout de suite, sans purge manuelle via cPanel.
+     */
+    private const LS_PURGE = ['X-LiteSpeed-Purge' => '*'];
+
     public function __construct()
     {
         $this->middleware('module.access', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy', 'archive', 'restore', 'forceDelete']]);
@@ -110,7 +120,7 @@ public function toggleHomepage(Request $request)
     // Optionally: clear cache if homepage ads are cached
     Cache::forget('homepage_ads');
 
-    return response()->json(['success' => true]);
+    return response()->json(['success' => true])->withHeaders(self::LS_PURGE);
 }
 
     public function index()
@@ -146,7 +156,8 @@ public function toggleHomepage(Request $request)
         $warning = $this->chargePremiumOnApproval($ad);
 
         $msg = back()->with('success', 'Annonce approuvée avec succès.');
-        return $warning ? $msg->with('warning', $warning) : $msg;
+        $msg = $warning ? $msg->with('warning', $warning) : $msg;
+        return $msg->withHeaders(self::LS_PURGE);
     }
 
     /**
@@ -216,6 +227,7 @@ public function toggleHomepage(Request $request)
 
     Cache::forget('similar_adsAll');
     Cache::forget('similar_adsp');
+    Cache::forget('similar_ads_pro');
     Cache::forget('similar_ads');
 
     $ad = Annonces::create($ads);
@@ -230,7 +242,7 @@ public function toggleHomepage(Request $request)
         $ad->save();
     }
 
-    return to_route('annonces.index')->with('success', 'Success store brand');
+    return to_route('annonces.index')->with('success', 'Success store brand')->withHeaders(self::LS_PURGE);
 }
 
 
@@ -478,7 +490,7 @@ Cache::forget('similar_adsp');
 Cache::forget('similar_ads_pro');
 Cache::forget('similar_ads');
 
-return to_route('annonces.index')->with('success', 'Success update brand');
+return to_route('annonces.index')->with('success', 'Success update brand')->withHeaders(self::LS_PURGE);
 
 }
 
@@ -490,7 +502,7 @@ return to_route('annonces.index')->with('success', 'Success update brand');
     {
         Annonces::where('id', $id)->delete();
 
-        return to_route('annonces.index')->with('success', 'Annonce deleted successfully');
+        return to_route('annonces.index')->with('success', 'Annonce deleted successfully')->withHeaders(self::LS_PURGE);
     }
 
     /**
@@ -510,7 +522,7 @@ return to_route('annonces.index')->with('success', 'Success update brand');
     {
         Annonces::onlyTrashed()->findOrFail($id)->restore();
 
-        return to_route('admin.annonces.archive')->with('success', 'Annonce restaurée avec succès');
+        return to_route('admin.annonces.archive')->with('success', 'Annonce restaurée avec succès')->withHeaders(self::LS_PURGE);
     }
 
     /**
@@ -522,7 +534,7 @@ return to_route('annonces.index')->with('success', 'Success update brand');
         Media::where('annonces_id', $annonce->id)->delete();
         $annonce->forceDelete();
 
-        return to_route('admin.annonces.archive')->with('success', 'Annonce supprimée définitivement');
+        return to_route('admin.annonces.archive')->with('success', 'Annonce supprimée définitivement')->withHeaders(self::LS_PURGE);
     }
 
     /**
