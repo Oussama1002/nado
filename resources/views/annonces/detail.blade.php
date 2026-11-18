@@ -2784,7 +2784,12 @@
                             وقد قطعت <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }}</bdi> كلم</strong>.
                             وهي مزوّدة بعلبة سرعة <strong class="desc-hl">{{ $boxRaw ? $boxLabel : 'غير متوفر' }}</strong>
                             وبقوة جبائية تبلغ <strong class="desc-hl">{{ $annonce->cv ?? 'غير متوفر' }} حصان</strong>.
-                            هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong>@if ($annonce->certifie ?? false) <strong class="desc-hl">معتمدة من نادو</strong>@endif@if ($annonce->garantie ?? false)@if ($annonce->certifie ?? false)،@endif وتتوفّر على <strong class="desc-hl">ضمان</strong>@endif.
+                            @php
+                                $clausesAr = [];
+                                if ($annonce->certifie ?? false) { $clausesAr[] = '<strong class="desc-hl">معتمدة من نادو</strong>'; }
+                                if ($annonce->garantie ?? false) { $clausesAr[] = 'تتوفّر على <strong class="desc-hl">ضمان</strong>'; }
+                            @endphp
+                            هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong>@if (!empty($clausesAr)) {!! implode(' و', $clausesAr) !!}@endif.
                             وهي متوفرة بـ<strong class="desc-hl">الدار البيضاء</strong>، ومعروضة بسعر
                             <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }}</bdi> درهم</strong>.
                         </p>
@@ -2803,7 +2808,12 @@
                             ce véhicule affiche <strong class="desc-hl">{{ number_format($annonce->km ?? 0, 0, ',', ' ') }} km</strong> au compteur.
                             Il est équipé d'une boîte de vitesses <strong class="desc-hl">{{ ucfirst($annonce->box ?? $annonce->transmission ?? '') ?: 'N/A' }}</strong> et d'une
                             puissance fiscale de <strong class="desc-hl">{{ $annonce->cv ?? 'N/A' }} CV</strong>.
-                            Ce véhicule <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} portes</strong>@if ($annonce->certifie ?? false) est <strong class="desc-hl">certifié par NADO</strong>@endif@if ($annonce->garantie ?? false)@if ($annonce->certifie ?? false),@endif bénéficie d'une <strong class="desc-hl">garantie</strong>@endif.
+                            @php
+                                $clausesFr = [];
+                                if ($annonce->certifie ?? false) { $clausesFr[] = 'est <strong class="desc-hl">certifié par NADO</strong>'; }
+                                if ($annonce->garantie ?? false) { $clausesFr[] = 'bénéficie d\'une <strong class="desc-hl">garantie</strong>'; }
+                            @endphp
+                            Ce véhicule <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} portes</strong>@if (!empty($clausesFr)) {!! implode(' et ', $clausesFr) !!}@endif.
                             Disponible à <strong class="desc-hl">Casablanca</strong>, il est proposé au prix de
                             <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</strong>.
                         </p>
