@@ -3952,11 +3952,10 @@
                 .info-item { font-size: 9px !important; letter-spacing: 0.02em !important; gap: 5px !important; }
             }
             @media (max-width: 480px) {
-                /* On phones the email + phone + Nado Radio + lang combo was wide
-                   enough to clip the last digit of the phone number. Drop the
-                   email (it's also in the drawer/footer) so the phone stays
-                   intact and there's breathing room before the radio pill. */
-                .contact-info .info-item:first-child { display: none !important; }
+                /* Keep email + phone visible; the row was clipping because of
+                   the "Nado Radio" text label. Hide the label (icon stays
+                   clickable) so there's room for the full phone number. */
+                .nd-radio-txt { display: none !important; }
                 .info-item { font-size: 10px !important; }
             }
         </style>
