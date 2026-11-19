@@ -2805,7 +2805,7 @@
                                 if ($annonce->garantie ?? false) { $clausesAr[] = 'تتوفّر على <strong class="desc-hl">ضمان</strong>'; }
                             @endphp
                             هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong>@if (!empty($clausesAr)) {!! implode(' و', $clausesAr) !!}@endif.
-                            وهي متوفرة بـ<strong class="desc-hl">الدار البيضاء</strong>، ومعروضة بسعر
+                            وهي متوفرة بـ<strong class="desc-hl">{{ $annonce->city ?: 'الدار البيضاء' }}</strong>، ومعروضة بسعر
                             <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }}</bdi> درهم</strong>.
                         </p>
                         @else
@@ -2829,7 +2829,7 @@
                                 if ($annonce->garantie ?? false) { $clausesFr[] = 'bénéficie d\'une <strong class="desc-hl">garantie</strong>'; }
                             @endphp
                             Ce véhicule <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} portes</strong>@if (!empty($clausesFr)) {!! implode(' et ', $clausesFr) !!}@endif.
-                            Disponible à <strong class="desc-hl">Casablanca</strong>, il est proposé au prix de
+                            Disponible à <strong class="desc-hl">{{ $annonce->city ?: 'Casablanca' }}</strong>, il est proposé au prix de
                             <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</strong>.
                         </p>
                         @endif
