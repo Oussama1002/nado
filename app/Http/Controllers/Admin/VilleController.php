@@ -39,7 +39,7 @@ class VilleController extends Controller
         ]);
         Ville::create($ville);
 
-        return to_route('ville.index')->with('success', 'Success store ville');
+        return to_route('admin.ville.index')->with('success', 'Success store ville');
     }
 
     /**
@@ -70,7 +70,7 @@ class VilleController extends Controller
         ]);
         $ville->update($n);
 
-        return to_route('ville.index')->with('success', 'success update ville');
+        return to_route('admin.ville.index')->with('success', 'success update ville');
     }
 
     /**
@@ -80,6 +80,6 @@ class VilleController extends Controller
     {
         $ville->delete();
 
-        return to_route('ville.index')->with('success', 'Ville deleted successfully');
+        return to_route('admin.ville.index')->with('success', 'Ville deleted successfully');
     }
 }
