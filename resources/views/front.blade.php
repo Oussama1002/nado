@@ -450,6 +450,18 @@
             }
         }
 
+        /* ---- Hero image : on mobile, show the whole photo (contain) instead of
+           cropping it. Drop the forced min-height so the hero is exactly the
+           image's aspect ratio; keep #000 behind for any letterboxing. */
+        @media (max-width: 640px) {
+            .hero { min-height: 0 !important; aspect-ratio: 16 / 10; }
+            .hero-bg img,
+            .hero-slider .item img {
+                object-fit: contain !important;
+                object-position: center center !important;
+            }
+        }
+
         /* ---- Hero en arabe (RTL) : on inverse image ⇄ fond blanc --------- */
         html[dir="rtl"] .hero {
             background: linear-gradient(245deg, #ffffff 0%, #fbfcfe 42%, #f4f7fb 72%, #eef2f8 100%);
