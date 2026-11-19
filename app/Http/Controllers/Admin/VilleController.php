@@ -18,7 +18,7 @@ class VilleController extends Controller
      */
     public function index()
     {
-        return view('admin.ville.index', ['ville' => ville::all()]);
+        return view('admin.ville.index', ['ville' => Ville::orderBy('id')->get()]);
     }
 
     /**
