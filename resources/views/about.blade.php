@@ -653,7 +653,7 @@
         <div class="ap-wrap">
             <h2 class="ap-footer-h2">{{ __('messages.about.footer_h2_1') }} <span>{{ __('messages.about.footer_h2_2') }}</span></h2>
             <div class="ap-footer-btns">
-                <a href="{{ route('annonces.index') }}" class="ap-btn-primary">
+                <a href="{{ route('achat.index') }}" class="ap-btn-primary">
                     <i data-lucide="search" style="width:16px;height:16px;"></i>
                     {{ __('messages.about.explore_stock') }}
                 </a>
