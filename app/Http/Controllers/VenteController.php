@@ -35,7 +35,7 @@ class VenteController extends Controller
      {
          // Charge les données pour le formulaire
          $brands = Brand::all();
-         $city = Ville::all();
+         $city = Ville::ordered()->get();
 
         $prefill = null;
         $annonceToEdit = null;

@@ -116,7 +116,7 @@ $similar_ads = Cache::remember('similar_ads', 86400, function () {
 
 
         $villes = Cache::remember('villes', 86400, function () {
-            return \App\Models\Ville::orderBy('name')->get();
+            return \App\Models\Ville::ordered()->get();
         });
 
         return view('front', ['imgslider' => $imgslider,    'articles'      => $articles,

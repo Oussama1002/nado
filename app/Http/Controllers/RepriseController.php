@@ -27,7 +27,7 @@ class RepriseController extends Controller
         // l'utilisateur clique sur le bouton de reprise (voir la vue), puis
         // revérifiée côté serveur dans store().
         $brands = Brand::all();
-        $city = Ville::all();
+        $city = Ville::ordered()->get();
         $client = Auth::guard('client')->user(); // null si non connecté
 
         return view('reprise.reprise', compact('brands', 'city', 'client'));

@@ -4712,7 +4712,7 @@
     }
 </style>
 
-@php $expertVilles = \App\Models\Ville::orderBy('name')->get(); @endphp
+@php $expertVilles = \App\Models\Ville::ordered()->get(); @endphp
 <!-- Expert NADO — popup contact form (ported from the homepage) -->
 <div id="expertModal" class="expert-modal" aria-hidden="true">
     <div class="expert-modal__backdrop" onclick="closeExpertModal()"></div>

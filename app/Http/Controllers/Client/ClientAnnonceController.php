@@ -83,7 +83,7 @@ public function index()
         $packs = Pack::all();
         $colors = Color::all();
 
-        $villes = Ville::all(); // ← ici on récupère les villes
+        $villes = Ville::ordered()->get(); // ← ici on récupère les villes
 
 
 
@@ -342,7 +342,7 @@ public function uploadTemp(Request $request)
     $models = Modele::all();
     $packs = Pack::all();
     $colors = Color::all();
-    $villes = Ville::all();
+    $villes = Ville::ordered()->get();
 
     return view('client.annonces.edit', compact(
         'annonce',

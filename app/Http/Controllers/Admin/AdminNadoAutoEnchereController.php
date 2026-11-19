@@ -23,7 +23,7 @@ class AdminNadoAutoEnchereController extends Controller
         return view('admin.nadoautoenchere.index', [
             'encheres' => NadoAutoEnchere::with('client')->get(),
             'brands' => Brand::all(),
-            'city' => Ville::all(),
+            'city' => Ville::ordered()->get(),
             'colors' => Color::all()
         ]);
     }
@@ -192,7 +192,7 @@ class AdminNadoAutoEnchereController extends Controller
         return view('admin.nadoautoenchere.form', [
             'encheres' => new NadoAutoEnchere,
             'brands' => Brand::all(),
-            'city' => Ville::all(),
+            'city' => Ville::ordered()->get(),
             'colors' => Color::all(),
             'clients' => $this->vendeurClients(),
         ]);
@@ -279,7 +279,7 @@ class AdminNadoAutoEnchereController extends Controller
         return view('admin.nadoautoenchere.form', [
             'encheres' => NadoAutoEnchere::findOrFail($id),
             'brands' => Brand::all(),
-            'city' => Ville::all(),
+            'city' => Ville::ordered()->get(),
             'colors' => Color::all(),
             'clients' => $this->vendeurClients(),
         ]);

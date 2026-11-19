@@ -55,7 +55,7 @@ class DemandeController extends Controller
         return view('demandes.index', [
             'demandes' => $demandes,
             'brands'   => Brand::orderBy('name')->get(),
-            'villes'   => Ville::orderBy('name')->get(),
+            'villes'   => Ville::ordered()->get(),
             'filters'  => $request->all(),
         ]);
     }
@@ -127,7 +127,7 @@ class DemandeController extends Controller
             ->when($demande->km_max,    fn ($q) => $q->where('km',   '<=', $demande->km_max))
             ->latest()->limit(6)->get();
 
-        $villes = Ville::orderBy('name')->get();
+        $villes = Ville::ordered()->get();
         $brands = Brand::orderBy('name')->get();
         $prefillModeles = $demande->brand_id
             ? Modele::where('brand_id', $demande->brand_id)->orderBy('name')->get()
@@ -198,7 +198,7 @@ class DemandeController extends Controller
 
         return view('demandes.create', [
             'brands'  => Brand::orderBy('name')->get(),
-            'villes'  => Ville::orderBy('name')->get(),
+            'villes'  => Ville::ordered()->get(),
             'modeles' => !empty($prefill['brand_id'])
                 ? Modele::where('brand_id', $prefill['brand_id'])->orderBy('name')->get()
                 : collect(),

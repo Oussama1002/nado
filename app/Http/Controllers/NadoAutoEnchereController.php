@@ -643,7 +643,7 @@ if ($rapport && file_exists(storage_path('app/public/nadoautoenchere/pdf/' . $ra
                 'pdfName' => $pdfName,
         'pdfExists' => $pdfExists,
         'brands'   => Brand::all(),
-        'city'     => Ville::all(),
+        'city'     => Ville::ordered()->get(),
         'colors'   => Color::all(),
         'modeles'  => Modele::all()
     ]);

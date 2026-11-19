@@ -78,7 +78,7 @@ class BuyController extends Controller
             'secondBanner'       => $secondBanner,
             'thirdBanner'        => $thirdBanner,
             'leftondetailBanner' => $leftondetailBanner,
-            'ville'              => Ville::all(),
+            'ville'              => Ville::ordered()->get(),
             'searchKeys'         => $request->all(),
             'models'             => $models,
             'formatDate'         => function ($date) {

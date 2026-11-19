@@ -165,7 +165,7 @@ class ClientDashboardController extends Controller
         return view('client.demandes-edit', [
             'demande' => $demande,
             'brands'  => Brand::orderBy('name')->get(),
-            'villes'  => Ville::orderBy('name')->get(),
+            'villes'  => Ville::ordered()->get(),
             'colors'  => Color::orderBy('name')->get(),
             'modeles' => $demande->brand_id
                 ? Modele::where('brand_id', $demande->brand_id)->orderBy('name')->get()

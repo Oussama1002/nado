@@ -17,7 +17,7 @@ class FinancementController extends Controller
     public function index()
     {
         $clientTypes = ClientType::all();
-        return view('financement', ['brands' => Brand::all(), 'city' => Ville::all(), 'clientTypes' => $clientTypes]);
+        return view('financement', ['brands' => Brand::all(), 'city' => Ville::ordered()->get(), 'clientTypes' => $clientTypes]);
     }
 
     /**
