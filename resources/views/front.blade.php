@@ -3952,11 +3952,17 @@
                 .info-item { font-size: 9px !important; letter-spacing: 0.02em !important; gap: 5px !important; }
             }
             @media (max-width: 480px) {
-                /* Keep email + phone visible; the row was clipping because of
-                   the "Nado Radio" text label. Hide the label (icon stays
-                   clickable) so there's room for the full phone number. */
-                .nd-radio-txt { display: none !important; }
-                .info-item { font-size: 10px !important; }
+                /* Fit everything (email + phone + Nado Radio label + FR/AR) on
+                   narrow phones without clipping. Shrink fonts, icons and
+                   gaps rather than hiding any item. */
+                .top-bar .custom-container { padding: 0 6px !important; gap: 4px !important; }
+                .top-bar-right { gap: 6px !important; }
+                .contact-info { gap: 6px !important; }
+                .info-item { font-size: 8px !important; letter-spacing: 0 !important; gap: 3px !important; }
+                .info-item i { width: 9px !important; height: 9px !important; }
+                .nd-radio-link { gap: 3px !important; font-size: 8px !important; letter-spacing: 0.05em !important; }
+                .nd-radio-link svg { width: 14px !important; height: 14px !important; }
+                .nd-radio-txt { display: inline !important; }
             }
         </style>
     </header>
