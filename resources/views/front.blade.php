@@ -450,16 +450,36 @@
             }
         }
 
-        /* ---- Hero image : on mobile, show the whole photo (contain) instead of
-           cropping it. Drop the forced min-height so the hero is exactly the
-           image's aspect ratio; keep #000 behind for any letterboxing. */
+        /* ---- Hero image : on mobile, size the section to the image itself so
+           there is no letterbox / black band and no cropping. Section height
+           follows the image naturally. */
         @media (max-width: 640px) {
-            .hero { min-height: 0 !important; aspect-ratio: 16 / 10; }
-            .hero-bg img,
-            .hero-slider .item img {
-                object-fit: contain !important;
-                object-position: center center !important;
+            .hero {
+                min-height: 0 !important;
+                height: auto !important;
+                background: transparent !important;
+                display: block !important;
             }
+            .hero-bg,
+            html[dir="rtl"] .hero-bg {
+                position: static !important;
+                inset: auto !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+            .hero-bg img,
+            .hero-slider,
+            .hero-slider .owl-stage-outer,
+            .hero-slider .owl-stage,
+            .hero-slider .owl-item,
+            .hero-slider .item,
+            .hero-slider .item img {
+                width: 100% !important;
+                height: auto !important;
+                object-fit: initial !important;
+                display: block !important;
+            }
+            .hero-overlay { display: none !important; }
         }
 
         /* ---- Hero en arabe (RTL) : on inverse image ⇄ fond blanc --------- */
