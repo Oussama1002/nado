@@ -66,6 +66,40 @@
     .dmd-errors ul { margin:0; padding-left:18px; }
 
     .dmd-note { font-size:12px; color:#64748b; text-align:center; }
+
+    /* Brand logo picker (replaces the Marque <select>) */
+    .dmd-brand-grid {
+        display:grid; grid-template-columns:repeat(auto-fill, minmax(72px, 1fr));
+        gap:8px; margin-top:4px; max-height:280px; overflow-y:auto;
+        padding:8px; background:#fff; border:1px solid #e2e8f0; border-radius:10px;
+    }
+    .dmd-brand-tile {
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:4px; padding:8px 4px; background:#fff; border:1px solid #e2e8f0;
+        border-radius:8px; cursor:pointer; transition:border-color .15s, box-shadow .15s, transform .15s;
+    }
+    .dmd-brand-tile:hover { border-color:#1459DD; box-shadow:0 2px 8px rgba(20,89,221,.1); transform:translateY(-1px); }
+    .dmd-brand-tile img { width:40px; height:40px; object-fit:contain; }
+    .dmd-brand-tile .nolg { width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#64748b; background:#f1f5f9; border-radius:6px; font-size:14px; }
+    .dmd-brand-tile .bn { font-size:10px; font-weight:700; color:#334155; text-align:center; line-height:1.1; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .dmd-brand-search {
+        width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px;
+        font-size:14px; outline:none; margin-bottom:6px;
+    }
+    .dmd-brand-search:focus { border-color:#1459DD; box-shadow:0 0 0 3px rgba(20,89,221,.1); }
+    .dmd-brand-chosen {
+        display:flex; align-items:center; gap:10px; padding:10px 12px;
+        background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px;
+    }
+    .dmd-brand-chosen img { width:34px; height:34px; object-fit:contain; }
+    .dmd-brand-chosen .nolg { width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#64748b; background:#fff; border-radius:6px; }
+    .dmd-brand-chosen .name { font-weight:700; font-size:14px; color:#0f172a; flex:1; }
+    .dmd-brand-change {
+        background:#fff; color:#1459DD; border:1px solid #bfdbfe; border-radius:8px;
+        padding:6px 10px; font-weight:700; cursor:pointer; font-family:inherit; font-size:12px;
+    }
+    .dmd-brand-change:hover { background:#dbeafe; }
+    .dmd-modele-block[hidden] { display:none; }
 </style>
 
 <div class="dmd-form-wrap">
@@ -155,7 +189,7 @@
         // Options d'années (une seule fois), injectées dans la 1re ligne.
         var YEAR_OPTS = '';
         (function(){ for (var y = {{ (int) date('Y') }}; y >= 1980; y--) { YEAR_OPTS += '<option value="'+y+'">'+y+'</option>'; } })();
-        var brandsData = @json($brands->map(fn($b) => ['id' => $b->id, 'name' => $b->name])->values());
+        var brandsData = @json($brands->map(fn($b) => ['id' => $b->id, 'name' => $b->name, 'logo' => $b->logo ? asset('storage/brands/'.$b->logo) : ''])->values());
         var prefillBrandId  = @json((string)($prefill['brand_id']  ?? ''));
         var prefillModeleId = @json((string)($prefill['modele_id'] ?? ''));
 
@@ -194,11 +228,20 @@
                    + '<select class="dmd-year-max"' + nameMax + '><option value="">' + DMD_I18N.yearMax + '</option>' + YEAR_OPTS + '</select>'
                  + '</div>';
             row.innerHTML =
-                '<div>'
+                '<div class="dmd-brand-block">'
                  + '<label>' + DMD_I18N.marque + '</label>'
-                 + '<select class="dmd-brand">' + brandOptions(preBrandId || '') + '</select>'
+                 + '<input type="hidden" class="dmd-brand" value="">'
+                 + '<div class="dmd-brand-picker">'
+                   + '<input type="text" class="dmd-brand-search" placeholder="' + DMD_I18N.chooseBrand + '" autocomplete="off">'
+                   + '<div class="dmd-brand-grid"></div>'
+                 + '</div>'
+                 + '<div class="dmd-brand-chosen" hidden>'
+                   + '<span class="dmd-brand-chosen-logo"></span>'
+                   + '<span class="name"></span>'
+                   + '<button type="button" class="dmd-brand-change">' + DMD_I18N.chooseBrand + '</button>'
+                 + '</div>'
                 + '</div>'
-                + '<div>'
+                + '<div class="dmd-modele-block" hidden>'
                  + '<label>' + DMD_I18N.modele + '</label>'
                  + '<select class="dmd-modele"><option value="">' + DMD_I18N.chooseModel + '</option></select>'
                 + '</div>'
@@ -207,18 +250,79 @@
 
             container.appendChild(row);
 
-            var brandSel  = row.querySelector('.dmd-brand');
-            var modeleSel = row.querySelector('.dmd-modele');
-            var removeBtn = row.querySelector('.dmd-car-remove');
+            var brandInp    = row.querySelector('.dmd-brand');
+            var picker      = row.querySelector('.dmd-brand-picker');
+            var grid        = row.querySelector('.dmd-brand-grid');
+            var search      = row.querySelector('.dmd-brand-search');
+            var chosen      = row.querySelector('.dmd-brand-chosen');
+            var chosenLogo  = row.querySelector('.dmd-brand-chosen-logo');
+            var chosenName  = chosen.querySelector('.name');
+            var changeBtn   = row.querySelector('.dmd-brand-change');
+            var modeleBlock = row.querySelector('.dmd-modele-block');
+            var modeleSel   = row.querySelector('.dmd-modele');
+            var removeBtn   = row.querySelector('.dmd-car-remove');
 
-            brandSel.addEventListener('change', function () {
-                loadModels(brandSel.value, modeleSel, null);
-            });
+            function logoNode(b) {
+                if (b.logo) {
+                    var im = document.createElement('img');
+                    im.src = b.logo; im.alt = b.name; im.loading = 'lazy';
+                    return im;
+                }
+                var sp = document.createElement('span');
+                sp.className = 'nolg';
+                sp.textContent = (b.name || '?').charAt(0).toUpperCase();
+                return sp;
+            }
+
+            function renderGrid(filter) {
+                grid.innerHTML = '';
+                var q = (filter || '').toLowerCase().trim();
+                brandsData.forEach(function (b) {
+                    if (q && b.name.toLowerCase().indexOf(q) === -1) return;
+                    var t = document.createElement('div');
+                    t.className = 'dmd-brand-tile';
+                    t.appendChild(logoNode(b));
+                    var n = document.createElement('div');
+                    n.className = 'bn'; n.textContent = b.name;
+                    t.appendChild(n);
+                    t.addEventListener('click', function () { pickBrand(b, null); });
+                    grid.appendChild(t);
+                });
+            }
+
+            function pickBrand(b, preselectModeleId) {
+                brandInp.value = b.id;
+                chosenLogo.innerHTML = '';
+                chosenLogo.appendChild(logoNode(b));
+                chosenName.textContent = b.name;
+                picker.hidden = true;
+                chosen.hidden = false;
+                modeleBlock.hidden = false;
+                loadModels(b.id, modeleSel, preselectModeleId);
+            }
+
+            function resetBrand() {
+                brandInp.value = '';
+                picker.hidden = false;
+                chosen.hidden = true;
+                modeleBlock.hidden = true;
+                modeleSel.innerHTML = '<option value="">' + DMD_I18N.chooseModel + '</option>';
+                search.value = '';
+                renderGrid('');
+            }
+
+            search.addEventListener('input', function () { renderGrid(search.value); });
+            changeBtn.addEventListener('click', resetBrand);
             removeBtn.addEventListener('click', function () {
                 if (container.children.length > 1) row.remove();
             });
 
-            if (preBrandId) loadModels(preBrandId, modeleSel, preModeleId);
+            renderGrid('');
+
+            if (preBrandId) {
+                var pre = brandsData.find(function (b) { return String(b.id) === String(preBrandId); });
+                if (pre) pickBrand(pre, preModeleId);
+            }
             return row;
         }
 
@@ -259,7 +363,8 @@
                 var mSel = r.querySelector('.dmd-modele');
                 var yMin = r.querySelector('.dmd-year-min');
                 var yMax = r.querySelector('.dmd-year-max');
-                var bTxt = bSel.options[bSel.selectedIndex]?.text || '';
+                var bInfo = brandsData.find(function (b) { return String(b.id) === String(bSel.value); });
+                var bTxt = bInfo ? bInfo.name : '';
                 var mTxt = mSel.options[mSel.selectedIndex]?.text || '';
                 if (bSel.value) {
                     var label = bTxt + (mSel.value ? ' ' + mTxt : '');
