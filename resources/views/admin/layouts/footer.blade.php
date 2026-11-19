@@ -60,7 +60,7 @@ for (var i = 0; i < elements.length; i++) {
 }
   */
   new DataTable('#example', {
-    order: [[0, 'desc']],
+    order: [[0, (window.__dtOrderDir || 'desc')]],
     initComplete: function () {
         this.api()
             .columns()

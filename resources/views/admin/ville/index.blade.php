@@ -60,3 +60,6 @@
 </div>
 </div>
 @endsection
+@section('script')
+<script>window.__dtOrderDir = 'asc';</script>
+@endsection
