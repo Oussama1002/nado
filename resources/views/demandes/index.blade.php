@@ -33,8 +33,11 @@
     .dmd-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; background:#dbeafe; color:#1459DD; text-transform:uppercase; letter-spacing:.03em; }
     .dmd-date { font-size:12px; color:#94a3b8; }
 
-    .dmd-title { font-size:17px; font-weight:700; color:#0f172a; margin:0; line-height:1.3; text-decoration:none; }
+    .dmd-title { font-size:17px; font-weight:700; color:#0f172a; margin:0; line-height:1.3; text-decoration:none; display:flex; align-items:center; gap:10px; }
     .dmd-title:hover { color:#1459DD; }
+    .dmd-brand-logo { width:40px; height:40px; object-fit:contain; background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:4px; flex-shrink:0; }
+    .dmd-brand-logo-ph { width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#64748b; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:8px; font-size:16px; flex-shrink:0; }
+    .dmd-title-txt { min-width:0; }
     .dmd-by { font-size:12px; color:#64748b; display:inline-flex; align-items:center; gap:5px; margin-top:2px; }
     .dmd-by strong { color:#0f172a; font-weight:700; }
 
@@ -116,8 +119,15 @@
                     </div>
 
                     <a href="{{ route('demandes.show', $d->id) }}" class="dmd-title">
-                        {{ $d->brand?->name ?? __('messages.demandes.any_brand') }} {{ $d->modele?->name }}
-                        @if($d->ville) · {{ $d->ville->name }} @endif
+                        @if($d->brand?->logo)
+                            <img src="{{ asset('storage/brands/'.$d->brand->logo) }}" alt="{{ $d->brand->name }}" class="dmd-brand-logo" loading="lazy">
+                        @else
+                            <span class="dmd-brand-logo-ph">{{ mb_strtoupper(mb_substr($d->brand?->name ?? '?', 0, 1)) }}</span>
+                        @endif
+                        <span class="dmd-title-txt">
+                            {{ $d->brand?->name ?? __('messages.demandes.any_brand') }} {{ $d->modele?->name }}
+                            @if($d->ville) · {{ $d->ville->name }} @endif
+                        </span>
                     </a>
                     <div class="dmd-by">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
