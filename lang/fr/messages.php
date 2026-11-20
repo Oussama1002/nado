@@ -18,7 +18,7 @@ return [
         'auction'        => 'Auto-enchère',
         'tradein'        => 'Reprise',
         'financing'      => 'Auto-financement',
-        'about'          => 'À propos',
+        'demandes'       => 'Demandes',
         'buy_ae'         => 'Acheter',
         'sell_ae'        => 'Vendre',
         'individual'     => 'Particulier',

@@ -53,7 +53,7 @@
                         <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-link {{ request()->routeIs('nadoautoenchere.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.auction') }}</a>
                         <a href="{{ route('reprise.form') }}" class="nv-link {{ request()->routeIs('reprise.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.tradein') }}</a>
                         <a href="{{ route('financement.index') }}" class="nv-link {{ request()->routeIs('financement.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.financing') }}</a>
-                        <a href="{{ route('about.index') }}" class="nv-link {{ request()->routeIs('about.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.about') }}</a>
+                        <a href="{{ route('demandes.index') }}" class="nv-link {{ request()->routeIs('demandes.*') ? 'nv-highlight' : '' }}">{{ __('messages.nav.demandes') }}</a>
                     @endif
                 </div>
             </div>
@@ -111,7 +111,7 @@
                     <a href="{{ route('nadoautoenchere.prelogin') }}">{{ __('messages.nav.auction') }}</a>
                     <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
                     <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
-                    <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
+                    <a href="{{ route('demandes.index') }}">{{ __('messages.nav.demandes') }}</a>
                 @endif
             </div>
             <div class="nv-drawer-footer">

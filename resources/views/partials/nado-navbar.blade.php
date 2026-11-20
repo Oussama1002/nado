@@ -72,7 +72,7 @@
                         <a href="{{ route('nadoautoenchere.prelogin') }}" class="nav-link {{ request()->routeIs('nadoautoenchere.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.auction') }}</a>
                         <a href="{{ route('reprise.form') }}" class="nav-link {{ request()->routeIs('reprise.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.tradein') }}</a>
                         <a href="{{ route('financement.index') }}" class="nav-link {{ request()->routeIs('financement.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.financing') }}</a>
-                        <a href="{{ route('about.index') }}" class="nav-link {{ request()->routeIs('about.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.about') }}</a>
+                        <a href="{{ route('demandes.index') }}" class="nav-link {{ request()->routeIs('demandes.*') ? 'highlight-link' : '' }}">{{ __('messages.nav.demandes') }}</a>
                     @endif
                 </div>
             </div>
@@ -145,7 +145,7 @@
                     <a href="{{ route('nadoautoenchere.prelogin') }}">{{ __('messages.nav.auction') }}</a>
                     <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
                     <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
-                    <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
+                    <a href="{{ route('demandes.index') }}">{{ __('messages.nav.demandes') }}</a>
                 @endif
             </div>
 

@@ -17,7 +17,7 @@ return [
         'auction'         => 'المزاد',
         'tradein'         => 'استبدال',
         'financing'       => 'التمويل',
-        'about'           => 'من نحن',
+        'demandes'        => 'طلبات',
         'buy_ae'          => 'شراء',
         'sell_ae'         => 'بيع',
         'individual'      => 'فرد',

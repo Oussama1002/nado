@@ -2185,7 +2185,7 @@
                         <a href="{{ route('nadoautoenchere.prelogin') }}" class="nv-nav-link nv-highlight-link">{{ __('messages.nav.auction') }}</a>
                         <a href="{{ route('reprise.form') }}" class="nv-nav-link">{{ __('messages.nav.tradein') }}</a>
                         <a href="{{ route('financement.index') }}" class="nv-nav-link">{{ __('messages.nav.financing') }}</a>
-                        <a href="{{ route('about.index') }}" class="nv-nav-link">{{ __('messages.nav.about') }}</a>
+                        <a href="{{ route('demandes.index') }}" class="nv-nav-link">{{ __('messages.nav.demandes') }}</a>
                     </div>
                 </div>
 
@@ -2247,7 +2247,7 @@
                     <a href="{{ route('nadoautoenchere.prelogin') }}">{{ __('messages.nav.auction') }}</a>
                     <a href="{{ route('reprise.form') }}">{{ __('messages.nav.tradein') }}</a>
                     <a href="{{ route('financement.index') }}">{{ __('messages.nav.financing') }}</a>
-                    <a href="{{ route('about.index') }}">{{ __('messages.nav.about') }}</a>
+                    <a href="{{ route('demandes.index') }}">{{ __('messages.nav.demandes') }}</a>
                     <div style="margin-top:12px;">@include('partials.lang-switcher')</div>
                 </div>
                 <div class="nv-drawer-footer">
