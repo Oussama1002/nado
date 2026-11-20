@@ -100,6 +100,7 @@ $similar_ads_pro = Cache::remember('similar_ads_pro', 86400, function () {
     return Annonces::where('active', 1)
         ->where('status', 'disponible')
         ->where('pro', 1)
+        ->where('certifie', 0) // Certified ads belong to their own section, not here
         ->orderBy('id', 'desc')
         ->limit(9)
         ->get();
