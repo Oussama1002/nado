@@ -557,10 +557,13 @@
     .pp-status.reserve    { background: rgba(249,115,22,0.9); }
     .pp-status.vendu      { background: rgba(239,68,68,0.9); }
 
+    /* Sits under the status pill on the left so the favorite button in the
+       top-right corner doesn't cover it. Mirrors to the right in RTL,
+       matching .pp-status / .pp-card-tools which mirror the same way. */
     .pp-type {
         position: absolute;
-        top: 24px;
-        right: 24px;
+        top: 68px;
+        left: 24px;
         padding: 8px 14px;
         border-radius: 9999px;
         font-size: 10px;
@@ -572,6 +575,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         z-index: 2;
     }
+    html[dir="rtl"] .pp-type { left: auto; right: 24px; }
     .pp-type.certifie    { background: rgba(16,185,129,0.9); }
     .pp-type.particulier { background: rgba(59,130,246,0.95); }
     .pp-type.pro         { background: rgba(245,158,11,0.95); }
