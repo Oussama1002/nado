@@ -5313,7 +5313,7 @@
                     <p style="font-size: 0.75rem; color: var(--slate-400); margin-bottom: 1.5rem;">{{ __('messages.extra.footer_social_note') }}</p>
                     {{-- Clickable social links, opened in a new tab. Font Awesome 6
                          brand icons are already loaded on this page (fa-brands). --}}
-                    <div class="flex flex-wrap gap-3">
+                    <div class="flex flex-wrap" style="gap: 14px;">
                         <a href="https://www.facebook.com/nado.ma" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">
                             <i class="fa-brands fa-facebook-f" style="color: var(--white); font-size: 15px;"></i>
                         </a>
@@ -5329,14 +5329,11 @@
                         <a href="https://www.linkedin.com/company/nado-ma" target="_blank" rel="noopener" class="social-btn" aria-label="LinkedIn">
                             <i class="fa-brands fa-linkedin-in" style="color: var(--white); font-size: 15px;"></i>
                         </a>
-                        <a href="https://x.com/nado_ma" target="_blank" rel="noopener" class="social-btn" aria-label="X (Twitter)">
-                            <i class="fa-brands fa-x-twitter" style="color: var(--white); font-size: 15px;"></i>
-                        </a>
                         <a href="https://wa.me/212520070611" target="_blank" rel="noopener" class="social-btn" aria-label="WhatsApp">
                             <i class="fa-brands fa-whatsapp" style="color: var(--white); font-size: 15px;"></i>
                         </a>
-                        <a href="https://www.snapchat.com/add/nado.ma" target="_blank" rel="noopener" class="social-btn" aria-label="Snapchat">
-                            <i class="fa-brands fa-snapchat" style="color: var(--white); font-size: 15px;"></i>
+                        <a href="https://t.me/nado_voitures_maroc" target="_blank" rel="noopener" class="social-btn" aria-label="Telegram">
+                            <i class="fa-brands fa-telegram" style="color: var(--white); font-size: 15px;"></i>
                         </a>
                     </div>
                 </div>
