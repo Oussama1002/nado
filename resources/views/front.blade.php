@@ -4066,7 +4066,27 @@
     </script>
 
     <!-- CONTENT -->
-    <div class="flex flex-col bg-white" style="padding-top: 140px;">
+    {{-- padding-top is set at runtime from the real fixed-navbar height so the
+         hero's top edge is never hidden under the navbar on phones where the
+         top strips add up to more than the 140px default. --}}
+    <div id="nadoContent" class="flex flex-col bg-white" style="padding-top: 140px;">
+    <script>
+        (function () {
+            var apply = function () {
+                var nav = document.querySelector('.nado-navbar');
+                var el  = document.getElementById('nadoContent');
+                if (!nav || !el) return;
+                var h = Math.ceil(nav.getBoundingClientRect().height);
+                if (h > 0) el.style.paddingTop = h + 'px';
+            };
+            apply();
+            window.addEventListener('load', apply);
+            window.addEventListener('resize', apply);
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(apply).catch(function () {});
+            }
+        })();
+    </script>
 
         <!-- 1. HERO -->
         <section class="hero">
