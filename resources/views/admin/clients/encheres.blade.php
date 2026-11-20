@@ -21,7 +21,7 @@
                 <th>Téléphone</th>
                 <th>Rôle</th>
                 <th>Accès enchères</th>
-                <th>Tokens</th>
+                <th>Coins</th>
                 <th>Date d’inscription</th>
                 <th>Action</th>
             </tr>

@@ -24,7 +24,7 @@
                 <th>Entreprise</th>
 
                 <th>Date d’inscription</th>
-                <th>Tokens</th>
+                <th>Coins</th>
                 <th>Accès illimité</th>
                 <th>Action</th>
             </tr>
