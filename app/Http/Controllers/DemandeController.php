@@ -493,27 +493,33 @@ class DemandeController extends Controller
             $years = "≤ {$demande->year_max}";
         }
 
+        // Wrap mixed-direction snippets (digits + currency/unit) in Unicode
+        // LRI…PDI so the Arabic bidi algorithm can't flip them visually.
+        $ltr = fn ($s) => "\u{2066}" . $s . "\u{2069}";
+
         $budget = null;
         if ($demande->price_min && $demande->price_max) {
-            $budget = $fmt($demande->price_min) . ' – ' . $fmt($demande->price_max) . ' MAD';
+            $budget = $ltr($fmt($demande->price_min) . ' – ' . $fmt($demande->price_max) . ' MAD');
         } elseif ($demande->price_max) {
-            $budget = '≤ ' . $fmt($demande->price_max) . ' MAD';
+            $budget = $ltr('≤ ' . $fmt($demande->price_max) . ' MAD');
         } elseif ($demande->price_min) {
-            $budget = '≥ ' . $fmt($demande->price_min) . ' MAD';
+            $budget = $ltr('≥ ' . $fmt($demande->price_min) . ' MAD');
         }
+
+        $clientName = trim($demande->nom) !== '' ? $demande->nom : 'الزبون';
 
         $lines = [
             '🚗 <b>طلب جديد</b> #' . $demande->id,
             '',
             '👤 <b>' . $esc($demande->nom) . '</b>',
-            '📞 ' . $esc($demande->telephone),
+            '📞 ' . $ltr($esc($demande->telephone)),
         ];
-        if (!empty($demande->email))         $lines[] = '✉️ ' . $esc($demande->email);
+        if (!empty($demande->email))         $lines[] = '✉️ ' . $ltr($esc($demande->email));
         $lines[] = '';
         $lines[] = '🔎 <b>البحث :</b> ' . $esc($car);
-        if ($years)                          $lines[] = '📅 السنة : ' . $esc($years);
+        if ($years)                          $lines[] = '📅 السنة : ' . $ltr($esc($years));
         if ($budget)                         $lines[] = '💰 الميزانية : ' . $esc($budget);
-        if ($demande->km_max)                $lines[] = '🛣 الكيلومترات القصوى : ' . $esc($fmt($demande->km_max)) . ' كلم';
+        if ($demande->km_max)                $lines[] = '🛣 الكيلومترات القصوى : ' . $ltr($esc($fmt($demande->km_max)) . ' كلم');
         if ($demande->ville?->name)          $lines[] = '📍 المدينة : ' . $esc($demande->ville->name);
         if ($demande->carburant)             $lines[] = '⛽ الوقود : ' . $esc($demande->carburant);
         if ($demande->boite && $demande->boite !== 'any') $lines[] = '⚙️ ناقل الحركة : ' . $esc($demande->boite);
@@ -522,7 +528,7 @@ class DemandeController extends Controller
             $lines[] = '📝 ' . $esc($demande->comment);
         }
         $lines[] = '';
-        $lines[] = '📢 <b>إذا كانت لديك هذه السيارة، يرجى التواصل مع العميل مباشرة.</b>';
+        $lines[] = '📢 <b>إذا كانت لديك هذه السيارة، يرجى التواصل مع ' . $esc($clientName) . ' مباشرة.</b>';
         $lines[] = '';
         $lines[] = '🔗 ' . route('demandes.show', $demande->id);
 
