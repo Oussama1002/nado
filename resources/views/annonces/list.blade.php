@@ -1242,7 +1242,11 @@
                                     <span class="pp-type pro">{{ __('messages.catalog.pro') }}</span>
                                 @endif
                                 <div class="pp-price-overlay">
-                                    <span>{{ number_format($ad->prix ?? 0, 0, ',', ' ') }} MAD</span>
+                                    @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                        <span>{{ number_format($ad->prix, 0, ',', ' ') }} MAD</span>
+                                    @else
+                                        <span style="font-size:0.9rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                    @endif
                                 </div>
                                 @php $drop = method_exists($ad, 'priceDropAmount') ? $ad->priceDropAmount() : 0; @endphp
                                 @if($drop > 0)
@@ -1287,11 +1291,15 @@
                                 </div>
                                 <div class="pp-monthly">
                                     <div>
-                                        <div class="pp-monthly-eye">{{ __('messages.catalog.monthly') }}</div>
-                                        <div class="pp-monthly-val">
-                                            {{ number_format(feature_on('discovery.monthly_filter') ? monthly_estimate($ad->prix ?? 0) : (($ad->prix ?? 0) / 84), 0, ',', ' ') }}
-                                            <small> {{ __('messages.catalog.per_month') }}</small>
-                                        </div>
+                                        @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                            <div class="pp-monthly-eye">{{ __('messages.catalog.monthly') }}</div>
+                                            <div class="pp-monthly-val">
+                                                {{ number_format(feature_on('discovery.monthly_filter') ? monthly_estimate($ad->prix) : (($ad->prix) / 84), 0, ',', ' ') }}
+                                                <small> {{ __('messages.catalog.per_month') }}</small>
+                                            </div>
+                                        @else
+                                            <div class="pp-monthly-val">{{ __('messages.extra.price_on_request') }}</div>
+                                        @endif
                                     </div>
                                     <div class="pp-monthly-arrow">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
