@@ -2639,14 +2639,20 @@
                 <div class="sticky-content">
                     <div class="pricing-card">
                         <div class="p-6">
-                            <div class="price-row">
-                                <span class="price-amount">{{ number_format($annonce->prix, 0, ' ', ' ') }}</span>
-                                <span class="price-currency">MAD</span>
-                            </div>
-                            <div class="finance-badge">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>{{ __('messages.detail.from') }} <span style="unicode-bidi:isolate;direction:ltr;">{{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD</span> {{ __('messages.detail.per_month') }}</span>
-                            </div>
+                            @if (!empty($annonce->prix) && (float) $annonce->prix > 0)
+                                <div class="price-row">
+                                    <span class="price-amount">{{ number_format($annonce->prix, 0, ' ', ' ') }}</span>
+                                    <span class="price-currency">MAD</span>
+                                </div>
+                                <div class="finance-badge">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>{{ __('messages.detail.from') }} <span style="unicode-bidi:isolate;direction:ltr;">{{ number_format($annonce->prix / 60, 0, ' ', ' ') }} MAD</span> {{ __('messages.detail.per_month') }}</span>
+                                </div>
+                            @else
+                                <div class="price-row">
+                                    <span class="price-amount" style="font-size:1.75rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                </div>
+                            @endif
 
                             <div class="action-buttons">
                                 <button onclick="openFinanceChat()" class="btn-chat-new">
@@ -2729,7 +2735,7 @@
 
                                 @auth('client')
                                 <p class="op-label"><i class="fas fa-tag" style="color:#1459DD;margin-right:5px;"></i>{{ __('messages.detail.propose_price') }}</p>
-                                <p class="op-ref">{{ __('messages.detail.displayed_price') }} <strong><bdi dir="ltr">{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</bdi></strong></p>
+                                <p class="op-ref">{{ __('messages.detail.displayed_price') }} <strong>@if (!empty($annonce->prix) && (float) $annonce->prix > 0)<bdi dir="ltr">{{ number_format($annonce->prix, 0, ' ', ' ') }} MAD</bdi>@else{{ __('messages.extra.price_on_request') }}@endif</strong></p>
                                 <form id="offerForm" method="POST" action="{{ route('annonces.proposerPrix', $annonce->id) }}" style="width:100%;">
                                     @csrf
                                     <div class="op-row">
@@ -2805,8 +2811,12 @@
                                 if ($annonce->garantie ?? false) { $clausesAr[] = 'تتوفّر على <strong class="desc-hl">ضمان</strong>'; }
                             @endphp
                             هذه السيارة ذات <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} أبواب</strong>@if (!empty($clausesAr)) {!! implode(' و', $clausesAr) !!}@endif.
-                            وهي متوفرة بـ<strong class="desc-hl">{{ $annonce->city ?: 'الدار البيضاء' }}</strong>، ومعروضة بسعر
-                            <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }}</bdi> درهم</strong>.
+                            وهي متوفرة بـ<strong class="desc-hl">{{ $annonce->city ?: 'الدار البيضاء' }}</strong>،
+                            @if (!empty($annonce->prix) && (float) $annonce->prix > 0)
+                                ومعروضة بسعر <strong class="desc-hl"><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }}</bdi> درهم</strong>.
+                            @else
+                                والسعر <strong class="desc-hl">عند الطلب</strong>.
+                            @endif
                         </p>
                         @else
                         <p class="description-text">
@@ -2829,8 +2839,12 @@
                                 if ($annonce->garantie ?? false) { $clausesFr[] = 'bénéficie d\'une <strong class="desc-hl">garantie</strong>'; }
                             @endphp
                             Ce véhicule <strong class="desc-hl">{{ $annonce->nb_Door ?? '' }} portes</strong>@if (!empty($clausesFr)) {!! implode(' et ', $clausesFr) !!}@endif.
-                            Disponible à <strong class="desc-hl">{{ $annonce->city ?: 'Casablanca' }}</strong>, il est proposé au prix de
-                            <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</strong>.
+                            Disponible à <strong class="desc-hl">{{ $annonce->city ?: 'Casablanca' }}</strong>,
+                            @if (!empty($annonce->prix) && (float) $annonce->prix > 0)
+                                il est proposé au prix de <strong class="desc-hl">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</strong>.
+                            @else
+                                son prix est <strong class="desc-hl">sur demande</strong>.
+                            @endif
                         </p>
                         @endif
                         <div class="tag-group">
@@ -2953,7 +2967,7 @@
                         <div class="tab-pane active" id="details">
                             <div class="specs-grid">
                                 <div class="spec-item">
-                                    <span>{{ __('messages.detail.spec_price') }}</span><strong><bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</bdi></strong>
+                                    <span>{{ __('messages.detail.spec_price') }}</span><strong>@if (!empty($annonce->prix) && (float) $annonce->prix > 0)<bdi dir="ltr">{{ number_format($annonce->prix, 0, ',', ' ') }} DH</bdi>@else{{ __('messages.extra.price_on_request') }}@endif</strong>
                                 </div>
                                 <div class="spec-item"><span>{{ __('messages.detail.spec_brand_model') }}</span><strong>{{ $brandName || $modelName ? trim(($brandName ?? '') . ' ' . ($modelName ?? '')) : 'N/A' }}</strong>
                                 </div>

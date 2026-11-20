@@ -1679,6 +1679,7 @@ return [
     'extra' => [
         'monthly_from'        => 'VOTRE MENSUALITÉ À PARTIR DE',
         'start_price'         => 'Prix de départ',
+        'price_on_request'    => 'Demander le prix',
         'about_nado'          => 'À propos de NADO',
         'social_networks'     => 'Réseaux Sociaux',
         'all_models_short'    => 'Tous modèles',

@@ -1,0 +1,37 @@
+- error of the navbar when the username is looong (look at the screenshot) ------------DONE
+- error of the images still return 404 on the front blade ---------DONE
+- the drop down of the user where " Mon espace, dexconnexion" it disappear instantly i want when the cusror is on the username to not dissapear instantly to take my time to click on the dropdown ---------DONE
+- look at the Proposer votre prix on the detail blade the buttons  Envoyer and Annuler should be on the same line (look at the screenshot) ----------DONE
+- logos on the bottom of the detail blade return 404 error ---------- DONE
+- the button "Discuter de cette offre" on the Simulateur de Financement should be on the same line ----------DONE
+- button "publier une annonce " version phone to be in center and one line in all phones ----------DONE
+- in stories add link to detail vehicule direclty
+- on the front blade the font writing should switch between title like Marque and value like Toutes marques, the title should be bigger that the value and has the black color not the value -------------DONE
+- logos should have a link to achat page filtred with the brand --------- DONE
+- switch database from the old nado to the new nado ---------------DONE
+- on the front blade the button "Découvrir le rapport" doesnt have an action  
+- error on admin side on update annonce it didnt get the Couleur ------------ DONE
+- error when updating on admin side -------- DONE
+- on the front blade if the particulier annonces are none you dont display the title Dernières ANNONCES PARTICULIERS and Pros ----- DONE
+-error on the front blade it didnt get the marque and modele on the cards --------DONE
+- add images controller of the images like the image on the hero on front blade -----------DONE
+- add the taille hint for the admin for the image --------DONE
+- boite vitesse and rapport should appear on the detail blade ---------DONE
+- when i user login from https://autoenchere.ma/nadoautoenchere/login dont open the modal of annonce https://autoenchere.ma/vente/formulaire?open_modal=1 , return him to https://autoenchere.ma/nadoautoenchere/prelogin -------DONE
+-Attijariwafa bank logo is 404 bring one now ------DONE
+- send a notification to contact@nado.ma when a client submit an enchere --------DONE
+- send a notification to contact@nado.ma when a client submit a new annonce to validate it on Annonces en attente d'approbation -----DONE
+- and for voir annonce on the button on the mail for proposition on of vehicule of the detail of annonce on https://autoenchere.ma/achat/voiture/MERCEDES_ClasseC_226.html should go to him to https://autoenchere.ma/admin/autoenchere ---------DONE
+- when client create an account doesnt have to wait for the admin for validate the account send a link directly to that mail of the client and if verified then it will be approved directly --------
+-
+-https://autoenchere.ma/contactez-nous doesnt have a design
+-also the cards on the front blade still reverse the numbers in arabic---------
+-the detail blade still doesnt display arabic-------
+-à-propos blade still doesnt display arabic
+- on the https://autoenchere.ma/financement the type of client doesnt display arabic----------
+- the client login/register doesnt display arabic------
+-do the image on the section on "BESOIN D'UN EXPERT NADO ?"---------
+-the arabic words on the whole system are small so make them bigger-------
+-the navbars of all pages should be the same as https://autoenchere.ma/client/login navbar the logo always on the left---------
+-remove the logo row on the client list on the admin side------
+dsfVofU5MdfFXWCS

@@ -4224,8 +4224,11 @@
                                     <div class="listing-type-badge type-pro">Pro</div>
                                 @endif
                                 <div class="listing-price-tag">
-                                    <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }}
-                                        MAD</span>
+                                    @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                        <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }} MAD</span>
+                                    @else
+                                        <span class="listing-price-text" style="font-size:1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                    @endif
                                 </div>
                                 <div class="listing-video-preview">
                                     <img src="{{ asset('storage/ads/' . $ad->pathImageAds()) }}"
@@ -4269,12 +4272,18 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
-                                        <div class="monthly-price">
-                                            <span
-                                                class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
-                                            <span class="monthly-unit">MAD / MOIS</span>
-                                        </div>
+                                        @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                            <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
+                                            <div class="monthly-price">
+                                                <span
+                                                    class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
+                                                <span class="monthly-unit">MAD / MOIS</span>
+                                            </div>
+                                        @else
+                                            <div class="monthly-price">
+                                                <span class="monthly-amount" style="font-size:1.1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="arrow-circle"><i data-lucide="arrow-right"
                                             style="width: 18px; height: 18px;"></i></div>
@@ -4469,8 +4478,11 @@
                                     <div class="listing-type-badge type-pro">Pro</div>
                                 @endif
                                 <div class="listing-price-tag">
-                                    <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }}
-                                        MAD</span>
+                                    @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                        <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }} MAD</span>
+                                    @else
+                                        <span class="listing-price-text" style="font-size:1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                    @endif
                                 </div>
                                 <div class="listing-video-preview">
                                     <img src="{{ asset('storage/ads/' . $ad->pathImageAds()) }}"
@@ -4514,12 +4526,18 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
-                                        <div class="monthly-price">
-                                            <span
-                                                class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
-                                            <span class="monthly-unit">MAD / MOIS</span>
-                                        </div>
+                                        @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                            <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
+                                            <div class="monthly-price">
+                                                <span
+                                                    class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
+                                                <span class="monthly-unit">MAD / MOIS</span>
+                                            </div>
+                                        @else
+                                            <div class="monthly-price">
+                                                <span class="monthly-amount" style="font-size:1.1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="arrow-circle"><i data-lucide="arrow-right"
                                             style="width: 18px; height: 18px;"></i></div>
@@ -4587,8 +4605,11 @@
                                     <div class="listing-type-badge type-pro">Pro</div>
                                 @endif
                                 <div class="listing-price-tag">
-                                    <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }}
-                                        MAD</span>
+                                    @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                        <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }} MAD</span>
+                                    @else
+                                        <span class="listing-price-text" style="font-size:1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                    @endif
                                 </div>
                                 <div class="listing-video-preview">
                                     <img src="{{ $adImg }}"
@@ -4632,12 +4653,18 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
-                                        <div class="monthly-price">
-                                            <span
-                                                class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
-                                            <span class="monthly-unit">MAD / MOIS</span>
-                                        </div>
+                                        @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                            <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
+                                            <div class="monthly-price">
+                                                <span
+                                                    class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
+                                                <span class="monthly-unit">MAD / MOIS</span>
+                                            </div>
+                                        @else
+                                            <div class="monthly-price">
+                                                <span class="monthly-amount" style="font-size:1.1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="arrow-circle"><i data-lucide="arrow-right"
                                             style="width: 18px; height: 18px;"></i></div>
@@ -4703,8 +4730,11 @@
                                     <div class="listing-type-badge type-pro">Pro</div>
                                 @endif
                                 <div class="listing-price-tag">
-                                    <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }}
-                                        MAD</span>
+                                    @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                        <span class="listing-price-text">{{ number_format($ad->prix, 0, ',', ' ') }} MAD</span>
+                                    @else
+                                        <span class="listing-price-text" style="font-size:1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                    @endif
                                 </div>
                                 <div class="listing-video-preview">
                                     <img src="{{ $adImg }}"
@@ -4748,12 +4778,18 @@
                                 </div>
                                 <div class="listing-footer-btn">
                                     <div class="flex flex-col">
-                                        <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
-                                        <div class="monthly-price">
-                                            <span
-                                                class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
-                                            <span class="monthly-unit">MAD / MOIS</span>
-                                        </div>
+                                        @if (!empty($ad->prix) && (float) $ad->prix > 0)
+                                            <span class="monthly-label">{{ __('messages.extra.monthly_from') }}</span>
+                                            <div class="monthly-price">
+                                                <span
+                                                    class="monthly-amount">{{ number_format(($ad->prix ?? 0) / 72, 0, ',', ' ') }}</span>
+                                                <span class="monthly-unit">MAD / MOIS</span>
+                                            </div>
+                                        @else
+                                            <div class="monthly-price">
+                                                <span class="monthly-amount" style="font-size:1.1rem;">{{ __('messages.extra.price_on_request') }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="arrow-circle"><i data-lucide="arrow-right"
                                             style="width: 18px; height: 18px;"></i></div>

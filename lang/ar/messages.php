@@ -1673,6 +1673,7 @@ return [
     'extra' => [
         'monthly_from'        => 'قسطك الشهري ابتداءً من',
         'start_price'         => 'سعر الانطلاق',
+        'price_on_request'    => 'السعر عند الطلب',
         'about_nado'          => 'عن نادو',
         'social_networks'     => 'شبكات التواصل',
         'all_models_short'    => 'كل الطُّرز',
