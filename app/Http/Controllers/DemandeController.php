@@ -508,13 +508,22 @@ class DemandeController extends Controller
 
         $clientName = trim($demande->nom) !== '' ? $demande->nom : 'الزبون';
 
+        // Mask the phone — show only the first 2 and last 2 digits so the
+        // channel sees enough to recognise the request but not enough to
+        // bypass contacting through NADO (pattern: "21 •• •• 78").
+        $phoneDigits = preg_replace('/\D+/', '', (string) $demande->telephone);
+        if (strlen($phoneDigits) >= 4) {
+            $phoneMasked = substr($phoneDigits, 0, 2) . ' •• •• ' . substr($phoneDigits, -2);
+        } else {
+            $phoneMasked = '•• •• •• ••';
+        }
+
         $lines = [
             '🚗 <b>طلب جديد</b> #' . $demande->id,
             '',
             '👤 <b>' . $esc($demande->nom) . '</b>',
-            '📞 ' . $ltr($esc($demande->telephone)),
+            '📞 ' . $ltr($esc($phoneMasked)),
         ];
-        if (!empty($demande->email))         $lines[] = '✉️ ' . $ltr($esc($demande->email));
         $lines[] = '';
         $lines[] = '🔎 <b>البحث عن :</b> ' . $esc($car);
         if ($years)                          $lines[] = '📅 السنة : ' . $ltr($esc($years));
