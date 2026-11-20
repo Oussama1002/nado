@@ -516,7 +516,7 @@ class DemandeController extends Controller
         ];
         if (!empty($demande->email))         $lines[] = '✉️ ' . $ltr($esc($demande->email));
         $lines[] = '';
-        $lines[] = '🔎 <b>البحث :</b> ' . $esc($car);
+        $lines[] = '🔎 <b>البحث عن :</b> ' . $esc($car);
         if ($years)                          $lines[] = '📅 السنة : ' . $ltr($esc($years));
         if ($budget)                         $lines[] = '💰 الميزانية : ' . $esc($budget);
         if ($demande->km_max)                $lines[] = '🛣 الكيلومترات القصوى : ' . $ltr($esc($fmt($demande->km_max)) . ' كلم');
