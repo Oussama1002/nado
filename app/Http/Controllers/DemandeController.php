@@ -530,7 +530,7 @@ class DemandeController extends Controller
         $lines[] = '';
         $lines[] = '📢 <b>إذا كانت لديك هذه السيارة، يرجى التواصل مع ' . $esc($clientName) . ' مباشرة.</b>';
         $lines[] = '';
-        $lines[] = '🔗 ' . route('demandes.show', $demande->id);
+        $lines[] = '👉 ' . route('demandes.show', $demande->id);
 
         try {
             \Illuminate\Support\Facades\Http::timeout(5)
