@@ -503,24 +503,26 @@ class DemandeController extends Controller
         }
 
         $lines = [
-            '🚗 <b>Nouvelle demande</b> #' . $demande->id,
+            '🚗 <b>طلب جديد</b> #' . $demande->id,
             '',
             '👤 <b>' . $esc($demande->nom) . '</b>',
             '📞 ' . $esc($demande->telephone),
         ];
         if (!empty($demande->email))         $lines[] = '✉️ ' . $esc($demande->email);
         $lines[] = '';
-        $lines[] = '🔎 <b>Recherche :</b> ' . $esc($car);
-        if ($years)                          $lines[] = '📅 Année : ' . $esc($years);
-        if ($budget)                         $lines[] = '💰 Budget : ' . $esc($budget);
-        if ($demande->km_max)                $lines[] = '🛣 Km max : ' . $esc($fmt($demande->km_max)) . ' km';
-        if ($demande->ville?->name)          $lines[] = '📍 Ville : ' . $esc($demande->ville->name);
-        if ($demande->carburant)             $lines[] = '⛽ Carburant : ' . $esc($demande->carburant);
-        if ($demande->boite && $demande->boite !== 'any') $lines[] = '⚙️ Boîte : ' . $esc($demande->boite);
+        $lines[] = '🔎 <b>البحث :</b> ' . $esc($car);
+        if ($years)                          $lines[] = '📅 السنة : ' . $esc($years);
+        if ($budget)                         $lines[] = '💰 الميزانية : ' . $esc($budget);
+        if ($demande->km_max)                $lines[] = '🛣 الكيلومترات القصوى : ' . $esc($fmt($demande->km_max)) . ' كلم';
+        if ($demande->ville?->name)          $lines[] = '📍 المدينة : ' . $esc($demande->ville->name);
+        if ($demande->carburant)             $lines[] = '⛽ الوقود : ' . $esc($demande->carburant);
+        if ($demande->boite && $demande->boite !== 'any') $lines[] = '⚙️ ناقل الحركة : ' . $esc($demande->boite);
         if ($demande->comment) {
             $lines[] = '';
             $lines[] = '📝 ' . $esc($demande->comment);
         }
+        $lines[] = '';
+        $lines[] = '📢 <b>إذا كانت لديك هذه السيارة، يرجى التواصل مع العميل مباشرة.</b>';
         $lines[] = '';
         $lines[] = '🔗 ' . route('demandes.show', $demande->id);
 
