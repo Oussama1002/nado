@@ -557,13 +557,13 @@
     .pp-status.reserve    { background: rgba(249,115,22,0.9); }
     .pp-status.vendu      { background: rgba(239,68,68,0.9); }
 
-    /* Top-right, but sits below the favorite button (.pp-card-tools starts at
-       top:16px and each tool is 40px) so the heart doesn't cover it. Mirrors
-       to the left in RTL, matching how .pp-card-tools mirrors. */
+    /* Top-right, slid LEFT of the favorite/compare buttons (.pp-card-tools
+       is 40px wide, 16px from the edge → starts at right:56px). Mirrors to
+       the opposite side in RTL, matching how .pp-card-tools mirrors. */
     .pp-type {
         position: absolute;
-        top: 70px;
-        right: 24px;
+        top: 24px;
+        right: 72px;
         padding: 8px 14px;
         border-radius: 9999px;
         font-size: 10px;
@@ -575,7 +575,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         z-index: 2;
     }
-    html[dir="rtl"] .pp-type { right: auto; left: 24px; }
+    html[dir="rtl"] .pp-type { right: auto; left: 72px; }
     .pp-type.certifie    { background: rgba(16,185,129,0.9); }
     .pp-type.particulier { background: rgba(59,130,246,0.95); }
     .pp-type.pro         { background: rgba(245,158,11,0.95); }
