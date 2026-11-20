@@ -38,6 +38,15 @@ return [
         'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
     ],
 
+    // Telegram bot — used to broadcast new demandes to a channel.
+    // bot_token: token from @BotFather (secret, never commit).
+    // demandes_chat: destination channel. For a public channel, the @username
+    // (with the @). For a private one, the numeric id like -1001234567890.
+    'telegram' => [
+        'bot_token'     => env('TELEGRAM_BOT_TOKEN'),
+        'demandes_chat' => env('TELEGRAM_DEMANDES_CHAT', '@nado_voitures_maroc'),
+    ],
+
     // OCR local de la carte grise (Tesseract). 100 % sur le serveur.
     // Sur hébergement sans root, pointer TESSERACT_PATH vers un binaire installé
     // dans le home (ex. ~/tess/bin/tesseract) et TESSDATA_PREFIX vers ses .traineddata.

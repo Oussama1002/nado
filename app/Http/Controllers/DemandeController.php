@@ -271,6 +271,10 @@ class DemandeController extends Controller
             $this->chargeTokens($client, 'demande', $demande);
         }
 
+        // Broadcast the new demande to the Telegram channel (fire-and-forget:
+        // 5 s hard timeout, failures logged but never bubble up).
+        $this->notifyTelegramDemande($demande);
+
         return redirect()->route('demandes.confirmation', $demande->id)
             ->with('success', 'Votre demande a été soumise. L’administrateur vous contactera après validation.');
     }
@@ -456,5 +460,80 @@ class DemandeController extends Controller
         if (Str::startsWith($digits, '212')) return '+' . $digits;
         if (Str::startsWith($digits, '0'))   return '+212' . substr($digits, 1);
         return '+' . $digits;
+    }
+
+    /**
+     * Post a formatted summary of a new demande to the configured Telegram
+     * channel. Best-effort — missing config, HTTP errors and timeouts are
+     * all logged and swallowed so the user's submission still succeeds.
+     */
+    private function notifyTelegramDemande(Demande $demande): void
+    {
+        $token = config('services.telegram.bot_token');
+        $chat  = config('services.telegram.demandes_chat');
+        if (empty($token) || empty($chat)) {
+            return; // not configured — skip silently (e.g. local dev)
+        }
+
+        $demande->loadMissing(['brand', 'modele', 'ville']);
+
+        $esc = fn ($v) => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $fmt = fn ($n) => $n ? number_format((int) $n, 0, ',', ' ') : null;
+
+        $car = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? '')) ?: '—';
+
+        $years = null;
+        if ($demande->year_min && $demande->year_max) {
+            $years = $demande->year_min === $demande->year_max
+                ? (string) $demande->year_min
+                : "{$demande->year_min} – {$demande->year_max}";
+        } elseif ($demande->year_min) {
+            $years = "≥ {$demande->year_min}";
+        } elseif ($demande->year_max) {
+            $years = "≤ {$demande->year_max}";
+        }
+
+        $budget = null;
+        if ($demande->price_min && $demande->price_max) {
+            $budget = $fmt($demande->price_min) . ' – ' . $fmt($demande->price_max) . ' MAD';
+        } elseif ($demande->price_max) {
+            $budget = '≤ ' . $fmt($demande->price_max) . ' MAD';
+        } elseif ($demande->price_min) {
+            $budget = '≥ ' . $fmt($demande->price_min) . ' MAD';
+        }
+
+        $lines = [
+            '🚗 <b>Nouvelle demande</b> #' . $demande->id,
+            '',
+            '👤 <b>' . $esc($demande->nom) . '</b>',
+            '📞 ' . $esc($demande->telephone),
+        ];
+        if (!empty($demande->email))         $lines[] = '✉️ ' . $esc($demande->email);
+        $lines[] = '';
+        $lines[] = '🔎 <b>Recherche :</b> ' . $esc($car);
+        if ($years)                          $lines[] = '📅 Année : ' . $esc($years);
+        if ($budget)                         $lines[] = '💰 Budget : ' . $esc($budget);
+        if ($demande->km_max)                $lines[] = '🛣 Km max : ' . $esc($fmt($demande->km_max)) . ' km';
+        if ($demande->ville?->name)          $lines[] = '📍 Ville : ' . $esc($demande->ville->name);
+        if ($demande->carburant)             $lines[] = '⛽ Carburant : ' . $esc($demande->carburant);
+        if ($demande->boite && $demande->boite !== 'any') $lines[] = '⚙️ Boîte : ' . $esc($demande->boite);
+        if ($demande->comment) {
+            $lines[] = '';
+            $lines[] = '📝 ' . $esc($demande->comment);
+        }
+        $lines[] = '';
+        $lines[] = '🔗 ' . route('demandes.show', $demande->id);
+
+        try {
+            \Illuminate\Support\Facades\Http::timeout(5)
+                ->post("https://api.telegram.org/bot{$token}/sendMessage", [
+                    'chat_id'                  => $chat,
+                    'text'                     => implode("\n", $lines),
+                    'parse_mode'               => 'HTML',
+                    'disable_web_page_preview' => true,
+                ]);
+        } catch (\Throwable $e) {
+            Log::warning('Telegram notify (demande) failed: ' . $e->getMessage());
+        }
     }
 }
