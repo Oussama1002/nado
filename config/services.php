@@ -39,6 +39,10 @@ return [
         'meta_template_name'   => env('WHATSAPP_META_TEMPLATE', 'otp_verification'),
         'meta_template_lang'   => env('WHATSAPP_META_TEMPLATE_LANG', 'fr'),
         'meta_api_version'     => env('WHATSAPP_META_API_VERSION', 'v21.0'),
+
+        // Webhook (incoming messages).
+        'webhook_verify_token' => env('WHATSAPP_WEBHOOK_VERIFY_TOKEN'),
+        'webhook_app_secret'   => env('WHATSAPP_WEBHOOK_APP_SECRET'),
     ],
 
     // Telegram bot — used to broadcast new demandes to a channel.

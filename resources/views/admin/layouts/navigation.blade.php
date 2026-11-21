@@ -112,6 +112,23 @@
                     </li>
                     @endif
 
+                    {{-- WhatsApp Inbox --}}
+                    @if(feature_on('whatsapp.enabled'))
+                    @php
+                        $waUnread = \App\Models\WhatsAppConversation::sum('unread_count');
+                    @endphp
+                    <li @class(['sidebar-item', 'active' => str_contains($current_route , "whatsapp.")])>
+                        <a href="{{ route('admin.whatsapp.index') }}" class='sidebar-link'>
+                            <i class="bi bi-whatsapp text-success"></i>
+                            <span>WhatsApp
+                                @if($waUnread > 0)
+                                    <span class="badge bg-success ms-1">{{ $waUnread }}</span>
+                                @endif
+                            </span>
+                        </a>
+                    </li>
+                    @endif
+
                     {{-- Clients --}}
                     @if(admin_can('clients'))
            <li @class(['sidebar-item','has-sub', 'active' => str_contains( $current_route , "clients.")]) >

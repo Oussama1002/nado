@@ -588,6 +588,22 @@ Route::prefix('admin/settings')->name('admin.settings.')
 
 /*
 |--------------------------------------------------------------------------
+| WhatsApp — webhook public (Meta → nous) + boîte de réception admin
+|--------------------------------------------------------------------------
+*/
+Route::get('/whatsapp/webhook',  [\App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
+Route::post('/whatsapp/webhook', [\App\Http\Controllers\WhatsAppWebhookController::class, 'receive']);
+
+Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
+    ->middleware(['auth:admin', 'module.access'])
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'index'])->name('index');
+        Route::get('/{conversation}', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'show'])->name('show');
+        Route::post('/{conversation}/reply', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'reply'])->name('reply');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Revue admin — Vérifications situation légale (opposition NARSA)
 |--------------------------------------------------------------------------
 */

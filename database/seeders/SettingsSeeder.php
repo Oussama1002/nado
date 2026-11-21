@@ -314,6 +314,16 @@ class SettingsSeeder extends Seeder
                     'Meta — Langue du template',
                     false, false,
                     'Code langue du template approuvé (ex. fr, ar, en_US). Doit correspondre à la langue choisie lors de la création du template dans WhatsApp Manager.'],
+
+                ['webhook_verify_token', 'string', '',
+                    'Webhook — Verify Token',
+                    false, true,
+                    'Chaîne que VOUS choisissez (ex. nado_wa_2026). À saisir à l\'identique côté Meta : developers.facebook.com → votre App → WhatsApp → Configuration → Webhook → « Verify token ». URL du callback : https://autoenchere.ma/whatsapp/webhook'],
+
+                ['webhook_app_secret', 'string', '',
+                    'Webhook — App Secret',
+                    false, true,
+                    'developers.facebook.com → votre App → Paramètres → De base → « App secret » (cliquer « Afficher »). Sert à valider la signature X-Hub-Signature-256 de chaque webhook entrant.'],
             ],
 
             // ───────────────────────── global ───────────────────────────
