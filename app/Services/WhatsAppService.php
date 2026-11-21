@@ -19,11 +19,6 @@ class WhatsAppService
             $digits = '212' . substr($digits, 1);
         }
 
-        // Already has country code without +
-        if (strlen($digits) === 12 && str_starts_with($digits, '212')) {
-            // fine
-        }
-
         return '+' . ltrim($digits, '+');
     }
 
@@ -39,20 +34,91 @@ class WhatsAppService
         }
 
         $normalized = $this->normalizePhone($phone);
-        $message    = "🔐 Votre code de vérification NADO est : *{$otp}*\n\nCe code expire dans 10 minutes. Ne le partagez jamais.";
-
-        $provider = settings('whatsapp.provider') ?: config('services.whatsapp.provider', 'ultramsg');
+        $provider   = settings('whatsapp.provider') ?: config('services.whatsapp.provider', 'meta');
 
         try {
             return match ($provider) {
-                'ultramsg'  => $this->sendUltraMsg($normalized, $message),
-                'callmebot' => $this->sendCallmeBot($normalized, $message),
-                default     => $this->sendUltraMsg($normalized, $message),
+                'meta'      => $this->sendMeta($normalized, $otp),
+                'ultramsg'  => $this->sendUltraMsg($normalized, $this->freeformMessage($otp)),
+                'callmebot' => $this->sendCallmeBot($normalized, $this->freeformMessage($otp)),
+                default     => $this->sendMeta($normalized, $otp),
             };
         } catch (\Throwable $e) {
             Log::error('WhatsApp OTP send failed', ['phone' => $normalized, 'error' => $e->getMessage()]);
             return false;
         }
+    }
+
+    private function freeformMessage(string $otp): string
+    {
+        return "🔐 Votre code de vérification NADO est : *{$otp}*\n\nCe code expire dans 10 minutes. Ne le partagez jamais.";
+    }
+
+    /**
+     * Meta (Facebook) WhatsApp Business Cloud API — graph.facebook.com.
+     * Sends via an APPROVED template in the "Authentication" category.
+     * The template must have one body variable {{1}} that receives the OTP.
+     */
+    private function sendMeta(string $phone, string $otp): bool
+    {
+        $phoneNumberId = settings('whatsapp.meta_phone_number_id') ?: config('services.whatsapp.meta_phone_number_id');
+        $accessToken   = settings('whatsapp.meta_access_token')    ?: config('services.whatsapp.meta_access_token');
+        $templateName  = settings('whatsapp.meta_template_name')   ?: config('services.whatsapp.meta_template_name', 'otp_verification');
+        $templateLang  = settings('whatsapp.meta_template_lang')   ?: config('services.whatsapp.meta_template_lang', 'fr');
+        $apiVersion    = config('services.whatsapp.meta_api_version', 'v21.0');
+
+        if (! $phoneNumberId || ! $accessToken) {
+            Log::warning('Meta WhatsApp credentials not configured');
+            return false;
+        }
+
+        // Meta expects E.164 digits WITHOUT the leading '+'.
+        $to = ltrim($phone, '+');
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'to'                => $to,
+            'type'              => 'template',
+            'template'          => [
+                'name'       => $templateName,
+                'language'   => ['code' => $templateLang],
+                'components' => [
+                    [
+                        'type'       => 'body',
+                        'parameters' => [
+                            ['type' => 'text', 'text' => $otp],
+                        ],
+                    ],
+                    // Required when the template is Authentication-category with
+                    // a one-tap "Copy code" URL button; Meta ignores it otherwise.
+                    [
+                        'type'       => 'button',
+                        'sub_type'   => 'url',
+                        'index'      => '0',
+                        'parameters' => [
+                            ['type' => 'text', 'text' => $otp],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->asJson()
+            ->post("https://graph.facebook.com/{$apiVersion}/{$phoneNumberId}/messages", $payload);
+
+        if (! $response->successful()) {
+            Log::warning('Meta WhatsApp send failed', [
+                'status' => $response->status(),
+                'body'   => $response->json() ?? $response->body(),
+            ]);
+            return false;
+        }
+
+        // Successful send returns {"messages":[{"id":"wamid.xxx"}]}.
+        $messages = $response->json('messages');
+        return is_array($messages) && ! empty($messages);
     }
 
     private function sendUltraMsg(string $phone, string $message): bool

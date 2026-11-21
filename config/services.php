@@ -32,10 +32,18 @@ return [
     ],
 
     'whatsapp' => [
-        'provider'           => env('WHATSAPP_PROVIDER', 'ultramsg'),
+        'provider'           => env('WHATSAPP_PROVIDER', 'meta'),
         'ultramsg_instance'  => env('ULTRAMSG_INSTANCE_ID'),
         'ultramsg_token'     => env('ULTRAMSG_TOKEN'),
         'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
+
+        // Meta WhatsApp Business Cloud API (graph.facebook.com).
+        // Requires an approved template in the "Authentication" category.
+        'meta_phone_number_id' => env('WHATSAPP_META_PHONE_NUMBER_ID'),
+        'meta_access_token'    => env('WHATSAPP_META_ACCESS_TOKEN'),
+        'meta_template_name'   => env('WHATSAPP_META_TEMPLATE', 'otp_verification'),
+        'meta_template_lang'   => env('WHATSAPP_META_TEMPLATE_LANG', 'fr'),
+        'meta_api_version'     => env('WHATSAPP_META_API_VERSION', 'v21.0'),
     ],
 
     // Telegram bot — used to broadcast new demandes to a channel.

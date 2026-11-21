@@ -281,13 +281,24 @@ class SettingsSeeder extends Seeder
 
             // ──────────────────── whatsapp (OTP d'inscription) ──────────
             // Vides en seed : les credentials réels sont saisis en admin.
-            // Si vides, le service retombe sur la config .env (ULTRAMSG_*).
+            // Si vides, le service retombe sur la config .env.
+            // Provider par défaut : "meta" (WhatsApp Business Cloud API officielle).
             'whatsapp' => [
-                ['enabled',           'bool',   true,       'Envoi OTP WhatsApp activé'],
-                ['provider',          'string', 'ultramsg', 'Fournisseur (ultramsg | callmebot)'],
-                ['ultramsg_instance', 'string', '',         'UltraMsg — Instance ID', false, true],
-                ['ultramsg_token',    'string', '',         'UltraMsg — Token', false, true],
-                ['callmebot_apikey',  'string', '',         'CallmeBot — API Key', false, true],
+                ['enabled',             'bool',   true,                'Envoi OTP WhatsApp activé'],
+                ['provider',            'string', 'meta',              'Fournisseur (meta | ultramsg | callmebot)'],
+
+                // Meta (WhatsApp Business Cloud API) — recommandé.
+                ['meta_phone_number_id','string', '',                  'Meta — Phone Number ID', false, true],
+                ['meta_access_token',   'string', '',                  'Meta — Access Token (permanent)', false, true],
+                ['meta_template_name',  'string', 'otp_verification',  'Meta — Nom du template OTP approuvé'],
+                ['meta_template_lang',  'string', 'fr',                'Meta — Langue du template (ex. fr, ar, en_US)'],
+
+                // UltraMsg (gateway tiers payant).
+                ['ultramsg_instance',   'string', '',                  'UltraMsg — Instance ID', false, true],
+                ['ultramsg_token',      'string', '',                  'UltraMsg — Token', false, true],
+
+                // CallmeBot (gratuit, nécessite activation par destinataire — non recommandé en prod).
+                ['callmebot_apikey',    'string', '',                  'CallmeBot — API Key', false, true],
             ],
 
             // ───────────────────────── global ───────────────────────────
