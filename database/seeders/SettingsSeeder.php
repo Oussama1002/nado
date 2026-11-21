@@ -22,9 +22,10 @@ class SettingsSeeder extends Seeder
             $order = 0;
             foreach ($rows as $row) {
                 [$suffix, $type, $default, $label] = $row;
-                $isToggle = $row[4] ?? ($type === 'bool');
-                $isSecret = $row[5] ?? false;
-                $fullKey  = "$group.$suffix";
+                $isToggle    = $row[4] ?? ($type === 'bool');
+                $isSecret    = $row[5] ?? false;
+                $description = $row[6] ?? null;
+                $fullKey     = "$group.$suffix";
 
                 $existing = Setting::where('key', $fullKey)->first();
 
@@ -38,6 +39,7 @@ class SettingsSeeder extends Seeder
                             : Setting::prepareForStorage($type, $default),
                         'type'          => $type,
                         'label'         => $label,
+                        'description'   => $description,
                         'is_toggle'     => $isToggle,
                         'is_secret'     => $isSecret,
                         'display_order' => $order++,
@@ -283,12 +285,35 @@ class SettingsSeeder extends Seeder
             // Vides en seed : les credentials réels sont saisis en admin.
             // Provider : "meta" (WhatsApp Business Cloud API officielle).
             'whatsapp' => [
-                ['enabled',             'bool',   true,                'Envoi OTP WhatsApp activé'],
-                ['provider',            'string', 'meta',              'Fournisseur (meta)'],
-                ['meta_phone_number_id','string', '',                  'Meta — Phone Number ID', false, true],
-                ['meta_access_token',   'string', '',                  'Meta — Access Token (permanent)', false, true],
-                ['meta_template_name',  'string', 'otp_verification',  'Meta — Nom du template OTP approuvé'],
-                ['meta_template_lang',  'string', 'fr',                'Meta — Langue du template (ex. fr, ar, en_US)'],
+                ['enabled', 'bool', true,
+                    'Envoi OTP WhatsApp activé',
+                    true, false,
+                    'Kill-switch : désactive tous les envois WhatsApp sans toucher au code.'],
+
+                ['provider', 'string', 'meta',
+                    'Fournisseur',
+                    false, false,
+                    'Toujours « meta » — API WhatsApp Business Cloud officielle de Meta.'],
+
+                ['meta_phone_number_id', 'string', '',
+                    'Meta — Phone Number ID',
+                    false, true,
+                    'developers.facebook.com → votre App → WhatsApp → API Setup → section « Send and receive messages » : copiez le « Phone number ID » (un long nombre, PAS le numéro visible +212…).'],
+
+                ['meta_access_token', 'string', '',
+                    'Meta — Access Token (permanent)',
+                    false, true,
+                    'business.facebook.com → Paramètres → Utilisateurs → Utilisateurs système → ajouter → « Generate New Token » → choisir l\'App + permissions whatsapp_business_messaging et whatsapp_business_management. Jeton permanent, pas le token de test 24h.'],
+
+                ['meta_template_name', 'string', 'otp_verification',
+                    'Meta — Nom du template OTP',
+                    false, false,
+                    'business.facebook.com → WhatsApp Manager → Message Templates : copiez EXACTEMENT le nom de votre template approuvé (catégorie « Authentication », avec une variable {{1}} qui reçoit le code).'],
+
+                ['meta_template_lang', 'string', 'fr',
+                    'Meta — Langue du template',
+                    false, false,
+                    'Code langue du template approuvé (ex. fr, ar, en_US). Doit correspondre à la langue choisie lors de la création du template dans WhatsApp Manager.'],
             ],
 
             // ───────────────────────── global ───────────────────────────

@@ -29,12 +29,20 @@
                     @php $val = $setting->typed_value; @endphp
                     <div class="row align-items-center py-3 border-bottom">
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold mb-0" for="set-{{ $setting->id }}">
-                                {{ $setting->label }}
+                            <label class="form-label fw-semibold mb-0 d-inline-flex align-items-center gap-1" for="set-{{ $setting->id }}">
+                                <span>{{ $setting->label }}</span>
+                                @if($setting->description)
+                                    <i class="bi bi-question-circle text-primary"
+                                       role="button"
+                                       tabindex="0"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       data-bs-html="true"
+                                       title="{{ $setting->description }}"
+                                       aria-label="Aide : où trouver cette valeur"
+                                       style="cursor: help;"></i>
+                                @endif
                             </label>
-                            @if($setting->description)
-                                <div class="text-muted small">{{ $setting->description }}</div>
-                            @endif
                         </div>
                         <div class="col-12 col-md-6">
                             @switch($setting->type)
@@ -101,4 +109,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Initialise les tooltips Bootstrap pour les icônes "?" d'aide.
+    (function initTooltips() {
+        var run = function () {
+            if (typeof bootstrap === 'undefined' || !bootstrap.Tooltip) {
+                return setTimeout(run, 100);
+            }
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+                new bootstrap.Tooltip(el);
+            });
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', run);
+        } else {
+            run();
+        }
+    })();
+</script>
 @endsection
