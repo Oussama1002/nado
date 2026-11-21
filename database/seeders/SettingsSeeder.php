@@ -279,6 +279,17 @@ class SettingsSeeder extends Seeder
                 ['require_admin_review', 'bool', true, 'Badge public seulement après validation admin'],
             ],
 
+            // ──────────────────── whatsapp (OTP d'inscription) ──────────
+            // Vides en seed : les credentials réels sont saisis en admin.
+            // Si vides, le service retombe sur la config .env (ULTRAMSG_*).
+            'whatsapp' => [
+                ['enabled',           'bool',   true,       'Envoi OTP WhatsApp activé'],
+                ['provider',          'string', 'ultramsg', 'Fournisseur (ultramsg | callmebot)'],
+                ['ultramsg_instance', 'string', '',         'UltraMsg — Instance ID', false, true],
+                ['ultramsg_token',    'string', '',         'UltraMsg — Token', false, true],
+                ['callmebot_apikey',  'string', '',         'CallmeBot — API Key', false, true],
+            ],
+
             // ───────────────────────── global ───────────────────────────
             'global' => [
                 ['marketplace_enabled', 'bool', true, 'Marketplace ouvert'],

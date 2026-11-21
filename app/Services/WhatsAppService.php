@@ -32,10 +32,16 @@ class WhatsAppService
      */
     public function sendOtp(string $phone, string $otp): bool
     {
+        // Kill-switch depuis l'admin.
+        if (! feature_on('whatsapp.enabled')) {
+            Log::warning('WhatsApp OTP disabled via admin settings');
+            return false;
+        }
+
         $normalized = $this->normalizePhone($phone);
         $message    = "🔐 Votre code de vérification NADO est : *{$otp}*\n\nCe code expire dans 10 minutes. Ne le partagez jamais.";
 
-        $provider = config('services.whatsapp.provider', 'ultramsg');
+        $provider = settings('whatsapp.provider') ?: config('services.whatsapp.provider', 'ultramsg');
 
         try {
             return match ($provider) {
@@ -51,8 +57,8 @@ class WhatsAppService
 
     private function sendUltraMsg(string $phone, string $message): bool
     {
-        $instance = config('services.whatsapp.ultramsg_instance');
-        $token    = config('services.whatsapp.ultramsg_token');
+        $instance = settings('whatsapp.ultramsg_instance') ?: config('services.whatsapp.ultramsg_instance');
+        $token    = settings('whatsapp.ultramsg_token')    ?: config('services.whatsapp.ultramsg_token');
 
         if (!$instance || !$token) {
             Log::warning('UltraMsg credentials not configured');
@@ -69,7 +75,7 @@ class WhatsAppService
 
     private function sendCallmeBot(string $phone, string $message): bool
     {
-        $apiKey = config('services.whatsapp.callmebot_apikey');
+        $apiKey = settings('whatsapp.callmebot_apikey') ?: config('services.whatsapp.callmebot_apikey');
 
         if (!$apiKey) {
             Log::warning('CallmeBot API key not configured');
