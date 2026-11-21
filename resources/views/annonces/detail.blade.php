@@ -2534,31 +2534,41 @@
                             }
                             $imageCount = $hasImages ? count($annonce->images) : $annonce->media->count();
 
-                            // Uploaded video file (annonces.video) — distinct from the YouTube `reel`.
-                            // Stored on the public disk (e.g. "annonces/videos/xxx.mp4"); older rows may hold a full URL.
-                            $hasVideoFile = !empty($annonce->video);
-                            $videoFileUrl = $hasVideoFile
-                                ? (str_starts_with($annonce->video, 'http') ? $annonce->video : asset('storage/' . ltrim($annonce->video, '/')))
-                                : null;
-
-                            // Une seule vidéo : si un fichier vidéo est présent, on l'utilise et
-                            // on n'affiche PAS le reel YouTube (évite deux vidéos sur la fiche).
-                            $showReel = !empty($annonce->reel) && !$hasVideoFile;
-
-                            // Normalise le reel YouTube en ID de 11 caractères : les admins
-                            // collent souvent une URL complète (youtu.be/…, watch?v=…, shorts/…,
-                            // embed/…), ce qui cassait l'embed (…/embed/https://… → 404).
-                            $reelId = null;
-                            if (!empty($annonce->reel)) {
-                                $r = trim($annonce->reel);
-                                if (preg_match('~^[A-Za-z0-9_-]{11}$~', $r)) {
-                                    $reelId = $r;
-                                } elseif (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/|v/))([A-Za-z0-9_-]{11})~', $r, $reelM)) {
-                                    $reelId = $reelM[1];
-                                } else {
-                                    $reelId = $r;
+                            // Helper : tire un ID YouTube 11-char d'un champ
+                            // (ID brut, URL watch?v=, youtu.be/, embed/, shorts/, v/).
+                            $extractYoutubeId = function ($raw) {
+                                $raw = trim((string) $raw);
+                                if ($raw === '') return null;
+                                if (preg_match('~^[A-Za-z0-9_-]{11}$~', $raw)) {
+                                    return $raw;
                                 }
+                                if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/|v/))([A-Za-z0-9_-]{11})~', $raw, $m)) {
+                                    return $m[1];
+                                }
+                                return null;
+                            };
+
+                            // Champ `video` : peut contenir soit un fichier uploadé
+                            // (annonces/videos/xxx.mp4), soit (cas des admins) un lien
+                            // ou ID YouTube collé à la place de `reel`.
+                            $videoRaw       = trim((string) ($annonce->video ?? ''));
+                            $videoYoutubeId = $extractYoutubeId($videoRaw);
+                            $hasVideoFile   = false;
+                            $videoFileUrl   = null;
+                            if ($videoRaw !== '' && ! $videoYoutubeId) {
+                                $hasVideoFile = true;
+                                $videoFileUrl = str_starts_with($videoRaw, 'http')
+                                    ? $videoRaw
+                                    : asset('storage/' . ltrim($videoRaw, '/'));
                             }
+
+                            // Reel YouTube : priorité au champ `video` s'il contient du YouTube
+                            // (admins qui collent l'URL YouTube dans "Video" au lieu de "Reel").
+                            $reelId = $videoYoutubeId ?: $extractYoutubeId($annonce->reel ?? '');
+
+                            // Une seule vidéo : si un fichier vidéo est présent, on affiche
+                            // le fichier et on cache le reel YouTube.
+                            $showReel = !empty($reelId) && !$hasVideoFile;
 
                             $totalMedia = $imageCount + ($showReel ? 1 : 0) + ($hasVideoFile ? 1 : 0);
                         @endphp
