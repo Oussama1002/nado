@@ -6,101 +6,134 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * WhatsApp gateway (UltraMsg / CallmeBot).
+ * WhatsApp gateway — Meta Cloud API (official, graph.facebook.com).
  *
- * The project uses UltraMsg as an unofficial WhatsApp Web gateway:
- * it accepts a phone number OR a group id (xxxxxxxxxxxx@g.us) in the
- * `to` field, so the same `/messages/chat` endpoint serves both.
+ * Meta's Cloud API only supports 1-to-1 messages: there is no way to
+ * post to a WhatsApp group through the official API. Admin broadcasts
+ * therefore fan out to a configured list of admin phone numbers.
  *
- * Feature flag: `whatsapp.enabled` (soft kill-switch, defaults to true to
- * keep the pre-existing OTP flow working if the setting is missing).
+ * Business-initiated messages (everything we send here — OTPs, email
+ * mirrors, demande notifications) require either:
+ *   - a pre-approved message template, or
+ *   - an open 24h customer-service window (the recipient messaged the
+ *     business number in the last 24h).
+ *
+ * The service picks the path per call:
+ *   - sendOtp / broadcastToAdmins use a configured template if one is
+ *     set, otherwise fall back to plain text (which will only succeed
+ *     inside the 24h window — logged and swallowed on failure).
+ *
+ * Feature flag: `whatsapp.enabled` (defaults to true for the OTP flow
+ * when the setting is missing).
  */
 class WhatsAppService
 {
     /**
-     * Normalize a phone number to UltraMsg's expected form (+212XXXXXXXXX).
-     * Returns the input unchanged if it looks like a group id (ends with
-     * "@g.us"), so callers can pass groups through sendText() too.
+     * Normalize a phone number to Meta's expected form: international
+     * digits only, NO leading "+". Moroccan local 0X → 212X.
      */
     public function normalizePhone(string $phone): string
     {
-        $phone = trim($phone);
-        if ($phone === '') {
+        $digits = preg_replace('/\D/', '', $phone);
+        if ($digits === '') {
             return '';
         }
-        if (str_ends_with($phone, '@g.us') || str_ends_with($phone, '@c.us')) {
-            return $phone;
-        }
-
-        $digits = preg_replace('/\D/', '', $phone);
-
-        // Moroccan local 10-digit (0 6/7 ...)
         if (strlen($digits) === 10 && str_starts_with($digits, '0')) {
             $digits = '212' . substr($digits, 1);
         }
-
-        return '+' . ltrim($digits, '+');
+        return $digits;
     }
 
     /**
-     * Send an OTP message. Kept as a thin wrapper around sendText so the
-     * historical call sites don't change.
+     * Send an OTP. If `whatsapp.otp_template` is configured, uses a
+     * Meta-approved authentication template with the OTP as the single
+     * body parameter; otherwise falls back to a plain text message
+     * (which only succeeds inside an open 24h session).
      */
     public function sendOtp(string $phone, string $otp): bool
     {
+        $template = (string) config('services.whatsapp.otp_template', '');
+        $lang     = (string) config('services.whatsapp.otp_template_lang', 'fr');
+
+        if ($template !== '') {
+            return $this->sendTemplate($phone, $template, $lang, [$otp]);
+        }
+
         $message = "🔐 Votre code de vérification NADO est : *{$otp}*\n\nCe code expire dans 10 minutes. Ne le partagez jamais.";
         return $this->sendText($phone, $message);
     }
 
     /**
-     * Send any text message to a phone number or group id.
-     * Returns true on success, false on any failure (logged, never throws).
+     * Send a plain text message. Only succeeds within an open 24h
+     * customer-service window. Returns true on 2xx, false otherwise
+     * (always logged, never throws).
      */
     public function sendText(string $to, string $message): bool
     {
         if (! $this->featureOn()) {
             return false;
         }
-
         $to = $this->normalizePhone($to);
         if ($to === '') {
             return false;
         }
 
-        $provider = config('services.whatsapp.provider', 'ultramsg');
-        try {
-            return match ($provider) {
-                'ultramsg'  => $this->sendUltraMsg($to, $message),
-                'callmebot' => $this->sendCallmeBot($to, $message),
-                default     => $this->sendUltraMsg($to, $message),
-            };
-        } catch (\Throwable $e) {
-            Log::error('WhatsApp send failed', ['to' => $to, 'error' => $e->getMessage()]);
-            return false;
-        }
+        return $this->post([
+            'messaging_product' => 'whatsapp',
+            'to'                => $to,
+            'type'              => 'text',
+            'text'              => [
+                'preview_url' => false,
+                'body'        => $message,
+            ],
+        ]);
     }
 
     /**
-     * Send a message to a WhatsApp group by group id (xxxxxxxxxxxx@g.us).
-     * CallmeBot cannot post to groups; this path requires UltraMsg.
+     * Send a pre-approved template. $params are the body-parameter
+     * values ($params[0] maps to {{1}}, etc.). Meta forbids newlines
+     * and tabs inside body parameters — they're stripped here.
      */
-    public function sendToGroup(string $groupId, string $message): bool
+    public function sendTemplate(string $to, string $template, string $lang = 'fr', array $params = []): bool
     {
-        if (! str_ends_with($groupId, '@g.us')) {
-            Log::warning('WhatsApp group id must end with @g.us', ['group' => $groupId]);
+        if (! $this->featureOn()) {
             return false;
         }
-        return $this->sendText($groupId, $message);
+        $to = $this->normalizePhone($to);
+        if ($to === '' || $template === '') {
+            return false;
+        }
+
+        $parameters = [];
+        foreach ($params as $p) {
+            $v = str_replace(["\r", "\n", "\t"], [' ', ' ', ' '], (string) $p);
+            $v = preg_replace('/ {4,}/', '   ', $v);
+            $v = trim($v);
+            $parameters[] = ['type' => 'text', 'text' => $v];
+        }
+
+        $components = [];
+        if ($parameters !== []) {
+            $components[] = ['type' => 'body', 'parameters' => $parameters];
+        }
+
+        return $this->post([
+            'messaging_product' => 'whatsapp',
+            'to'                => $to,
+            'type'              => 'template',
+            'template'          => array_filter([
+                'name'       => $template,
+                'language'   => ['code' => $lang],
+                'components' => $components ?: null,
+            ]),
+        ]);
     }
 
     /**
-     * Broadcast to the admin destinations configured in services.whatsapp:
-     *   - admin_group (optional, xxxxxxxxxxxx@g.us)
-     *   - admin_numbers (comma-separated list)
-     *
-     * Returns the number of destinations that accepted the message.
-     * Silent no-op when the integration is disabled or no destination
-     * is configured.
+     * Fan out to every admin number configured in services.whatsapp
+     * .admin_numbers (comma-separated). Uses `admin_template` if set
+     * (recommended — works outside the 24h window), otherwise plain
+     * text. Returns the count of successful deliveries.
      */
     public function broadcastToAdmins(string $message): int
     {
@@ -108,24 +141,27 @@ class WhatsAppService
             return 0;
         }
 
-        $sent = 0;
-        $group = (string) config('services.whatsapp.admin_group', '');
-        if ($group !== '') {
-            $sent += $this->sendToGroup($group, $message) ? 1 : 0;
-        }
-
         $numbers = (string) config('services.whatsapp.admin_numbers', '');
-        foreach (preg_split('/[,\s;]+/', $numbers, -1, PREG_SPLIT_NO_EMPTY) as $num) {
-            $sent += $this->sendText($num, $message) ? 1 : 0;
+        $list    = preg_split('/[,\s;]+/', $numbers, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if ($list === []) {
+            return 0;
         }
 
+        $template = (string) config('services.whatsapp.admin_template', '');
+        $lang     = (string) config('services.whatsapp.admin_template_lang', 'fr');
+
+        $sent = 0;
+        foreach ($list as $num) {
+            $ok = $template !== ''
+                ? $this->sendTemplate($num, $template, $lang, [$message])
+                : $this->sendText($num, $message);
+            $sent += $ok ? 1 : 0;
+        }
         return $sent;
     }
 
     private function featureOn(): bool
     {
-        // feature_on() reads the Setting store; default true keeps the
-        // legacy OTP flow working when the flag hasn't been seeded yet.
         if (! function_exists('feature_on')) {
             return true;
         }
@@ -136,43 +172,43 @@ class WhatsAppService
         }
     }
 
-    private function sendUltraMsg(string $to, string $message): bool
+    /**
+     * Low-level POST to the Cloud API. Returns true on 2xx. Errors are
+     * logged with Meta's response body so misconfig is easy to spot in
+     * storage/logs/laravel.log.
+     */
+    private function post(array $payload): bool
     {
-        $instance = config('services.whatsapp.ultramsg_instance');
-        $token    = config('services.whatsapp.ultramsg_token');
+        $phoneId = config('services.whatsapp.phone_number_id');
+        $token   = config('services.whatsapp.access_token');
+        $version = config('services.whatsapp.api_version', 'v21.0');
 
-        if (!$instance || !$token) {
-            Log::warning('UltraMsg credentials not configured');
+        if (! $phoneId || ! $token) {
+            Log::warning('WhatsApp Cloud API credentials not configured');
             return false;
         }
 
-        $response = Http::asForm()->post(
-            "https://api.ultramsg.com/{$instance}/messages/chat",
-            ['token' => $token, 'to' => $to, 'body' => $message]
-        );
+        try {
+            $response = Http::timeout(10)
+                ->withToken($token)
+                ->acceptJson()
+                ->post("https://graph.facebook.com/{$version}/{$phoneId}/messages", $payload);
 
-        if (! $response->successful()) {
-            Log::warning('UltraMsg send non-2xx', ['to' => $to, 'status' => $response->status(), 'body' => $response->body()]);
+            if (! $response->successful()) {
+                Log::warning('WhatsApp Cloud API non-2xx', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                    'to'     => $payload['to'] ?? null,
+                ]);
+                return false;
+            }
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp Cloud API send failed', [
+                'error' => $e->getMessage(),
+                'to'    => $payload['to'] ?? null,
+            ]);
             return false;
         }
-        return true;
-    }
-
-    private function sendCallmeBot(string $phone, string $message): bool
-    {
-        $apiKey = config('services.whatsapp.callmebot_apikey');
-
-        if (!$apiKey) {
-            Log::warning('CallmeBot API key not configured');
-            return false;
-        }
-
-        $response = Http::get('https://api.callmebot.com/whatsapp.php', [
-            'phone'  => $phone,
-            'text'   => $message,
-            'apikey' => $apiKey,
-        ]);
-
-        return $response->successful();
     }
 }

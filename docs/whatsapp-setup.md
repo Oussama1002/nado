@@ -1,61 +1,104 @@
-# WhatsApp integration — setup
+# WhatsApp integration — setup (Meta Cloud API)
 
-NADO uses **UltraMsg** as an unofficial WhatsApp Web gateway (it was already
-wired up for OTPs). Three entry points use it now:
+NADO talks to WhatsApp through the **official Meta Cloud API**
+(`graph.facebook.com`). Same Meta Business account as Facebook /
+Instagram Ads, so the business profile is shared across channels.
+
+Three entry points use it:
 
 1. **Detail page "Discuter avec le vendeur"** — opens a direct
-   `wa.me` chat to the seller with a prefilled message. No server call,
-   no credentials needed. Always on.
-2. **Email mirror** — every outgoing mail is also posted to the admin
-   WhatsApp group. Gated by `whatsapp.enabled` + `whatsapp.mirror_emails`.
-3. **Demandes mirror** — every new `demande` is posted to the admin
-   WhatsApp group, in parallel to the existing Telegram post. Gated by
-   `whatsapp.enabled` + `whatsapp.mirror_demandes`.
+   `wa.me` chat from the buyer to the seller with a prefilled message.
+   This is a client-side link, no API call, no credentials required.
+   Always on.
+2. **Email mirror** — every outgoing mail is also pushed as a WhatsApp
+   message to each admin phone in `WHATSAPP_ADMIN_NUMBERS`. Gated by
+   `whatsapp.enabled` + `whatsapp.mirror_emails`.
+3. **Demandes mirror** — each new `demande` is pushed to each admin
+   phone, in parallel to the existing Telegram group post (which
+   stays as-is — Meta Cloud API cannot post to WhatsApp groups).
+   Gated by `whatsapp.enabled` + `whatsapp.mirror_demandes`.
 
-## 1. Create an UltraMsg instance
+## ⚠️ Limits you need to know
 
-1. Sign up at <https://ultramsg.com/>.
-2. Create an instance (Developer plan is enough for our volume).
-3. In the instance dashboard: **Scan the QR code** with the WhatsApp
-   account that NADO should speak from (ideally a dedicated business
-   line, not a personal one — if the account gets banned, personal
-   chats go with it).
-4. Note the **Instance ID** (`instance12345`) and the **Token**.
+- **No groups.** Meta Cloud API delivers 1-to-1 only. "WhatsApp group
+  broadcast" is not an option through the official API — that's why
+  admin notifications fan out to a list of phone numbers. If you want
+  a group experience, keep using Telegram for that.
+- **24h customer-service window.** Business-initiated messages
+  (everything we send server-side) only go through as plain text if
+  the recipient messaged your business number in the last 24 hours.
+  Outside that window, you **must** use a pre-approved **template**.
+  Two templates cover all of NADO's needs — see §3 below.
 
-## 2. Create / find the admin group id
+## 1. Meta Business setup (one-time)
 
-UltraMsg sends to a group using its id, which looks like
-`120363XXXXXXXXXXXX@g.us`. Two ways to get it:
+1. <https://business.facebook.com> → confirm you have a verified
+   Business Account (same one you'll use for Ads).
+2. In **Business Settings → Accounts → WhatsApp Accounts**, create a
+   WhatsApp Business Account (WABA) if none exists.
+3. Add the phone number NADO will send from (dedicated business line
+   recommended; the number cannot be in use on regular WhatsApp or
+   WhatsApp Business app — Meta claims it).
+4. In **App Dashboard** (<https://developers.facebook.com/apps>), create
+   an app of type "Business" if you don't have one, add the WhatsApp
+   product to it.
+5. Copy the **Phone Number ID** (in *WhatsApp → API Setup* under
+   "From"). It's a numeric id, not the phone number itself.
+6. Generate a **System User permanent access token** (Business
+   Settings → System Users → Add → assign the WhatsApp app with
+   `whatsapp_business_messaging` + `whatsapp_business_management`
+   scopes → *Generate New Token*). Temporary tokens expire in 24h and
+   are only good for smoke tests.
 
-- **Easiest:** send any message *to* that group from a phone, then open
-  UltraMsg dashboard → *Messages* → the incoming log shows the group id
-  under `from`.
-- Or call the API endpoint
-  `GET https://api.ultramsg.com/<instance>/groups?token=<token>`.
-
-## 3. `.env`
+## 2. `.env`
 
 ```ini
-WHATSAPP_PROVIDER=ultramsg
-ULTRAMSG_INSTANCE_ID=instance12345
-ULTRAMSG_TOKEN=xxxxxxxxxxxxxxxx
+WHATSAPP_PHONE_NUMBER_ID=1234567890123456
+WHATSAPP_ACCESS_TOKEN=EAAG...                 # system user token
+WHATSAPP_API_VERSION=v21.0                    # optional; current default
 
-# Group id (xxxxxxxxxxxx@g.us). Leave empty to send only to admin_numbers.
-WHATSAPP_ADMIN_GROUP=120363XXXXXXXXXXXX@g.us
-
-# Optional comma-separated DMs (useful before the group is set up).
+# Comma-separated admin phones (international format; spaces/+ ok).
 WHATSAPP_ADMIN_NUMBERS=+2126XXXXXXXX,+2126YYYYYYYY
+
+# Approved template names (see §3). Leave empty to send plain text,
+# which only works inside an open 24h session.
+WHATSAPP_ADMIN_TEMPLATE=nado_admin_notify
+WHATSAPP_ADMIN_TEMPLATE_LANG=fr
+WHATSAPP_OTP_TEMPLATE=nado_otp
+WHATSAPP_OTP_TEMPLATE_LANG=fr
 ```
 
-Then `php artisan config:clear` on production.
+Then on prod: `php artisan config:clear`.
+
+## 3. Approve the two templates
+
+In **WhatsApp Manager → Message templates → Create template**:
+
+### `nado_admin_notify` (category: **Utility**)
+- Language: French (fr)
+- Body:
+  ```
+  🔔 NADO : {{1}}
+  ```
+- Example variable (for Meta's review): any sample notification text.
+
+### `nado_otp` (category: **Authentication**)
+- Language: French (fr)
+- Body:
+  ```
+  Votre code de vérification NADO est {{1}}. Il expire dans 10 minutes.
+  ```
+- Mark "Add security recommendation" if offered.
+- Example variable: `123456`.
+
+Approval usually lands in a few minutes (Utility / Authentication are
+fast lanes). Once approved, flip the feature flags on.
 
 ## 4. Enable the feature flags
 
-The seeder created three settings under the `whatsapp` group — toggle
-them in **Admin → Settings → WhatsApp**:
+**Admin → Settings → WhatsApp**:
 
-- `whatsapp.enabled` — master kill-switch (default **off**; flip to **on**
-  once UltraMsg is paid and the QR is scanned).
+- `whatsapp.enabled` — master kill-switch (seeded **off**).
 - `whatsapp.mirror_emails` — default **on**.
 - `whatsapp.mirror_demandes` — default **on**.
 
@@ -66,18 +109,24 @@ php artisan tinker
 >>> app(App\Services\WhatsAppService::class)->broadcastToAdmins("✅ Test depuis NADO");
 ```
 
-Expected: `1` (or more) returned, and the message appears in the group
-within a few seconds.
+Expected: returns the count of admin numbers that got through. If 0,
+check `storage/logs/laravel.log` — the Meta API response body is
+logged on any non-2xx.
 
-## Gotchas / limits
+## Gotchas
 
-- UltraMsg is **unofficial**: if WhatsApp's anti-spam flags the number
-  it can get banned. Use a dedicated business line and keep message
-  volume reasonable.
-- `Mail::sending` mirrors **every** outgoing mail. If a specific flow
-  must *not* be mirrored, flip `whatsapp.mirror_emails` off, or add a
-  per-call exclusion in `AppServiceProvider::boot()`.
-- Message bodies are truncated to 1200 characters; the full email still
-  goes to the inbox.
-- CallmeBot is still configured as a fallback **for OTPs only** — it
-  cannot post to groups.
+- **Body parameters** in approved templates cannot contain newlines,
+  tabs, or 4+ consecutive spaces. The service collapses these for you,
+  so an email with multi-line text still goes through as a
+  single-paragraph WhatsApp message. The full email still lands in the
+  recipient's inbox unchanged.
+- The admin template truncates implicitly if the message is longer
+  than ~1024 chars (Meta's variable limit). The mail-mirror listener
+  already caps at 1200 chars; adjust in `AppServiceProvider::boot()`
+  if you need shorter.
+- **OTP fallback** (`VerifyWhatsAppController`): if WhatsApp send
+  fails, the user sees a flash message with the OTP so they can still
+  log in. No change — works the same as before.
+- **Ads integration**: because the WhatsApp number lives under the
+  same Business Account as Ads, you can run *Click-to-WhatsApp* ads
+  from day one. Those messages enter the 24h window automatically.

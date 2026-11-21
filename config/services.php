@@ -31,21 +31,31 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    // WhatsApp gateway. UltraMsg (unofficial, works with groups) is the
-    // default; CallmeBot is kept as a fallback for the OTP flow only.
+    // WhatsApp — Meta Cloud API (graph.facebook.com). Shares the same
+    // Meta Business account as Facebook/Instagram Ads.
     //
-    // admin_group:   WhatsApp group id (xxxxxxxxxxxx@g.us). Where new
-    //                demandes and mirrored emails land.
-    // admin_numbers: comma-separated phones that ALSO receive admin
-    //                broadcasts (useful before the group is set up, or
-    //                for owners who prefer DMs).
+    // phone_number_id / access_token: from Meta Business → WhatsApp →
+    //   API setup. Use a System User permanent token in production.
+    // api_version: graph API version (e.g. v21.0, v22.0).
+    // admin_numbers: comma-separated phones (international format, with
+    //   or without "+"; the service normalizes). Mirrored emails and
+    //   demande notifications fan out 1-to-1 to these numbers. Meta's
+    //   Cloud API has no group endpoint — Telegram still handles the
+    //   group broadcast in parallel.
+    // admin_template: name of a Meta-approved utility template with a
+    //   single body parameter {{1}}. If set, admin notifications use
+    //   it (works outside the 24h customer-service window).
+    // otp_template: name of an authentication template with {{1}}.
+    //   Required to send OTPs outside an open session.
     'whatsapp' => [
-        'provider'           => env('WHATSAPP_PROVIDER', 'ultramsg'),
-        'ultramsg_instance'  => env('ULTRAMSG_INSTANCE_ID'),
-        'ultramsg_token'     => env('ULTRAMSG_TOKEN'),
-        'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
-        'admin_group'        => env('WHATSAPP_ADMIN_GROUP', ''),
+        'phone_number_id'    => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'access_token'       => env('WHATSAPP_ACCESS_TOKEN'),
+        'api_version'        => env('WHATSAPP_API_VERSION', 'v21.0'),
         'admin_numbers'      => env('WHATSAPP_ADMIN_NUMBERS', ''),
+        'admin_template'     => env('WHATSAPP_ADMIN_TEMPLATE', ''),
+        'admin_template_lang'=> env('WHATSAPP_ADMIN_TEMPLATE_LANG', 'fr'),
+        'otp_template'       => env('WHATSAPP_OTP_TEMPLATE', ''),
+        'otp_template_lang'  => env('WHATSAPP_OTP_TEMPLATE_LANG', 'fr'),
     ],
 
     // Telegram bot — used to broadcast new demandes to a channel.
