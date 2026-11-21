@@ -300,6 +300,11 @@ class SettingsSeeder extends Seeder
                     false, true,
                     'developers.facebook.com → votre App → WhatsApp → API Setup → section « Send and receive messages » : copiez le « Phone number ID » (un long nombre, PAS le numéro visible +212…).'],
 
+                ['meta_waba_id', 'string', '',
+                    'Meta — WhatsApp Business Account ID (WABA)',
+                    false, true,
+                    'developers.facebook.com → votre App → WhatsApp → API Setup : copiez le « WhatsApp Business Account ID » (différent du Phone Number ID). Nécessaire pour gérer les modèles de messages depuis l\'admin.'],
+
                 ['meta_access_token', 'string', '',
                     'Meta — Access Token (permanent)',
                     false, true,

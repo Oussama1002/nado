@@ -11,6 +11,9 @@
                 Fenêtre libre : 24h après le dernier msg reçu. Sinon → template.
             @endif
         </div>
+        <a href="{{ route('admin.whatsapp.templates.index') }}" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-earmark-text"></i> Modèles
+        </a>
         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#newWaChatModal">
             <i class="bi bi-plus-lg"></i> Nouvelle discussion
         </button>

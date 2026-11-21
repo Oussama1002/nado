@@ -35,6 +35,7 @@ return [
         // Meta WhatsApp Business Cloud API (graph.facebook.com).
         // Requires an approved template in the "Authentication" category.
         'meta_phone_number_id' => env('WHATSAPP_META_PHONE_NUMBER_ID'),
+        'meta_waba_id'         => env('WHATSAPP_META_WABA_ID'),
         'meta_access_token'    => env('WHATSAPP_META_ACCESS_TOKEN'),
         'meta_template_name'   => env('WHATSAPP_META_TEMPLATE', 'otp_verification'),
         'meta_template_lang'   => env('WHATSAPP_META_TEMPLATE_LANG', 'fr'),

@@ -171,6 +171,122 @@ class WhatsAppService
         return ['ok' => (bool) $wamid, 'wamid' => $wamid, 'error' => $wamid ? null : 'no wamid in response'];
     }
 
+    /* ──────────────────────── Template management ──────────────────────── */
+
+    /**
+     * List templates on the WhatsApp Business Account.
+     * Returns ['ok' => bool, 'templates' => array, 'error' => ?string].
+     */
+    public function listTemplates(int $limit = 100): array
+    {
+        [$wabaId, $accessToken, $apiVersion] = $this->managementCreds();
+        if (! $wabaId || ! $accessToken) {
+            return ['ok' => false, 'templates' => [], 'error' => 'WABA ID or access token missing'];
+        }
+
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->get("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
+                'limit' => $limit,
+            ]);
+
+        if (! $response->successful()) {
+            $body = $response->json() ?? $response->body();
+            return [
+                'ok'        => false,
+                'templates' => [],
+                'error'     => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+            ];
+        }
+
+        return ['ok' => true, 'templates' => $response->json('data') ?? [], 'error' => null];
+    }
+
+    /**
+     * Create a template on Meta. Body text is required; footer is optional.
+     * $category is AUTHENTICATION | UTILITY | MARKETING.
+     * Returns ['ok' => bool, 'id' => ?string, 'status' => ?string, 'error' => ?string].
+     */
+    public function createTemplate(array $data): array
+    {
+        [$wabaId, $accessToken, $apiVersion] = $this->managementCreds();
+        if (! $wabaId || ! $accessToken) {
+            return ['ok' => false, 'id' => null, 'status' => null, 'error' => 'WABA ID or access token missing'];
+        }
+
+        $components = [
+            ['type' => 'BODY', 'text' => $data['body']],
+        ];
+        if (! empty($data['footer'])) {
+            $components[] = ['type' => 'FOOTER', 'text' => $data['footer']];
+        }
+
+        $payload = [
+            'name'       => $data['name'],
+            'category'   => $data['category'],
+            'language'   => $data['language'],
+            'components' => $components,
+        ];
+
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->asJson()
+            ->post("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", $payload);
+
+        if (! $response->successful()) {
+            $body = $response->json() ?? $response->body();
+            return [
+                'ok'     => false,
+                'id'     => null,
+                'status' => null,
+                'error'  => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+            ];
+        }
+
+        return [
+            'ok'     => true,
+            'id'     => $response->json('id'),
+            'status' => $response->json('status'),
+            'error'  => null,
+        ];
+    }
+
+    /**
+     * Delete a template by name (all language variants, per Meta's API semantics).
+     */
+    public function deleteTemplate(string $name): array
+    {
+        [$wabaId, $accessToken, $apiVersion] = $this->managementCreds();
+        if (! $wabaId || ! $accessToken) {
+            return ['ok' => false, 'error' => 'WABA ID or access token missing'];
+        }
+
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->delete("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
+                'name' => $name,
+            ]);
+
+        if (! $response->successful()) {
+            $body = $response->json() ?? $response->body();
+            return [
+                'ok'    => false,
+                'error' => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+            ];
+        }
+
+        return ['ok' => true, 'error' => null];
+    }
+
+    private function managementCreds(): array
+    {
+        return [
+            settings('whatsapp.meta_waba_id')      ?: config('services.whatsapp.meta_waba_id'),
+            settings('whatsapp.meta_access_token') ?: config('services.whatsapp.meta_access_token'),
+            config('services.whatsapp.meta_api_version', 'v21.0'),
+        ];
+    }
+
     /**
      * Verify the X-Hub-Signature-256 header on an incoming webhook POST.
      * Returns true if (a) no app secret is configured (skip, in dev), or

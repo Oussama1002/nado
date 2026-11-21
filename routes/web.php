@@ -599,6 +599,13 @@ Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
     ->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'index'])->name('index');
         Route::post('/start', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'start'])->name('start');
+
+        // Templates (modèles) gérés directement sur Meta.
+        Route::get('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'index'])->name('templates.index');
+        Route::get('/templates/create', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'create'])->name('templates.create');
+        Route::post('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'store'])->name('templates.store');
+        Route::delete('/templates/{name}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'destroy'])->name('templates.destroy');
+
         Route::get('/{conversation}', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'show'])->name('show');
         Route::post('/{conversation}/reply', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'reply'])->name('reply');
     });
