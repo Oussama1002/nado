@@ -32,6 +32,7 @@ class SettingsController extends Controller
         'estimation' => ['label' => 'Estimation payante',      'icon' => 'bi-file-earmark-text'],
         'partners'   => ['label' => 'Partenaires & commissions', 'icon' => 'bi-people'],
         'legalcheck' => ['label' => 'Situation légale (NARSA)', 'icon' => 'bi-shield-check'],
+        'whatsapp'   => ['label' => 'WhatsApp (Meta Cloud API)', 'icon' => 'bi-whatsapp'],
         // 'radio' est géré depuis le module Nado Radio (sidebar).
         // 'ai' (carte grise) n'a plus de tuile : la fonctionnalité est active par défaut.
         'global'     => ['label' => 'Modules & Kill-switches',  'icon' => 'bi-toggles'],
@@ -98,6 +99,32 @@ class SettingsController extends Controller
         return redirect()
             ->route('admin.settings.group', $group)
             ->with('success', 'Configuration « ' . self::GROUPS[$group]['label'] . ' » mise à jour.');
+    }
+
+    /**
+     * POST /admin/settings/whatsapp/test — envoie un message test au(x)
+     * numéro(s) admin avec la configuration courante. Permet à l'admin
+     * de valider ses credentials Meta sans ouvrir tinker.
+     */
+    public function whatsappTest(Request $request)
+    {
+        $wa = app(\App\Services\WhatsAppService::class);
+        $msg = trim((string) $request->input('message', 'Test NADO : la passerelle WhatsApp fonctionne.'));
+        if ($msg === '') {
+            $msg = 'Test NADO.';
+        }
+
+        $count = $wa->broadcastToAdmins($msg);
+
+        if ($count > 0) {
+            return redirect()
+                ->route('admin.settings.group', 'whatsapp')
+                ->with('success', "Message test envoyé à {$count} destinataire(s). Vérifiez votre WhatsApp.");
+        }
+
+        return redirect()
+            ->route('admin.settings.group', 'whatsapp')
+            ->with('error', "Aucun message envoyé. Vérifiez : passerelle activée, Phone Number ID, Access Token, Admin numbers, et consultez storage/logs/laravel.log pour la réponse exacte de Meta.");
     }
 
     /** POST /admin/settings/toggle/{key} — bascule rapide d'un flag (AJAX). */

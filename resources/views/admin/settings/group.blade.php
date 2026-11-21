@@ -11,6 +11,9 @@
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
 @if($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
@@ -98,6 +101,35 @@
                     </div>
                 @endif
             </form>
+
+            @if($group === 'whatsapp')
+                {{-- Panneau de test : envoie un message réel aux admin_numbers via Meta. --}}
+                <hr class="my-4">
+                <h5 class="mb-2"><i class="bi bi-send-check"></i> Tester la connexion Meta</h5>
+                <p class="text-muted small mb-3">
+                    Envoie un message test aux numéros admin avec la configuration ci-dessus.
+                    Nécessite la passerelle activée, un Phone Number ID et un Access Token valides.
+                    Hors fenêtre client de 24 h, un template approuvé est requis.
+                </p>
+                <form method="POST" action="{{ route('admin.settings.whatsapp.test') }}" class="row g-2 align-items-end">
+                    @csrf
+                    <div class="col-12 col-md-8">
+                        <label class="form-label small mb-1">Message du test</label>
+                        <input type="text" name="message" class="form-control"
+                               value="Test NADO : la passerelle WhatsApp fonctionne.">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-whatsapp"></i> Envoyer le test
+                        </button>
+                    </div>
+                </form>
+                <div class="text-muted small mt-2">
+                    <i class="bi bi-info-circle"></i>
+                    Les erreurs détaillées (réponse brute de Meta) sont loggées dans
+                    <code>storage/logs/laravel.log</code>.
+                </div>
+            @endif
         </div>
     </div>
 </div>

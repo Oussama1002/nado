@@ -582,6 +582,7 @@ Route::prefix('admin/settings')->name('admin.settings.')
     ->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
+        Route::post('/whatsapp/test', [SettingsController::class, 'whatsappTest'])->name('whatsapp.test');
         Route::get('/{group}', [SettingsController::class, 'group'])->name('group');
         Route::post('/{group}', [SettingsController::class, 'update'])->name('update');
     });

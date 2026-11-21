@@ -274,14 +274,32 @@ class SettingsSeeder extends Seeder
             ],
 
             // ────────────────────────── whatsapp ────────────────────────
-            // Passerelle WhatsApp (UltraMsg). master = kill-switch global.
-            // mirror_emails : relaie chaque mail sortant au groupe admin.
-            // mirror_demandes : poste chaque nouvelle demande au groupe admin,
-            // en parallèle du canal Telegram existant.
+            // Passerelle WhatsApp via Meta Cloud API (même compte business
+            // que Facebook / Instagram Ads). master = kill-switch global.
+            //
+            // Secrets (phone_number_id + access_token) stockés en DB :
+            // `is_secret = true` → champ password en admin, la valeur
+            // actuelle n'est jamais ré-affichée, laisser vide = conserver.
+            //
+            // Templates Meta : pour que les notifications partent HORS
+            // de la fenêtre client de 24 h, un template approuvé est
+            // requis. Un template suffit pour les notifications admin
+            // (catégorie Utility, 1 variable), un autre pour l'OTP
+            // (catégorie Authentication). Voir docs/whatsapp-setup.md.
+            //
+            // Format : [clé, type, défaut, label, is_toggle, is_secret]
             'whatsapp' => [
-                ['enabled',          'bool', false, 'Passerelle WhatsApp activée (master on/off)'],
-                ['mirror_emails',    'bool', true,  'Relayer les e-mails sortants au groupe admin WhatsApp'],
-                ['mirror_demandes',  'bool', true,  'Poster chaque nouvelle demande au groupe admin WhatsApp'],
+                ['enabled',             'bool',   false,    'Passerelle WhatsApp activée (master on/off)'],
+                ['mirror_emails',       'bool',   true,     'Relayer les e-mails sortants aux admins WhatsApp'],
+                ['mirror_demandes',     'bool',   true,     'Envoyer chaque nouvelle demande aux admins WhatsApp'],
+                ['phone_number_id',     'string', '',       'Phone Number ID Meta (WhatsApp → API Setup)', false, false],
+                ['access_token',        'string', '',       'Access Token Meta (System User, permanent)', false, true],
+                ['api_version',         'string', 'v21.0',  'Version Graph API (ex. v21.0)', false, false],
+                ['admin_numbers',       'string', '',       'Numéros admin (format international, séparés par virgules)', false, false],
+                ['admin_template',      'string', '',       'Template admin approuvé (ex. nado_admin_notify)', false, false],
+                ['admin_template_lang', 'string', 'fr',     'Langue du template admin (ex. fr)', false, false],
+                ['otp_template',        'string', '',       'Template OTP approuvé (ex. nado_otp)', false, false],
+                ['otp_template_lang',   'string', 'fr',     'Langue du template OTP (ex. fr)', false, false],
             ],
 
             // ──────────────────── legalcheck (opposition NARSA) ─────────

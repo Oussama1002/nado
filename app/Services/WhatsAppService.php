@@ -52,8 +52,8 @@ class WhatsAppService
      */
     public function sendOtp(string $phone, string $otp): bool
     {
-        $template = (string) config('services.whatsapp.otp_template', '');
-        $lang     = (string) config('services.whatsapp.otp_template_lang', 'fr');
+        $template = $this->conf('otp_template', '');
+        $lang     = $this->conf('otp_template_lang', 'fr');
 
         if ($template !== '') {
             return $this->sendTemplate($phone, $template, $lang, [$otp]);
@@ -141,14 +141,14 @@ class WhatsAppService
             return 0;
         }
 
-        $numbers = (string) config('services.whatsapp.admin_numbers', '');
+        $numbers = $this->conf('admin_numbers', '');
         $list    = preg_split('/[,\s;]+/', $numbers, -1, PREG_SPLIT_NO_EMPTY) ?: [];
         if ($list === []) {
             return 0;
         }
 
-        $template = (string) config('services.whatsapp.admin_template', '');
-        $lang     = (string) config('services.whatsapp.admin_template_lang', 'fr');
+        $template = $this->conf('admin_template', '');
+        $lang     = $this->conf('admin_template_lang', 'fr');
 
         $sent = 0;
         foreach ($list as $num) {
@@ -158,6 +158,27 @@ class WhatsAppService
             $sent += $ok ? 1 : 0;
         }
         return $sent;
+    }
+
+    /**
+     * Read a whatsapp config value. DB settings first (admin UI is the
+     * primary source), then env via config() so values set before the
+     * seeder ran, or kept in env on purpose, still work.
+     */
+    private function conf(string $key, $default = null)
+    {
+        if (function_exists('settings')) {
+            try {
+                $v = settings("whatsapp.{$key}");
+                if ($v !== null && $v !== '') {
+                    return $v;
+                }
+            } catch (\Throwable $e) {
+                // fall through to config()
+            }
+        }
+        $v = config("services.whatsapp.{$key}");
+        return ($v === null || $v === '') ? $default : $v;
     }
 
     private function featureOn(): bool
@@ -179,9 +200,9 @@ class WhatsAppService
      */
     private function post(array $payload): bool
     {
-        $phoneId = config('services.whatsapp.phone_number_id');
-        $token   = config('services.whatsapp.access_token');
-        $version = config('services.whatsapp.api_version', 'v21.0');
+        $phoneId = $this->conf('phone_number_id');
+        $token   = $this->conf('access_token');
+        $version = $this->conf('api_version', 'v21.0');
 
         if (! $phoneId || ! $token) {
             Log::warning('WhatsApp Cloud API credentials not configured');
