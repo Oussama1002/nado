@@ -32,11 +32,6 @@ return [
     ],
 
     'whatsapp' => [
-        'provider'           => env('WHATSAPP_PROVIDER', 'meta'),
-        'ultramsg_instance'  => env('ULTRAMSG_INSTANCE_ID'),
-        'ultramsg_token'     => env('ULTRAMSG_TOKEN'),
-        'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
-
         // Meta WhatsApp Business Cloud API (graph.facebook.com).
         // Requires an approved template in the "Authentication" category.
         'meta_phone_number_id' => env('WHATSAPP_META_PHONE_NUMBER_ID'),

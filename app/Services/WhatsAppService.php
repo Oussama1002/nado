@@ -23,7 +23,9 @@ class WhatsAppService
     }
 
     /**
-     * Send a WhatsApp OTP message.
+     * Send a WhatsApp OTP message via the Meta (Facebook) WhatsApp Business
+     * Cloud API. Requires an APPROVED template in the "Authentication" category
+     * with one body variable {{1}} that receives the OTP.
      */
     public function sendOtp(string $phone, string $otp): bool
     {
@@ -34,31 +36,15 @@ class WhatsAppService
         }
 
         $normalized = $this->normalizePhone($phone);
-        $provider   = settings('whatsapp.provider') ?: config('services.whatsapp.provider', 'meta');
 
         try {
-            return match ($provider) {
-                'meta'      => $this->sendMeta($normalized, $otp),
-                'ultramsg'  => $this->sendUltraMsg($normalized, $this->freeformMessage($otp)),
-                'callmebot' => $this->sendCallmeBot($normalized, $this->freeformMessage($otp)),
-                default     => $this->sendMeta($normalized, $otp),
-            };
+            return $this->sendMeta($normalized, $otp);
         } catch (\Throwable $e) {
             Log::error('WhatsApp OTP send failed', ['phone' => $normalized, 'error' => $e->getMessage()]);
             return false;
         }
     }
 
-    private function freeformMessage(string $otp): string
-    {
-        return "🔐 Votre code de vérification NADO est : *{$otp}*\n\nCe code expire dans 10 minutes. Ne le partagez jamais.";
-    }
-
-    /**
-     * Meta (Facebook) WhatsApp Business Cloud API — graph.facebook.com.
-     * Sends via an APPROVED template in the "Authentication" category.
-     * The template must have one body variable {{1}} that receives the OTP.
-     */
     private function sendMeta(string $phone, string $otp): bool
     {
         $phoneNumberId = settings('whatsapp.meta_phone_number_id') ?: config('services.whatsapp.meta_phone_number_id');
@@ -119,41 +105,5 @@ class WhatsAppService
         // Successful send returns {"messages":[{"id":"wamid.xxx"}]}.
         $messages = $response->json('messages');
         return is_array($messages) && ! empty($messages);
-    }
-
-    private function sendUltraMsg(string $phone, string $message): bool
-    {
-        $instance = settings('whatsapp.ultramsg_instance') ?: config('services.whatsapp.ultramsg_instance');
-        $token    = settings('whatsapp.ultramsg_token')    ?: config('services.whatsapp.ultramsg_token');
-
-        if (!$instance || !$token) {
-            Log::warning('UltraMsg credentials not configured');
-            return false;
-        }
-
-        $response = Http::asForm()->post(
-            "https://api.ultramsg.com/{$instance}/messages/chat",
-            ['token' => $token, 'to' => $phone, 'body' => $message]
-        );
-
-        return $response->successful();
-    }
-
-    private function sendCallmeBot(string $phone, string $message): bool
-    {
-        $apiKey = settings('whatsapp.callmebot_apikey') ?: config('services.whatsapp.callmebot_apikey');
-
-        if (!$apiKey) {
-            Log::warning('CallmeBot API key not configured');
-            return false;
-        }
-
-        $response = Http::get('https://api.callmebot.com/whatsapp.php', [
-            'phone'  => $phone,
-            'text'   => $message,
-            'apikey' => $apiKey,
-        ]);
-
-        return $response->successful();
     }
 }
