@@ -148,17 +148,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
-                <div class="alert alert-info small">
-                    <i class="bi bi-info-circle"></i>
-                    Pour contacter un nouveau numéro, Meta impose l'envoi d'un <strong>template approuvé</strong>.
-                    Le client pourra ensuite répondre et ouvrir la fenêtre de 24h.
+                <div class="alert alert-warning small mb-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Rappel : Meta n'autorise un message libre que si le destinataire vous a écrit dans les <strong>24 dernières heures</strong>.
+                    Au-delà, l'envoi sera refusé par Meta et vous devrez utiliser un template.
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Numéro de téléphone <span class="text-danger">*</span></label>
                     <input type="tel" class="form-control" name="phone" required
                            placeholder="+212 6 12 34 56 78" inputmode="tel">
-                    <div class="form-text">Format international (ex. +212 6…). Le destinataire doit être pré-approuvé si vous utilisez un numéro test Meta.</div>
+                    <div class="form-text">Format international (ex. +212 6…). Avec un numéro test Meta, le destinataire doit aussi être pré-approuvé dans la console Meta.</div>
                 </div>
 
                 <div class="mb-3">
@@ -166,31 +166,15 @@
                     <input type="text" class="form-control" name="display_name" maxlength="120" placeholder="Jean Dupont">
                 </div>
 
-                <div class="row g-2">
-                    <div class="col-8">
-                        <label class="form-label fw-semibold">Nom du template <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="template_name" required
-                               value="hello_world"
-                               placeholder="hello_world">
-                        <div class="form-text">Doit correspondre EXACTEMENT au nom d'un template approuvé.</div>
-                    </div>
-                    <div class="col-4">
-                        <label class="form-label fw-semibold">Langue <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="template_lang" required
-                               value="en_US" placeholder="fr">
-                    </div>
-                </div>
-
-                <div class="mt-3">
-                    <label class="form-label fw-semibold">Variables (optionnel)</label>
-                    <input type="text" class="form-control" name="variables"
-                           placeholder="Valeur de {{1}}, valeur de {{2}}, …">
-                    <div class="form-text">Séparées par des virgules, dans l'ordre des <code>&#123;&#123;1&#125;&#125;</code>, <code>&#123;&#123;2&#125;&#125;</code>… du template.</div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Message <span class="text-danger">*</span></label>
+                    <textarea class="form-control" name="body" rows="4" maxlength="4096" required
+                              placeholder="Bonjour, …"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Envoyer le template</button>
+                <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Envoyer</button>
             </div>
         </form>
     </div>

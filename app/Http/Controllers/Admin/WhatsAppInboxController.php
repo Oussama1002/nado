@@ -57,21 +57,20 @@ class WhatsAppInboxController extends Controller
     }
 
     /**
-     * POST /admin/whatsapp/start — open a conversation with a brand-new contact
-     * by sending an approved template (Meta forbids freeform first-contact).
+     * POST /admin/whatsapp/start — open a conversation with a new contact
+     * by sending a freeform text message. Meta will reject the send if the
+     * recipient has never messaged this number (no 24h customer-service window);
+     * the error is surfaced in the flash message.
      */
     public function start(Request $request, WhatsAppService $whatsapp)
     {
         $data = $request->validate([
-            'phone'         => 'required|string|max:32',
-            'display_name'  => 'nullable|string|max:120',
-            'template_name' => 'required|string|max:120',
-            'template_lang' => 'required|string|max:10',
-            'variables'     => 'nullable|string|max:2000', // comma-separated {{1}},{{2}}…
+            'phone'        => 'required|string|max:32',
+            'display_name' => 'nullable|string|max:120',
+            'body'         => 'required|string|max:4096',
         ]);
 
         $normalized = $whatsapp->normalizePhone($data['phone']);
-        $variables  = array_values(array_filter(array_map('trim', explode(',', $data['variables'] ?? ''))));
 
         $conversation = WhatsAppConversation::firstOrCreate(
             ['wa_phone' => $normalized],
@@ -82,20 +81,14 @@ class WhatsAppInboxController extends Controller
             $conversation->save();
         }
 
-        $result = $whatsapp->sendTemplate(
-            $normalized,
-            $data['template_name'],
-            $data['template_lang'],
-            $variables
-        );
+        $result = $whatsapp->sendText($normalized, $data['body']);
 
         $msg = WhatsAppMessage::create([
             'conversation_id' => $conversation->id,
             'direction'       => 'out',
             'wamid'           => $result['wamid'] ?? null,
-            'type'            => 'template',
-            'body'            => '[template: ' . $data['template_name'] . ']'
-                . ($variables ? ' · ' . implode(' | ', $variables) : ''),
+            'type'            => 'text',
+            'body'            => $data['body'],
             'status'          => $result['ok'] ? 'sent' : 'failed',
             'error'           => $result['error'] ?? null,
             'sent_at'         => now(),
@@ -105,11 +98,12 @@ class WhatsAppInboxController extends Controller
 
         if (! $result['ok']) {
             return redirect()->route('admin.whatsapp.show', $conversation)
-                ->with('error', 'Envoi du template échoué : ' . ($result['error'] ?? 'erreur inconnue'));
+                ->with('error', 'Envoi échoué : ' . ($result['error'] ?? 'erreur inconnue')
+                    . ' — rappel : Meta n\'autorise un message libre que si le client vous a écrit dans les 24 dernières heures.');
         }
 
         return redirect()->route('admin.whatsapp.show', $conversation)
-            ->with('success', 'Template envoyé — la conversation est ouverte.');
+            ->with('success', 'Message envoyé — la conversation est ouverte.');
     }
 
     /** POST /admin/whatsapp/{conversation}/reply — send a text reply. */
