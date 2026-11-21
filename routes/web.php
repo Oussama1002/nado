@@ -598,6 +598,7 @@ Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
     ->middleware(['auth:admin', 'module.access'])
     ->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'index'])->name('index');
+        Route::post('/start', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'start'])->name('start');
         Route::get('/{conversation}', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'show'])->name('show');
         Route::post('/{conversation}/reply', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'reply'])->name('reply');
     });

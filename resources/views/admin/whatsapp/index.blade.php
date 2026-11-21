@@ -3,12 +3,17 @@
 @section('content')
 <div class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-2">
     <h3 class="mb-0"><i class="bi bi-whatsapp text-success"></i> WhatsApp — Boîte de réception</h3>
-    <div class="text-muted small">
-        @if(! settings('whatsapp.meta_phone_number_id'))
-            <span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Credentials Meta non configurées — <a href="{{ route('admin.settings.group', 'whatsapp') }}">configurer</a>.</span>
-        @else
-            Fenêtre de réponse libre : 24h après le dernier message reçu. Au-delà → template requis.
-        @endif
+    <div class="d-flex align-items-center gap-2">
+        <div class="text-muted small text-end">
+            @if(! settings('whatsapp.meta_phone_number_id'))
+                <span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Credentials Meta non configurées — <a href="{{ route('admin.settings.group', 'whatsapp') }}">configurer</a>.</span>
+            @else
+                Fenêtre libre : 24h après le dernier msg reçu. Sinon → template.
+            @endif
+        </div>
+        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#newWaChatModal">
+            <i class="bi bi-plus-lg"></i> Nouvelle discussion
+        </button>
     </div>
 </div>
 
@@ -131,6 +136,64 @@
 
 </div>
 </div>
+</div>
+
+{{-- ─────────────────────── Modal "Nouvelle discussion" ─────────────────────── --}}
+<div class="modal fade" id="newWaChatModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" method="POST" action="{{ route('admin.whatsapp.start') }}">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-whatsapp text-success"></i> Nouvelle discussion WhatsApp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info small">
+                    <i class="bi bi-info-circle"></i>
+                    Pour contacter un nouveau numéro, Meta impose l'envoi d'un <strong>template approuvé</strong>.
+                    Le client pourra ensuite répondre et ouvrir la fenêtre de 24h.
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Numéro de téléphone <span class="text-danger">*</span></label>
+                    <input type="tel" class="form-control" name="phone" required
+                           placeholder="+212 6 12 34 56 78" inputmode="tel">
+                    <div class="form-text">Format international (ex. +212 6…). Le destinataire doit être pré-approuvé si vous utilisez un numéro test Meta.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nom (optionnel)</label>
+                    <input type="text" class="form-control" name="display_name" maxlength="120" placeholder="Jean Dupont">
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-8">
+                        <label class="form-label fw-semibold">Nom du template <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="template_name" required
+                               value="hello_world"
+                               placeholder="hello_world">
+                        <div class="form-text">Doit correspondre EXACTEMENT au nom d'un template approuvé.</div>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label fw-semibold">Langue <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="template_lang" required
+                               value="en_US" placeholder="fr">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label fw-semibold">Variables (optionnel)</label>
+                    <input type="text" class="form-control" name="variables"
+                           placeholder="Valeur de {{1}}, valeur de {{2}}, …">
+                    <div class="form-text">Séparées par des virgules, dans l'ordre des <code>&#123;&#123;1&#125;&#125;</code>, <code>&#123;&#123;2&#125;&#125;</code>… du template.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Envoyer le template</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>

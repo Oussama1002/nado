@@ -67,6 +67,50 @@ class WhatsAppService
     }
 
     /**
+     * Send an approved template message. Use this to initiate a conversation
+     * with a new recipient (freeform is blocked by Meta outside the 24h window).
+     *
+     * $variables = ordered list of {{1}}, {{2}}, … body parameters.
+     * Returns ['ok' => bool, 'wamid' => ?string, 'error' => ?string].
+     */
+    public function sendTemplate(string $phone, string $templateName, string $languageCode, array $variables = []): array
+    {
+        if (! feature_on('whatsapp.enabled')) {
+            return ['ok' => false, 'wamid' => null, 'error' => 'WhatsApp disabled'];
+        }
+
+        $to = ltrim($this->normalizePhone($phone), '+');
+
+        $components = [];
+        if (! empty($variables)) {
+            $components[] = [
+                'type'       => 'body',
+                'parameters' => array_map(fn ($v) => ['type' => 'text', 'text' => (string) $v], $variables),
+            ];
+        }
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'to'                => $to,
+            'type'              => 'template',
+            'template'          => [
+                'name'     => $templateName,
+                'language' => ['code' => $languageCode],
+            ],
+        ];
+        if ($components) {
+            $payload['template']['components'] = $components;
+        }
+
+        try {
+            return $this->postMessage($payload);
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp template send failed', ['to' => $to, 'template' => $templateName, 'error' => $e->getMessage()]);
+            return ['ok' => false, 'wamid' => null, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
      * Send a freeform text message. Only works inside Meta's 24h window after
      * the recipient's last inbound message. Returns ['ok' => bool, 'wamid' => ?string, 'error' => ?string].
      */
