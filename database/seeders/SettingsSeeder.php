@@ -273,6 +273,17 @@ class SettingsSeeder extends Seeder
                 ['retain_image', 'bool', false, 'Conserver l\'image après extraction (sinon purge)'],
             ],
 
+            // ────────────────────────── whatsapp ────────────────────────
+            // Passerelle WhatsApp (UltraMsg). master = kill-switch global.
+            // mirror_emails : relaie chaque mail sortant au groupe admin.
+            // mirror_demandes : poste chaque nouvelle demande au groupe admin,
+            // en parallèle du canal Telegram existant.
+            'whatsapp' => [
+                ['enabled',          'bool', false, 'Passerelle WhatsApp activée (master on/off)'],
+                ['mirror_emails',    'bool', true,  'Relayer les e-mails sortants au groupe admin WhatsApp'],
+                ['mirror_demandes',  'bool', true,  'Poster chaque nouvelle demande au groupe admin WhatsApp'],
+            ],
+
             // ──────────────────── legalcheck (opposition NARSA) ─────────
             'legalcheck' => [
                 ['enabled', 'bool', false, 'Vérification situation légale (NARSA) activée'],

@@ -275,6 +275,9 @@ class DemandeController extends Controller
         // 5 s hard timeout, failures logged but never bubble up).
         $this->notifyTelegramDemande($demande);
 
+        // Mirror to the WhatsApp admin group (same fire-and-forget contract).
+        $this->notifyWhatsAppDemande($demande);
+
         return redirect()->route('demandes.confirmation', $demande->id)
             ->with('success', 'Votre demande a été soumise. L’administrateur vous contactera après validation.');
     }
@@ -551,6 +554,79 @@ class DemandeController extends Controller
                 ]);
         } catch (\Throwable $e) {
             Log::warning('Telegram notify (demande) failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Mirror a new demande to the WhatsApp admin group / numbers.
+     * Mirrors the Telegram version above but strips HTML and masks the
+     * phone the same way, so the WhatsApp message carries the same
+     * information. Gated by feature_on('whatsapp.mirror_demandes').
+     */
+    private function notifyWhatsAppDemande(Demande $demande): void
+    {
+        if (function_exists('feature_on') && ! feature_on('whatsapp.mirror_demandes')) {
+            return;
+        }
+
+        $demande->loadMissing(['brand', 'modele', 'ville']);
+        $fmt = fn ($n) => $n ? number_format((int) $n, 0, ',', ' ') : null;
+
+        $car = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? '')) ?: '—';
+
+        $years = null;
+        if ($demande->year_min && $demande->year_max) {
+            $years = $demande->year_min === $demande->year_max
+                ? (string) $demande->year_min
+                : "{$demande->year_min} – {$demande->year_max}";
+        } elseif ($demande->year_min) {
+            $years = "≥ {$demande->year_min}";
+        } elseif ($demande->year_max) {
+            $years = "≤ {$demande->year_max}";
+        }
+
+        $budget = null;
+        if ($demande->price_min && $demande->price_max) {
+            $budget = $fmt($demande->price_min) . ' – ' . $fmt($demande->price_max) . ' MAD';
+        } elseif ($demande->price_max) {
+            $budget = '≤ ' . $fmt($demande->price_max) . ' MAD';
+        } elseif ($demande->price_min) {
+            $budget = '≥ ' . $fmt($demande->price_min) . ' MAD';
+        }
+
+        $phoneDigits = preg_replace('/\D+/', '', (string) $demande->telephone);
+        if (strlen($phoneDigits) >= 4) {
+            $phoneMasked = substr($phoneDigits, 0, 2) . ' •• •• ' . substr($phoneDigits, -2);
+        } else {
+            $phoneMasked = '•• •• •• ••';
+        }
+
+        $lines = [
+            '🚗 *طلب جديد* #' . $demande->id,
+            '',
+            '👤 *' . $demande->nom . '*',
+            '📞 ' . $phoneMasked,
+            '',
+            '🔎 *البحث عن :* ' . $car,
+        ];
+        if ($years)                                         $lines[] = '📅 السنة : ' . $years;
+        if ($budget)                                        $lines[] = '💰 الميزانية : ' . $budget;
+        if ($demande->km_max)                               $lines[] = '🛣 الكيلومترات القصوى : ' . $fmt($demande->km_max) . ' كلم';
+        if ($demande->ville?->name)                         $lines[] = '📍 المدينة : ' . $demande->ville->name;
+        if ($demande->carburant)                            $lines[] = '⛽ الوقود : ' . $demande->carburant;
+        if ($demande->boite && $demande->boite !== 'any')   $lines[] = '⚙️ ناقل الحركة : ' . $demande->boite;
+        if ($demande->comment) {
+            $lines[] = '';
+            $lines[] = '📝 ' . $demande->comment;
+        }
+        $lines[] = '';
+        $lines[] = '👉 ' . route('demandes.show', $demande->id);
+
+        try {
+            app(\App\Services\WhatsAppService::class)
+                ->broadcastToAdmins(implode("\n", $lines));
+        } catch (\Throwable $e) {
+            Log::warning('WhatsApp notify (demande) failed: ' . $e->getMessage());
         }
     }
 }

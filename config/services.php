@@ -31,11 +31,21 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // WhatsApp gateway. UltraMsg (unofficial, works with groups) is the
+    // default; CallmeBot is kept as a fallback for the OTP flow only.
+    //
+    // admin_group:   WhatsApp group id (xxxxxxxxxxxx@g.us). Where new
+    //                demandes and mirrored emails land.
+    // admin_numbers: comma-separated phones that ALSO receive admin
+    //                broadcasts (useful before the group is set up, or
+    //                for owners who prefer DMs).
     'whatsapp' => [
         'provider'           => env('WHATSAPP_PROVIDER', 'ultramsg'),
         'ultramsg_instance'  => env('ULTRAMSG_INSTANCE_ID'),
         'ultramsg_token'     => env('ULTRAMSG_TOKEN'),
         'callmebot_apikey'   => env('CALLMEBOT_APIKEY'),
+        'admin_group'        => env('WHATSAPP_ADMIN_GROUP', ''),
+        'admin_numbers'      => env('WHATSAPP_ADMIN_NUMBERS', ''),
     ],
 
     // Telegram bot — used to broadcast new demandes to a channel.
