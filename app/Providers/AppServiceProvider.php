@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use App\Observers\SettingObserver;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,5 +34,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Journalise chaque changement de configuration (doc 02 — §6.bis.4).
         Setting::observe(SettingObserver::class);
+
+        // Paginator Bootstrap 5 — l'admin et le site utilisent Bootstrap ;
+        // le Tailwind par défaut rendait des SVG nus énormes sans styles.
+        Paginator::useBootstrapFive();
     }
 }
