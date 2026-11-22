@@ -27,7 +27,7 @@
 
     <p>{{ __('messages.mail.pp_regards') }}<br>
     <strong>{{ __('messages.mail.pp_team') }}</strong><br>
-    <a href="#">www.autoenchere.ma</a><br>
-    <a href="mailto:support@autoenchere.ma">support@autoenchere.ma</a></p>
+    <a href="https://www.nado.ma">www.nado.ma</a><br>
+    <a href="mailto:contact@nado.ma">contact@nado.ma</a></p>
 </body>
 </html>

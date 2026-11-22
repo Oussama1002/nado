@@ -116,7 +116,7 @@ private function isSafeRedirect(string $target): bool
     }
 
     // www et non-www du domaine de l'app sont équivalents (le client peut naviguer
-    // sur autoenchere.ma alors que APP_URL est www.autoenchere.ma).
+    // sur nado.ma alors que APP_URL est www.nado.ma).
     $strip = static fn ($h) => preg_replace('/^www\./i', '', strtolower((string) $h));
     $allowed = [
         $strip(parse_url(config('app.url'), PHP_URL_HOST)),

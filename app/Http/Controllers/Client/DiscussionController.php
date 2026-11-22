@@ -386,7 +386,7 @@ class DiscussionController extends Controller
         if ($has(['reprise', 'reprendre', 'echange', 'echanger', 'ancienne voiture', 'ancien vehicule'])) {
             return "Oui, tout à fait ! Nous pouvons reprendre votre ancien véhicule pour l'utiliser comme apport "
                 . "lors de l'achat de cette voiture.\n"
-                . "Voir notre section reprise : https://www.autoenchere.ma/reprises/formulaire";
+                . "Voir notre section reprise : https://www.nado.ma/reprises/formulaire";
         }
 
         // 11. Disponibilité (also "je veux cette voiture")

@@ -108,7 +108,7 @@ class LegalCheckController extends Controller
                 . "Résultat : {$verdict}\n"
                 . ($notes !== '' ? "\nNote de l'équipe : {$notes}\n" : '')
                 . "\nIndicatif, selon la base publique NARSA — ce n'est pas un certificat officiel.\n\n"
-                . "L'équipe NADO — autoenchere.ma",
+                . "L'équipe NADO — www.nado.ma",
                 function ($m) use ($client) {
                     $m->to($client->email)->subject('Résultat de votre vérification légale (NARSA)');
                 }
