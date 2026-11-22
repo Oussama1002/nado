@@ -488,10 +488,17 @@
     @endif
 
     @if(admin_can('estimations'))
+    @php
+        $expertTotal = \App\Models\Estimation::count();
+    @endphp
     <li @class(['sidebar-item', 'active' => str_contains($current_route, 'estimations.')])>
         <a href="{{ route('admin.estimations.index') }}" class="sidebar-link">
-            <i class="bi bi-calculator-fill"></i>
-            <span>Estimations</span>
+            <i class="bi bi-rulers"></i>
+            <span>Demandes expert
+                @if($expertTotal > 0)
+                    <span class="badge bg-success ms-1">{{ $expertTotal }}</span>
+                @endif
+            </span>
         </a>
     </li>
     @endif
