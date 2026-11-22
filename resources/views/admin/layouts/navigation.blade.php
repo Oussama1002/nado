@@ -488,20 +488,30 @@
     @endif
 
     @if(admin_can('estimations'))
-    @php
-        $expertTotal = \App\Models\Estimation::count();
-    @endphp
     <li @class(['sidebar-item', 'active' => str_contains($current_route, 'estimations.')])>
         <a href="{{ route('admin.estimations.index') }}" class="sidebar-link">
-            <i class="bi bi-rulers"></i>
+            <i class="bi bi-calculator-fill"></i>
+            <span>Estimations</span>
+        </a>
+    </li>
+    @endif
+
+    {{-- Demandes expert (popup "Expert NADO" + contact) --}}
+    @php
+        $expertNew = \Illuminate\Support\Facades\Schema::hasTable('demande_experts')
+            ? \App\Models\DemandeExpert::where('status', 'new')->count()
+            : 0;
+    @endphp
+    <li @class(['sidebar-item', 'active' => str_contains($current_route, 'demandeexperts.')])>
+        <a href="{{ route('admin.demandeexperts.index') }}" class="sidebar-link">
+            <i class="bi bi-person-badge"></i>
             <span>Demandes expert
-                @if($expertTotal > 0)
-                    <span class="badge bg-success ms-1">{{ $expertTotal }}</span>
+                @if($expertNew > 0)
+                    <span class="badge bg-danger ms-1">{{ $expertNew }}</span>
                 @endif
             </span>
         </a>
     </li>
-    @endif
 
     {{-- Blog / Articles --}}
     @if(admin_can('contenu'))

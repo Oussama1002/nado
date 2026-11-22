@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Annonces;
 use App\Models\Client;
 use App\Models\Demande;
+use App\Models\DemandeExpert;
 use App\Models\Discussion;
 use App\Models\Estimation;
 use App\Models\LegalCheck;
@@ -92,15 +93,34 @@ class AdminNotifications
                 });
         }
 
-        // 4) Demandes expert (estimations) récentes.
+        // 4) Demandes expert (popup "Expert NADO" + formulaire contact).
+        if (Schema::hasTable('demande_experts')) {
+            DemandeExpert::where('status', 'new')
+                ->latest('created_at')->limit(10)
+                ->get(['id', 'name', 'phone', 'ville', 'subject', 'created_at'])
+                ->each(function ($e) use (&$items) {
+                    $parts = array_filter([$e->name, $e->phone, $e->ville]);
+                    $body  = $parts ? implode(' · ', $parts) : ($e->subject ?: 'Demande #' . $e->id);
+                    $items[] = [
+                        'icon'  => 'bi-person-badge',
+                        'tone'  => 'success',
+                        'title' => 'Nouvelle demande expert',
+                        'body'  => Str::limit($body, 90),
+                        'at'    => $e->created_at,
+                        'url'   => route('admin.demandeexperts.show', $e->id),
+                    ];
+                });
+        }
+
+        // 4b) Estimations clients récentes (différent des demandes expert).
         Estimation::with('client:id,name')
-            ->latest('created_at')->limit(10)
+            ->latest('created_at')->limit(5)
             ->get(['id', 'client_id', 'brand', 'model', 'year', 'created_at'])
             ->each(function ($e) use (&$items) {
                 $items[] = [
-                    'icon'  => 'bi-rulers',
-                    'tone'  => 'success',
-                    'title' => 'Nouvelle demande expert',
+                    'icon'  => 'bi-calculator-fill',
+                    'tone'  => 'info',
+                    'title' => 'Nouvelle estimation client',
                     'body'  => trim(($e->brand ?? '') . ' ' . ($e->model ?? '') . ($e->year ? ' (' . $e->year . ')' : '')
                         . ($e->client ? ' · ' . $e->client->name : '')),
                     'at'    => $e->created_at,

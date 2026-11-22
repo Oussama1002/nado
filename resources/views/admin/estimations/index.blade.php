@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Demandes expert</h1>
+        <h1>Estimations clients</h1>
         <div class="d-flex align-items-center" style="gap:10px;">
             <span class="text-muted">{{ $estimations->total() }} estimation(s)</span>
             <a href="{{ route('admin.export', 'estimations') }}" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>

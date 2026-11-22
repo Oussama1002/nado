@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactFromMail;
+use App\Models\DemandeExpert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -46,6 +47,13 @@ class ContactController extends Controller
             'subject' => $request->subject ?: 'Demande expert NADO',
             'message' => $request->message,
         ];
+
+        // Persist so admins can list / follow-up in the panel.
+        DemandeExpert::create($data + [
+            'source' => $request->wantsJson() ? 'popup' : 'contact',
+            'status' => 'new',
+            'ip'     => $request->ip(),
+        ]);
 
         Mail::to('contact@nado.ma')->send(new ContactFromMail($data));
 

@@ -657,6 +657,20 @@ Route::prefix('admin/demandes')->name('admin.demandes.')
         Route::delete('/{demande}',       [DemandeAdminController::class, 'destroy'])->name('destroy');
     });
 
+/*
+|--------------------------------------------------------------------------
+| Demandes expert (popup "Expert NADO" + formulaire contact)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin/demande-experts')->name('admin.demandeexperts.')
+    ->middleware(['auth:admin', 'module.access'])
+    ->group(function () {
+        Route::get('/',                          [\App\Http\Controllers\Admin\DemandeExpertController::class, 'index'])->name('index');
+        Route::get('/{demande_expert}',          [\App\Http\Controllers\Admin\DemandeExpertController::class, 'show'])->name('show');
+        Route::post('/{demande_expert}/status',  [\App\Http\Controllers\Admin\DemandeExpertController::class, 'updateStatus'])->name('status');
+        Route::delete('/{demande_expert}',       [\App\Http\Controllers\Admin\DemandeExpertController::class, 'destroy'])->name('destroy');
+    });
+
 // ─────────────────────── Community & content ───────────────────────
 // Avis vendeurs (community.seller_reviews)
 Route::prefix('vendeur')->name('sellers.')->group(function () {
