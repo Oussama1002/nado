@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Client\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Notifications\ClientVerifyEmail;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -34,9 +36,14 @@ class RegisterController extends Controller
                 : 'required|email|unique:clients,email',
             'password' => 'required|string|min:6|confirmed',
             'type'     => 'required|in:pro,particulier,flotte&enchere',
-            'phone'    => 'required|string|max:20',
+            'phone'    => $takeover
+                ? 'required|string|max:20|unique:clients,phone,' . $existing->id
+                : 'required|string|max:20|unique:clients,phone',
             'company'  => 'nullable|string|max:255',
             'ae_role'  => 'nullable|in:vendeur,acheteur',
+        ], [
+            'email.unique' => 'Cette adresse email est déjà utilisée.',
+            'phone.unique' => 'Ce numéro de téléphone est déjà utilisé.',
         ]);
 
         // Attributs communs (création ou reprise d'un compte non vérifié).
@@ -46,24 +53,29 @@ class RegisterController extends Controller
             'email'       => $request->email,
             'password'    => Hash::make($request->password),
             'type'        => $request->type,
-            // Rôle Auto Enchère (vendeur/acheteur) — pertinent pour flotte&enchere.
             'ae_role'     => $request->type === 'flotte&enchere' ? $request->ae_role : null,
-            // Vendeur enchère → accès validé automatiquement ; acheteur → validation admin.
             'ae_approved' => $request->type === 'flotte&enchere' && $request->ae_role === 'vendeur',
             'phone'       => $request->phone,
             'company'     => $request->company,
             'logo'        => null,
-            // Self-registered clients bypass admin approval entirely.
-            // Email verification (is_verified) is the only gate for login.
             'is_approved' => true,
             'is_verified' => false,
         ];
 
-        if ($takeover) {
-            $existing->update($attributes);
-            $client = $existing->refresh();
-        } else {
-            $client = Client::create($attributes);
+        try {
+            if ($takeover) {
+                $existing->update($attributes);
+                $client = $existing->refresh();
+            } else {
+                $client = Client::create($attributes);
+            }
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] ?? null === 1062) {
+                throw ValidationException::withMessages([
+                    'email' => 'Un compte existe déjà avec cet email ou ce numéro de téléphone.',
+                ]);
+            }
+            throw $e;
         }
 
         if ($client->type === 'flotte&enchere') {
