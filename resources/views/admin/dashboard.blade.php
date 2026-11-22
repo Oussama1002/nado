@@ -12,38 +12,6 @@
 
 <div class="page-content">
 
-    {{-- ===== Notifications live ===== --}}
-    @if(!empty($notifications))
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center bg-white">
-            <h5 class="mb-0"><i class="bi bi-bell-fill text-warning"></i> Notifications
-                <span class="badge bg-danger rounded-pill ms-1">{{ count($notifications) }}</span>
-            </h5>
-            <small class="text-muted">Live · dernières actions à traiter</small>
-        </div>
-        <div class="list-group list-group-flush" style="max-height: 420px; overflow-y: auto;">
-            @foreach($notifications as $n)
-                <a href="{{ $n['url'] }}" class="list-group-item list-group-item-action d-flex align-items-start gap-3 py-3">
-                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle text-white"
-                         style="width:40px;height:40px;background:var(--bs-{{ $n['tone'] }}, #6c757d);">
-                        <i class="bi {{ $n['icon'] }}"></i>
-                    </div>
-                    <div class="flex-grow-1 min-w-0">
-                        <div class="d-flex justify-content-between align-items-baseline gap-2">
-                            <div class="fw-semibold text-truncate">{{ $n['title'] }}</div>
-                            <small class="text-muted flex-shrink-0">
-                                {{ $n['at']?->diffForHumans(null, true) ?? '—' }}
-                            </small>
-                        </div>
-                        <div class="text-muted small text-truncate">{{ $n['body'] }}</div>
-                    </div>
-                    <i class="bi bi-chevron-right text-muted align-self-center"></i>
-                </a>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
     {{-- ===== Action items : grandes tuiles cliquables (ce qui demande une action aujourd'hui) ===== --}}
     <div class="row mb-1">
         <div class="col-12 col-lg-4 mb-4">
