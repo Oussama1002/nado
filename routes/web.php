@@ -607,6 +607,9 @@ Route::prefix('admin/integrations')->name('admin.integrations.')
         Route::delete('/numbers/{number}',       [\App\Http\Controllers\Admin\IntegrationsController::class, 'destroyNumber'])->name('numbers.destroy');
     });
 
+// ─── Pages légales (publiques) — requises par Meta / RGPD ───
+Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
+
 /*
 |--------------------------------------------------------------------------
 | WhatsApp — webhook public (Meta → nous) + boîte de réception admin
