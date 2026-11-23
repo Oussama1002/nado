@@ -56,8 +56,9 @@ class WhatsAppWebhookController extends Controller
     {
         $raw = $request->getContent();
 
-        // Log le hit (sans logger le body complet pour éviter de stocker des PII).
-        Log::info('WhatsApp webhook: POST received', [
+        // WARNING pour être sûr d'apparaître même si LOG_LEVEL=warning en prod.
+        // (Diagnostic : à repasser en INFO une fois la plomberie confirmée.)
+        Log::warning('WhatsApp webhook: POST received', [
             'bytes'    => strlen($raw),
             'has_sig'  => $request->header('X-Hub-Signature-256') ? true : false,
             'remote'   => $request->ip(),
@@ -70,7 +71,7 @@ class WhatsAppWebhookController extends Controller
 
         $payload = json_decode($raw, true);
         if (! is_array($payload)) {
-            Log::info('WhatsApp webhook: non-JSON body, ignoring');
+            Log::warning('WhatsApp webhook: non-JSON body, ignoring');
             return response('ok');
         }
 
@@ -78,7 +79,7 @@ class WhatsAppWebhookController extends Controller
         foreach ($payload['entry'] ?? [] as $e) {
             foreach ($e['changes'] ?? [] as $c) { $changesCount++; }
         }
-        Log::info('WhatsApp webhook: payload parsed', [
+        Log::warning('WhatsApp webhook: payload parsed', [
             'entries' => count($payload['entry'] ?? []),
             'changes' => $changesCount,
             'object'  => $payload['object'] ?? null,
