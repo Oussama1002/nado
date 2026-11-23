@@ -582,6 +582,10 @@ Route::prefix('admin/settings')->name('admin.settings.')
     ->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/toggle/{key}', [SettingsController::class, 'toggle'])->name('toggle');
+
+        // L'ancienne page /admin/settings/whatsapp est remplacée par Intégrations.
+        Route::get('/whatsapp', fn () => redirect()->route('admin.integrations.index'));
+
         Route::get('/{group}', [SettingsController::class, 'group'])->name('group');
         Route::post('/{group}', [SettingsController::class, 'update'])->name('update');
     });
