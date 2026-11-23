@@ -32,7 +32,7 @@ class MetaErrorTranslator
         // Mappings par code + mots-clés.
         switch ((int) $code) {
             case 190:
-                return "Jeton d'accès Meta invalide ou expiré. Reconnectez le compte dans Paramètres → WhatsApp OTP.";
+                return "Jeton d'accès Meta invalide ou expiré. Mettez à jour le « Jeton API » dans Intégrations → Connexion WhatsApp.";
 
             case 200:
             case 10:
