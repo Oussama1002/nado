@@ -298,11 +298,13 @@
             hName.value = name;
             hLang.value = lang;
 
-            // Build inputs for {{1}}…{{N}}.
+            // Build inputs for @{{1}}…@{{N}}.
+            var OPEN = '{' + '{';
+            var CLOSE = '}' + '}';
             var html = '';
             for (var i = 1; i <= n; i++) {
                 html += '<div class="mb-2">' +
-                            '<label class="form-label fw-semibold small mb-1">Variable {{' + i + '}} <span class="text-danger">*</span></label>' +
+                            '<label class="form-label fw-semibold small mb-1">Variable ' + OPEN + i + CLOSE + ' <span class="text-danger">*</span></label>' +
                             '<input type="text" class="form-control wa-var" name="variables[' + (i - 1) + ']" data-idx="' + i + '" required maxlength="1000">' +
                         '</div>';
             }
@@ -316,7 +318,8 @@
                 inputs.forEach(function (inp) {
                     var idx = inp.getAttribute('data-idx');
                     var v = (inp.value || '').trim();
-                    out = out.replaceAll('{{' + idx + '}}', v || ('{{' + idx + '}}'));
+                    var placeholder = OPEN + idx + CLOSE;
+                    out = out.split(placeholder).join(v || placeholder);
                     if (v) filled = true;
                     else   filled = false;
                 });
