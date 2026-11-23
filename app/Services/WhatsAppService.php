@@ -256,6 +256,84 @@ class WhatsAppService
         };
     }
 
+    /* ──────────────────────── Diagnostics / listings ──────────────────────── */
+
+    /**
+     * Ping WhatsApp Cloud API with current creds. Returns a simple result object.
+     * Succès : {ok:true, phone: "...", verified_name: "..."}
+     * Échec  : {ok:false, error: "message FR"}
+     */
+    public function testConnection(): array
+    {
+        $phoneNumberId = settings('whatsapp.meta_phone_number_id') ?: config('services.whatsapp.meta_phone_number_id');
+        $accessToken   = settings('whatsapp.meta_access_token')    ?: config('services.whatsapp.meta_access_token');
+        $apiVersion    = config('services.whatsapp.meta_api_version', 'v21.0');
+
+        if (! $phoneNumberId || ! $accessToken) {
+            return ['ok' => false, 'error' => 'Phone Number ID ou Access Token manquant.'];
+        }
+
+        try {
+            $resp = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(10)
+                ->get("https://graph.facebook.com/{$apiVersion}/{$phoneNumberId}", [
+                    'fields' => 'display_phone_number,verified_name,quality_rating,code_verification_status',
+                ]);
+        } catch (ConnectionException $e) {
+            return ['ok' => false, 'error' => "Meta a mis trop de temps à répondre."];
+        }
+
+        if (! $resp->successful()) {
+            return ['ok' => false, 'error' => MetaErrorTranslator::fromResponseBody($resp->json()) ?? "Erreur Meta inconnue."];
+        }
+
+        return [
+            'ok'            => true,
+            'phone'         => $resp->json('display_phone_number'),
+            'verified_name' => $resp->json('verified_name'),
+            'quality'       => $resp->json('quality_rating'),
+        ];
+    }
+
+    /**
+     * Liste les numéros rattachés au WABA (pour l'import en admin).
+     * Returns {ok, numbers: [{phone_id, display_phone_number, verified_name, quality_rating}], error}.
+     */
+    public function listWabaPhoneNumbers(): array
+    {
+        [$wabaId, $accessToken, $apiVersion] = $this->managementCreds();
+        if (! $wabaId || ! $accessToken) {
+            return ['ok' => false, 'numbers' => [], 'error' => "WABA ID ou Access Token manquant."];
+        }
+
+        try {
+            $resp = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(15)
+                ->get("https://graph.facebook.com/{$apiVersion}/{$wabaId}/phone_numbers");
+        } catch (ConnectionException $e) {
+            return ['ok' => false, 'numbers' => [], 'error' => "Meta a mis trop de temps à répondre."];
+        }
+
+        if (! $resp->successful()) {
+            return [
+                'ok'      => false,
+                'numbers' => [],
+                'error'   => MetaErrorTranslator::fromResponseBody($resp->json()) ?? "Erreur Meta inconnue.",
+            ];
+        }
+
+        $numbers = collect($resp->json('data') ?? [])->map(fn ($n) => [
+            'phone_id'             => $n['id'] ?? null,
+            'display_phone_number' => $n['display_phone_number'] ?? null,
+            'verified_name'        => $n['verified_name'] ?? null,
+            'quality_rating'       => $n['quality_rating'] ?? null,
+        ])->filter(fn ($n) => $n['phone_id'])->values()->all();
+
+        return ['ok' => true, 'numbers' => $numbers, 'error' => null];
+    }
+
     /* ──────────────────────── Template management ──────────────────────── */
 
     /**

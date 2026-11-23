@@ -127,6 +127,12 @@
                             </span>
                         </a>
                     </li>
+                    <li @class(['sidebar-item', 'active' => str_contains($current_route , "integrations.")])>
+                        <a href="{{ route('admin.integrations.index') }}" class='sidebar-link'>
+                            <i class="bi bi-plug-fill"></i>
+                            <span>Intégrations</span>
+                        </a>
+                    </li>
                     @endif
 
                     {{-- Clients --}}

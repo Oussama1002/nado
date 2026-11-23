@@ -588,6 +588,23 @@ Route::prefix('admin/settings')->name('admin.settings.')
 
 /*
 |--------------------------------------------------------------------------
+| Admin — Intégrations (Meta + WhatsApp, multi-numéros)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin/integrations')->name('admin.integrations.')
+    ->middleware(['auth:admin', 'module.access'])
+    ->group(function () {
+        Route::get('/',                 [\App\Http\Controllers\Admin\IntegrationsController::class, 'index'])->name('index');
+        Route::post('/whatsapp',        [\App\Http\Controllers\Admin\IntegrationsController::class, 'saveWhatsApp'])->name('whatsapp.save');
+        Route::post('/whatsapp/test',   [\App\Http\Controllers\Admin\IntegrationsController::class, 'testWhatsApp'])->name('whatsapp.test');
+        Route::post('/numbers',         [\App\Http\Controllers\Admin\IntegrationsController::class, 'storeNumber'])->name('numbers.store');
+        Route::post('/numbers/import',  [\App\Http\Controllers\Admin\IntegrationsController::class, 'importNumbers'])->name('numbers.import');
+        Route::post('/numbers/{number}/default', [\App\Http\Controllers\Admin\IntegrationsController::class, 'setDefaultNumber'])->name('numbers.default');
+        Route::delete('/numbers/{number}',       [\App\Http\Controllers\Admin\IntegrationsController::class, 'destroyNumber'])->name('numbers.destroy');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | WhatsApp — webhook public (Meta → nous) + boîte de réception admin
 |--------------------------------------------------------------------------
 */
