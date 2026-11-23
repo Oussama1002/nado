@@ -56,6 +56,13 @@ class WhatsAppWebhookController extends Controller
     {
         $raw = $request->getContent();
 
+        // Log le hit (sans logger le body complet pour éviter de stocker des PII).
+        Log::info('WhatsApp webhook: POST received', [
+            'bytes'    => strlen($raw),
+            'has_sig'  => $request->header('X-Hub-Signature-256') ? true : false,
+            'remote'   => $request->ip(),
+        ]);
+
         if (! $whatsapp->verifyWebhookSignature($raw, $request->header('X-Hub-Signature-256'))) {
             Log::warning('WhatsApp webhook: invalid signature');
             return response('invalid signature', 403);
@@ -63,8 +70,19 @@ class WhatsAppWebhookController extends Controller
 
         $payload = json_decode($raw, true);
         if (! is_array($payload)) {
+            Log::info('WhatsApp webhook: non-JSON body, ignoring');
             return response('ok');
         }
+
+        $changesCount = 0;
+        foreach ($payload['entry'] ?? [] as $e) {
+            foreach ($e['changes'] ?? [] as $c) { $changesCount++; }
+        }
+        Log::info('WhatsApp webhook: payload parsed', [
+            'entries' => count($payload['entry'] ?? []),
+            'changes' => $changesCount,
+            'object'  => $payload['object'] ?? null,
+        ]);
 
         foreach ($payload['entry'] ?? [] as $entry) {
             foreach ($entry['changes'] ?? [] as $change) {
