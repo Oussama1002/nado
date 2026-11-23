@@ -629,6 +629,7 @@ Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
 
         Route::get('/{conversation}', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'show'])->name('show');
         Route::post('/{conversation}/reply', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'reply'])->name('reply');
+        Route::post('/{conversation}/send-template', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'sendTemplate'])->name('send-template');
     });
 
 /*

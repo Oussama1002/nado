@@ -30,11 +30,12 @@ class WhatsAppInboxController extends Controller
             'active'        => null,
             'messages'      => collect(),
             'q'             => $request->query('q', ''),
+            'templates'     => [],
         ]);
     }
 
     /** GET /admin/whatsapp/{conversation} — list + thread. */
-    public function show(Request $request, WhatsAppConversation $conversation)
+    public function show(Request $request, WhatsAppConversation $conversation, WhatsAppService $whatsapp)
     {
         $conversation->forceFill(['unread_count' => 0])->save();
 
@@ -48,11 +49,36 @@ class WhatsAppInboxController extends Controller
         }
         $conversations = $query->paginate(30)->withQueryString();
 
+        // Templates approuvés — seulement si la fenêtre 24h est expirée
+        // (sinon le bouton template ne sert à rien et on évite un appel Meta).
+        $templates = [];
+        if (! $conversation->canSendFreeform()) {
+            $result = $whatsapp->listTemplates(100);
+            if ($result['ok']) {
+                $templates = collect($result['templates'])
+                    ->where('status', 'APPROVED')
+                    ->map(function ($t) {
+                        $body = collect($t['components'] ?? [])->firstWhere('type', 'BODY')['text'] ?? '';
+                        preg_match_all('/\{\{(\d+)\}\}/', $body, $m);
+                        return [
+                            'name'     => $t['name'],
+                            'language' => $t['language'] ?? 'fr',
+                            'category' => $t['category'] ?? '—',
+                            'body'     => $body,
+                            'var_count' => $m[1] ? max($m[1]) : 0,
+                        ];
+                    })
+                    ->values()
+                    ->all();
+            }
+        }
+
         return view('admin.whatsapp.index', [
             'conversations' => $conversations,
             'active'        => $conversation,
             'messages'      => $conversation->messages()->get(),
             'q'             => $request->query('q', ''),
+            'templates'     => $templates,
         ]);
     }
 
@@ -104,6 +130,52 @@ class WhatsAppInboxController extends Controller
 
         return redirect()->route('admin.whatsapp.show', $conversation)
             ->with('success', 'Message envoyé — la conversation est ouverte.');
+    }
+
+    /** POST /admin/whatsapp/{conversation}/send-template — ré-ouvre hors 24h. */
+    public function sendTemplate(Request $request, WhatsAppConversation $conversation, WhatsAppService $whatsapp)
+    {
+        $data = $request->validate([
+            'template_name' => 'required|string|max:120',
+            'language'      => 'required|string|max:10',
+            'variables'     => 'nullable|array',
+            'variables.*'   => 'nullable|string|max:1000',
+            'preview'       => 'nullable|string|max:4096',
+        ]);
+
+        $variables = array_values($data['variables'] ?? []);
+        $variables = array_map(fn ($v) => (string) ($v ?? ''), $variables);
+
+        $result = $whatsapp->sendTemplate(
+            $conversation->wa_phone,
+            $data['template_name'],
+            $data['language'],
+            $variables
+        );
+
+        // Corps affiché dans le thread : la prévisualisation rendue si possible,
+        // sinon on retombe sur l'étiquette "[template: name]".
+        $body = $data['preview']
+            ?: '[template: ' . $data['template_name'] . ']' . ($variables ? ' · ' . implode(' | ', $variables) : '');
+
+        $msg = WhatsAppMessage::create([
+            'conversation_id' => $conversation->id,
+            'direction'       => 'out',
+            'wamid'           => $result['wamid'] ?? null,
+            'type'            => 'template',
+            'body'            => $body,
+            'status'          => $result['ok'] ? 'sent' : 'failed',
+            'error'           => $result['error'] ?? null,
+            'sent_at'         => now(),
+        ]);
+
+        $conversation->forceFill(['last_message_at' => $msg->sent_at])->save();
+
+        if (! $result['ok']) {
+            return back()->with('error', 'Envoi du template échoué : ' . ($result['error'] ?? 'erreur inconnue'));
+        }
+
+        return back()->with('success', 'Template envoyé — la conversation va être ré-ouverte dès que le client répond.');
     }
 
     /** POST /admin/whatsapp/{conversation}/reply — send a text reply. */

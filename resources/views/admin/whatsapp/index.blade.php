@@ -140,11 +140,16 @@
                         </div>
                     </form>
                 @else
-                    <div class="alert alert-warning mb-0 small">
-                        <i class="bi bi-clock-history"></i>
-                        Plus de 24h depuis le dernier message du client. Meta n'autorise que l'envoi d'un
-                        <strong>template approuvé</strong> (catégorie Utility ou Marketing) pour rouvrir la conversation.
+                    <div class="alert alert-warning mb-2 small d-flex align-items-start gap-2">
+                        <i class="bi bi-clock-history mt-1"></i>
+                        <div class="flex-grow-1">
+                            Plus de 24h depuis le dernier message du client. Meta n'autorise que l'envoi d'un
+                            <strong>template approuvé</strong> pour rouvrir la conversation.
+                        </div>
                     </div>
+                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#sendTemplateModal">
+                        <i class="bi bi-file-earmark-text"></i> Choisir un template &amp; envoyer
+                    </button>
                 @endif
             </div>
         @else
@@ -203,6 +208,131 @@
         </form>
     </div>
 </div>
+
+{{-- ─────────────────── Modal "Envoyer un template" ─────────────────── --}}
+@if($active && ! $active->canSendFreeform())
+<div class="modal fade" id="sendTemplateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form class="modal-content" method="POST" action="{{ route('admin.whatsapp.send-template', $active) }}" id="waTemplateForm">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-file-earmark-text text-success"></i> Choisir un template approuvé</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @if(empty($templates))
+                    <div class="alert alert-warning mb-0">
+                        Aucun template approuvé n'est disponible sur votre compte Meta.
+                        <a href="{{ route('admin.whatsapp.templates.create') }}">Créez-en un</a> puis attendez l'approbation.
+                    </div>
+                @else
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Template <span class="text-danger">*</span></label>
+                        <select class="form-select" id="waTplSelect" required>
+                            <option value="">— Sélectionnez un template —</option>
+                            @foreach($templates as $i => $t)
+                                <option value="{{ $i }}"
+                                        data-name="{{ $t['name'] }}"
+                                        data-language="{{ $t['language'] }}"
+                                        data-category="{{ $t['category'] }}"
+                                        data-varcount="{{ $t['var_count'] }}"
+                                        data-body="{{ $t['body'] }}">
+                                    {{ $t['name'] }} — {{ $t['category'] }} · {{ $t['language'] }}@if($t['var_count']) · {{ $t['var_count'] }} variable(s) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Hidden fields filled from JS. --}}
+                    <input type="hidden" name="template_name" id="waTplName">
+                    <input type="hidden" name="language"      id="waTplLang">
+                    <input type="hidden" name="preview"       id="waTplPreview">
+
+                    {{-- Dynamic variables. --}}
+                    <div id="waTplVariables"></div>
+
+                    {{-- Live preview. --}}
+                    <div id="waTplPreviewWrap" class="mt-3" style="display:none;">
+                        <label class="form-label fw-semibold">Aperçu</label>
+                        <div class="p-3 rounded" style="background:#dcf8c6;border:1px solid #cce9b5;white-space:pre-wrap;word-break:break-word;" id="waTplPreviewBox"></div>
+                    </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                @if(!empty($templates))
+                    <button class="btn btn-success" id="waTplSendBtn" disabled>
+                        <i class="bi bi-send"></i> Envoyer
+                    </button>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var sel    = document.getElementById('waTplSelect');
+        if (!sel) return;
+        var vars   = document.getElementById('waTplVariables');
+        var prevW  = document.getElementById('waTplPreviewWrap');
+        var prevB  = document.getElementById('waTplPreviewBox');
+        var hName  = document.getElementById('waTplName');
+        var hLang  = document.getElementById('waTplLang');
+        var hPrev  = document.getElementById('waTplPreview');
+        var btn    = document.getElementById('waTplSendBtn');
+
+        function render() {
+            var opt = sel.options[sel.selectedIndex];
+            if (!opt || !opt.value) {
+                vars.innerHTML = '';
+                prevW.style.display = 'none';
+                btn.disabled = true;
+                return;
+            }
+            var name = opt.getAttribute('data-name');
+            var lang = opt.getAttribute('data-language');
+            var body = opt.getAttribute('data-body') || '';
+            var n    = parseInt(opt.getAttribute('data-varcount') || '0', 10);
+
+            hName.value = name;
+            hLang.value = lang;
+
+            // Build inputs for {{1}}…{{N}}.
+            var html = '';
+            for (var i = 1; i <= n; i++) {
+                html += '<div class="mb-2">' +
+                            '<label class="form-label fw-semibold small mb-1">Variable {{' + i + '}} <span class="text-danger">*</span></label>' +
+                            '<input type="text" class="form-control wa-var" name="variables[' + (i - 1) + ']" data-idx="' + i + '" required maxlength="1000">' +
+                        '</div>';
+            }
+            vars.innerHTML = html;
+
+            // Re-render preview as the user types.
+            var inputs = vars.querySelectorAll('.wa-var');
+            function refresh() {
+                var out = body;
+                var filled = inputs.length === 0;
+                inputs.forEach(function (inp) {
+                    var idx = inp.getAttribute('data-idx');
+                    var v = (inp.value || '').trim();
+                    out = out.replaceAll('{{' + idx + '}}', v || ('{{' + idx + '}}'));
+                    if (v) filled = true;
+                    else   filled = false;
+                });
+                if (inputs.length === 0) filled = true;
+                prevB.textContent = out;
+                hPrev.value = out;
+                prevW.style.display = '';
+                btn.disabled = !filled;
+            }
+            inputs.forEach(function (inp) { inp.addEventListener('input', refresh); });
+            refresh();
+        }
+        sel.addEventListener('change', render);
+    })();
+</script>
+@endif
 
 <script>
     // Auto-scroll au bas du thread.
