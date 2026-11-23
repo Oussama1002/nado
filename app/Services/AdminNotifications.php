@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\Annonces;
+use App\Models\Brand;
 use App\Models\Client;
 use App\Models\Demande;
 use App\Models\DemandeExpert;
 use App\Models\Discussion;
 use App\Models\Estimation;
 use App\Models\LegalCheck;
+use App\Models\Modele;
 use App\Models\WhatsAppConversation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -39,25 +41,50 @@ class AdminNotifications
         Cache::forget('admin.notifications.recent');
     }
 
+    /**
+     * Résout les colonnes annonces.mark / annonces.modele en noms.
+     * Elles contiennent soit un ID numérique (lignes récentes) soit un nom
+     * (lignes migrées), d'où cette résolution au coup par coup.
+     *
+     * @return array{brands: array<int|string,string>, modeles: array<int|string,string>}
+     */
+    private static function brandModelNames($markValues, $modeleValues): array
+    {
+        $markIds = collect($markValues)->filter(fn ($v) => is_numeric($v))->unique()->values()->all();
+        $modeleIds = collect($modeleValues)->filter(fn ($v) => is_numeric($v))->unique()->values()->all();
+
+        return [
+            'brands'  => $markIds ? Brand::whereIn('id', $markIds)->pluck('name', 'id')->all() : [],
+            'modeles' => $modeleIds ? Modele::whereIn('id', $modeleIds)->pluck('name', 'id')->all() : [],
+        ];
+    }
+
     private static function build(): array
     {
         $items = [];
 
         // 1) Annonces en attente d'approbation.
-        Annonces::where('active', false)
-            ->latest('created_at')->limit(10)->get(['id', 'mark', 'modele', 'city', 'created_at'])
-            ->each(function ($a) use (&$items) {
-                $label = trim(($a->mark ?? '') . ' ' . ($a->modele ?? ''));
-                if ($label === '') { $label = 'Annonce #' . $a->id; }
-                $items[] = [
-                    'icon'  => 'bi-car-front-fill',
-                    'tone'  => 'warning',
-                    'title' => 'Nouvelle annonce en attente',
-                    'body'  => $a->city ? $label . ' — ' . $a->city : $label,
-                    'at'    => $a->created_at,
-                    'url'   => route('admin.annonces.showAnnonce', $a->id),
-                ];
-            });
+        $pendingAnnonces = Annonces::where('active', false)
+            ->latest('created_at')->limit(10)->get(['id', 'mark', 'modele', 'city', 'created_at']);
+        $brandModel = self::brandModelNames(
+            $pendingAnnonces->pluck('mark'),
+            $pendingAnnonces->pluck('modele')
+        );
+        foreach ($pendingAnnonces as $a) {
+            $label = trim(
+                ($brandModel['brands'][$a->mark] ?? $a->mark ?? '') . ' ' .
+                ($brandModel['modeles'][$a->modele] ?? $a->modele ?? '')
+            );
+            if ($label === '') { $label = 'Annonce #' . $a->id; }
+            $items[] = [
+                'icon'  => 'bi-car-front-fill',
+                'tone'  => 'warning',
+                'title' => 'Nouvelle annonce en attente',
+                'body'  => $a->city ? $label . ' — ' . $a->city : $label,
+                'at'    => $a->created_at,
+                'url'   => route('admin.annonces.showAnnonce', $a->id),
+            ];
+        }
 
         // 2) Clients en attente d'approbation.
         Client::where('is_approved', false)
@@ -163,23 +190,29 @@ class AdminNotifications
 
         // 7) Discussions ouvertes.
         if (Schema::hasTable('discussions')) {
-            Discussion::where('status', 'open')
+            $openDiscussions = Discussion::where('status', 'open')
                 ->with('annonce:id,mark,modele')
                 ->latest('last_message_at')->limit(10)
-                ->get(['id', 'annonce_id', 'last_message_at', 'updated_at'])
-                ->each(function ($d) use (&$items) {
-                    $label = $d->annonce
-                        ? trim(($d->annonce->mark ?? '') . ' ' . ($d->annonce->modele ?? ''))
-                        : 'Discussion #' . $d->id;
-                    $items[] = [
-                        'icon'  => 'bi-chat-left-dots-fill',
-                        'tone'  => 'secondary',
-                        'title' => 'Discussion ouverte',
-                        'body'  => $label !== '' ? $label : 'Discussion #' . $d->id,
-                        'at'    => $d->last_message_at ?: $d->updated_at,
-                        'url'   => route('admin.discussions.index'),
-                    ];
-                });
+                ->get(['id', 'annonce_id', 'last_message_at', 'updated_at']);
+            $marks   = $openDiscussions->pluck('annonce.mark')->filter();
+            $modeles = $openDiscussions->pluck('annonce.modele')->filter();
+            $dBrandModel = self::brandModelNames($marks, $modeles);
+            foreach ($openDiscussions as $d) {
+                $label = $d->annonce
+                    ? trim(
+                        ($dBrandModel['brands'][$d->annonce->mark] ?? $d->annonce->mark ?? '') . ' ' .
+                        ($dBrandModel['modeles'][$d->annonce->modele] ?? $d->annonce->modele ?? '')
+                    )
+                    : 'Discussion #' . $d->id;
+                $items[] = [
+                    'icon'  => 'bi-chat-left-dots-fill',
+                    'tone'  => 'secondary',
+                    'title' => 'Discussion ouverte',
+                    'body'  => $label !== '' ? $label : 'Discussion #' . $d->id,
+                    'at'    => $d->last_message_at ?: $d->updated_at,
+                    'url'   => route('admin.discussions.index'),
+                ];
+            }
         }
 
         usort($items, function ($a, $b) {
