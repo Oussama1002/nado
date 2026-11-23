@@ -21,18 +21,35 @@ class WhatsAppWebhookController extends Controller
 {
     public function verify(Request $request)
     {
-        $expected = settings('whatsapp.webhook_verify_token')
-            ?: config('services.whatsapp.webhook_verify_token');
+        // Meta envoie hub.mode / hub.verify_token / hub.challenge. PHP convertit
+        // les points en underscores dans $_GET, mais on lit les deux formes par
+        // sûreté (certains reverse-proxys / configs peuvent conserver les dots).
+        $mode  = $request->query('hub_mode')         ?? $request->query('hub.mode');
+        $token = $request->query('hub_verify_token') ?? $request->query('hub.verify_token');
+        $chal  = $request->query('hub_challenge')    ?? $request->query('hub.challenge');
 
-        $mode  = $request->query('hub_mode');
-        $token = $request->query('hub_verify_token');
-        $chal  = $request->query('hub_challenge');
+        $expected = trim((string) (settings('whatsapp.webhook_verify_token')
+            ?: config('services.whatsapp.webhook_verify_token')));
 
-        if ($mode === 'subscribe' && $expected && hash_equals((string) $expected, (string) $token)) {
-            return response($chal, 200);
+        // Log de diagnostic : le body renvoyé doit être exactement le challenge.
+        Log::info('WhatsApp webhook: GET verify', [
+            'mode'                => $mode,
+            'challenge'           => $chal,
+            'token_received_len'  => strlen((string) $token),
+            'token_expected_len'  => strlen($expected),
+            'token_match'         => $expected !== '' && hash_equals($expected, (string) $token),
+        ]);
+
+        if ($mode === 'subscribe'
+            && $expected !== ''
+            && hash_equals($expected, (string) $token)
+            && $chal !== null) {
+            // Meta attend du text/plain, pas du HTML — sinon sa validation peut
+            // rejeter en silence selon la version de l'API.
+            return response((string) $chal, 200, ['Content-Type' => 'text/plain']);
         }
 
-        return response('forbidden', 403);
+        return response('forbidden', 403, ['Content-Type' => 'text/plain']);
     }
 
     public function receive(Request $request, WhatsAppService $whatsapp)
