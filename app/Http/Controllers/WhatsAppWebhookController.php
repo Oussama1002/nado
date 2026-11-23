@@ -51,8 +51,18 @@ class WhatsAppWebhookController extends Controller
 
         foreach ($payload['entry'] ?? [] as $entry) {
             foreach ($entry['changes'] ?? [] as $change) {
-                $value = $change['value'] ?? [];
-                $this->processValue($value);
+                try {
+                    $this->processValue($change['value'] ?? []);
+                } catch (\Throwable $e) {
+                    // Règle d'or des webhooks Meta : TOUJOURS répondre 200 rapidement.
+                    // Un 500 → Meta réessaie 3×, puis désactive silencieusement
+                    // l'abonnement et plus aucun message n'arrive.
+                    Log::error('WhatsApp webhook: processValue failed', [
+                        'error' => $e->getMessage(),
+                        'line'  => $e->getLine(),
+                        'file'  => $e->getFile(),
+                    ]);
+                }
             }
         }
 
@@ -128,11 +138,20 @@ class WhatsAppWebhookController extends Controller
                 ])->save();
 
                 // Téléchargement du média inbound (URL signée Meta, expire en ~5 min).
-                if ($mediaId && in_array($type, ['image', 'video', 'audio', 'document', 'sticker'], true)) {
-                    $service = app(\App\Services\WhatsAppService::class);
-                    if ($path = $service->downloadInboundMedia($mediaId)) {
-                        $mime = $msg[$type]['mime_type'] ?? null;
-                        $created->update(['media_path' => $path, 'media_mime' => $mime]);
+                // Erreur isolée : ne doit JAMAIS faire rollback le message lui-même.
+                if ($mediaId && in_array($type, ['image', 'video', 'audio', 'document', 'sticker'], true)
+                    && \Illuminate\Support\Facades\Schema::hasColumn('whatsapp_messages', 'media_path')) {
+                    try {
+                        $service = app(\App\Services\WhatsAppService::class);
+                        if ($path = $service->downloadInboundMedia($mediaId)) {
+                            $mime = $msg[$type]['mime_type'] ?? null;
+                            $created->update(['media_path' => $path, 'media_mime' => $mime]);
+                        }
+                    } catch (\Throwable $e) {
+                        Log::warning('WhatsApp media download failed', [
+                            'media_id' => $mediaId,
+                            'error'    => $e->getMessage(),
+                        ]);
                     }
                 }
             });
