@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class WhatsAppService
 {
@@ -137,7 +139,7 @@ class WhatsAppService
     }
 
     /**
-     * Low-level POST to Meta Cloud API /messages.
+     * Low-level POST to Meta Cloud API /messages. Erreur traduite en français.
      */
     private function postMessage(array $payload): array
     {
@@ -147,13 +149,22 @@ class WhatsAppService
 
         if (! $phoneNumberId || ! $accessToken) {
             Log::warning('Meta WhatsApp credentials not configured');
-            return ['ok' => false, 'wamid' => null, 'error' => 'credentials missing'];
+            return ['ok' => false, 'wamid' => null, 'error' => 'Identifiants Meta manquants (Phone Number ID / Access Token).'];
         }
 
-        $response = Http::withToken($accessToken)
-            ->acceptJson()
-            ->asJson()
-            ->post("https://graph.facebook.com/{$apiVersion}/{$phoneNumberId}/messages", $payload);
+        try {
+            // Timeout court < reverse-proxy pour qu'un ralentissement Meta renvoie
+            // notre JSON et non une page d'erreur HTML du front-end.
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->asJson()
+                ->connectTimeout(5)
+                ->timeout(15)
+                ->post("https://graph.facebook.com/{$apiVersion}/{$phoneNumberId}/messages", $payload);
+        } catch (ConnectionException $e) {
+            Log::warning('Meta WhatsApp timeout', ['error' => $e->getMessage()]);
+            return ['ok' => false, 'wamid' => null, 'error' => "Meta a mis trop de temps à répondre. Réessayez dans un instant."];
+        }
 
         if (! $response->successful()) {
             $body = $response->json() ?? $response->body();
@@ -161,14 +172,88 @@ class WhatsAppService
             return [
                 'ok'    => false,
                 'wamid' => null,
-                'error' => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+                'error' => MetaErrorTranslator::fromResponseBody($body)
+                    ?? MetaErrorTranslator::toFrench(is_string($body) ? $body : null),
             ];
         }
 
         $messages = $response->json('messages') ?? [];
         $wamid    = $messages[0]['id'] ?? null;
 
-        return ['ok' => (bool) $wamid, 'wamid' => $wamid, 'error' => $wamid ? null : 'no wamid in response'];
+        return ['ok' => (bool) $wamid, 'wamid' => $wamid, 'error' => $wamid ? null : "Réponse Meta sans wamid."];
+    }
+
+    /**
+     * Télécharge un média inbound référencé par son media_id : récupère l'URL
+     * signée via GET /{media_id}, puis télécharge le binaire avec le bearer.
+     * Enregistre sur le disque public (storage/app/public/whatsapp) et renvoie
+     * le chemin relatif stocké en DB.
+     */
+    public function downloadInboundMedia(string $mediaId): ?string
+    {
+        [, $accessToken, $apiVersion] = $this->managementCreds();
+        if (! $accessToken) {
+            return null;
+        }
+
+        try {
+            $meta = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(15)
+                ->get("https://graph.facebook.com/{$apiVersion}/{$mediaId}");
+        } catch (ConnectionException $e) {
+            Log::warning('WhatsApp media metadata fetch timeout', ['media_id' => $mediaId]);
+            return null;
+        }
+
+        if (! $meta->successful()) {
+            Log::warning('WhatsApp media metadata fetch failed', ['status' => $meta->status(), 'body' => $meta->json()]);
+            return null;
+        }
+
+        $url  = $meta->json('url');
+        $mime = $meta->json('mime_type');
+        if (! $url) {
+            return null;
+        }
+
+        try {
+            $bin = Http::withToken($accessToken)
+                ->connectTimeout(5)->timeout(60)
+                ->get($url);
+        } catch (ConnectionException $e) {
+            Log::warning('WhatsApp media binary timeout', ['media_id' => $mediaId]);
+            return null;
+        }
+
+        if (! $bin->successful()) {
+            return null;
+        }
+
+        $ext  = self::extensionForMime($mime);
+        $name = $mediaId . '.' . $ext;
+        $path = 'whatsapp/' . $name;
+        Storage::disk('public')->put($path, $bin->body());
+
+        return $path;
+    }
+
+    private static function extensionForMime(?string $mime): string
+    {
+        return match (true) {
+            $mime === null                                  => 'bin',
+            str_starts_with($mime, 'image/jpeg')            => 'jpg',
+            str_starts_with($mime, 'image/png')             => 'png',
+            str_starts_with($mime, 'image/webp')            => 'webp',
+            str_starts_with($mime, 'image/')                => 'img',
+            str_starts_with($mime, 'audio/ogg')             => 'ogg',
+            str_starts_with($mime, 'audio/mpeg')            => 'mp3',
+            str_starts_with($mime, 'audio/')                => 'audio',
+            str_starts_with($mime, 'video/mp4')             => 'mp4',
+            str_starts_with($mime, 'video/')                => 'vid',
+            str_contains($mime, 'pdf')                      => 'pdf',
+            default                                         => 'bin',
+        };
     }
 
     /* ──────────────────────── Template management ──────────────────────── */
@@ -184,18 +269,23 @@ class WhatsAppService
             return ['ok' => false, 'templates' => [], 'error' => 'WABA ID or access token missing'];
         }
 
-        $response = Http::withToken($accessToken)
-            ->acceptJson()
-            ->get("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
-                'limit' => $limit,
-            ]);
+        try {
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(15)
+                ->get("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
+                    'limit' => $limit,
+                ]);
+        } catch (ConnectionException $e) {
+            return ['ok' => false, 'templates' => [], 'error' => "Meta a mis trop de temps à répondre."];
+        }
 
         if (! $response->successful()) {
-            $body = $response->json() ?? $response->body();
             return [
                 'ok'        => false,
                 'templates' => [],
-                'error'     => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+                'error'     => MetaErrorTranslator::fromResponseBody($response->json())
+                    ?? MetaErrorTranslator::toFrench($response->body()),
             ];
         }
 
@@ -228,18 +318,30 @@ class WhatsAppService
             'components' => $components,
         ];
 
-        $response = Http::withToken($accessToken)
-            ->acceptJson()
-            ->asJson()
-            ->post("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", $payload);
-
-        if (! $response->successful()) {
-            $body = $response->json() ?? $response->body();
+        try {
+            // Timeout court pour éviter qu'nginx coupe avant nous → JSON clair
+            // au lieu d'une HTML page "Bad Gateway".
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->asJson()
+                ->connectTimeout(5)->timeout(10)
+                ->post("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", $payload);
+        } catch (ConnectionException $e) {
             return [
                 'ok'     => false,
                 'id'     => null,
                 'status' => null,
-                'error'  => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+                'error'  => "Meta a mis trop de temps à répondre. Meta a peut-être tout de même reçu votre template — rafraîchissez la liste dans un instant.",
+            ];
+        }
+
+        if (! $response->successful()) {
+            return [
+                'ok'     => false,
+                'id'     => null,
+                'status' => null,
+                'error'  => MetaErrorTranslator::fromResponseBody($response->json())
+                    ?? MetaErrorTranslator::toFrench($response->body()),
             ];
         }
 
@@ -261,17 +363,22 @@ class WhatsAppService
             return ['ok' => false, 'error' => 'WABA ID or access token missing'];
         }
 
-        $response = Http::withToken($accessToken)
-            ->acceptJson()
-            ->delete("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
-                'name' => $name,
-            ]);
+        try {
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(10)
+                ->delete("https://graph.facebook.com/{$apiVersion}/{$wabaId}/message_templates", [
+                    'name' => $name,
+                ]);
+        } catch (ConnectionException $e) {
+            return ['ok' => false, 'error' => "Meta a mis trop de temps à répondre."];
+        }
 
         if (! $response->successful()) {
-            $body = $response->json() ?? $response->body();
             return [
                 'ok'    => false,
-                'error' => is_array($body) ? ($body['error']['message'] ?? json_encode($body)) : (string) $body,
+                'error' => MetaErrorTranslator::fromResponseBody($response->json())
+                    ?? MetaErrorTranslator::toFrench($response->body()),
             ];
         }
 

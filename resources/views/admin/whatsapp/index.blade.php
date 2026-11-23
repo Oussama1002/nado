@@ -89,6 +89,27 @@
                 @foreach($messages as $m)
                     <div class="d-flex mb-2 {{ $m->direction === 'out' ? 'justify-content-end' : 'justify-content-start' }}">
                         <div class="p-2 rounded shadow-sm" style="max-width: 70%; background: {{ $m->direction === 'out' ? '#dcf8c6' : '#fff' }};">
+                            @if($m->media_path)
+                                @php $mediaUrl = asset('storage/' . $m->media_path); @endphp
+                                @if(str_starts_with((string) $m->media_mime, 'image/'))
+                                    <a href="{{ $mediaUrl }}" target="_blank">
+                                        <img src="{{ $mediaUrl }}" alt="image" style="max-width: 100%; max-height: 300px; border-radius: 6px; display: block;">
+                                    </a>
+                                @elseif(str_starts_with((string) $m->media_mime, 'video/'))
+                                    <video controls style="max-width: 100%; max-height: 300px; border-radius: 6px; display: block;">
+                                        <source src="{{ $mediaUrl }}" type="{{ $m->media_mime }}">
+                                    </video>
+                                @elseif(str_starts_with((string) $m->media_mime, 'audio/'))
+                                    <audio controls style="max-width: 100%; display: block;">
+                                        <source src="{{ $mediaUrl }}" type="{{ $m->media_mime }}">
+                                    </audio>
+                                @else
+                                    <a href="{{ $mediaUrl }}" target="_blank" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+                                        <i class="bi bi-file-earmark fs-4"></i>
+                                        <span>Télécharger le fichier</span>
+                                    </a>
+                                @endif
+                            @endif
                             <div style="white-space: pre-wrap; word-break: break-word;">{{ $m->body }}</div>
                             <div class="text-muted small mt-1 d-flex gap-2 justify-content-end align-items-center">
                                 <span>{{ $m->sent_at?->format('d/m H:i') }}</span>

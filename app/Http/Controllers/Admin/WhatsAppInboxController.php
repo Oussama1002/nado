@@ -97,16 +97,9 @@ class WhatsAppInboxController extends Controller
         $conversation->forceFill(['last_message_at' => $msg->sent_at])->save();
 
         if (! $result['ok']) {
-            $err  = (string) ($result['error'] ?? 'erreur inconnue');
-            $hint = match (true) {
-                str_contains($err, '131030') => ' — Numéro test Meta : ajoutez ce destinataire dans Meta Developers → WhatsApp → API Setup → liste « À » avant de pouvoir lui envoyer.',
-                str_contains($err, '131047') ||
-                str_contains($err, '131026') => ' — Rappel : hors fenêtre 24h, Meta exige un template approuvé.',
-                str_contains($err, '131056') => ' — Numéro destinataire invalide ou non actif sur WhatsApp.',
-                default                      => '',
-            };
+            // Message déjà traduit en français par WhatsAppService (via MetaErrorTranslator).
             return redirect()->route('admin.whatsapp.show', $conversation)
-                ->with('error', 'Envoi échoué : ' . $err . $hint);
+                ->with('error', 'Envoi échoué : ' . ($result['error'] ?? 'erreur inconnue'));
         }
 
         return redirect()->route('admin.whatsapp.show', $conversation)

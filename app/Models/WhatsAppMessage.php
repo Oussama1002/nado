@@ -11,7 +11,8 @@ class WhatsAppMessage extends Model
 
     protected $fillable = [
         'conversation_id', 'direction', 'wamid', 'type',
-        'body', 'media_id', 'status', 'error', 'sent_at',
+        'body', 'media_id', 'media_path', 'media_mime',
+        'status', 'error', 'sent_at',
     ];
 
     protected $casts = [

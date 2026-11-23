@@ -110,7 +110,7 @@ class WhatsAppWebhookController extends Controller
                     ? \Carbon\Carbon::createFromTimestamp((int) $msg['timestamp'])
                     : now();
 
-                WhatsAppMessage::create([
+                $created = WhatsAppMessage::create([
                     'conversation_id' => $conversation->id,
                     'direction'       => 'in',
                     'wamid'           => $msg['id'] ?? null,
@@ -126,6 +126,15 @@ class WhatsAppWebhookController extends Controller
                     'last_inbound_at' => $sentAt,
                     'unread_count'    => $conversation->unread_count + 1,
                 ])->save();
+
+                // Téléchargement du média inbound (URL signée Meta, expire en ~5 min).
+                if ($mediaId && in_array($type, ['image', 'video', 'audio', 'document', 'sticker'], true)) {
+                    $service = app(\App\Services\WhatsAppService::class);
+                    if ($path = $service->downloadInboundMedia($mediaId)) {
+                        $mime = $msg[$type]['mime_type'] ?? null;
+                        $created->update(['media_path' => $path, 'media_mime' => $mime]);
+                    }
+                }
             });
         }
 
