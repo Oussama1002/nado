@@ -382,16 +382,31 @@ class WhatsAppService
             return ['ok' => false, 'id' => null, 'status' => null, 'error' => 'WABA ID or access token missing'];
         }
 
-        $components = [
-            ['type' => 'BODY', 'text' => $data['body']],
-        ];
-        if (! empty($data['footer'])) {
-            $components[] = ['type' => 'FOOTER', 'text' => $data['footer']];
+        $category = strtoupper($data['category']);
+
+        if ($category === 'AUTHENTICATION') {
+            // Meta génère un corps fixe pour les templates d'auth ; on ne doit
+            // PAS envoyer de BODY.text. On déclare seulement les options
+            // (recommandation sécurité + bouton copie-code).
+            $components = [
+                ['type' => 'BODY',   'add_security_recommendation' => true],
+                ['type' => 'FOOTER', 'code_expiration_minutes' => 10],
+                ['type' => 'BUTTONS', 'buttons' => [
+                    ['type' => 'OTP', 'otp_type' => 'COPY_CODE'],
+                ]],
+            ];
+        } else {
+            $components = [
+                ['type' => 'BODY', 'text' => $data['body']],
+            ];
+            if (! empty($data['footer'])) {
+                $components[] = ['type' => 'FOOTER', 'text' => $data['footer']];
+            }
         }
 
         $payload = [
             'name'       => $data['name'],
-            'category'   => $data['category'],
+            'category'   => $category,
             'language'   => $data['language'],
             'components' => $components,
         ];

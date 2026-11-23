@@ -40,14 +40,14 @@
     <div class="row g-3">
         <div class="col-md-6">
             <label class="form-label fw-semibold">Catégorie <span class="text-danger">*</span></label>
-            <select name="category" class="form-select" required>
+            <select name="category" class="form-select" required id="tplCategory">
                 @foreach($categories as $c)
                     <option value="{{ $c }}" @selected(old('category') === $c)>{{ $c }}</option>
                 @endforeach
             </select>
             <div class="form-text">
-                <strong>AUTHENTICATION</strong> : OTP / codes.
-                <strong>UTILITY</strong> : confirmations, rappels, mises à jour liées à une action du client.
+                <strong>AUTHENTICATION</strong> : OTP / codes (corps généré par Meta).
+                <strong>UTILITY</strong> : confirmations, rappels, mises à jour.
                 <strong>MARKETING</strong> : promotions, offres (nécessite opt-in).
             </div>
         </div>
@@ -59,21 +59,50 @@
         </div>
     </div>
 
-    <div class="mb-3 mt-3">
-        <label class="form-label fw-semibold">Corps du message <span class="text-danger">*</span></label>
-        <textarea name="body" class="form-control" rows="5" maxlength="1024" required>{{ old('body') }}</textarea>
-        <div class="form-text">
-            Jusqu'à 1024 caractères. Exemple :
-            « Bonjour &#123;&#123;1&#125;&#125;, votre annonce « &#123;&#123;2&#125;&#125; » a été approuvée. »
+    {{-- Bloc corps/footer : masqué pour AUTHENTICATION (corps fixe généré par Meta). --}}
+    <div id="tplBodyBlock">
+        <div class="mb-3 mt-3">
+            <label class="form-label fw-semibold">Corps du message <span class="text-danger">*</span></label>
+            <textarea name="body" class="form-control" rows="5" maxlength="1024">{{ old('body') }}</textarea>
+            <div class="form-text">
+                Jusqu'à 1024 caractères. Exemple :
+                « Bonjour &#123;&#123;1&#125;&#125;, votre annonce « &#123;&#123;2&#125;&#125; » a été approuvée. »
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Pied de page (optionnel)</label>
+            <input type="text" class="form-control" name="footer" maxlength="60" value="{{ old('footer') }}"
+                   placeholder="ex. Équipe NADO">
+            <div class="form-text">Max 60 caractères, sans variables.</div>
         </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-semibold">Pied de page (optionnel)</label>
-        <input type="text" class="form-control" name="footer" maxlength="60" value="{{ old('footer') }}"
-               placeholder="ex. Équipe NADO">
-        <div class="form-text">Max 60 caractères, sans variables.</div>
+    <div class="alert alert-info mt-3" id="tplAuthInfo" style="display:none;">
+        <i class="bi bi-info-circle"></i>
+        <strong>Catégorie AUTHENTICATION :</strong> Meta génère automatiquement le corps du message
+        (« <em>{&#123;1&#125;} est votre code de vérification</em> »), ajoute une recommandation de sécurité,
+        un bouton <strong>« Copier le code »</strong> et une expiration de 10 minutes.
+        Vous ne pouvez pas modifier le texte.
     </div>
+
+    <script>
+        (function () {
+            var sel = document.getElementById('tplCategory');
+            var body = document.getElementById('tplBodyBlock');
+            var info = document.getElementById('tplAuthInfo');
+            var textarea = body.querySelector('textarea[name="body"]');
+
+            function sync() {
+                var isAuth = sel.value === 'AUTHENTICATION';
+                body.style.display = isAuth ? 'none' : '';
+                info.style.display = isAuth ? '' : 'none';
+                if (textarea) textarea.required = !isAuth;
+            }
+            sel.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
 
     <div class="pt-2">
         <button type="submit" class="btn btn-success">

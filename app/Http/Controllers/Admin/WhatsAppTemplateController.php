@@ -38,7 +38,8 @@ class WhatsAppTemplateController extends Controller
             'name'     => ['required', 'string', 'max:512', 'regex:/^[a-z0-9_]+$/'],
             'category' => ['required', Rule::in(self::CATEGORIES)],
             'language' => ['required', 'string', 'max:10'],
-            'body'     => ['required', 'string', 'max:1024'],
+            // Corps requis sauf AUTHENTICATION (corps généré par Meta).
+            'body'     => [$request->input('category') === 'AUTHENTICATION' ? 'nullable' : 'required', 'string', 'max:1024'],
             'footer'   => ['nullable', 'string', 'max:60'],
         ], [
             'name.regex' => 'Le nom doit être en minuscules, chiffres, underscores (ex. order_confirmation).',
