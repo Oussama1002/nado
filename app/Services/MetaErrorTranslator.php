@@ -76,6 +76,11 @@ class MetaErrorTranslator
                 return "Le template n'existe pas, est en attente d'approbation, ou a été rejeté. Vérifiez-le dans « Modèles ».";
         }
 
+        // Réponse HTML au lieu de JSON : token mal collé, URL incorrecte, ou LB intermédiaire.
+        if (str_contains($r, '<!doctype') || str_contains($r, '<html')) {
+            return "Jeton API corrompu ou mal formaté. Re-générez un nouveau jeton côté Meta et re-collez-le (sans espaces ni retours à la ligne).";
+        }
+
         // Fallback sur des sous-chaînes.
         return match (true) {
             str_contains($r, 'rate limit')                 => "Limite d'appels Meta atteinte. Réessayez dans quelques minutes.",
@@ -85,7 +90,7 @@ class MetaErrorTranslator
             str_contains($r, 'permission')                 => "Permissions Meta insuffisantes sur le jeton.",
             str_contains($r, 're-engagement message')      => "Fenêtre de 24h expirée — utilisez un modèle approuvé.",
             str_contains($r, 'template name does not exist') => "Nom de template introuvable sur Meta.",
-            $raw !== null && $raw !== ''                   => "Erreur Meta : " . $raw,
+            $raw !== null && $raw !== ''                   => "Erreur Meta : " . \Illuminate\Support\Str::limit(strip_tags($raw), 300),
             default                                        => "Erreur inconnue côté Meta.",
         };
     }

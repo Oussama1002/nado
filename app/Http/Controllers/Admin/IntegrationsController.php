@@ -39,12 +39,18 @@ class IntegrationsController extends Controller
         ]);
 
         foreach ($data as $suffix => $value) {
-            // Ne pas écraser un secret existant quand le champ est vide.
             $full = 'whatsapp.' . $suffix;
             $setting = Setting::where('key', $full)->first();
+
+            // Pour les secrets : champ vide = ne pas écraser.
             if ($setting && $setting->is_secret && ($value === null || $value === '')) {
                 continue;
             }
+
+            // Toujours trimmer : un espace / \n invisible dans un token colle
+            // un 4xx HTML au lieu d'un JSON lisible.
+            $value = is_string($value) ? trim(preg_replace('/\s+/', '', $value)) : $value;
+
             Setting::set($full, (string) ($value ?? ''));
         }
 
