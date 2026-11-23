@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     @include('admin.layouts.header')
-<body class="theme-light">
+<body class="theme-light" data-theme="light">
     <div id="app">
         @auth
             @include('admin.layouts.navigation')
