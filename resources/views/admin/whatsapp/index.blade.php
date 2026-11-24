@@ -223,9 +223,14 @@
                             <i class="bi bi-record-circle-fill text-danger"></i>
                             <span class="small">Enregistrement… <span id="waRecTimer">0:00</span></span>
                             <div class="ms-auto d-flex gap-1">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="waRecCancel">Annuler</button>
-                                <button type="button" class="btn btn-sm btn-success" id="waRecStop">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="waRecCancel">
+                                    <i class="bi bi-x-lg"></i> Annuler
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success" id="waRecStop">
                                     <i class="bi bi-stop-fill"></i> Arrêter
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success" id="waRecSend">
+                                    <i class="bi bi-send"></i> Envoyer
                                 </button>
                             </div>
                         </div>
@@ -331,7 +336,9 @@
                         var recTimer  = document.getElementById('waRecTimer');
                         var recStop   = document.getElementById('waRecStop');
                         var recCancel = document.getElementById('waRecCancel');
+                        var recSend   = document.getElementById('waRecSend');
                         var mediaRec  = null, chunks = [], timerId = null, startedAt = 0, stream = null;
+                        var sendOnStop = false;
 
                         function fmt(s) {
                             var m = Math.floor(s / 60), r = s % 60;
@@ -377,6 +384,10 @@
                                 prev.classList.remove('d-none');
                                 voiceFlag.value = '1';
                                 cleanup();
+                                if (sendOnStop) {
+                                    sendOnStop = false;
+                                    form.submit();
+                                }
                             };
                             startedAt = Date.now();
                             recTimer.textContent = '0:00';
@@ -389,6 +400,12 @@
 
                         recStop.addEventListener('click', function () {
                             if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+                        });
+                        recSend.addEventListener('click', function () {
+                            if (mediaRec && mediaRec.state !== 'inactive') {
+                                sendOnStop = true;
+                                mediaRec.stop();
+                            }
                         });
                         recCancel.addEventListener('click', function () {
                             chunks = [];
