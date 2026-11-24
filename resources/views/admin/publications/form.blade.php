@@ -31,13 +31,10 @@
         <div class="mb-500">
             <label>Placement</label>
             <select name="placement" class="form-control" required>
-                <option value="left-banner" {{ old('placement', $publication->placement) == 'left-banner' ? 'selected' : '' }}>Bannière Gauche (205x805)</option>
-                <option value="right-banner" {{ old('placement', $publication->placement) == 'right-banner' ? 'selected' : '' }}>Bannière Droite (205x805)</option>
                 <option value="center-banner" {{ old('placement', $publication->placement) == 'center-banner' ? 'selected' : '' }}>Bannière Centre(1000x500)</option>
                 <option value="first-banner" {{ old('placement', $publication->placement) == 'first-banner' ? 'selected' : '' }}>1er Bannière sur page achat</option>
                 <option value="second-banner" {{ old('placement', $publication->placement) == 'second-banner' ? 'selected' : '' }}>2eme Bannière sur page achat</option>
                 <option value="third-banner" {{ old('placement', $publication->placement) == 'third-banner' ? 'selected' : '' }}>3eme Bannière sur page achat</option>
-                <option value="leftondetail-banner" {{ old('placement', $publication->placement) == 'leftondetail-banner' ? 'selected' : '' }}>Bannière Gauche sur page details de l'annonce(200x500)</option>
                 <option value="rightonindexenchere-banner" {{ old('placement', $publication->placement) == 'rightonindexenchere-banner' ? 'selected' : '' }}>Bannière Droite sur page des Encheres (205x805)</option>
                 <option value="vente-hero" {{ old('placement', $publication->placement) == 'vente-hero' ? 'selected' : '' }}>Image hero — Vente (/vente/formulaire)</option>
                 <option value="ae-expertise" {{ old('placement', $publication->placement) == 'ae-expertise' ? 'selected' : '' }}>Image « Notre expertise » — Auto-Enchère (/nadoautoenchere/prelogin)</option>
