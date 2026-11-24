@@ -39,6 +39,10 @@
                 <option value="third-banner" {{ old('placement', $publication->placement) == 'third-banner' ? 'selected' : '' }}>3eme Bannière sur page achat</option>
                 <option value="leftondetail-banner" {{ old('placement', $publication->placement) == 'leftondetail-banner' ? 'selected' : '' }}>Bannière Gauche sur page details de l'annonce(200x500)</option>
                 <option value="rightonindexenchere-banner" {{ old('placement', $publication->placement) == 'rightonindexenchere-banner' ? 'selected' : '' }}>Bannière Droite sur page des Encheres (205x805)</option>
+                <option value="vente-hero" {{ old('placement', $publication->placement) == 'vente-hero' ? 'selected' : '' }}>Image hero — Vente (/vente/formulaire)</option>
+                <option value="ae-expertise" {{ old('placement', $publication->placement) == 'ae-expertise' ? 'selected' : '' }}>Image « Notre expertise » — Auto-Enchère (/nadoautoenchere/prelogin)</option>
+                <option value="reprise-hero" {{ old('placement', $publication->placement) == 'reprise-hero' ? 'selected' : '' }}>Image hero — Reprise (/reprises/formulaire)</option>
+                <option value="front-estimation" {{ old('placement', $publication->placement) == 'front-estimation' ? 'selected' : '' }}>Image section « Estimation » — Accueil</option>
 
 
             </select>

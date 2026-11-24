@@ -139,15 +139,30 @@ if (! function_exists('price_from_monthly')) {
 
 if (! function_exists('site_image')) {
     /**
-     * Retourne l'URL de l'image illustrative pour l'emplacement $slot.
-     * Si l'admin a uploadé une image (table settings, clé site_images.$slot),
-     * on renvoie son URL publique ; sinon on retombe sur $default.
+     * Retourne l'URL de l'image illustrative pour l'emplacement $placement.
+     * Lit la dernière publication active (`/admin/publications`) de cet
+     * emplacement et renvoie son image ; sinon on retombe sur $default.
      *
-     *   <img src="{{ site_image('vente_hero', 'https://.../default.jpg') }}">
+     *   <img src="{{ site_image('vente-hero', 'https://.../default.jpg') }}">
+     *
+     * Les valeurs d'emplacement attendues sont celles du champ
+     * Publication.placement (vente-hero, ae-expertise, reprise-hero, front-estimation…).
      */
-    function site_image(string $slot, string $default = ''): string
+    function site_image(string $placement, string $default = ''): string
     {
-        $path = settings('site_images.' . $slot);
+        static $cache = [];
+        if (! array_key_exists($placement, $cache)) {
+            try {
+                $pub = \App\Models\Publication::where('placement', $placement)
+                    ->where('status', 1)
+                    ->orderByDesc('id')
+                    ->first();
+                $cache[$placement] = $pub && $pub->image ? $pub->image : null;
+            } catch (\Throwable $e) {
+                $cache[$placement] = null;
+            }
+        }
+        $path = $cache[$placement];
         if (is_string($path) && $path !== '') {
             return asset('storage/' . ltrim($path, '/'));
         }

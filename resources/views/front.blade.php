@@ -4821,7 +4821,7 @@
                                 style="width: 20px; height: 20px;"></i></a>
                     </div>
                     <div class="price-image-container"><img
-                            src="{{ site_image('front_estimation', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1200') }}"
+                            src="{{ site_image('front-estimation', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1200') }}"
                             alt="Estimation" /></div>
                 </div>
             </div>

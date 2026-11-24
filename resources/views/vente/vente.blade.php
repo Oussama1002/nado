@@ -608,7 +608,7 @@
                 {{-- Right: visual (desktop only) --}}
                 <div class="vp-hero-visual">
                     <div class="vp-visual-card">
-                        <img src="{{ site_image('vente_hero', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80') }}"
+                        <img src="{{ site_image('vente-hero', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80') }}"
                              alt="Voiture premium NADO"
                              style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s ease;"
                              onmouseover="this.style.transform='scale(1.04)'"

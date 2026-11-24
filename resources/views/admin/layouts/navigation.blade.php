@@ -545,12 +545,6 @@
             <span>Configuration</span>
         </a>
     </li>
-    <li @class(['sidebar-item', 'active' => str_contains($current_route, 'site-images.')])>
-        <a href="{{ route('admin.site-images.index') }}" class="sidebar-link">
-            <i class="bi bi-image"></i>
-            <span>Images du site</span>
-        </a>
-    </li>
     @endif
 
     {{-- 🔹 End of Admin Sidebar --}}
