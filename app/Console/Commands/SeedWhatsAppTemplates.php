@@ -33,90 +33,90 @@ class SeedWhatsAppTemplates extends Command
         // ─────────────────── UTILITY ───────────────────
         'annonce_recue' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, nous avons bien reçu votre annonce pour votre {{2}}. Notre équipe la validera sous 24h et vous recontactera au {{3}}. Merci — autoenchere.ma",
-            'ar' => "مرحبا {{1}}، لقد توصلنا بإعلانكم الخاص بـ {{2}}. سيقوم فريقنا بالتحقق منه خلال 24 ساعة والاتصال بكم على الرقم {{3}}. شكرا لثقتكم — autoenchere.ma",
+            'fr' => "Bonjour {{1}}, nous avons bien reçu votre annonce pour votre véhicule {{2}} sur autoenchere.ma. Notre équipe la validera sous 24 heures et vous recontactera au numéro {{3}} pour confirmer la mise en ligne.",
+            'ar' => "مرحبا {{1}}، لقد توصلنا بإعلانكم الخاص بالسيارة {{2}} على موقع autoenchere.ma. سيقوم فريقنا بالتحقق منه خلال 24 ساعة والاتصال بكم على الرقم {{3}} لتأكيد النشر.",
         ],
         'annonce_publiee' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, votre annonce {{2}} est en ligne sur autoenchere.ma. Lien : {{3}}. Bonnes ventes !",
-            'ar' => "مرحبا {{1}}، تم نشر إعلانكم {{2}} على autoenchere.ma. الرابط: {{3}}. نتمنى لكم بيعا موفقا.",
+            'fr' => "Bonjour {{1}}, votre annonce de vente pour le véhicule {{2}} est désormais en ligne sur autoenchere.ma. Vous pouvez la consulter à l'adresse suivante : {{3}} pour vérifier son contenu.",
+            'ar' => "مرحبا {{1}}، تم نشر إعلان بيع السيارة {{2}} على موقع autoenchere.ma. يمكنكم الاطلاع عليه من خلال الرابط التالي: {{3}} للتحقق من محتواه.",
         ],
         'demande_contact' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, un acheteur est intéressé par votre {{2}}. Son message : \"{{3}}\". Répondez-lui au {{4}}.",
-            'ar' => "مرحبا {{1}}، هناك مشتر مهتم بـ {{2}}. رسالته: \"{{3}}\". يمكنكم الرد عليه عبر الرقم {{4}}.",
+            'fr' => "Bonjour {{1}}, un acheteur est intéressé par votre véhicule {{2}}. Voici son message : \"{{3}}\". Vous pouvez le contacter directement au numéro {{4}} pour répondre à sa demande.",
+            'ar' => "مرحبا {{1}}، هناك مشتر مهتم بسيارتكم {{2}}. إليكم رسالته: \"{{3}}\". يمكنكم الاتصال به مباشرة على الرقم {{4}} للرد على طلبه.",
         ],
         'rdv_essai' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, votre essai de la {{2}} est confirmé le {{3}} à {{4}}. Adresse : {{5}}. Pour annuler, répondez à ce message.",
-            'ar' => "مرحبا {{1}}، تم تأكيد موعد تجربة {{2}} يوم {{3}} على الساعة {{4}}. العنوان: {{5}}. للإلغاء، يرجى الرد على هذه الرسالة.",
+            'fr' => "Bonjour {{1}}, votre rendez-vous d'essai pour le véhicule {{2}} est confirmé le {{3}} à {{4}}. Adresse du rendez-vous : {{5}}. Pour annuler ou modifier, répondez à ce message.",
+            'ar' => "مرحبا {{1}}، تم تأكيد موعد تجربة السيارة {{2}} يوم {{3}} على الساعة {{4}}. عنوان الموعد: {{5}}. للإلغاء أو التعديل، يرجى الرد على هذه الرسالة.",
         ],
         'reprise_estimation' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, l'estimation de reprise de votre {{2}} est de {{3}} MAD. Offre valable 7 jours. Répondez pour planifier l'inspection.",
-            'ar' => "مرحبا {{1}}، قيمة تقدير استبدال سيارتكم {{2}} هي {{3}} درهم. العرض صالح لمدة 7 أيام. ردوا على هذه الرسالة لتحديد موعد المعاينة.",
+            'fr' => "Bonjour {{1}}, l'estimation de reprise de votre véhicule {{2}} est de {{3}} MAD. Cette offre est valable 7 jours — répondez à ce message pour planifier une inspection avec notre équipe.",
+            'ar' => "مرحبا {{1}}، قيمة تقدير استبدال سيارتكم {{2}} هي {{3}} درهم. هذا العرض صالح لمدة 7 أيام — ردوا على هذه الرسالة لتحديد موعد المعاينة مع فريقنا.",
         ],
         'financement_simulation' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, votre simulation de financement pour la {{2}} : {{3}} MAD/mois sur {{4}} mois. Un conseiller vous rappellera au {{5}}.",
-            'ar' => "مرحبا {{1}}، محاكاة التمويل الخاصة بـ {{2}}: {{3}} درهم شهريا على مدى {{4}} شهرا. سيتصل بكم أحد المستشارين على الرقم {{5}}.",
+            'fr' => "Bonjour {{1}}, votre simulation de financement pour le véhicule {{2}} s'élève à {{3}} MAD par mois sur {{4}} mois. Un conseiller vous rappellera au numéro {{5}} dans les prochaines 48 heures.",
+            'ar' => "مرحبا {{1}}، محاكاة التمويل الخاصة بالسيارة {{2}} تبلغ {{3}} درهم شهريا على مدى {{4}} شهرا. سيتصل بكم أحد المستشارين على الرقم {{5}} خلال 48 ساعة القادمة.",
         ],
         'enchere_acces_approuve' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, votre accès Auto-Enchère est activé. Connectez-vous : {{2}}. Les prochaines enchères démarrent le {{3}}.",
-            'ar' => "مرحبا {{1}}، تم تفعيل ولوجكم إلى منصة Auto-Enchère. سجلوا الدخول عبر: {{2}}. تنطلق المزادات القادمة يوم {{3}}.",
+            'fr' => "Bonjour {{1}}, votre accès à la plateforme Auto-Enchère est activé. Connectez-vous via le lien suivant : {{2}}. Les prochaines enchères démarrent le {{3}} à 10h00.",
+            'ar' => "مرحبا {{1}}، تم تفعيل ولوجكم إلى منصة Auto-Enchère. سجلوا الدخول عبر الرابط التالي: {{2}}. تنطلق المزادات القادمة يوم {{3}} على الساعة 10:00 صباحا.",
         ],
         'enchere_rappel' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, l'enchère {{2}} démarre dans 1h ({{3}}). {{4}} véhicules disponibles. Rejoindre : {{5}}",
-            'ar' => "مرحبا {{1}}، ينطلق المزاد {{2}} بعد ساعة ({{3}}). {{4}} سيارة متوفرة. للمشاركة: {{5}}",
+            'fr' => "Bonjour {{1}}, votre enchère {{2}} démarre dans une heure à {{3}}. Vous retrouverez {{4}} véhicules disponibles sur la session. Rejoignez-nous sur le lien suivant : {{5}} pour participer.",
+            'ar' => "مرحبا {{1}}، ينطلق مزادكم {{2}} بعد ساعة على الساعة {{3}}. ستجدون {{4}} سيارة متوفرة خلال الجلسة. انضموا إلينا عبر الرابط التالي: {{5}} للمشاركة.",
         ],
         'enchere_gagnee' => [
             'category' => 'UTILITY',
-            'fr' => "Félicitations {{1}} ! Vous avez remporté le {{2}} pour {{3}} MAD. Procédez au paiement sous 48h : {{4}}",
-            'ar' => "مبروك {{1}}! لقد ربحتم مزاد {{2}} بمبلغ {{3}} درهم. يرجى إتمام الأداء خلال 48 ساعة عبر: {{4}}",
+            'fr' => "Bonjour {{1}}, vous avez remporté l'enchère pour le véhicule {{2}} au montant de {{3}} MAD. Veuillez procéder au paiement sous 48 heures via le lien suivant : {{4}} pour finaliser la transaction.",
+            'ar' => "مرحبا {{1}}، لقد ربحتم المزاد الخاص بالسيارة {{2}} بمبلغ {{3}} درهم. يرجى إتمام الأداء خلال 48 ساعة عبر الرابط التالي: {{4}} لإنهاء المعاملة.",
         ],
         'enchere_perdue' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, vous avez été surenchéri sur {{2}}. Prix actuel : {{3}} MAD. Reprendre l'enchère : {{4}}",
-            'ar' => "مرحبا {{1}}، تم تجاوز عرضكم في المزاد {{2}}. السعر الحالي: {{3}} درهم. للعودة إلى المزاد: {{4}}",
+            'fr' => "Bonjour {{1}}, vous avez été surenchéri sur le véhicule {{2}}. Le prix actuel est de {{3}} MAD. Vous pouvez reprendre l'enchère via le lien suivant : {{4}} pour placer une nouvelle offre.",
+            'ar' => "مرحبا {{1}}، تم تجاوز عرضكم في المزاد الخاص بالسيارة {{2}}. السعر الحالي هو {{3}} درهم. يمكنكم العودة إلى المزاد عبر الرابط التالي: {{4}} لتقديم عرض جديد.",
         ],
         'paiement_recu' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, nous avons bien reçu votre paiement de {{2}} MAD pour la {{3}}. Livraison prévue le {{4}}.",
-            'ar' => "مرحبا {{1}}، لقد توصلنا بأدائكم البالغ {{2}} درهم مقابل {{3}}. من المنتظر تسليم السيارة يوم {{4}}.",
+            'fr' => "Bonjour {{1}}, nous avons bien reçu votre paiement de {{2}} MAD pour le véhicule {{3}}. La livraison de votre véhicule est prévue le {{4}} dans notre centre, merci de votre confiance.",
+            'ar' => "مرحبا {{1}}، لقد توصلنا بأدائكم البالغ {{2}} درهم مقابل السيارة {{3}}. من المنتظر تسليم سيارتكم يوم {{4}} في مركزنا، شكرا لثقتكم.",
         ],
         'cartegrise_verifiee' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, les documents de votre {{2}} ont été vérifiés. Votre annonce passe en validation finale.",
-            'ar' => "مرحبا {{1}}، تم التحقق من وثائق سيارتكم {{2}}. سيدخل إعلانكم مرحلة المصادقة النهائية.",
+            'fr' => "Bonjour {{1}}, les documents de votre véhicule {{2}} ont été vérifiés par notre équipe. Votre annonce passe maintenant en validation finale et sera publiée sous 24 heures.",
+            'ar' => "مرحبا {{1}}، تم التحقق من وثائق سيارتكم {{2}} من طرف فريقنا. سيدخل إعلانكم مرحلة المصادقة النهائية وسيتم نشره خلال 24 ساعة.",
         ],
         'compte_approuve' => [
             'category' => 'UTILITY',
-            'fr' => "Bonjour {{1}}, votre compte sur autoenchere.ma est validé. Vous pouvez maintenant vous connecter : {{2}}",
-            'ar' => "مرحبا {{1}}، تم تفعيل حسابكم على autoenchere.ma. يمكنكم الآن تسجيل الدخول عبر: {{2}}",
+            'fr' => "Bonjour {{1}}, votre compte sur autoenchere.ma est validé. Vous pouvez maintenant vous connecter via le lien suivant : {{2}} et publier votre première annonce sur notre plateforme.",
+            'ar' => "مرحبا {{1}}، تم تفعيل حسابكم على موقع autoenchere.ma. يمكنكم الآن تسجيل الدخول عبر الرابط التالي: {{2}} ونشر إعلانكم الأول على منصتنا.",
         ],
 
         // ─────────────────── MARKETING ───────────────────
         'nouveau_modele' => [
             'category' => 'MARKETING',
-            'fr' => "Bonjour {{1}}, une nouvelle {{2}} à {{3}} MAD vient d'être publiée sur autoenchere.ma. La voir : {{4}}",
-            'ar' => "مرحبا {{1}}، تم نشر {{2}} جديدة بسعر {{3}} درهم على autoenchere.ma. للاطلاع: {{4}}",
+            'fr' => "Bonjour {{1}}, un nouveau véhicule {{2}} au prix de {{3}} MAD vient d'être publié sur autoenchere.ma. Découvrez-le en détail sur le lien suivant : {{4}} avant qu'il ne soit vendu.",
+            'ar' => "مرحبا {{1}}، تم نشر سيارة {{2}} جديدة بسعر {{3}} درهم على موقع autoenchere.ma. اكتشفوا تفاصيلها عبر الرابط التالي: {{4}} قبل أن يتم بيعها.",
         ],
         'baisse_prix' => [
             'category' => 'MARKETING',
-            'fr' => "Bonjour {{1}}, la {{2}} que vous suiviez est passée de {{3}} à {{4}} MAD. Voir : {{5}}",
-            'ar' => "مرحبا {{1}}، انخفض سعر {{2}} التي تتابعونها من {{3}} إلى {{4}} درهم. للاطلاع: {{5}}",
+            'fr' => "Bonjour {{1}}, le véhicule {{2}} que vous suiviez est passé de {{3}} à {{4}} MAD sur notre plateforme. Consultez l'annonce complète sur le lien suivant : {{5}} avant que le prix ne remonte.",
+            'ar' => "مرحبا {{1}}، انخفض سعر السيارة {{2}} التي كنتم تتابعونها من {{3}} إلى {{4}} درهم على موقعنا. اطلعوا على الإعلان الكامل عبر الرابط التالي: {{5}} قبل أن يرتفع السعر من جديد.",
         ],
         'enchere_decouverte' => [
             'category' => 'MARKETING',
-            'fr' => "Bonjour {{1}}, enchère {{2}} le {{3}} : {{4}} véhicules à partir de {{5}} MAD. S'inscrire : {{6}}",
-            'ar' => "مرحبا {{1}}، مزاد {{2}} يوم {{3}}: {{4}} سيارة انطلاقا من {{5}} درهم. للتسجيل: {{6}}",
+            'fr' => "Bonjour {{1}}, notre prochaine session d'enchères {{2}} aura lieu le {{3}} et proposera {{4}} véhicules sélectionnés à partir de {{5}} MAD. Inscrivez-vous dès maintenant sur le lien suivant : {{6}} pour participer.",
+            'ar' => "مرحبا {{1}}، ستنعقد جلسة مزادنا القادمة {{2}} يوم {{3}} وستضم {{4}} سيارة مختارة بأسعار تنطلق من {{5}} درهم. سجلوا الآن عبر الرابط التالي: {{6}} للمشاركة.",
         ],
         'relance_vente' => [
             'category' => 'MARKETING',
-            'fr' => "Bonjour {{1}}, votre annonce {{2}} a reçu {{3}} vues. Ajoutez des photos ou baissez le prix pour attirer plus d'acheteurs : {{4}}",
-            'ar' => "مرحبا {{1}}، توصل إعلانكم {{2}} بـ {{3}} مشاهدة. أضيفوا صورا أو خفضوا السعر لجذب المزيد من المشترين: {{4}}",
+            'fr' => "Bonjour {{1}}, votre annonce de vente pour le véhicule {{2}} a reçu {{3}} vues sur autoenchere.ma. Nous vous conseillons d'ajouter des photos ou de baisser le prix via ce lien : {{4}} pour attirer plus d'acheteurs.",
+            'ar' => "مرحبا {{1}}، توصل إعلان بيع سيارتكم {{2}} بـ {{3}} مشاهدة على موقع autoenchere.ma. ننصحكم بإضافة صور أو تخفيض السعر عبر هذا الرابط: {{4}} لجذب المزيد من المشترين.",
         ],
     ];
 
@@ -132,10 +132,14 @@ class SeedWhatsAppTemplates extends Command
             $this->error('Impossible de lister les modèles Meta : ' . ($existing['error'] ?? 'erreur inconnue'));
             return self::FAILURE;
         }
-        $seen = collect($existing['templates'])
-            ->map(fn ($t) => strtolower(($t['name'] ?? '') . '|' . ($t['language'] ?? '')))
-            ->flip();
-        $this->line('Déjà présents : ' . $seen->count());
+        // Index par name|language → status. On saute APPROVED/PENDING, on
+        // supprime+recrée REJECTED (le seul moyen de resoumettre).
+        $statusByKey = [];
+        foreach ($existing['templates'] as $t) {
+            $k = strtolower(($t['name'] ?? '') . '|' . ($t['language'] ?? ''));
+            $statusByKey[$k] = strtoupper((string) ($t['status'] ?? ''));
+        }
+        $this->line('Déjà présents : ' . count($statusByKey));
 
         $planned = 0; $skipped = 0; $created = 0; $failed = 0;
 
@@ -146,16 +150,43 @@ class SeedWhatsAppTemplates extends Command
                 if ($lang && $lang !== $langCode) continue;
 
                 $planned++;
-                $key = strtolower($name . '|' . $langCode);
-                if ($seen->has($key)) {
-                    $this->line("  [skip] $name · $langCode — déjà sur Meta");
+                $key    = strtolower($name . '|' . $langCode);
+                $status = $statusByKey[$key] ?? null;
+
+                if (in_array($status, ['APPROVED', 'PENDING', 'IN_APPEAL'], true)) {
+                    $this->line("  [skip] $name · $langCode — statut Meta=$status");
                     $skipped++;
                     continue;
                 }
 
                 if ($dry) {
-                    $this->line("  [dry ] $name · $langCode · {$tpl['category']}");
+                    $prefix = $status === 'REJECTED' ? '[redo]' : '[dry ]';
+                    $this->line("  $prefix $name · $langCode · {$tpl['category']}" . ($status ? " (actuel=$status)" : ''));
                     continue;
+                }
+
+                // Supprimer avant de resoumettre s'il est REJECTED (Meta ne permet
+                // pas de resoumettre un nom+langue existant, même rejeté). Le DELETE
+                // de Meta sur `name` supprime toutes les variantes de langue à la
+                // fois, donc on le fait une seule fois : la première langue qui
+                // tombe sur REJECTED supprime tout le lot, les suivantes voient un
+                // $statusByKey vide et créent normalement.
+                if ($status === 'REJECTED') {
+                    $del = $whatsapp->deleteTemplate($name);
+                    if ($del['ok']) {
+                        $this->line("  [purge] $name — ancienne version REJECTED supprimée");
+                        // Invalide toutes les entrées pour ce nom (Meta supprime toutes les langues).
+                        foreach ($statusByKey as $kk => $_) {
+                            if (str_starts_with($kk, strtolower($name) . '|')) {
+                                unset($statusByKey[$kk]);
+                            }
+                        }
+                        usleep(300 * 1000);
+                    } else {
+                        $this->error("  [fail] $name · $langCode : suppression impossible : " . ($del['error'] ?? 'erreur inconnue'));
+                        $failed++;
+                        continue;
+                    }
                 }
 
                 $res = $whatsapp->createTemplate([
