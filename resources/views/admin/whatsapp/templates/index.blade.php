@@ -23,18 +23,20 @@
     @if(! $ok)
         <div class="alert alert-warning">
             <i class="bi bi-exclamation-triangle"></i>
-            Impossible de charger les templates : {{ $error }}
+            Impossible de charger les templates Meta : {{ $error }}
             <div class="small mt-2">
                 Vérifiez que « Meta — WhatsApp Business Account ID » et « Meta — Access Token » sont renseignés dans
                 <a href="{{ route('admin.settings.group', 'whatsapp') }}">Paramètres → WhatsApp OTP</a>, et que le token
                 a bien la permission <code>whatsapp_business_management</code>.
             </div>
         </div>
-    @elseif(count($templates) === 0)
+    @endif
+
+    @if(count($drafts) === 0 && count($templates) === 0 && $ok)
         <div class="text-center text-muted py-4">
             <i class="bi bi-file-earmark-text fs-1 d-block mb-2"></i>
-            Aucun template sur ce compte WhatsApp Business.<br>
-            <small>Créez-en un pour pouvoir initier des conversations hors fenêtre de 24h.</small>
+            Aucun brouillon local ni template sur ce compte WhatsApp Business.<br>
+            <small>Créez un brouillon puis soumettez-le à Meta depuis la liste.</small>
         </div>
     @else
         <div class="table-responsive">
@@ -50,6 +52,42 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{-- ─── Brouillons locaux (statut DRAFT) ─── --}}
+                    @foreach($drafts as $d)
+                        <tr style="background:#fff8e1;">
+                            <td><code>{{ $d->name }}</code></td>
+                            <td><span class="badge bg-info">{{ $d->category }}</span></td>
+                            <td>{{ $d->language }}</td>
+                            <td><span class="badge bg-secondary"><i class="bi bi-pencil-square"></i> BROUILLON</span></td>
+                            <td class="small text-muted" style="max-width: 400px;">
+                                <span style="white-space: pre-wrap;">{{ \Illuminate\Support\Str::limit($d->body, 200) }}</span>
+                                @if($d->footer)
+                                    <div class="mt-1 fst-italic">{{ $d->footer }}</div>
+                                @endif
+                            </td>
+                            <td class="text-end">
+                                <form method="POST" action="{{ route('admin.whatsapp.templates.drafts.submit', $d) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Soumettre « {{ $d->name }} · {{ $d->language }} » à Meta pour approbation ?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success" title="Soumettre à Meta">
+                                        <i class="bi bi-send"></i> Soumettre à Meta
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.whatsapp.templates.drafts.destroy', $d) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Supprimer ce brouillon ?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer le brouillon">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    {{-- ─── Templates Meta (APPROVED / PENDING / REJECTED) ─── --}}
                     @foreach($templates as $t)
                         @php
                             $body = collect($t['components'] ?? [])->firstWhere('type', 'BODY')['text'] ?? '';

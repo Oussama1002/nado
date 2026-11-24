@@ -636,6 +636,8 @@ Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
         Route::get('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'index'])->name('templates.index');
         Route::get('/templates/create', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'create'])->name('templates.create');
         Route::post('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'store'])->name('templates.store');
+        Route::post('/templates/drafts/{draft}/submit', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'submit'])->name('templates.drafts.submit');
+        Route::delete('/templates/drafts/{draft}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'destroyDraft'])->name('templates.drafts.destroy');
         Route::delete('/templates/{name}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'destroy'])->name('templates.destroy');
 
         Route::get('/{conversation}', [\App\Http\Controllers\Admin\WhatsAppInboxController::class, 'show'])->name('show');

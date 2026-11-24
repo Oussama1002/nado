@@ -19,9 +19,9 @@
 
 <div class="alert alert-info small">
     <i class="bi bi-info-circle"></i>
-    Les templates sont soumis à Meta pour approbation (généralement sous 1 heure).
-    Un template <strong>approuvé</strong> peut être envoyé à n'importe quel numéro à tout moment ;
-    un template en <strong>PENDING</strong> ou <strong>REJECTED</strong> ne peut pas être utilisé.
+    Le template est d'abord enregistré en <strong>BROUILLON</strong> local. Il n'est pas envoyé à Meta
+    avant que vous ne cliquiez sur <strong>« Soumettre à Meta »</strong> depuis la liste des templates.
+    Cela vous permet de préparer plusieurs modèles tranquillement puis de les soumettre un par un.
     Pour des variables dans le corps, utilisez <code>&#123;&#123;1&#125;&#125;</code>, <code>&#123;&#123;2&#125;&#125;</code>…
 </div>
 
@@ -106,7 +106,7 @@
 
     <div class="pt-2">
         <button type="submit" class="btn btn-success">
-            <i class="bi bi-send"></i> Soumettre à Meta
+            <i class="bi bi-save"></i> Enregistrer comme brouillon
         </button>
         <a href="{{ route('admin.whatsapp.templates.index') }}" class="btn btn-outline-secondary">Annuler</a>
     </div>
