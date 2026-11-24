@@ -31,15 +31,39 @@
 
     {{-- ─────────────────────── Liste conversations ─────────────────────── --}}
     <div class="col-12 col-md-4 border-end" style="max-height: 75vh; overflow-y: auto;">
-        <form method="GET" action="{{ route('admin.whatsapp.index') }}" class="p-2 border-bottom bg-light">
+        <div class="p-2 border-bottom bg-light">
             <div class="input-group input-group-sm">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" name="q" value="{{ $q }}" placeholder="Nom ou numéro…">
-                @if($q)
-                    <a href="{{ route('admin.whatsapp.index') }}" class="btn btn-outline-secondary"><i class="bi bi-x"></i></a>
-                @endif
+                <input type="text" class="form-control" id="waConvSearch" value="{{ $q }}" placeholder="Nom ou numéro…" autocomplete="off">
+                <button type="button" class="btn btn-outline-secondary d-none" id="waConvSearchClear" title="Effacer">
+                    <i class="bi bi-x"></i>
+                </button>
             </div>
-        </form>
+        </div>
+        <script>
+        (function () {
+            var input = document.getElementById('waConvSearch');
+            var clear = document.getElementById('waConvSearchClear');
+            if (!input) return;
+            function filter() {
+                var term = input.value.trim().toLowerCase();
+                clear.classList.toggle('d-none', term === '');
+                var rows = document.querySelectorAll('.wa-conv');
+                var visible = 0;
+                rows.forEach(function (row) {
+                    var hay = (row.getAttribute('data-search') || '').toLowerCase();
+                    var hit = term === '' || hay.indexOf(term) !== -1;
+                    row.style.display = hit ? '' : 'none';
+                    if (hit) visible++;
+                });
+                var empty = document.getElementById('waConvEmpty');
+                if (empty) empty.style.display = (visible === 0 && rows.length) ? '' : 'none';
+            }
+            input.addEventListener('input', filter);
+            clear.addEventListener('click', function () { input.value = ''; filter(); input.focus(); });
+            filter();
+        })();
+        </script>
 
         @forelse($conversations as $c)
             @php
@@ -65,6 +89,7 @@
             @endphp
             <a href="{{ route('admin.whatsapp.show', $c) }}"
                class="wa-conv d-flex align-items-center text-decoration-none text-reset border-bottom px-3 py-2 gap-3 {{ $isActive ? 'bg-light' : '' }}"
+               data-search="{{ ($c->display_name ?? '') . ' ' . $c->wa_phone }}"
                style="min-height: 72px;">
                 <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
                      style="width:48px;height:48px;background:#25D366;font-size:1.1rem;">
@@ -110,6 +135,10 @@
                 <small>Les messages reçus sur votre numéro WhatsApp apparaîtront ici.</small>
             </div>
         @endforelse
+        <div id="waConvEmpty" class="p-4 text-center text-muted" style="display:none;">
+            <i class="bi bi-search fs-3 d-block mb-2"></i>
+            <small>Aucune conversation ne correspond à votre recherche.</small>
+        </div>
 
         <div class="p-2">{{ $conversations->links() }}</div>
     </div>
@@ -201,23 +230,28 @@
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-end gap-2 position-relative">
-                            <button type="button" class="btn btn-light border" id="waEmojiBtn" title="Emoji">
+                        <div class="d-flex align-items-center gap-2 position-relative">
+                            <button type="button" class="btn btn-light border d-inline-flex align-items-center justify-content-center"
+                                    id="waEmojiBtn" title="Emoji" style="width:40px;height:40px;">
                                 <i class="bi bi-emoji-smile"></i>
                             </button>
-                            <button type="button" class="btn btn-light border" id="waFileBtn" title="Joindre un fichier">
+                            <button type="button" class="btn btn-light border d-inline-flex align-items-center justify-content-center"
+                                    id="waFileBtn" title="Joindre un fichier" style="width:40px;height:40px;">
                                 <i class="bi bi-paperclip"></i>
                             </button>
                             <input type="file" name="media" id="waFileInput" class="d-none"
                                    accept="image/*,audio/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip">
 
-                            <textarea name="body" id="waBody" class="form-control" rows="2" maxlength="4096"
-                                      placeholder="Votre réponse…"></textarea>
+                            <textarea name="body" id="waBody" class="form-control" rows="1" maxlength="4096"
+                                      placeholder="Votre réponse…"
+                                      style="height:40px;min-height:40px;max-height:140px;resize:none;overflow-y:auto;"></textarea>
 
-                            <button type="button" class="btn btn-light border" id="waMicBtn" title="Message vocal">
+                            <button type="button" class="btn btn-light border d-inline-flex align-items-center justify-content-center"
+                                    id="waMicBtn" title="Message vocal" style="width:40px;height:40px;">
                                 <i class="bi bi-mic-fill"></i>
                             </button>
-                            <button class="btn btn-success" type="submit" id="waSendBtn">
+                            <button class="btn btn-success d-inline-flex align-items-center justify-content-center"
+                                    type="submit" id="waSendBtn" style="width:40px;height:40px;">
                                 <i class="bi bi-send"></i>
                             </button>
 
@@ -366,6 +400,22 @@
                             stream = null;
                             if (timerId) clearInterval(timerId); timerId = null;
                             recState.classList.add('d-none');
+                        });
+
+                        /* ─── Auto-grow textarea + Enter to send, Shift+Enter for newline ─── */
+                        function autogrow() {
+                            body.style.height = '40px';
+                            var h = Math.min(body.scrollHeight, 140);
+                            body.style.height = h + 'px';
+                        }
+                        body.addEventListener('input', autogrow);
+                        body.addEventListener('keydown', function (ev) {
+                            if (ev.key === 'Enter' && !ev.shiftKey) {
+                                ev.preventDefault();
+                                if (body.value.trim() || (fileIn.files && fileIn.files.length)) {
+                                    form.submit();
+                                }
+                            }
                         });
 
                         /* ─── Submit guard: need body OR media ─── */
