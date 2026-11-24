@@ -21,7 +21,9 @@ class SeedWhatsAppTemplates extends Command
     protected $signature = 'whatsapp:seed-templates
                             {--dry : Affiche ce qui serait soumis sans appeler Meta}
                             {--only= : Liste CSV de noms à cibler}
-                            {--lang= : Restreint à une langue (fr|ar)}';
+                            {--lang= : Restreint à une langue (fr|ar)}
+                            {--no-purge : N\'essaie pas de recréer les REJECTED (saute-les simplement)}
+                            {--purge-wait=130 : Secondes d\'attente une fois les REJECTED supprimés avant recréation}';
 
     protected $description = 'Soumet la bibliothèque FR + AR de modèles WhatsApp à Meta (idempotent).';
 
@@ -126,9 +128,11 @@ class SeedWhatsAppTemplates extends Command
 
     public function handle(WhatsAppService $whatsapp): int
     {
-        $dry  = (bool) $this->option('dry');
-        $only = array_filter(array_map('trim', explode(',', (string) $this->option('only'))));
-        $lang = strtolower((string) $this->option('lang'));
+        $dry      = (bool) $this->option('dry');
+        $only     = array_filter(array_map('trim', explode(',', (string) $this->option('only'))));
+        $lang     = strtolower((string) $this->option('lang'));
+        $noPurge  = (bool) $this->option('no-purge');
+        $purgeWait = max(60, (int) $this->option('purge-wait'));
 
         $this->line('Récupération des modèles déjà présents sur votre WABA…');
         $existing = $whatsapp->listTemplates(500);
@@ -144,6 +148,42 @@ class SeedWhatsAppTemplates extends Command
             $statusByKey[$k] = strtoupper((string) ($t['status'] ?? ''));
         }
         $this->line('Déjà présents : ' . count($statusByKey));
+
+        // Phase 1 : supprimer en lot les REJECTED ciblés (un seul DELETE par nom,
+        // Meta supprime les deux langues) puis attendre une fois pour toutes que
+        // Meta libère les slots. Évite 34 × 65 s de pauses séquentielles.
+        if (! $dry && ! $noPurge) {
+            $toPurge = [];
+            foreach (self::TEMPLATES as $name => $tpl) {
+                if ($only && ! in_array($name, $only, true)) continue;
+                foreach (['fr', 'ar'] as $langCode) {
+                    if ($lang && $lang !== $langCode) continue;
+                    $k = strtolower($name . '|' . $langCode);
+                    if (($statusByKey[$k] ?? null) === 'REJECTED') {
+                        $toPurge[$name] = true;
+                    }
+                }
+            }
+            if ($toPurge) {
+                $this->line('Phase 1 : suppression de ' . count($toPurge) . ' modèles REJECTED…');
+                foreach (array_keys($toPurge) as $name) {
+                    $del = $whatsapp->deleteTemplate($name);
+                    if ($del['ok']) {
+                        $this->line("  [purge] $name supprimé");
+                        foreach ($statusByKey as $kk => $_) {
+                            if (str_starts_with($kk, strtolower($name) . '|')) {
+                                unset($statusByKey[$kk]);
+                            }
+                        }
+                    } else {
+                        $this->error("  [purge-fail] $name : " . ($del['error'] ?? 'erreur inconnue'));
+                    }
+                    usleep(300 * 1000);
+                }
+                $this->line("Attente {$purgeWait}s pour que Meta libère les slots…");
+                sleep($purgeWait);
+            }
+        }
 
         $planned = 0; $skipped = 0; $created = 0; $failed = 0;
 
@@ -169,30 +209,12 @@ class SeedWhatsAppTemplates extends Command
                     continue;
                 }
 
-                // Supprimer avant de resoumettre s'il est REJECTED (Meta ne permet
-                // pas de resoumettre un nom+langue existant, même rejeté). Le DELETE
-                // de Meta sur `name` supprime toutes les variantes de langue à la
-                // fois, donc on le fait une seule fois : la première langue qui
-                // tombe sur REJECTED supprime tout le lot, les suivantes voient un
-                // $statusByKey vide et créent normalement.
+                // Les REJECTED ont déjà été supprimés en phase 1 (sauf --no-purge),
+                // donc ici on ne devrait plus en rencontrer sauf si --no-purge est passé.
                 if ($status === 'REJECTED') {
-                    $del = $whatsapp->deleteTemplate($name);
-                    if ($del['ok']) {
-                        $this->line("  [purge] $name — ancienne version REJECTED supprimée (pause 65s avant recréation)");
-                        // Invalide toutes les entrées pour ce nom (Meta supprime toutes les langues).
-                        foreach ($statusByKey as $kk => $_) {
-                            if (str_starts_with($kk, strtolower($name) . '|')) {
-                                unset($statusByKey[$kk]);
-                            }
-                        }
-                        // Meta refuse de recréer le même name+language pendant ~60s
-                        // après un DELETE ("Message template language is being deleted").
-                        sleep(65);
-                    } else {
-                        $this->error("  [fail] $name · $langCode : suppression impossible : " . ($del['error'] ?? 'erreur inconnue'));
-                        $failed++;
-                        continue;
-                    }
+                    $this->line("  [skip] $name · $langCode — statut REJECTED (utilisez une exécution sans --no-purge pour le resoumettre)");
+                    $skipped++;
+                    continue;
                 }
 
                 // Les modèles MARKETING reçoivent un footer d'opt-out (recommandé Meta).
