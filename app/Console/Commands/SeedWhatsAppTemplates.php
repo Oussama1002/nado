@@ -174,14 +174,16 @@ class SeedWhatsAppTemplates extends Command
                 if ($status === 'REJECTED') {
                     $del = $whatsapp->deleteTemplate($name);
                     if ($del['ok']) {
-                        $this->line("  [purge] $name — ancienne version REJECTED supprimée");
+                        $this->line("  [purge] $name — ancienne version REJECTED supprimée (pause 65s avant recréation)");
                         // Invalide toutes les entrées pour ce nom (Meta supprime toutes les langues).
                         foreach ($statusByKey as $kk => $_) {
                             if (str_starts_with($kk, strtolower($name) . '|')) {
                                 unset($statusByKey[$kk]);
                             }
                         }
-                        usleep(300 * 1000);
+                        // Meta refuse de recréer le même name+language pendant ~60s
+                        // après un DELETE ("Message template language is being deleted").
+                        sleep(65);
                     } else {
                         $this->error("  [fail] $name · $langCode : suppression impossible : " . ($del['error'] ?? 'erreur inconnue'));
                         $failed++;
