@@ -474,45 +474,147 @@
 
 {{-- ─────────────────────── Modal "Nouvelle discussion" ─────────────────────── --}}
 <div class="modal fade" id="newWaChatModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" method="POST" action="{{ route('admin.whatsapp.start') }}">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form class="modal-content" method="POST" action="{{ route('admin.whatsapp.start') }}" id="waStartForm">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title"><i class="bi bi-whatsapp text-success"></i> Nouvelle discussion WhatsApp</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
-                <div class="alert alert-warning small mb-3">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Rappel : Meta n'autorise un message libre que si le destinataire vous a écrit dans les <strong>24 dernières heures</strong>.
-                    Au-delà, l'envoi sera refusé par Meta et vous devrez utiliser un template.
+                <div class="alert alert-info small mb-3">
+                    <i class="bi bi-info-circle"></i>
+                    Un premier contact est par définition <strong>hors fenêtre 24h</strong>. Meta exige l'utilisation
+                    d'un <strong>template approuvé</strong> pour entamer la conversation. Les messages libres ne
+                    seront disponibles qu'une fois que le client aura répondu.
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Numéro de téléphone <span class="text-danger">*</span></label>
-                    <input type="tel" class="form-control" name="phone" required
-                           placeholder="+212 6 12 34 56 78" inputmode="tel">
-                    <div class="form-text">Format international (ex. +212 6…). Avec un numéro test Meta, le destinataire doit aussi être pré-approuvé dans la console Meta.</div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Numéro de téléphone <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" name="phone" required
+                               placeholder="+212 6 12 34 56 78" inputmode="tel">
+                        <div class="form-text">Format international (ex. +212 6…).</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Nom (optionnel)</label>
+                        <input type="text" class="form-control" name="display_name" maxlength="120" placeholder="Jean Dupont">
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nom (optionnel)</label>
-                    <input type="text" class="form-control" name="display_name" maxlength="120" placeholder="Jean Dupont">
-                </div>
+                @if(empty($templates))
+                    <div class="alert alert-warning mb-0">
+                        Aucun template approuvé n'est disponible sur votre compte Meta.
+                        <a href="{{ route('admin.whatsapp.templates.create') }}">Créez-en un</a> puis attendez l'approbation
+                        avant de pouvoir initier une nouvelle conversation.
+                    </div>
+                @else
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Template <span class="text-danger">*</span></label>
+                        <select class="form-select" id="waStartTplSelect" required>
+                            <option value="">— Sélectionnez un template approuvé —</option>
+                            @foreach($templates as $i => $t)
+                                <option value="{{ $i }}"
+                                        data-name="{{ $t['name'] }}"
+                                        data-language="{{ $t['language'] }}"
+                                        data-category="{{ $t['category'] }}"
+                                        data-varcount="{{ $t['var_count'] }}"
+                                        data-body="{{ $t['body'] }}">
+                                    {{ $t['name'] }} — {{ $t['category'] }} · {{ $t['language'] }}@if($t['var_count']) · {{ $t['var_count'] }} variable(s) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Message <span class="text-danger">*</span></label>
-                    <textarea class="form-control" name="body" rows="4" maxlength="4096" required
-                              placeholder="Bonjour, …"></textarea>
-                </div>
+                    <input type="hidden" name="template_name" id="waStartTplName">
+                    <input type="hidden" name="language"      id="waStartTplLang">
+                    <input type="hidden" name="preview"       id="waStartTplPreview">
+
+                    <div id="waStartTplVariables"></div>
+
+                    <div id="waStartTplPreviewWrap" class="mt-3" style="display:none;">
+                        <label class="form-label fw-semibold">Aperçu</label>
+                        <div class="p-3 rounded" style="background:#dcf8c6;border:1px solid #cce9b5;white-space:pre-wrap;word-break:break-word;" id="waStartTplPreviewBox"></div>
+                    </div>
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Envoyer</button>
+                @if(!empty($templates))
+                    <button class="btn btn-success" id="waStartSendBtn" type="submit" disabled>
+                        <i class="bi bi-send"></i> Envoyer le template
+                    </button>
+                @endif
             </div>
         </form>
     </div>
 </div>
+
+@if(!empty($templates))
+<script>
+    (function () {
+        var sel    = document.getElementById('waStartTplSelect');
+        if (!sel) return;
+        var vars   = document.getElementById('waStartTplVariables');
+        var prevW  = document.getElementById('waStartTplPreviewWrap');
+        var prevB  = document.getElementById('waStartTplPreviewBox');
+        var hName  = document.getElementById('waStartTplName');
+        var hLang  = document.getElementById('waStartTplLang');
+        var hPrev  = document.getElementById('waStartTplPreview');
+        var btn    = document.getElementById('waStartSendBtn');
+
+        function render() {
+            var opt = sel.options[sel.selectedIndex];
+            if (!opt || !opt.value) {
+                vars.innerHTML = '';
+                prevW.style.display = 'none';
+                btn.disabled = true;
+                return;
+            }
+            var name = opt.getAttribute('data-name');
+            var lang = opt.getAttribute('data-language');
+            var body = opt.getAttribute('data-body') || '';
+            var n    = parseInt(opt.getAttribute('data-varcount') || '0', 10);
+
+            hName.value = name;
+            hLang.value = lang;
+
+            var OPEN = '{' + '{';
+            var CLOSE = '}' + '}';
+            var html = '';
+            for (var i = 1; i <= n; i++) {
+                html += '<div class="mb-2">' +
+                            '<label class="form-label fw-semibold small mb-1">Variable ' + OPEN + i + CLOSE + ' <span class="text-danger">*</span></label>' +
+                            '<input type="text" class="form-control wa-start-var" name="variables[' + (i - 1) + ']" data-idx="' + i + '" required maxlength="1000">' +
+                        '</div>';
+            }
+            vars.innerHTML = html;
+
+            var inputs = vars.querySelectorAll('.wa-start-var');
+            function refresh() {
+                var out = body;
+                var filled = inputs.length === 0;
+                inputs.forEach(function (inp) {
+                    var idx = inp.getAttribute('data-idx');
+                    var v = (inp.value || '').trim();
+                    var placeholder = OPEN + idx + CLOSE;
+                    out = out.split(placeholder).join(v || placeholder);
+                    if (v) filled = true;
+                    else   filled = false;
+                });
+                if (inputs.length === 0) filled = true;
+                prevB.textContent = out;
+                hPrev.value = out;
+                prevW.style.display = '';
+                btn.disabled = !filled;
+            }
+            inputs.forEach(function (inp) { inp.addEventListener('input', refresh); });
+            refresh();
+        }
+        sel.addEventListener('change', render);
+    })();
+</script>
+@endif
 
 {{-- ─────────────────── Modal "Envoyer un template" ─────────────────── --}}
 @if($active && ! $active->canSendFreeform())
