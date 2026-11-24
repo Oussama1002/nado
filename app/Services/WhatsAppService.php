@@ -139,6 +139,87 @@ class WhatsAppService
     }
 
     /**
+     * Upload a local file to Meta's /media endpoint and return a media_id
+     * usable in sendMedia(). Returns ['ok'=>bool,'media_id'=>?string,'error'=>?string].
+     */
+    public function uploadMedia(string $absolutePath, string $mime): array
+    {
+        if (! feature_on('whatsapp.enabled')) {
+            return ['ok' => false, 'media_id' => null, 'error' => 'WhatsApp disabled'];
+        }
+        $phoneNumberId = settings('whatsapp.meta_phone_number_id') ?: config('services.whatsapp.meta_phone_number_id');
+        $accessToken   = settings('whatsapp.meta_access_token')    ?: config('services.whatsapp.meta_access_token');
+        $apiVersion    = config('services.whatsapp.meta_api_version', 'v21.0');
+
+        if (! $phoneNumberId || ! $accessToken) {
+            return ['ok' => false, 'media_id' => null, 'error' => 'Identifiants Meta manquants.'];
+        }
+
+        try {
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->connectTimeout(5)->timeout(60)
+                ->attach('file', file_get_contents($absolutePath), basename($absolutePath), ['Content-Type' => $mime])
+                ->post("https://graph.facebook.com/{$apiVersion}/{$phoneNumberId}/media", [
+                    'messaging_product' => 'whatsapp',
+                    'type'              => $mime,
+                ]);
+        } catch (ConnectionException $e) {
+            return ['ok' => false, 'media_id' => null, 'error' => "Meta a mis trop de temps à répondre."];
+        }
+
+        if (! $response->successful()) {
+            Log::warning('Meta WhatsApp media upload error', ['status' => $response->status(), 'body' => $response->json()]);
+            return [
+                'ok'       => false,
+                'media_id' => null,
+                'error'    => MetaErrorTranslator::fromResponseBody($response->json())
+                    ?? MetaErrorTranslator::toFrench($response->body()),
+            ];
+        }
+
+        $id = $response->json('id');
+        return ['ok' => (bool) $id, 'media_id' => $id, 'error' => $id ? null : 'Réponse Meta sans media_id.'];
+    }
+
+    /**
+     * Send a media message using an uploaded media_id. $type is one of
+     * image | audio | video | document. Optional caption (image/video/document only).
+     * Set $voice=true for audio to flag as a voice note.
+     */
+    public function sendMedia(string $phone, string $mediaId, string $type, ?string $caption = null, bool $voice = false, ?string $filename = null): array
+    {
+        if (! feature_on('whatsapp.enabled')) {
+            return ['ok' => false, 'wamid' => null, 'error' => 'WhatsApp disabled'];
+        }
+
+        $to = ltrim($this->normalizePhone($phone), '+');
+        $block = ['id' => $mediaId];
+        if ($caption !== null && $caption !== '' && in_array($type, ['image', 'video', 'document'], true)) {
+            $block['caption'] = $caption;
+        }
+        if ($type === 'audio' && $voice) {
+            $block['voice'] = true;
+        }
+        if ($type === 'document' && $filename) {
+            $block['filename'] = $filename;
+        }
+
+        try {
+            return $this->postMessage([
+                'messaging_product' => 'whatsapp',
+                'recipient_type'    => 'individual',
+                'to'                => $to,
+                'type'              => $type,
+                $type               => $block,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp media send failed', ['to' => $to, 'type' => $type, 'error' => $e->getMessage()]);
+            return ['ok' => false, 'wamid' => null, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
      * Low-level POST to Meta Cloud API /messages. Erreur traduite en français.
      */
     private function postMessage(array $payload): array

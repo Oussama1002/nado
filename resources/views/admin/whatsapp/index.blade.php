@@ -175,16 +175,208 @@
 
             <div class="p-3 border-top bg-white">
                 @if($active->canSendFreeform())
-                    <form method="POST" action="{{ route('admin.whatsapp.reply', $active) }}">
+                    <form method="POST" action="{{ route('admin.whatsapp.reply', $active) }}"
+                          enctype="multipart/form-data" id="waReplyForm">
                         @csrf
-                        <div class="input-group">
-                            <textarea name="body" class="form-control" rows="2" maxlength="4096"
-                                      placeholder="Votre réponse…" required></textarea>
-                            <button class="btn btn-success" type="submit">
-                                <i class="bi bi-send"></i> Envoyer
+                        <input type="hidden" name="voice" id="waVoiceFlag" value="0">
+
+                        {{-- Media preview (chosen file / recorded audio). --}}
+                        <div id="waMediaPreview" class="mb-2 d-none border rounded p-2 d-flex align-items-center gap-2 bg-light">
+                            <i class="bi bi-paperclip"></i>
+                            <span class="small text-truncate flex-grow-1" id="waMediaName"></span>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="waMediaClear" title="Retirer">
+                                <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
+
+                        {{-- Live recorder state. --}}
+                        <div id="waRecState" class="mb-2 d-none border rounded p-2 d-flex align-items-center gap-2" style="background:#fde8e8;">
+                            <i class="bi bi-record-circle-fill text-danger"></i>
+                            <span class="small">Enregistrement… <span id="waRecTimer">0:00</span></span>
+                            <div class="ms-auto d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="waRecCancel">Annuler</button>
+                                <button type="button" class="btn btn-sm btn-success" id="waRecStop">
+                                    <i class="bi bi-stop-fill"></i> Arrêter
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-end gap-2 position-relative">
+                            <button type="button" class="btn btn-light border" id="waEmojiBtn" title="Emoji">
+                                <i class="bi bi-emoji-smile"></i>
+                            </button>
+                            <button type="button" class="btn btn-light border" id="waFileBtn" title="Joindre un fichier">
+                                <i class="bi bi-paperclip"></i>
+                            </button>
+                            <input type="file" name="media" id="waFileInput" class="d-none"
+                                   accept="image/*,audio/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip">
+
+                            <textarea name="body" id="waBody" class="form-control" rows="2" maxlength="4096"
+                                      placeholder="Votre réponse…"></textarea>
+
+                            <button type="button" class="btn btn-light border" id="waMicBtn" title="Message vocal">
+                                <i class="bi bi-mic-fill"></i>
+                            </button>
+                            <button class="btn btn-success" type="submit" id="waSendBtn">
+                                <i class="bi bi-send"></i>
+                            </button>
+
+                            {{-- Emoji panel. --}}
+                            <div id="waEmojiPanel" class="d-none position-absolute shadow bg-white border rounded p-2"
+                                 style="bottom: 110%; left: 0; width: 300px; max-height: 240px; overflow-y: auto; z-index: 1050;"></div>
+                        </div>
                     </form>
+
+                    <script>
+                    (function () {
+                        var form     = document.getElementById('waReplyForm');
+                        if (!form) return;
+                        var body     = document.getElementById('waBody');
+                        var fileBtn  = document.getElementById('waFileBtn');
+                        var fileIn   = document.getElementById('waFileInput');
+                        var prev     = document.getElementById('waMediaPreview');
+                        var prevName = document.getElementById('waMediaName');
+                        var prevClr  = document.getElementById('waMediaClear');
+                        var voiceFlag= document.getElementById('waVoiceFlag');
+
+                        fileBtn.addEventListener('click', function () { fileIn.click(); });
+                        fileIn.addEventListener('change', function () {
+                            if (fileIn.files && fileIn.files[0]) {
+                                prevName.textContent = fileIn.files[0].name + ' (' + Math.round(fileIn.files[0].size/1024) + ' Ko)';
+                                prev.classList.remove('d-none');
+                                voiceFlag.value = '0';
+                            }
+                        });
+                        prevClr.addEventListener('click', function () {
+                            fileIn.value = '';
+                            prev.classList.add('d-none');
+                            voiceFlag.value = '0';
+                        });
+
+                        /* ─── Emoji picker ─── */
+                        var emojiBtn   = document.getElementById('waEmojiBtn');
+                        var emojiPanel = document.getElementById('waEmojiPanel');
+                        var EMOJIS = [
+                            '😀','😃','😄','😁','😆','😅','😂','🤣','🙂','🙃','😉','😊','😇','🥰','😍','🤩',
+                            '😘','😗','😚','😙','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨',
+                            '😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕',
+                            '🤢','🤮','🥵','🥶','🥴','😵','🤯','🤠','🥳','😎','🤓','🧐','😕','😟','🙁','☹️',
+                            '😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞',
+                            '😓','😩','😫','🥱','😤','😡','😠','🤬','👍','👎','👌','✌️','🤞','🤟','🤘','🤙',
+                            '👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','💪','🦵','🦶','👀',
+                            '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖',
+                            '💘','💝','🔥','✨','🎉','🎊','🎁','🏆','⭐','🌟','💯','✅','❌','⚠️','📞','📱',
+                            '🚗','🚙','🏎️','🛻','🚚','🚛','🛵','🏍️','🚲','⛽','🅿️','🔧','🔨','🛠️','🗓️','📍'
+                        ];
+                        emojiPanel.innerHTML = EMOJIS.map(function (e) {
+                            return '<button type="button" class="btn btn-sm p-1 wa-emoji" style="font-size:1.2rem;line-height:1;">' + e + '</button>';
+                        }).join('');
+                        emojiBtn.addEventListener('click', function (ev) {
+                            ev.stopPropagation();
+                            emojiPanel.classList.toggle('d-none');
+                        });
+                        document.addEventListener('click', function (ev) {
+                            if (!emojiPanel.contains(ev.target) && ev.target !== emojiBtn && !emojiBtn.contains(ev.target)) {
+                                emojiPanel.classList.add('d-none');
+                            }
+                        });
+                        emojiPanel.addEventListener('click', function (ev) {
+                            var b = ev.target.closest('.wa-emoji');
+                            if (!b) return;
+                            var start = body.selectionStart || body.value.length;
+                            var end   = body.selectionEnd   || body.value.length;
+                            body.value = body.value.slice(0, start) + b.textContent + body.value.slice(end);
+                            var pos = start + b.textContent.length;
+                            body.focus();
+                            body.setSelectionRange(pos, pos);
+                        });
+
+                        /* ─── Voice recorder (MediaRecorder) ─── */
+                        var micBtn    = document.getElementById('waMicBtn');
+                        var recState  = document.getElementById('waRecState');
+                        var recTimer  = document.getElementById('waRecTimer');
+                        var recStop   = document.getElementById('waRecStop');
+                        var recCancel = document.getElementById('waRecCancel');
+                        var mediaRec  = null, chunks = [], timerId = null, startedAt = 0, stream = null;
+
+                        function fmt(s) {
+                            var m = Math.floor(s / 60), r = s % 60;
+                            return m + ':' + (r < 10 ? '0' + r : r);
+                        }
+                        function cleanup() {
+                            if (timerId) { clearInterval(timerId); timerId = null; }
+                            if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); }
+                            stream = null;
+                            recState.classList.add('d-none');
+                        }
+
+                        micBtn.addEventListener('click', async function () {
+                            if (!navigator.mediaDevices || !window.MediaRecorder) {
+                                alert("Votre navigateur ne supporte pas l'enregistrement audio.");
+                                return;
+                            }
+                            try {
+                                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                            } catch (err) {
+                                alert("Impossible d'accéder au micro : " + (err && err.message || err));
+                                return;
+                            }
+                            // Prefer OGG/Opus (what WhatsApp accepts); fall back to WebM/Opus.
+                            var mime = '';
+                            if (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+                                mime = 'audio/ogg;codecs=opus';
+                            } else if (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+                                mime = 'audio/webm;codecs=opus';
+                            }
+                            chunks = [];
+                            mediaRec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+                            mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+                            mediaRec.onstop = function () {
+                                var blob = new Blob(chunks, { type: mediaRec.mimeType || 'audio/webm' });
+                                var ext  = (mediaRec.mimeType || '').indexOf('ogg') !== -1 ? 'ogg' : 'webm';
+                                var name = 'voice-' + Date.now() + '.' + ext;
+                                var file = new File([blob], name, { type: blob.type });
+                                var dt   = new DataTransfer();
+                                dt.items.add(file);
+                                fileIn.files = dt.files;
+                                prevName.textContent = 'Message vocal (' + Math.round(blob.size/1024) + ' Ko)';
+                                prev.classList.remove('d-none');
+                                voiceFlag.value = '1';
+                                cleanup();
+                            };
+                            startedAt = Date.now();
+                            recTimer.textContent = '0:00';
+                            timerId = setInterval(function () {
+                                recTimer.textContent = fmt(Math.floor((Date.now() - startedAt) / 1000));
+                            }, 500);
+                            recState.classList.remove('d-none');
+                            mediaRec.start();
+                        });
+
+                        recStop.addEventListener('click', function () {
+                            if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+                        });
+                        recCancel.addEventListener('click', function () {
+                            chunks = [];
+                            if (mediaRec && mediaRec.state !== 'inactive') {
+                                mediaRec.onstop = null;
+                                mediaRec.stop();
+                            }
+                            if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+                            stream = null;
+                            if (timerId) clearInterval(timerId); timerId = null;
+                            recState.classList.add('d-none');
+                        });
+
+                        /* ─── Submit guard: need body OR media ─── */
+                        form.addEventListener('submit', function (ev) {
+                            if (!body.value.trim() && !(fileIn.files && fileIn.files.length)) {
+                                ev.preventDefault();
+                                body.focus();
+                            }
+                        });
+                    })();
+                    </script>
                 @else
                     <div class="alert alert-warning mb-2 small d-flex align-items-start gap-2">
                         <i class="bi bi-clock-history mt-1"></i>

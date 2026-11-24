@@ -180,18 +180,97 @@ class WhatsAppInboxController extends Controller
         return back()->with('success', 'Template envoyé — la conversation va être ré-ouverte dès que le client répond.');
     }
 
-    /** POST /admin/whatsapp/{conversation}/reply — send a text reply. */
+    /**
+     * POST /admin/whatsapp/{conversation}/reply — send a text and/or media reply.
+     * Accepts optional `media` upload (image/audio/video/document). The `body`
+     * doubles as caption for image/video/document. `voice=1` marks audio as
+     * a voice note.
+     */
     public function reply(Request $request, WhatsAppConversation $conversation, WhatsAppService $whatsapp)
     {
         $data = $request->validate([
-            'body' => 'required|string|max:4096',
+            'body'  => 'nullable|string|max:4096',
+            'media' => 'nullable|file|max:102400', // 100 MB
+            'voice' => 'nullable|boolean',
         ]);
+
+        if (empty($data['body']) && ! $request->hasFile('media')) {
+            return back()->with('error', 'Votre message est vide.');
+        }
 
         if (! $conversation->canSendFreeform()) {
             return back()->with('error',
                 'Fenêtre de 24h expirée — vous devez utiliser un template approuvé pour re-contacter ce client.');
         }
 
+        // Media branch: upload to Meta, then send as image/audio/video/document.
+        if ($request->hasFile('media')) {
+            $file     = $request->file('media');
+            $mime     = $file->getMimeType() ?: 'application/octet-stream';
+            $original = $file->getClientOriginalName();
+
+            // Keep a local copy on the public disk so the thread can render it
+            // immediately, without re-downloading from Meta.
+            $localPath = $file->store('whatsapp', 'public');
+            $absolute  = storage_path('app/public/' . $localPath);
+
+            $type = match (true) {
+                str_starts_with($mime, 'image/') => 'image',
+                str_starts_with($mime, 'audio/') => 'audio',
+                str_starts_with($mime, 'video/') => 'video',
+                default                          => 'document',
+            };
+
+            $up = $whatsapp->uploadMedia($absolute, $mime);
+            if (! $up['ok']) {
+                WhatsAppMessage::create([
+                    'conversation_id' => $conversation->id,
+                    'direction'       => 'out',
+                    'type'            => $type,
+                    'body'            => (string) ($data['body'] ?? ''),
+                    'media_path'      => $localPath,
+                    'media_mime'      => $mime,
+                    'status'          => 'failed',
+                    'error'           => $up['error'] ?? 'upload failed',
+                    'sent_at'         => now(),
+                ]);
+                return back()->with('error', 'Envoi échoué : ' . ($up['error'] ?? 'erreur upload'));
+            }
+
+            $voice  = $type === 'audio' && $request->boolean('voice');
+            $result = $whatsapp->sendMedia(
+                $conversation->wa_phone,
+                $up['media_id'],
+                $type,
+                $data['body'] ?? null,
+                $voice,
+                $type === 'document' ? $original : null,
+            );
+
+            $msg = WhatsAppMessage::create([
+                'conversation_id' => $conversation->id,
+                'direction'       => 'out',
+                'wamid'           => $result['wamid'] ?? null,
+                'type'            => $type,
+                'body'            => (string) ($data['body'] ?? ''),
+                'media_id'        => $up['media_id'],
+                'media_path'      => $localPath,
+                'media_mime'      => $mime,
+                'status'          => $result['ok'] ? 'sent' : 'failed',
+                'error'           => $result['error'] ?? null,
+                'sent_at'         => now(),
+            ]);
+
+            $conversation->forceFill(['last_message_at' => $msg->sent_at])->save();
+
+            if (! $result['ok']) {
+                return back()->with('error', 'Envoi échoué : ' . ($result['error'] ?? 'erreur inconnue'));
+            }
+            return redirect()->route('admin.whatsapp.show', $conversation)
+                ->with('success', 'Message envoyé.');
+        }
+
+        // Text-only branch.
         $result = $whatsapp->sendText($conversation->wa_phone, $data['body']);
 
         $msg = WhatsAppMessage::create([
