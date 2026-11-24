@@ -14,6 +14,7 @@ class WhatsAppInboxController extends Controller
     public function index(Request $request)
     {
         $query = WhatsAppConversation::query()
+            ->with('latestMessage')
             ->orderByRaw('COALESCE(last_message_at, created_at) DESC');
 
         if ($q = trim((string) $request->query('q', ''))) {
@@ -40,6 +41,7 @@ class WhatsAppInboxController extends Controller
         $conversation->forceFill(['unread_count' => 0])->save();
 
         $query = WhatsAppConversation::query()
+            ->with('latestMessage')
             ->orderByRaw('COALESCE(last_message_at, created_at) DESC');
         if ($q = trim((string) $request->query('q', ''))) {
             $query->where(function ($w) use ($q) {

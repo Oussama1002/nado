@@ -42,20 +42,66 @@
         </form>
 
         @forelse($conversations as $c)
+            @php
+                $lm       = $c->latestMessage;
+                $isOut    = $lm && $lm->direction === 'out';
+                $previewText = trim((string) ($lm->body ?? ''));
+                if ($previewText === '' && $lm && $lm->media_mime) {
+                    $previewText = str_starts_with($lm->media_mime, 'image/') ? 'Photo'
+                        : (str_starts_with($lm->media_mime, 'video/') ? 'Vidéo'
+                        : (str_starts_with($lm->media_mime, 'audio/') ? 'Message vocal'
+                        : 'Fichier'));
+                }
+                $mediaIcon = null;
+                if ($lm && $lm->media_mime) {
+                    $mediaIcon = str_starts_with($lm->media_mime, 'image/') ? 'bi-camera-fill'
+                        : (str_starts_with($lm->media_mime, 'video/') ? 'bi-camera-video-fill'
+                        : (str_starts_with($lm->media_mime, 'audio/') ? 'bi-mic-fill'
+                        : 'bi-paperclip'));
+                }
+                $name    = $c->display_name ?: $c->wa_phone;
+                $initial = mb_strtoupper(mb_substr(ltrim($name, '+ '), 0, 1));
+                $isActive = $active && $active->id === $c->id;
+            @endphp
             <a href="{{ route('admin.whatsapp.show', $c) }}"
-               class="d-block text-decoration-none text-reset border-bottom px-3 py-2 {{ $active && $active->id === $c->id ? 'bg-light' : '' }}">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="fw-semibold text-truncate" style="max-width: 70%;">
-                        {{ $c->display_name ?: $c->wa_phone }}
+               class="wa-conv d-flex align-items-center text-decoration-none text-reset border-bottom px-3 py-2 gap-3 {{ $isActive ? 'bg-light' : '' }}"
+               style="min-height: 72px;">
+                <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+                     style="width:48px;height:48px;background:#25D366;font-size:1.1rem;">
+                    {{ $initial ?: '#' }}
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-semibold text-truncate" style="min-width:0;">
+                            {{ $name }}
+                        </div>
+                        <div class="small flex-shrink-0 ms-2 {{ $c->unread_count > 0 ? 'text-success fw-semibold' : 'text-muted' }}">
+                            {{ $c->last_message_at?->diffForHumans(null, true) }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <div class="text-muted small text-truncate d-flex align-items-center gap-1" style="min-width:0;">
+                            @if($isOut && $lm)
+                                @switch($lm->status)
+                                    @case('sent')      <i class="bi bi-check flex-shrink-0"></i> @break
+                                    @case('delivered') <i class="bi bi-check-all flex-shrink-0"></i> @break
+                                    @case('read')      <i class="bi bi-check-all text-primary flex-shrink-0"></i> @break
+                                    @case('failed')    <i class="bi bi-exclamation-circle text-danger flex-shrink-0"></i> @break
+                                    @default           <i class="bi bi-check flex-shrink-0"></i>
+                                @endswitch
+                            @endif
+                            @if($mediaIcon)
+                                <i class="bi {{ $mediaIcon }} flex-shrink-0"></i>
+                            @endif
+                            <span class="text-truncate">
+                                {{ $previewText !== '' ? $previewText : $c->wa_phone }}
+                            </span>
+                        </div>
                         @if($c->unread_count > 0)
-                            <span class="badge bg-success rounded-pill ms-1">{{ $c->unread_count }}</span>
+                            <span class="badge bg-success rounded-pill flex-shrink-0 ms-2">{{ $c->unread_count }}</span>
                         @endif
                     </div>
-                    <div class="text-muted small flex-shrink-0">
-                        {{ $c->last_message_at?->diffForHumans(null, true) }}
-                    </div>
                 </div>
-                <div class="text-muted small text-truncate">{{ $c->wa_phone }}</div>
             </a>
         @empty
             <div class="p-4 text-center text-muted">

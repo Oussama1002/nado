@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WhatsAppConversation extends Model
 {
@@ -24,6 +25,11 @@ class WhatsAppConversation extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(WhatsAppMessage::class, 'conversation_id')->orderBy('sent_at');
+    }
+
+    public function latestMessage(): HasOne
+    {
+        return $this->hasOne(WhatsAppMessage::class, 'conversation_id')->latestOfMany('sent_at');
     }
 
     public function client(): BelongsTo
