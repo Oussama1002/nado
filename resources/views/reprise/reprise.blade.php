@@ -1837,7 +1837,7 @@
 
                             <div class="hero-image-wrapper" style="position: relative;">
                                 <div class="hero-card">
-                                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1200"
+                                    <img src="{{ site_image('reprise_hero', 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1200') }}"
                                         alt="Premium Car" class="hero-img">
                                     <div class="hero-card-content">
                                         <div>

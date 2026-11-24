@@ -590,6 +590,14 @@ Route::prefix('admin/settings')->name('admin.settings.')
         Route::post('/{group}', [SettingsController::class, 'update'])->name('update');
     });
 
+Route::prefix('admin/site-images')->name('admin.site-images.')
+    ->middleware(['auth:admin', 'module.access'])
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\SiteImageController::class, 'index'])->name('index');
+        Route::post('/{slot}', [\App\Http\Controllers\Admin\SiteImageController::class, 'update'])->name('update');
+        Route::delete('/{slot}', [\App\Http\Controllers\Admin\SiteImageController::class, 'destroy'])->name('destroy');
+    });
+
 /*
 |--------------------------------------------------------------------------
 | Admin — Intégrations (Meta + WhatsApp, multi-numéros)

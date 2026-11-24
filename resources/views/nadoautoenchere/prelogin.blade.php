@@ -297,7 +297,7 @@
                 <div class="relative">
                     <div
                         class="relative bg-white/10 backdrop-blur-xl p-4 rounded-[3.5rem] border border-slate-100 shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1200"
+                        <img src="{{ site_image('ae_expertise', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1200') }}"
                             class="rounded-[2.5rem] w-full h-auto object-cover" alt="Expertise Auto Enchère" />
                     </div>
                     <div

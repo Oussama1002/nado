@@ -137,6 +137,24 @@ if (! function_exists('price_from_monthly')) {
     }
 }
 
+if (! function_exists('site_image')) {
+    /**
+     * Retourne l'URL de l'image illustrative pour l'emplacement $slot.
+     * Si l'admin a uploadé une image (table settings, clé site_images.$slot),
+     * on renvoie son URL publique ; sinon on retombe sur $default.
+     *
+     *   <img src="{{ site_image('vente_hero', 'https://.../default.jpg') }}">
+     */
+    function site_image(string $slot, string $default = ''): string
+    {
+        $path = settings('site_images.' . $slot);
+        if (is_string($path) && $path !== '') {
+            return asset('storage/' . ltrim($path, '/'));
+        }
+        return $default;
+    }
+}
+
 if (! function_exists('client_type_label')) {
     /**
      * Libellé traduit d'un type de client (stocké en français en base).
