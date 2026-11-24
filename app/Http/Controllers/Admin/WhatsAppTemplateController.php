@@ -34,7 +34,52 @@ class WhatsAppTemplateController extends Controller
     {
         return view('admin.whatsapp.templates.create', [
             'categories' => self::CATEGORIES,
+            'draft'      => null,
         ]);
+    }
+
+    /** GET /admin/whatsapp/templates/drafts/{draft}/edit — édite un brouillon existant. */
+    public function editDraft(WhatsAppTemplateDraft $draft)
+    {
+        return view('admin.whatsapp.templates.create', [
+            'categories' => self::CATEGORIES,
+            'draft'      => $draft,
+        ]);
+    }
+
+    /** PUT /admin/whatsapp/templates/drafts/{draft} — enregistre les modifications d'un brouillon. */
+    public function updateDraft(Request $request, WhatsAppTemplateDraft $draft)
+    {
+        $data = $request->validate([
+            'name'     => ['required', 'string', 'max:120', 'regex:/^[a-z0-9_]+$/'],
+            'category' => ['required', Rule::in(self::CATEGORIES)],
+            'language' => ['required', 'string', 'max:10'],
+            'body'     => [$request->input('category') === 'AUTHENTICATION' ? 'nullable' : 'required', 'string', 'max:1024'],
+            'footer'   => ['nullable', 'string', 'max:60'],
+        ], [
+            'name.regex' => 'Le nom doit être en minuscules, chiffres, underscores (ex. order_confirmation).',
+        ]);
+
+        // (name, language) doit rester unique dans la table des brouillons.
+        $clash = WhatsAppTemplateDraft::where('name', $data['name'])
+            ->where('language', $data['language'])
+            ->where('id', '!=', $draft->id)
+            ->exists();
+        if ($clash) {
+            return back()->withInput()->with('error',
+                'Un autre brouillon avec ce nom et cette langue existe déjà.');
+        }
+
+        $draft->update([
+            'name'     => $data['name'],
+            'category' => $data['category'],
+            'language' => $data['language'],
+            'body'     => $data['body'] ?? '',
+            'footer'   => $data['footer'] ?: null,
+        ]);
+
+        return redirect()->route('admin.whatsapp.templates.index')
+            ->with('success', 'Brouillon « ' . $draft->name . ' · ' . $draft->language . ' » mis à jour.');
     }
 
     /**

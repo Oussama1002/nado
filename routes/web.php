@@ -629,6 +629,8 @@ Route::prefix('admin/whatsapp')->name('admin.whatsapp.')
         Route::get('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'index'])->name('templates.index');
         Route::get('/templates/create', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'create'])->name('templates.create');
         Route::post('/templates', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'store'])->name('templates.store');
+        Route::get('/templates/drafts/{draft}/edit', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'editDraft'])->name('templates.drafts.edit');
+        Route::put('/templates/drafts/{draft}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'updateDraft'])->name('templates.drafts.update');
         Route::post('/templates/drafts/{draft}/submit', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'submit'])->name('templates.drafts.submit');
         Route::delete('/templates/drafts/{draft}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'destroyDraft'])->name('templates.drafts.destroy');
         Route::delete('/templates/{name}', [\App\Http\Controllers\Admin\WhatsAppTemplateController::class, 'destroy'])->name('templates.destroy');

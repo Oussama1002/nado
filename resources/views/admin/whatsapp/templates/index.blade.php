@@ -66,6 +66,11 @@
                                 @endif
                             </td>
                             <td class="text-end">
+                                <a href="{{ route('admin.whatsapp.templates.drafts.edit', $d) }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Modifier le brouillon">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
                                 <form method="POST" action="{{ route('admin.whatsapp.templates.drafts.submit', $d) }}"
                                       class="d-inline"
                                       onsubmit="return confirm('Soumettre « {{ $d->name }} · {{ $d->language }} » à Meta pour approbation ?');">
