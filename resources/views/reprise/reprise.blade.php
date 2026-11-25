@@ -1121,7 +1121,6 @@
                     width: 100%;
                     height: auto;
                     border-radius: 3.5rem;
-                    filter: grayscale(100%);
                     display: block;
                 }
 
