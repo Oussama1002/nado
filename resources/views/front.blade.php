@@ -1684,7 +1684,6 @@
 
         .price-image-container img {
             border-radius: 2.5rem;
-            filter: grayscale(100%);
             width: 100%;
         }
 
