@@ -3588,6 +3588,7 @@
                 position: relative;
                 display: block;
                 flex-shrink: 0;
+                z-index: 10001;
             }
 
             @media (max-width: 1023px) {
@@ -3615,6 +3616,10 @@
                 box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
                 border: 1px solid var(--border-color);
                 overflow: hidden;
+                /* Doit passer au-dessus de la bannière "Demandes" fixée bas-gauche
+                   (#dmdLive a un z-index 9999). Sans ça, sur petit viewport le
+                   menu passe DERRIÈRE la bannière. */
+                z-index: 10001;
                 /* Was display:none/block, which vanished the instant hover was lost.
                    opacity+visibility can be delayed, so the menu lingers ~400ms after
                    the cursor leaves, giving time to move onto it. */
