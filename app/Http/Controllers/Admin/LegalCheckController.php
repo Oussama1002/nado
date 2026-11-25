@@ -91,7 +91,13 @@ class LegalCheckController extends Controller
         }
     }
 
-    /** WhatsApp best-effort : template "verification_legale_resultat" au vendeur. */
+    /**
+     * WhatsApp best-effort : template "verification_legale_resultat" au vendeur.
+     *
+     * Le template reste volontairement générique (2 vars : prénom + matricule) —
+     * Meta rejette les templates qui injectent une "décision" en variable libre.
+     * Le verdict détaillé est envoyé par email et visible dans l'espace client.
+     */
     private function notifyClientResultWhatsApp(LegalCheck $legalCheck): void
     {
         if (! feature_on('whatsapp.enabled')) {
@@ -104,28 +110,18 @@ class LegalCheckController extends Controller
             return;
         }
 
-        $matricule = $legalCheck->matricule_full ?: '—';
-        $verdict = $legalCheck->admin_status === 'confirmed'
-            ? ($legalCheck->declared_status === 'opposition'
-                ? 'Opposition active detectee sur le registre NARSA'
-                : 'Aucune opposition, le vehicule est libre')
-            : "Nous n'avons pas pu confirmer la situation legale";
-
-        $lang = (optional($legalCheck->client)->lang === 'ar') ? 'ar' : 'fr';
-        if ($lang === 'ar') {
-            $verdict = $legalCheck->admin_status === 'confirmed'
-                ? ($legalCheck->declared_status === 'opposition'
-                    ? 'تم رصد معارضة نشطة على سجل NARSA'
-                    : 'لا توجد معارضة، السيارة حرة')
-                : 'لم نتمكن من تأكيد الوضعية القانونية';
+        $firstName = trim(explode(' ', (string) optional($legalCheck->client)->name)[0] ?? '');
+        if ($firstName === '') {
+            $firstName = 'client';
         }
+        $matricule = $legalCheck->matricule_full ?: '—';
 
         try {
             app(WhatsAppService::class)->sendTemplate(
                 $phone,
                 'verification_legale_resultat',
-                $lang,
-                [$matricule, $verdict]
+                'fr',
+                [$firstName, $matricule]
             );
         } catch (\Throwable $e) {
             report($e);

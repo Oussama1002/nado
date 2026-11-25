@@ -92,8 +92,8 @@ class SeedWhatsAppDrafts extends Command
         ],
         'verification_legale_resultat' => [
             'category' => 'UTILITY',
-            'fr' => "Resultat de votre verification legale (NARSA) pour le matricule {{1}} : {{2}}. Consultez le detail sur autoenchere.ma.",
-            'ar' => "نتيجة التحقق القانوني (NARSA) للسيارة ذات اللوحة {{1}}: {{2}}. اطلعوا على التفاصيل على موقع autoenchere.ma.",
+            'fr' => "Bonjour {{1}}, votre demande de verification legale pour le matricule {{2}} a ete traitee par notre equipe. Le resultat complet est disponible dans votre espace autoenchere.ma.",
+            'ar' => "مرحبا {{1}}، تمت معالجة طلبكم للتحقق القانوني للسيارة ذات اللوحة {{2}} من طرف فريقنا. النتيجة الكاملة متوفرة في حسابكم على موقع autoenchere.ma.",
         ],
         'compte_approuve' => [
             'category' => 'UTILITY',
