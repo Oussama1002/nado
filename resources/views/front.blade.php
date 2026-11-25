@@ -4567,19 +4567,21 @@
         </section>
 
 
-        <!-- 6. PUB NADO EXPERT -->
-        <section class="promo-section">
+        <!-- 6. BANNER WHATSAPP (swapped — was section 12) -->
+        <section class="whatsapp-section">
             <div class="container">
-                <div class="expert-card">
-                    <div class="expert-content">
-                        <div class="label-trust"><i data-lucide="shield-check"
-                                style="color: var(--secondary); width: 24px; height: 24px;"></i><span>{{ __('messages.home.trust_label') }}</span></div>
-                        <h2 class="expert-title">{!! __('messages.home.expertise_heading') !!}</h2>
-                        <p class="expert-desc">{{ __('messages.home.expertise_desc') }}</p>
+                <div class="whatsapp-card">
+                    <div class="whatsapp-content">
+                        <h2 class="whatsapp-title">{!! __('messages.home.expert_heading') !!}</h2>
+                        <button type="button" class="btn-whatsapp" onclick="openExpertModal()" style="border:none; cursor:pointer;">
+                            <i data-lucide="mail" style="width: 24px; height: 24px; stroke-width: 3;"></i>
+                            {{ __('messages.expert.form_btn') }}
+                        </button>
                     </div>
-                    <div class="expert-image"><img
-                            src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=800"
-                            alt="Expertise" /></div>
+                    <div class="whatsapp-image">
+                        <img src="{{ asset('assets/images/expert-nado.jpg') }}"
+                            alt="Expert NADO" />
+                    </div>
                 </div>
             </div>
         </section>
@@ -4937,21 +4939,19 @@
             </div>
         </section>
 
-        <!-- 12. BANNER WHATSAPP -->
-        <section class="whatsapp-section">
+        <!-- 12. PUB NADO EXPERT (swapped — was section 6) -->
+        <section class="promo-section">
             <div class="container">
-                <div class="whatsapp-card">
-                    <div class="whatsapp-content">
-                        <h2 class="whatsapp-title">{!! __('messages.home.expert_heading') !!}</h2>
-                        <button type="button" class="btn-whatsapp" onclick="openExpertModal()" style="border:none; cursor:pointer;">
-                            <i data-lucide="mail" style="width: 24px; height: 24px; stroke-width: 3;"></i>
-                            {{ __('messages.expert.form_btn') }}
-                        </button>
+                <div class="expert-card">
+                    <div class="expert-content">
+                        <div class="label-trust"><i data-lucide="shield-check"
+                                style="color: var(--secondary); width: 24px; height: 24px;"></i><span>{{ __('messages.home.trust_label') }}</span></div>
+                        <h2 class="expert-title">{!! __('messages.home.expertise_heading') !!}</h2>
+                        <p class="expert-desc">{{ __('messages.home.expertise_desc') }}</p>
                     </div>
-                    <div class="whatsapp-image">
-                        <img src="{{ asset('assets/images/expert-nado.jpg') }}"
-                            alt="Expert NADO" />
-                    </div>
+                    <div class="expert-image"><img
+                            src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=800"
+                            alt="Expertise" /></div>
                 </div>
             </div>
         </section>
