@@ -3266,7 +3266,10 @@
             .nado-navbar {
                 font-family: 'Inter', sans-serif;
                 width: 100%;
-                z-index: 1000;
+                /* Doit rester au-dessus de la bannière "Demandes" fixée bas-gauche
+                   (#dmdLive a z-index 9999). La navbar crée un stacking context,
+                   donc le dropdown du compte ne peut jamais dépasser ce plafond. */
+                z-index: 10000;
                 position: relative;
                 direction: ltr;
             }
@@ -3277,7 +3280,7 @@
                 top: 0;
                 left: 0;
                 width: 100%;
-                z-index: 1000;
+                z-index: 10000;
             }
 
             /* Top Bar */
