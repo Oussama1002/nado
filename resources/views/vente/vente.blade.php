@@ -613,19 +613,6 @@
                              style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;transition:transform .7s ease;background:transparent;"
                              onmouseover="this.style.transform='scale(1.04)'"
                              onmouseout="this.style.transform='scale(1)'">
-                        <div class="vp-visual-overlay">
-                            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
-                                <div>
-                                    <div style="color:white;font-size:1.2rem;font-weight:900;margin-bottom:6px;">{{ __('messages.vente.badge') }}</div>
-                                    <div style="color:var(--vp-yellow);font-size:1.6rem;font-weight:900;letter-spacing:-.02em;">
-                                        {{ __('messages.vente.prop_free') }}
-                                    </div>
-                                </div>
-                                <div style="width:64px;height:64px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i data-lucide="zap" style="width:32px;height:32px;color:white;fill:white;"></i>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
