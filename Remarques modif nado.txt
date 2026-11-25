@@ -1,0 +1,69 @@
+- error of the navbar when the username is looong (look at the screenshot) ------------DONE
+- error of the images still return 404 on the front blade ---------DONE
+- the drop down of the user where " Mon espace, dexconnexion" it disappear instantly i want when the cusror is on the username to not dissapear instantly to take my time to click on the dropdown ---------DONE
+- look at the Proposer votre prix on the detail blade the buttons  Envoyer and Annuler should be on the same line (look at the screenshot) ----------DONE
+- logos on the bottom of the detail blade return 404 error ---------- DONE
+- the button "Discuter de cette offre" on the Simulateur de Financement should be on the same line ----------DONE
+- button "publier une annonce " version phone to be in center and one line in all phones ----------DONE
+- in stories add link to detail vehicule direclty
+- on the front blade the font writing should switch between title like Marque and value like Toutes marques, the title should be bigger that the value and has the black color not the value -------------DONE
+- logos should have a link to achat page filtred with the brand --------- DONE
+- switch database from the old nado to the new nado ---------------DONE
+- on the front blade the button "Découvrir le rapport" doesnt have an action  
+- error on admin side on update annonce it didnt get the Couleur ------------ DONE
+- error when updating on admin side -------- DONE
+- on the front blade if the particulier annonces are none you dont display the title Dernières ANNONCES PARTICULIERS and Pros ----- DONE
+-error on the front blade it didnt get the marque and modele on the cards --------DONE
+- add images controller of the images like the image on the hero on front blade -----------DONE
+- add the taille hint for the admin for the image --------DONE
+- boite vitesse and rapport should appear on the detail blade ---------DONE
+- when i user login from https://autoenchere.ma/nadoautoenchere/login dont open the modal of annonce https://autoenchere.ma/vente/formulaire?open_modal=1 , return him to https://autoenchere.ma/nadoautoenchere/prelogin -------DONE
+-Attijariwafa bank logo is 404 bring one now ------DONE
+- send a notification to contact@nado.ma when a client submit an enchere --------DONE
+- send a notification to contact@nado.ma when a client submit a new annonce to validate it on Annonces en attente d'approbation -----DONE
+- and for voir annonce on the button on the mail for proposition on of vehicule of the detail of annonce on https://autoenchere.ma/achat/voiture/MERCEDES_ClasseC_226.html should go to him to https://autoenchere.ma/admin/autoenchere ---------DONE
+- when client create an account doesnt have to wait for the admin for validate the account send a link directly to that mail of the client and if verified then it will be approved directly --------
+-
+-https://autoenchere.ma/contactez-nous doesnt have a design
+-also the cards on the front blade still reverse the numbers in arabic---------
+-the detail blade still doesnt display arabic-------DONE
+-à-propos blade still doesnt display arabic
+- on the https://autoenchere.ma/financement the type of client doesnt display arabic----------DONE
+- the client login/register doesnt display arabic------
+-do the image on the section on "BESOIN D'UN EXPERT NADO ?"---------DONE
+-the arabic words on the whole system are small so make them bigger-------DONE
+-the navbars of all pages should be the same as https://autoenchere.ma/client/login navbar the logo always on the left---------
+-remove the logo row on the client list on the admin side------DONE
+-the Lettre (série) on Recevez le résultat par email on https://autoenchere.ma/verification-legale should be a dropdown of the letters of the vehicules in Morocco used--------
+-on Recevez le résultat par email add the possible of send a message WhatsApp also not mail only------- 
+-on Recevoir le résultat after submitting the matricule it keep telling him the same success message  so if the popup is hidden it should return to the form matricule------
+-on admin side on new annonce when an input is obligatoire it should not refresh the page or remove the other values just return the input that its obligatoire thats it 
+-certife should be checked on the new annonce on admin side then it should be displayed on the client side if not checked then not been displayed on cards-------DONE
+-on the  WhatsApp — Boîte de réception on admin side it should be like the real WhatsApp it should get the message on bottom of the username then open the chat
+--on the  WhatsApp — Boîte de réception on admin side add audio and emoji and file uploader
+
+2. Buyer experience & discovery
+Saved searches + alerts (M, reuses demandes concept). Buyers save a filter ("BMW Série 3, <200k km, <250k MAD, Casablanca") and get notified (email now, WhatsApp later) when a match is posted. Your demandes forum is halfway there — formalize it as alerts.
+Favorites / wishlist (S). Needs client auth (you have it). Drives return visits and powers "price dropped on a car you saved" notifications — a strong re-engagement loop.
+Price-drop tracking & history (M). Show "−10 000 MAD depuis 2 semaines" on detail. Urgency + trust.
+Side-by-side compare (S–M). You have a compare.* lang namespace already — looks half-built. Finish it: compare 2–3 cars on specs/price/km.
+Better search: fuzzy + Arabic/French brand aliasing (M). "Mercedes/مرسيدس", "Classe C/C-Class". Map common FR/AR/EN spellings so search doesn't return empty.
+Map view by city (M). Moroccan buyers filter hard by location (Casa vs Marrakech). annonces.city is a name; a simple city-grouped map/list view fits.
+Monthly-payment-first browsing (S, reuses financement). Let buyers filter by "mensualité < 3 000 MAD" instead of price — you already compute monthlies on cards. Huge for this market.
+
+-5. Auto-Enchère (B2B auctions) — you already gate it; grow it
+Live auction mode with real-time bidding (L). Currently it's listings-based; a true timed live auction (WebSockets/Pusher) for fleet liquidation events drives urgency and higher prices.
+Proxy/max bids & outbid notifications (M). Standard auction UX that materially lifts final prices.
+Fleet seller onboarding portal (M). Self-serve bulk upload (CSV/Excel — you already have GenericExport, build the import side) for leasing companies/banks dumping fleets.
+Buyer deposit / pre-qualification (M). Only vetted, deposit-backed pros can bid — protects sellers, which attracts more fleet inventory.
+
+10. Community & content (demandes, blog, radio)
+Reviews & ratings for sellers/dealers (M). Post-deal rating builds the reputation layer the whole marketplace trust story needs.
+Q&A on listings (S). Public buyer questions + seller answers (like Amazon) — reduces repetitive DMs, adds SEO content.
+Model guides & owner reviews (content/SEO, M). "Dacia Duster au Maroc : avis, prix, fiabilité." Massive organic search opportunity in a market with little good FR/AR content. Feeds your blog.
+Nado Radio → richer engagement (S). It's a nice differentiator; add podcast segments (buying tips, market updates) to increase dwell time.
+
+
+EAAYOFdebXZAABTKWI58F1M1FvhyTwxhZBFVEZA2LZCKgvShLZBPHTzcuRmPek8qmTQeLtsR8QOaw5eZBBriPNmvJQX3S8ZBUQIRrHPHZBNytndP5FLWg4aAFZBb3XQ5fmCwvuo1q8ULq6a8KZBeQZBGDURdk7uD12IZA6Md0yiD6aWjUIvSZAZCT3K6ZAgOOLj0j088PAZDZD
+
+dsfVofU5MdfFXWCS

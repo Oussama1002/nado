@@ -90,6 +90,11 @@ class SeedWhatsAppDrafts extends Command
             'fr' => "Documents verifies : la carte grise de votre {{1}} a ete validee par notre equipe. L'annonce sera publiee sous 24h sur autoenchere.ma.",
             'ar' => "تم التحقق من الوثائق: صودق على البطاقة الرمادية لسيارتكم {{1}} من طرف فريقنا. سيُنشر الإعلان خلال 24 ساعة على موقع autoenchere.ma.",
         ],
+        'verification_legale_resultat' => [
+            'category' => 'UTILITY',
+            'fr' => "Resultat de votre verification legale (NARSA) pour le matricule {{1}} : {{2}}. Consultez le detail sur autoenchere.ma.",
+            'ar' => "نتيجة التحقق القانوني (NARSA) للسيارة ذات اللوحة {{1}}: {{2}}. اطلعوا على التفاصيل على موقع autoenchere.ma.",
+        ],
         'compte_approuve' => [
             'category' => 'UTILITY',
             'fr' => "Bienvenue {{1}}, votre compte autoenchere.ma est actif. Connectez-vous avec vos identifiants pour publier votre premiere annonce.",

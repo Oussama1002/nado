@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LegalCheck;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -75,11 +76,59 @@ class LegalCheckController extends Controller
             'notes'        => $request->input('notes', $legalCheck->notes),
         ]);
 
-        // Envoie le résultat au vendeur par email (notamment pour les demandes
-        // différées : "on vous envoie le résultat dès que le service est prêt").
-        // Best-effort : un échec SMTP ne bloque pas la revue admin.
+        // Envoie le résultat au vendeur par email ET/OU WhatsApp selon le canal
+        // choisi au moment de la demande différée. Best-effort : un échec d'un
+        // canal (SMTP KO, WhatsApp en panne) ne bloque pas la revue admin.
         if ($request->boolean('notify_client', true)) {
-            $this->notifyClientResult($legalCheck);
+            $channel = $legalCheck->contact_channel ?: 'email';
+
+            if (in_array($channel, ['email', 'both'], true)) {
+                $this->notifyClientResult($legalCheck);
+            }
+            if (in_array($channel, ['whatsapp', 'both'], true)) {
+                $this->notifyClientResultWhatsApp($legalCheck);
+            }
+        }
+    }
+
+    /** WhatsApp best-effort : template "verification_legale_resultat" au vendeur. */
+    private function notifyClientResultWhatsApp(LegalCheck $legalCheck): void
+    {
+        if (! feature_on('whatsapp.enabled')) {
+            return;
+        }
+
+        $legalCheck->loadMissing('client');
+        $phone = $legalCheck->contact_whatsapp ?: optional($legalCheck->client)->phone;
+        if (! $phone) {
+            return;
+        }
+
+        $matricule = $legalCheck->matricule_full ?: '—';
+        $verdict = $legalCheck->admin_status === 'confirmed'
+            ? ($legalCheck->declared_status === 'opposition'
+                ? 'Opposition active detectee sur le registre NARSA'
+                : 'Aucune opposition, le vehicule est libre')
+            : "Nous n'avons pas pu confirmer la situation legale";
+
+        $lang = (optional($legalCheck->client)->lang === 'ar') ? 'ar' : 'fr';
+        if ($lang === 'ar') {
+            $verdict = $legalCheck->admin_status === 'confirmed'
+                ? ($legalCheck->declared_status === 'opposition'
+                    ? 'تم رصد معارضة نشطة على سجل NARSA'
+                    : 'لا توجد معارضة، السيارة حرة')
+                : 'لم نتمكن من تأكيد الوضعية القانونية';
+        }
+
+        try {
+            app(WhatsAppService::class)->sendTemplate(
+                $phone,
+                'verification_legale_resultat',
+                $lang,
+                [$matricule, $verdict]
+            );
+        } catch (\Throwable $e) {
+            report($e);
         }
     }
 
