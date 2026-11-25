@@ -137,7 +137,7 @@
     box-shadow: 0 25px 50px -12px rgba(0,0,0,.2);
     border: 1px solid var(--vp-border);
     aspect-ratio: 4/3;
-    background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     position: relative;
 }
 .vp-visual-overlay {
@@ -610,7 +610,7 @@
                     <div class="vp-visual-card">
                         <img src="{{ site_image('vente-hero', 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80') }}"
                              alt="Voiture premium NADO"
-                             style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s ease;"
+                             style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;transition:transform .7s ease;background:transparent;"
                              onmouseover="this.style.transform='scale(1.04)'"
                              onmouseout="this.style.transform='scale(1)'">
                         <div class="vp-visual-overlay">
