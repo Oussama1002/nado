@@ -275,6 +275,49 @@ class DemandeController extends Controller
         // 5 s hard timeout, failures logged but never bubble up).
         $this->notifyTelegramDemande($demande);
 
+        // Notification admin (contact@nado.ma) à chaque nouvelle demande — même
+        // logique best-effort que la notification "proposition" plus bas : un
+        // échec SMTP ne doit JAMAIS bloquer la soumission du demandeur.
+        try {
+            $carLabel = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
+            if ($carLabel === '') {
+                $carLabel = $demande->raw_query ?: 'recherche libre';
+            }
+            $villeLabel = optional($demande->ville)->name ?: '—';
+            $yearRange  = ($demande->year_min || $demande->year_max)
+                ? ($demande->year_min ?: '?') . ' → ' . ($demande->year_max ?: '?')
+                : '—';
+            $priceRange = ($demande->price_min || $demande->price_max)
+                ? number_format((int) ($demande->price_min ?: 0), 0, ',', ' ') . ' → ' . number_format((int) ($demande->price_max ?: 0), 0, ',', ' ') . ' DH'
+                : '—';
+            $kmMax      = $demande->km_max ? number_format((int) $demande->km_max, 0, ',', ' ') . ' km' : '—';
+            $demandeUrl = route('demandes.show', $demande->id);
+            $adminUrl   = url('/admin/demandes');
+
+            $body =
+                "Nouvelle demande déposée sur autoenchere.ma.\n\n" .
+                "DEMANDE #{$demande->id}\n" .
+                "- Demandeur : {$demande->nom} ({$demande->telephone})" . ($demande->email ? " — {$demande->email}" : '') . "\n" .
+                "- Recherche : {$carLabel}\n" .
+                "- Ville : {$villeLabel}\n" .
+                "- Années : {$yearRange}\n" .
+                "- Budget : {$priceRange}\n" .
+                "- Km max : {$kmMax}\n" .
+                ($demande->boite && $demande->boite !== 'any' ? "- Boîte : {$demande->boite}\n" : '') .
+                ($demande->carburant ? "- Carburant : {$demande->carburant}\n" : '') .
+                ($demande->comment ? "\nCommentaire :\n{$demande->comment}\n" : '') .
+                "\nLien public : {$demandeUrl}\n" .
+                "Admin : {$adminUrl}\n";
+
+            $subject = "Nouvelle demande : {$demande->nom} — {$carLabel}";
+
+            Mail::raw($body, function ($m) use ($subject) {
+                $m->to('contact@nado.ma')->subject($subject);
+            });
+        } catch (\Throwable $e) {
+            Log::warning('Demande store admin email failed: ' . $e->getMessage());
+        }
+
         return redirect()->route('demandes.confirmation', $demande->id)
             ->with('success', 'Votre demande a été soumise. L’administrateur vous contactera après validation.');
     }
