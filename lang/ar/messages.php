@@ -501,6 +501,12 @@ return [
         'live_seeking'    => 'يبحث عن',
         'live_in'         => 'في',
         'live_view'       => 'عرض الطلب',
+
+        // Popup « لا توجد نتيجة » على /achat → اقتراح نشر طلب.
+        'noresult_popup_title' => "لم نجد سيارة تناسب بحثكم؟",
+        'noresult_popup_desc'  => "انشروا طلبكم في 30 ثانية. سيتصل بكم البائعون بمجرد توفر سيارة تناسب معاييركم.",
+        'noresult_popup_cta'   => "نشر طلبي",
+        'noresult_popup_skip'  => "لا شكراً",
     ],
 
     'chat' => [

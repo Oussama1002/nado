@@ -275,6 +275,11 @@ class SettingsSeeder extends Seeder
                 ['retain_image', 'bool', false, 'Conserver l\'image après extraction (sinon purge)'],
             ],
 
+            // ──────────────────── popups (promotion des services) ──────
+            'popups' => [
+                ['demandes_noresult', 'bool', false, 'Popup "Publier une demande" sur /achat quand la recherche ne renvoie rien'],
+            ],
+
             // ──────────────────── legalcheck (opposition NARSA) ─────────
             'legalcheck' => [
                 ['enabled', 'bool', false, 'Vérification situation légale (NARSA) activée'],

@@ -502,6 +502,12 @@ return [
         'live_seeking'    => 'cherche',
         'live_in'         => 'à',
         'live_view'       => 'Voir la demande',
+
+        // Popup "Aucun résultat" sur /achat → inviter à publier une demande.
+        'noresult_popup_title' => "Aucune voiture ne correspond ?",
+        'noresult_popup_desc'  => "Déposez votre recherche en 30 s. Les vendeurs vous contactent dès qu'une voiture correspond à vos critères.",
+        'noresult_popup_cta'   => "Publier ma demande",
+        'noresult_popup_skip'  => "Non merci",
     ],
 
     'chat' => [

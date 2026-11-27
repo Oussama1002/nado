@@ -32,6 +32,7 @@ class SettingsController extends Controller
         'estimation' => ['label' => 'Estimation payante',      'icon' => 'bi-file-earmark-text'],
         'partners'   => ['label' => 'Partenaires & commissions', 'icon' => 'bi-people'],
         'legalcheck' => ['label' => 'Situation légale (NARSA)', 'icon' => 'bi-shield-check'],
+        'popups'     => ['label' => 'Popups & guides',         'icon' => 'bi-chat-left-dots'],
         // 'whatsapp' retiré : géré depuis /admin/integrations (sidebar → Intégrations).
         // 'radio' est géré depuis le module Nado Radio (sidebar).
         // 'ai' (carte grise) n'a plus de tuile : la fonctionnalité est active par défaut.
