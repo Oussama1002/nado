@@ -129,8 +129,8 @@
                 align-items: center;
                 gap: 12px;
                 padding: 16px 18px;
-                margin: 16px auto;
-                max-width: 1280px;
+                margin: 8px auto;
+                max-width: 100%;
                 background: var(--srv-grad, #1459DD);
                 color: #fff;
                 border-radius: 16px;

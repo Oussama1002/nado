@@ -1293,12 +1293,16 @@
                         {{--
                             Bannière service rotative (24 h) à la place de l'ancien
                             promo "Label Confiance / Expertise 110 points".
-                            Insérée tous les 4 cards. `slot` est un identifiant fixe
-                            pour qu'un seul banner apparaisse à chaque passage de la
-                            boucle le même jour (cohérence visuelle).
+                            Insérée tous les 4 cards. Wrapper avec grid-column:1/-1
+                            pour qu'elle traverse toute la largeur de la grille
+                            (même comportement que l'ancien .pp-promo).
+                            `slot` est un identifiant fixe pour cohérence visuelle
+                            à chaque passage de la boucle le même jour.
                         --}}
                         @if (($index + 1) % 4 === 0)
-                            @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_list_promo'])
+                            <div style="grid-column: 1 / -1;">
+                                @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_list_promo'])
+                            </div>
                         @endif
 
                         {{-- Publication banners --}}
