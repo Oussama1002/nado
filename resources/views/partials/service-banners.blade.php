@@ -1,23 +1,17 @@
 {{--
-    Partials de bannières services — chaque bannière est une mini-carte codée,
-    affichée uniquement si sa Publication (placement correspondant) est status=1.
+    Partials de bannières services — même design que la bannière "Expert NADO"
+    sur la page d'accueil (dégradé sombre, glow jaune, shimmer, badge pulsant,
+    CTA jaune, flèche nudge, pop-in entrance, bounce permanent).
 
     Utilisation (bannière fixe) :
         @include('partials.service-banners', ['service' => 'demandes'])
-        @include('partials.service-banners', ['service' => 'estim'])
-        @include('partials.service-banners', ['service' => 'finance'])
-        @include('partials.service-banners', ['service' => 'legal'])
-        @include('partials.service-banners', ['service' => 'ae'])
 
-    Utilisation (rotation quotidienne, 24 h) :
+    Utilisation (rotation quotidienne, 24 h, parmi les Publications actives) :
         @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_promo'])
-        @include('partials.service-banners', ['service' => 'auto', 'slot' => 'home_mid'])
+        @include('partials.service-banners', ['service' => 'auto', 'offset' => 2])
 
-    En mode 'auto', la bannière change chaque jour UTC parmi les Publications
-    actives. Deux emplacements avec des `slot` différents affichent des
-    bannières différentes le même jour (offset dérivé du nom du slot) ; même
-    `slot` ⇒ même bannière partout. Si une seule Publication est active,
-    elle s'affiche toujours.
+    `offset` (int) prime sur `slot` (string) : passer 0, 1, 2… à des includes
+    adjacents garantit des bannières différentes entre elles le même jour.
 
     Chaque include est self-contained : il vérifie l'activation en base et
     rend (ou pas) sa propre carte. La feuille de styles est injectée une
@@ -29,57 +23,56 @@
         'demandes' => [
             'placement' => 'front-demandes-banner',
             'icon'      => 'shopping-cart',
-            'grad'      => 'linear-gradient(135deg,#1459DD,#2563eb)',
             'title'     => __('messages.home.services_demandes_title'),
             'desc'      => __('messages.home.services_demandes_desc'),
             'cta'       => __('messages.home.services_demandes_cta'),
+            'badge'     => __('messages.home.services_demandes_title'),
             'url'       => route('demandes.create'),
         ],
         'estim' => [
             'placement' => 'front-estim-banner',
             'icon'      => 'calculator',
-            'grad'      => 'linear-gradient(135deg,#16a34a,#22c55e)',
             'title'     => __('messages.home.services_estim_title'),
             'desc'      => __('messages.home.services_estim_desc'),
             'cta'       => __('messages.home.services_estim_cta'),
+            'badge'     => __('messages.home.services_estim_title'),
             'url'       => route('estimate.page'),
         ],
         'finance' => [
             'placement' => 'front-finance-banner',
             'icon'      => 'credit-card',
-            'grad'      => 'linear-gradient(135deg,#d97706,#f59e0b)',
             'title'     => __('messages.home.services_finance_title'),
             'desc'      => __('messages.home.services_finance_desc'),
             'cta'       => __('messages.home.services_finance_cta'),
+            'badge'     => __('messages.home.services_finance_title'),
             'url'       => url('/financement'),
         ],
         'legal' => [
             'placement' => 'front-legal-banner',
             'icon'      => 'shield-check',
-            'grad'      => 'linear-gradient(135deg,#7c3aed,#a855f7)',
             'title'     => __('messages.home.services_legal_title'),
             'desc'      => __('messages.home.services_legal_desc'),
             'cta'       => __('messages.home.services_legal_cta'),
+            'badge'     => __('messages.home.services_legal_title'),
             'url'       => url('/verification-legale'),
         ],
         'ae' => [
             'placement' => 'front-ae-banner',
             'icon'      => 'gavel',
-            'grad'      => 'linear-gradient(135deg,#0f172a,#1e293b)',
             'title'     => __('messages.home.services_ae_title'),
             'desc'      => __('messages.home.services_ae_desc'),
             'cta'       => __('messages.home.services_ae_cta'),
+            'badge'     => __('messages.home.services_ae_title'),
             'url'       => route('nadoautoenchere.prelogin'),
         ],
     ];
+
     // Mode 'auto' : rotation quotidienne parmi les bannières actives.
     if (($service ?? '') === 'auto') {
         $__srvActivePlacements = \App\Models\Publication::whereIn('placement', array_column($__srvMap, 'placement'))
             ->where('status', 1)
             ->pluck('placement')
             ->all();
-        // Reconstruit un tableau ordonné { key => cfg } des services actifs
-        // en préservant l'ordre déclaré dans $__srvMap (déterministe).
         $__srvActiveList = [];
         foreach ($__srvMap as $k => $cfg) {
             if (in_array($cfg['placement'], $__srvActivePlacements, true)) {
@@ -88,11 +81,7 @@
         }
         $__srvCfg = null;
         if (count($__srvActiveList)) {
-            // Index du jour UTC (incrément toutes les 24h) + offset.
-            // `offset` (int) prime sur le `slot` (string) : passer des offsets
-            // séquentiels (0, 1, 2, …) garantit des bannières différentes
-            // entre includes adjacents — pas de collision CRC32 possible.
-            $__dayIdx    = (int) floor(time() / 86400);
+            $__dayIdx = (int) floor(time() / 86400);
             if (isset($offset) && is_numeric($offset)) {
                 $__slotOff = (int) $offset;
             } else {
@@ -112,113 +101,134 @@
 @endphp
 
 @if($__srvActive)
-    <a href="{{ $__srvCfg['url'] }}" class="srv-card-std" style="--srv-grad: {{ $__srvCfg['grad'] }};">
-        <span class="srv-card-std__shimmer" aria-hidden="true"></span>
-        <div class="srv-card-std__ico" aria-hidden="true">
-            <i data-lucide="{{ $__srvCfg['icon'] }}" style="width:22px;height:22px;"></i>
-        </div>
-        <div class="srv-card-std__body">
-            <div class="srv-card-std__title">{{ $__srvCfg['title'] }}</div>
-            <div class="srv-card-std__desc">{{ $__srvCfg['desc'] }}</div>
-        </div>
-        <div class="srv-card-std__cta">
-            <span>{{ $__srvCfg['cta'] }}</span>
-            <svg class="srv-card-std__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
+    <a href="{{ $__srvCfg['url'] }}" class="svc-promo-link">
+        <div class="svc-promo-card">
+            <div class="svc-promo-glow" aria-hidden="true"></div>
+            <div class="svc-promo-shimmer" aria-hidden="true"></div>
+            <div class="svc-promo-content">
+                <div class="svc-promo-badge">
+                    <span class="svc-promo-dot" aria-hidden="true"></span>
+                    <span>{{ $__srvCfg['badge'] }}</span>
+                </div>
+                <h3 class="svc-promo-title">{{ $__srvCfg['title'] }}</h3>
+                <p class="svc-promo-desc">{{ $__srvCfg['desc'] }}</p>
+            </div>
+            <div class="svc-promo-cta-wrap">
+                <span class="svc-promo-cta">
+                    <span>{{ $__srvCfg['cta'] }}</span>
+                    <svg class="svc-promo-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </span>
+            </div>
         </div>
     </a>
 
     @once
         <style>
-            .srv-card-std {
+            .svc-promo-link { display: block; text-decoration: none; color: inherit; margin: 16px 0; }
+            .svc-promo-card {
                 position: relative;
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                padding: 16px 18px;
-                margin: 8px auto;
-                max-width: 100%;
-                background: var(--srv-grad, #1459DD);
-                color: #fff;
-                border-radius: 16px;
-                text-decoration: none;
-                box-shadow: 0 12px 26px -14px rgba(15,23,42,.4);
+                gap: 24px;
+                padding: 22px 28px;
+                background: linear-gradient(135deg, #0f172a 0%, #1459DD 55%, #2563eb 100%);
+                border-radius: 18px;
                 overflow: hidden;
+                box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
                 font-family: 'Inter', sans-serif;
-                /* Bounce PERMANENT de toute la carte — amplitude bien visible,
-                   cycle court. S'arrête UNIQUEMENT via prefers-reduced-motion. */
-                animation: srvCardBounce 1.6s cubic-bezier(.28,.84,.42,1) infinite;
-                /* `will-change` indique au navigateur de composer la carte sur
-                   son propre layer GPU — le bounce reste fluide sous cache. */
+                animation: svcCardIn .7s cubic-bezier(.22,.9,.32,1.2) both,
+                           svcCardBounce 1.8s cubic-bezier(.28,.84,.42,1) .7s infinite;
                 will-change: transform;
             }
-            /* Hover : on accélère, on garde le bounce. */
-            .srv-card-std:hover { animation-duration: .8s; box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
-
-            /* Shimmer continu + sweep accéléré au hover. */
-            .srv-card-std__shimmer {
-                position: absolute; top: 0; bottom: 0;
-                width: 160px;
-                background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.16) 50%, transparent 100%);
+            .svc-promo-glow {
+                position: absolute;
+                top: -60px;
+                right: -60px;
+                width: 240px;
+                height: 240px;
+                background: radial-gradient(circle, rgba(253,216,23,.35) 0%, transparent 70%);
+                pointer-events: none;
+                animation: svcGlow 3.5s ease-in-out infinite;
+            }
+            html[dir="rtl"] .svc-promo-glow { right: auto; left: -60px; }
+            .svc-promo-shimmer {
+                position: absolute;
+                top: 0; bottom: 0;
+                width: 140px;
+                background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.14) 50%, transparent 100%);
                 transform: skewX(-18deg);
                 pointer-events: none;
-                animation: srvShimmer 4.5s ease-in-out infinite;
+                animation: svcShimmer 4.5s ease-in-out infinite;
             }
-            .srv-card-std:hover .srv-card-std__shimmer { animation-duration: 1.2s; }
-
-            .srv-card-std__ico {
-                width: 44px; height: 44px; flex-shrink: 0;
-                border-radius: 12px;
-                background: rgba(255,255,255,.18);
-                display: flex; align-items: center; justify-content: center;
-                position: relative; z-index: 1;
-            }
-            /* Icône statique — le bounce est sur la carte entière maintenant. */
-
-            .srv-card-std__body { flex: 1; min-width: 0; position: relative; z-index: 1; }
-            .srv-card-std__title { font-weight: 900; font-size: 1.02rem; line-height: 1.2; }
-            .srv-card-std__desc  { font-size: .85rem; opacity: .85; line-height: 1.35; margin-top: 2px; }
-            .srv-card-std__cta {
-                flex-shrink: 0;
-                display: inline-flex; align-items: center; gap: 6px;
-                padding: 8px 14px;
-                background: rgba(255,255,255,.2);
+            .svc-promo-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
+            .svc-promo-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 10px;
+                background: rgba(253,216,23,.18);
+                color: #FDD817;
                 border-radius: 999px;
-                font-size: .82rem; font-weight: 800;
-                position: relative; z-index: 1;
+                font-size: .72rem;
+                font-weight: 800;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+                margin-bottom: 8px;
             }
-            .srv-card-std__arrow { animation: srvArrow 1.4s ease-in-out infinite; }
-            html[dir="rtl"] .srv-card-std__arrow {
-                transform: scaleX(-1);
-                animation: srvArrowRtl 1.4s ease-in-out infinite;
+            .svc-promo-dot {
+                width: 7px; height: 7px; border-radius: 50%;
+                background: #FDD817;
+                box-shadow: 0 0 0 0 rgba(253,216,23,.7);
+                animation: svcPulse 1.8s ease-in-out infinite;
             }
+            .svc-promo-title { margin: 0 0 4px; font-size: 1.4rem; font-weight: 900; line-height: 1.15; letter-spacing: -.01em; color: #fff; }
+            .svc-promo-desc  { margin: 0; font-size: .92rem; letter-spacing: .02em; color: rgba(255,255,255,.82); }
+            .svc-promo-cta-wrap { flex-shrink: 0; position: relative; z-index: 1; }
+            .svc-promo-cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 13px 22px;
+                background: #FDD817;
+                color: #0f172a;
+                border-radius: 12px;
+                font-weight: 800;
+                font-size: .95rem;
+                box-shadow: 0 8px 20px -6px rgba(253,216,23,.55);
+                position: relative;
+                overflow: hidden;
+            }
+            .svc-promo-cta::after {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+                transform: translateX(-120%);
+                animation: svcCtaShine 3s ease-in-out infinite;
+                pointer-events: none;
+            }
+            .svc-promo-link:hover .svc-promo-cta { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(253,216,23,.65); transition: transform .15s ease, box-shadow .15s ease; }
+            .svc-promo-arrow { animation: svcArrow 1.4s ease-in-out infinite; }
+            html[dir="rtl"] .svc-promo-arrow { transform: scaleX(-1); animation: svcArrowRtl 1.4s ease-in-out infinite; }
 
-            /* Bounce vertical permanent de la carte entière :
-               haut–bas prononcé pour être repérable au scroll. */
-            @keyframes srvCardBounce {
-                0%   { transform: translateY(0); }
-                25%  { transform: translateY(-14px); }
-                50%  { transform: translateY(0); }
-                75%  { transform: translateY(-6px); }
-                100% { transform: translateY(0); }
-            }
-            @keyframes srvShimmer { 0% { left:-30%; } 60%,100% { left:120%; } }
-            @keyframes srvArrow   { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
-            @keyframes srvArrowRtl{ 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
+            @keyframes svcCardIn     { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+            @keyframes svcCardBounce { 0% { transform:translateY(0); } 25% { transform:translateY(-14px); } 50% { transform:translateY(0); } 75% { transform:translateY(-6px); } 100% { transform:translateY(0); } }
+            @keyframes svcGlow       { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
+            @keyframes svcShimmer    { 0% { left:-25%; } 60%,100% { left:120%; } }
+            @keyframes svcPulse      { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
+            @keyframes svcCtaShine   { 0% { transform:translateX(-120%); } 60%,100% { transform:translateX(120%); } }
+            @keyframes svcArrow      { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
+            @keyframes svcArrowRtl   { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
 
             @media (prefers-reduced-motion: reduce) {
-                .srv-card-std,
-                .srv-card-std__shimmer,
-                .srv-card-std__arrow { animation: none; }
+                .svc-promo-card, .svc-promo-glow, .svc-promo-shimmer,
+                .svc-promo-dot, .svc-promo-cta::after, .svc-promo-arrow { animation: none; }
             }
-
-            @media (max-width: 560px) {
-                .srv-card-std { padding: 14px; gap: 10px; }
-                .srv-card-std__title { font-size: .95rem; }
-                .srv-card-std__desc  { display: none; }
-                .srv-card-std__cta   { padding: 6px 10px; font-size: .75rem; }
-                .srv-card-std__ico   { width: 38px; height: 38px; }
+            @media (max-width: 720px) {
+                .svc-promo-card { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; padding: 20px; }
+                .svc-promo-title { font-size: 1.2rem; }
+                .svc-promo-cta { width: 100%; justify-content: center; }
             }
         </style>
     @endonce
