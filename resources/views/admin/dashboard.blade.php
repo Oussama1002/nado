@@ -154,6 +154,8 @@
     }
     /* Forcer le blanc sur toute la tuile (le thème colore sinon les spans/liens). */
     .dash-action, .dash-action:hover, .dash-action * { color: #fff !important; }
+    /* Les libellés étaient illisibles sur fond coloré (contraste insuffisant). */
+    .dash-action .dash-action__lbl { color: #0f172a !important; opacity: 1; }
     .dash-action:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15,23,42,.18); }
     .dash-action--amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .dash-action--blue  { background: linear-gradient(135deg, #3b82f6, #1459DD); }
