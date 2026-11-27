@@ -3806,8 +3806,12 @@
             }
 
             .drawer-links {
-                flex: 1;
-                overflow-y: auto;
+                /* flex:1 faisait disparaître les liens quand le footer
+                   devenait très haut (slider ajouté). flex-shrink:0 force
+                   les liens à garder leur taille naturelle, et le
+                   drawer-content (overflow-y:auto) scroll si tout le
+                   contenu dépasse la hauteur de l'écran. */
+                flex: 0 0 auto;
                 padding: 16px 32px;
                 display: flex;
                 flex-direction: column;
@@ -3833,6 +3837,10 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                /* Pas de flex-shrink non plus — le footer garde sa hauteur
+                   naturelle et le scroll du drawer-content prend le relais
+                   quand on dépasse le viewport. */
+                flex: 0 0 auto;
             }
 
             .drawer-cta {
