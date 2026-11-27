@@ -114,7 +114,7 @@
 @if($__srvActive)
     <a href="{{ $__srvCfg['url'] }}" class="srv-card-std" style="--srv-grad: {{ $__srvCfg['grad'] }};">
         <span class="srv-card-std__shimmer" aria-hidden="true"></span>
-        <div class="srv-card-std__ico srv-card-std__ico--bounce" aria-hidden="true">
+        <div class="srv-card-std__ico" aria-hidden="true">
             <i data-lucide="{{ $__srvCfg['icon'] }}" style="width:22px;height:22px;"></i>
         </div>
         <div class="srv-card-std__body">
@@ -145,12 +145,13 @@
                 text-decoration: none;
                 box-shadow: 0 12px 26px -14px rgba(15,23,42,.4);
                 overflow: hidden;
-                transition: transform .15s ease, box-shadow .15s ease;
                 font-family: 'Inter', sans-serif;
-                /* Entrée façon "pop" élastique — joue une fois au scroll. */
-                animation: srvPopIn .7s cubic-bezier(.22,1.3,.36,1) both;
+                /* Bounce PERMANENT de toute la carte — s'arrête UNIQUEMENT
+                   si l'utilisateur a prefers-reduced-motion. */
+                animation: srvCardBounce 2.4s cubic-bezier(.28,.84,.42,1) infinite;
             }
-            .srv-card-std:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
+            /* Au hover : on garde le bounce mais on l'accélère + élévation. */
+            .srv-card-std:hover { animation-duration: 1.1s; box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
 
             /* Shimmer continu + sweep accéléré au hover. */
             .srv-card-std__shimmer {
@@ -170,9 +171,7 @@
                 display: flex; align-items: center; justify-content: center;
                 position: relative; z-index: 1;
             }
-            /* Bounce en boucle sur l'icône + accéléré au hover. */
-            .srv-card-std__ico--bounce { animation: srvBounce 2.1s cubic-bezier(.28,.84,.42,1) infinite; }
-            .srv-card-std:hover .srv-card-std__ico--bounce { animation-duration: .9s; }
+            /* Icône statique — le bounce est sur la carte entière maintenant. */
 
             .srv-card-std__body { flex: 1; min-width: 0; position: relative; z-index: 1; }
             .srv-card-std__title { font-weight: 900; font-size: 1.02rem; line-height: 1.2; }
@@ -192,8 +191,13 @@
                 animation: srvArrowRtl 1.4s ease-in-out infinite;
             }
 
-            @keyframes srvPopIn   { 0% { opacity:0; transform:translateY(12px) scale(.96); } 60% { opacity:1; transform:translateY(-3px) scale(1.01); } 100% { opacity:1; transform:translateY(0) scale(1); } }
-            @keyframes srvBounce  { 0%,20%,53%,80%,100% { transform:translateY(0); } 40%,43% { transform:translateY(-8px); } 70% { transform:translateY(-4px); } 90% { transform:translateY(-2px); } }
+            /* Bounce vertical permanent de la carte entière. */
+            @keyframes srvCardBounce {
+                0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+                40%, 43%                { transform: translateY(-10px); }
+                70%                     { transform: translateY(-5px); }
+                90%                     { transform: translateY(-2px); }
+            }
             @keyframes srvShimmer { 0% { left:-30%; } 60%,100% { left:120%; } }
             @keyframes srvArrow   { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
             @keyframes srvArrowRtl{ 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
@@ -201,7 +205,6 @@
             @media (prefers-reduced-motion: reduce) {
                 .srv-card-std,
                 .srv-card-std__shimmer,
-                .srv-card-std__ico--bounce,
                 .srv-card-std__arrow { animation: none; }
             }
 
