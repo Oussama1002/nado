@@ -5183,14 +5183,17 @@
             }
             .expert-modal__close:hover { color: #fff; background: rgba(255,255,255,.18); }
             .expert-modal__title {
-                font-size: 1.3rem;
+                font-size: 1.25rem;
                 font-weight: 900;
                 color: #fff;
                 text-transform: uppercase;
                 letter-spacing: -0.02em;
-                margin: 0 2.5rem .35rem 0;
-                line-height: 1.15;
+                /* Marge droite réservée au bouton X (évite tout chevauchement). */
+                margin: 0 3rem .35rem 0;
+                line-height: 1.2;
             }
+            /* Le span .text-primary dans le titre doit rester lisible sur fond sombre. */
+            .expert-modal__title .text-primary { color: #FDD817 !important; }
             .expert-modal__subtitle {
                 color: rgba(255, 255, 255, 0.6);
                 font-size: .85rem;
@@ -5266,6 +5269,10 @@
                 m.classList.add('open');
                 m.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                // Force le scroll du dialog en haut SINON le navigateur peut
+                // sauter sur le 1er input focusable et masquer le titre.
+                var dlg = m.querySelector('.expert-modal__dialog');
+                if (dlg) { dlg.scrollTop = 0; }
             }
             function closeExpertModal() {
                 var m = document.getElementById('expertModal');
