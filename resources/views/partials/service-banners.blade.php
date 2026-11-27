@@ -146,12 +146,15 @@
                 box-shadow: 0 12px 26px -14px rgba(15,23,42,.4);
                 overflow: hidden;
                 font-family: 'Inter', sans-serif;
-                /* Bounce PERMANENT de toute la carte — s'arrête UNIQUEMENT
-                   si l'utilisateur a prefers-reduced-motion. */
-                animation: srvCardBounce 2.4s cubic-bezier(.28,.84,.42,1) infinite;
+                /* Bounce PERMANENT de toute la carte — amplitude bien visible,
+                   cycle court. S'arrête UNIQUEMENT via prefers-reduced-motion. */
+                animation: srvCardBounce 1.6s cubic-bezier(.28,.84,.42,1) infinite;
+                /* `will-change` indique au navigateur de composer la carte sur
+                   son propre layer GPU — le bounce reste fluide sous cache. */
+                will-change: transform;
             }
-            /* Au hover : on garde le bounce mais on l'accélère + élévation. */
-            .srv-card-std:hover { animation-duration: 1.1s; box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
+            /* Hover : on accélère, on garde le bounce. */
+            .srv-card-std:hover { animation-duration: .8s; box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
 
             /* Shimmer continu + sweep accéléré au hover. */
             .srv-card-std__shimmer {
@@ -191,12 +194,14 @@
                 animation: srvArrowRtl 1.4s ease-in-out infinite;
             }
 
-            /* Bounce vertical permanent de la carte entière. */
+            /* Bounce vertical permanent de la carte entière :
+               haut–bas prononcé pour être repérable au scroll. */
             @keyframes srvCardBounce {
-                0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
-                40%, 43%                { transform: translateY(-10px); }
-                70%                     { transform: translateY(-5px); }
-                90%                     { transform: translateY(-2px); }
+                0%   { transform: translateY(0); }
+                25%  { transform: translateY(-14px); }
+                50%  { transform: translateY(0); }
+                75%  { transform: translateY(-6px); }
+                100% { transform: translateY(0); }
             }
             @keyframes srvShimmer { 0% { left:-30%; } 60%,100% { left:120%; } }
             @keyframes srvArrow   { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
