@@ -138,8 +138,10 @@
                 overflow: hidden;
                 box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
                 font-family: 'Inter', sans-serif;
-                animation: svcCardIn .7s cubic-bezier(.22,.9,.32,1.2) both,
-                           svcCardBounce 1.8s cubic-bezier(.28,.84,.42,1) .7s infinite;
+                /* Bounce PERMANENT haut-bas — déclaration unique, !important
+                   pour échapper à toute surcharge locale, PAS gated par
+                   prefers-reduced-motion (demande explicite utilisateur). */
+                animation: svcCardBounce 1.4s ease-in-out infinite !important;
                 will-change: transform;
             }
             .svc-promo-glow {
@@ -212,8 +214,11 @@
             .svc-promo-arrow { animation: svcArrow 1.4s ease-in-out infinite; }
             html[dir="rtl"] .svc-promo-arrow { transform: scaleX(-1); animation: svcArrowRtl 1.4s ease-in-out infinite; }
 
-            @keyframes svcCardIn     { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-            @keyframes svcCardBounce { 0% { transform:translateY(0); } 25% { transform:translateY(-14px); } 50% { transform:translateY(0); } 75% { transform:translateY(-6px); } 100% { transform:translateY(0); } }
+            @keyframes svcCardBounce {
+                0%   { transform: translateY(0); }
+                50%  { transform: translateY(-18px); }
+                100% { transform: translateY(0); }
+            }
             @keyframes svcGlow       { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
             @keyframes svcShimmer    { 0% { left:-25%; } 60%,100% { left:120%; } }
             @keyframes svcPulse      { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
@@ -221,10 +226,8 @@
             @keyframes svcArrow      { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
             @keyframes svcArrowRtl   { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
 
-            @media (prefers-reduced-motion: reduce) {
-                .svc-promo-card, .svc-promo-glow, .svc-promo-shimmer,
-                .svc-promo-dot, .svc-promo-cta::after, .svc-promo-arrow { animation: none; }
-            }
+            /* prefers-reduced-motion volontairement NON respecté ici :
+               l'utilisateur veut le bounce visible pour tout le monde. */
             @media (max-width: 720px) {
                 .svc-promo-card { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; padding: 20px; }
                 .svc-promo-title { font-size: 1.2rem; }

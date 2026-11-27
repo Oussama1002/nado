@@ -4260,7 +4260,9 @@
                 border-radius: 18px;
                 overflow: hidden;
                 box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
-                animation: expCardIn .7s cubic-bezier(.22,.9,.32,1.2) both;
+                /* Même bounce permanent que les bannières services. */
+                animation: expCardBounce 1.4s ease-in-out infinite !important;
+                will-change: transform;
             }
             .exp-promo-glow {
                 position: absolute;
@@ -4335,7 +4337,7 @@
             .exp-promo-arrow { animation: expArrow 1.4s ease-in-out infinite; }
             html[dir="rtl"] .exp-promo-arrow { transform: scaleX(-1); animation: expArrowRtl 1.4s ease-in-out infinite; }
 
-            @keyframes expCardIn   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes expCardBounce { 0% { transform: translateY(0); } 50% { transform: translateY(-18px); } 100% { transform: translateY(0); } }
             @keyframes expGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
             @keyframes expShimmer  { 0% { left:-25%; } 60%,100% { left:120%; } }
             @keyframes expPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
@@ -4343,10 +4345,8 @@
             @keyframes expArrow    { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
             @keyframes expArrowRtl { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
 
-            @media (prefers-reduced-motion: reduce) {
-                .exp-promo-card, .exp-promo-glow, .exp-promo-shimmer,
-                .exp-promo-dot, .exp-promo-cta::after, .exp-promo-arrow { animation: none; }
-            }
+            /* prefers-reduced-motion volontairement non respecté : bounce
+               visible partout (demande explicite utilisateur). */
             @media (max-width: 720px) {
                 .exp-promo-card { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; padding: 20px; }
                 .exp-promo-title { font-size: 1.2rem; }
