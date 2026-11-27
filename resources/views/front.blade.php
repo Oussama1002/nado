@@ -4217,11 +4217,10 @@
             <div class="container exp-promo-wrap">
                 <div class="exp-promo-card">
                     <div class="exp-promo-glow" aria-hidden="true"></div>
+                    <div class="exp-promo-shimmer" aria-hidden="true"></div>
                     <div class="exp-promo-content">
                         <div class="exp-promo-badge">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2l2.39 7.35H22l-6.19 4.5L18.2 22 12 17.5 5.8 22l2.39-8.15L2 9.35h7.61z"/>
-                            </svg>
+                            <span class="exp-promo-dot" aria-hidden="true"></span>
                             <span>{{ __('messages.expert.promo_badge') }}</span>
                         </div>
                         <h3 class="exp-promo-title">{{ __('messages.expert.promo_title') }}</h3>
@@ -4230,7 +4229,7 @@
                     <div class="exp-promo-cta-wrap">
                         <button type="button" class="exp-promo-cta" onclick="openExpertModal()">
                             <span>{{ __('messages.expert.promo_cta') }}</span>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="exp-promo-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                             </svg>
                         </button>
@@ -4251,6 +4250,7 @@
                 border-radius: 18px;
                 overflow: hidden;
                 box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
+                animation: expCardIn .7s cubic-bezier(.22,.9,.32,1.2) both;
             }
             .exp-promo-glow {
                 position: absolute;
@@ -4260,8 +4260,18 @@
                 height: 240px;
                 background: radial-gradient(circle, rgba(253,216,23,.35) 0%, transparent 70%);
                 pointer-events: none;
+                animation: expGlow 3.5s ease-in-out infinite;
             }
             html[dir="rtl"] .exp-promo-glow { right: auto; left: -60px; }
+            .exp-promo-shimmer {
+                position: absolute;
+                top: 0; bottom: 0;
+                width: 140px;
+                background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.14) 50%, transparent 100%);
+                transform: skewX(-18deg);
+                pointer-events: none;
+                animation: expShimmer 4.5s ease-in-out infinite;
+            }
             .exp-promo-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
             .exp-promo-badge {
                 display: inline-flex;
@@ -4277,8 +4287,14 @@
                 text-transform: uppercase;
                 margin-bottom: 8px;
             }
-            .exp-promo-title { margin: 0 0 6px; font-size: 1.35rem; font-weight: 900; line-height: 1.2; letter-spacing: -.01em; }
-            .exp-promo-desc { margin: 0; font-size: .95rem; line-height: 1.5; color: rgba(255,255,255,.85); }
+            .exp-promo-dot {
+                width: 7px; height: 7px; border-radius: 50%;
+                background: var(--secondary);
+                box-shadow: 0 0 0 0 rgba(253,216,23,.7);
+                animation: expPulse 1.8s ease-in-out infinite;
+            }
+            .exp-promo-title { margin: 0 0 4px; font-size: 1.4rem; font-weight: 900; line-height: 1.15; letter-spacing: -.01em; }
+            .exp-promo-desc  { margin: 0; font-size: .92rem; letter-spacing: .02em; color: rgba(255,255,255,.82); }
             .exp-promo-cta-wrap { flex-shrink: 0; position: relative; z-index: 1; }
             .exp-promo-cta {
                 display: inline-flex;
@@ -4294,11 +4310,36 @@
                 cursor: pointer;
                 box-shadow: 0 8px 20px -6px rgba(253,216,23,.55);
                 transition: transform .15s ease, box-shadow .15s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .exp-promo-cta::after {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+                transform: translateX(-120%);
+                animation: expCtaShine 3s ease-in-out infinite;
+                pointer-events: none;
             }
             .exp-promo-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(253,216,23,.65); }
+            .exp-promo-arrow { animation: expArrow 1.4s ease-in-out infinite; }
+            html[dir="rtl"] .exp-promo-arrow { transform: scaleX(-1); animation: expArrowRtl 1.4s ease-in-out infinite; }
+
+            @keyframes expCardIn   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes expGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
+            @keyframes expShimmer  { 0% { left:-25%; } 60%,100% { left:120%; } }
+            @keyframes expPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
+            @keyframes expCtaShine { 0% { transform:translateX(-120%); } 60%,100% { transform:translateX(120%); } }
+            @keyframes expArrow    { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
+            @keyframes expArrowRtl { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
+
+            @media (prefers-reduced-motion: reduce) {
+                .exp-promo-card, .exp-promo-glow, .exp-promo-shimmer,
+                .exp-promo-dot, .exp-promo-cta::after, .exp-promo-arrow { animation: none; }
+            }
             @media (max-width: 720px) {
                 .exp-promo-card { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; padding: 20px; }
-                .exp-promo-title { font-size: 1.15rem; }
+                .exp-promo-title { font-size: 1.2rem; }
                 .exp-promo-cta { width: 100%; justify-content: center; }
             }
         </style>
