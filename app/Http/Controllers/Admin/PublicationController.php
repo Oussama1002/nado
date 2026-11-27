@@ -24,7 +24,7 @@ class PublicationController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'nullable|image',
-            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-expert-banner',
+            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-expert-banner,front-demandes-banner,front-estim-banner,front-finance-banner,front-legal-banner,front-ae-banner',
             'content' => 'nullable|string',
             'status' => 'nullable|boolean',
         ]);
@@ -58,7 +58,7 @@ class PublicationController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
             'image' => 'nullable|image',
-            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-expert-banner',
+            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-expert-banner,front-demandes-banner,front-estim-banner,front-finance-banner,front-legal-banner,front-ae-banner',
             'status' => 'nullable|boolean',
         ]);
 

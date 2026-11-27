@@ -55,6 +55,24 @@ return [
 
     // Section headings keep their two-tone spans, so they are rendered with {!! !!}.
     'home' => [
+        // "Nos services" strip — cartes mini-bannières gated par Publication.
+        'services_heading'         => 'Nos <span class="text-primary">services</span>',
+        'services_demandes_title'  => 'Demande d\'achat',
+        'services_demandes_desc'   => 'Dites-nous ce que vous cherchez.',
+        'services_demandes_cta'    => 'Publier',
+        'services_estim_title'     => 'Estimation gratuite',
+        'services_estim_desc'      => 'Prix réel en 2 min.',
+        'services_estim_cta'       => 'Estimer',
+        'services_finance_title'   => 'Financement',
+        'services_finance_desc'    => 'Simulez votre crédit auto.',
+        'services_finance_cta'     => 'Simuler',
+        'services_legal_title'     => 'Vérif. légale',
+        'services_legal_desc'      => 'Pas d\'opposition NARSA ?',
+        'services_legal_cta'       => 'Vérifier',
+        'services_ae_title'        => 'Auto-Enchère B2B',
+        'services_ae_desc'         => 'Enchères pros exclusives.',
+        'services_ae_cta'          => 'Découvrir',
+
         'vehicles_heading'     => 'Nos <br><span class="text-primary">DERNIERS</span> <span class="text-secondary">VÉHICULES</span>',
         'story_heading'        => '<span class="nado-b">NADO</span><span class="nado-y">.MA</span> sur les réseaux : Ne ratez rien !',
         'certified_heading'    => 'Dernières <br><span class="text-primary">ANNONCES</span> <span class="text-secondary">CERTIFIÉES</span>',

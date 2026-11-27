@@ -54,6 +54,24 @@ return [
 
     // Section headings keep their two-tone spans, so they are rendered with {!! !!}.
     'home' => [
+        // شريط "خدماتنا" — بطاقات مصغّرة مرتبطة بسجلّات Publications.
+        'services_heading'         => '<span class="text-primary">خدماتنا</span>',
+        'services_demandes_title'  => 'طلب شراء',
+        'services_demandes_desc'   => 'أخبرونا ما الذي تبحثون عنه.',
+        'services_demandes_cta'    => 'نشر',
+        'services_estim_title'     => 'تقدير مجاني',
+        'services_estim_desc'      => 'السعر الحقيقي في دقيقتين.',
+        'services_estim_cta'       => 'تقدير',
+        'services_finance_title'   => 'التمويل',
+        'services_finance_desc'    => 'احسبوا قرض السيارة.',
+        'services_finance_cta'     => 'محاكاة',
+        'services_legal_title'     => 'التحقق القانوني',
+        'services_legal_desc'      => 'لا توجد معارضة NARSA؟',
+        'services_legal_cta'       => 'تحقق',
+        'services_ae_title'        => 'مزادات للمحترفين',
+        'services_ae_desc'         => 'مزادات حصرية للمحترفين.',
+        'services_ae_cta'          => 'اكتشفوا',
+
         'vehicles_heading'     => 'أحدث <span class="text-primary">سيارات</span> <span class="text-secondary">نادو</span>',
         'story_heading'        => '<span class="nado-b">نادو</span><span class="nado-y">.ما</span> على مواقع التواصل: لا تفوّت شيئًا !',
         'certified_heading'    => 'آخر <span class="text-primary">الإعلانات</span> <span class="text-secondary">المعتمدة</span>',

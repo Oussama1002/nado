@@ -41,6 +41,11 @@
                 <option value="reprise-hero" {{ old('placement', $publication->placement) == 'reprise-hero' ? 'selected' : '' }}>Image hero — Reprise (/reprises/formulaire)</option>
                 <option value="front-estimation" {{ old('placement', $publication->placement) == 'front-estimation' ? 'selected' : '' }}>Image section « Estimation » — Accueil</option>
                 <option value="front-expert-banner" {{ old('placement', $publication->placement) == 'front-expert-banner' ? 'selected' : '' }}>Bannière « Expert NADO » — Accueil (visuel codé, image ignorée)</option>
+                <option value="front-demandes-banner" {{ old('placement', $publication->placement) == 'front-demandes-banner' ? 'selected' : '' }}>Bannière service « Demandes » — Accueil (visuel codé)</option>
+                <option value="front-estim-banner" {{ old('placement', $publication->placement) == 'front-estim-banner' ? 'selected' : '' }}>Bannière service « Estimation » — Accueil (visuel codé)</option>
+                <option value="front-finance-banner" {{ old('placement', $publication->placement) == 'front-finance-banner' ? 'selected' : '' }}>Bannière service « Financement » — Accueil (visuel codé)</option>
+                <option value="front-legal-banner" {{ old('placement', $publication->placement) == 'front-legal-banner' ? 'selected' : '' }}>Bannière service « Vérification légale (NARSA) » — Accueil (visuel codé)</option>
+                <option value="front-ae-banner" {{ old('placement', $publication->placement) == 'front-ae-banner' ? 'selected' : '' }}>Bannière service « Auto-Enchère B2B » — Accueil (visuel codé)</option>
 
 
             </select>

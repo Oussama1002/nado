@@ -13,6 +13,11 @@
         'reprise-hero'               => ['label' => 'Image hero — Reprise',                     'page' => 'Reprise — Formulaire',                  'url' => url('/reprises/formulaire')],
         'front-estimation'           => ['label' => 'Image section « Estimation »',             'page' => 'Page d\'accueil',                       'url' => url('/')],
         'front-expert-banner'        => ['label' => 'Bannière « Expert NADO » (codée)',         'page' => 'Page d\'accueil',                       'url' => url('/')],
+        'front-demandes-banner'      => ['label' => 'Bannière service « Demandes » (codée)',    'page' => 'Page d\'accueil',                       'url' => url('/')],
+        'front-estim-banner'         => ['label' => 'Bannière service « Estimation » (codée)',  'page' => 'Page d\'accueil',                       'url' => url('/')],
+        'front-finance-banner'       => ['label' => 'Bannière service « Financement » (codée)', 'page' => 'Page d\'accueil',                       'url' => url('/')],
+        'front-legal-banner'         => ['label' => 'Bannière service « Vérif. légale » (codée)','page' => 'Page d\'accueil',                       'url' => url('/')],
+        'front-ae-banner'            => ['label' => 'Bannière service « Auto-Enchère » (codée)','page' => 'Page d\'accueil',                       'url' => url('/')],
         // Anciens placements (lignes existantes en base qu'on n'expose plus dans le dropdown).
         'left-banner'                => ['label' => 'Bannière Gauche (obsolète)',               'page' => '—',                                     'url' => null],
         'right-banner'               => ['label' => 'Bannière Droite (obsolète)',               'page' => '—',                                     'url' => null],

@@ -4355,6 +4355,145 @@
         </style>
         @endif
 
+        <!-- 3a-ter. STRIP "NOS SERVICES" (mini-bannières codées, gated Publication) -->
+        @php
+            // Active placements only — chaque carte se masque indépendamment
+            // depuis /admin/publications (status=0 ou suppression de la ligne).
+            $srvPlacements = ['front-demandes-banner','front-estim-banner','front-finance-banner','front-legal-banner','front-ae-banner'];
+            $srvActive = \App\Models\Publication::whereIn('placement', $srvPlacements)
+                ->where('status', 1)
+                ->pluck('placement')
+                ->flip();
+            $srvAny = count($srvActive) > 0;
+
+            $srvCards = [
+                'front-demandes-banner' => [
+                    'icon'  => 'shopping-cart',
+                    'grad'  => 'linear-gradient(135deg,#1459DD,#2563eb)',
+                    'title' => __('messages.home.services_demandes_title'),
+                    'desc'  => __('messages.home.services_demandes_desc'),
+                    'cta'   => __('messages.home.services_demandes_cta'),
+                    'url'   => route('demandes.create'),
+                ],
+                'front-estim-banner' => [
+                    'icon'  => 'calculator',
+                    'grad'  => 'linear-gradient(135deg,#16a34a,#22c55e)',
+                    'title' => __('messages.home.services_estim_title'),
+                    'desc'  => __('messages.home.services_estim_desc'),
+                    'cta'   => __('messages.home.services_estim_cta'),
+                    'url'   => route('estimate.page'),
+                ],
+                'front-finance-banner' => [
+                    'icon'  => 'credit-card',
+                    'grad'  => 'linear-gradient(135deg,#d97706,#f59e0b)',
+                    'title' => __('messages.home.services_finance_title'),
+                    'desc'  => __('messages.home.services_finance_desc'),
+                    'cta'   => __('messages.home.services_finance_cta'),
+                    'url'   => url('/financement'),
+                ],
+                'front-legal-banner' => [
+                    'icon'  => 'shield-check',
+                    'grad'  => 'linear-gradient(135deg,#7c3aed,#a855f7)',
+                    'title' => __('messages.home.services_legal_title'),
+                    'desc'  => __('messages.home.services_legal_desc'),
+                    'cta'   => __('messages.home.services_legal_cta'),
+                    'url'   => url('/verification-legale'),
+                ],
+                'front-ae-banner' => [
+                    'icon'  => 'gavel',
+                    'grad'  => 'linear-gradient(135deg,#0f172a,#1e293b)',
+                    'title' => __('messages.home.services_ae_title'),
+                    'desc'  => __('messages.home.services_ae_desc'),
+                    'cta'   => __('messages.home.services_ae_cta'),
+                    'url'   => route('nadoautoenchere.prelogin'),
+                ],
+            ];
+        @endphp
+        @if($srvAny)
+        <section class="srv-strip" aria-label="Services NADO">
+            <div class="container srv-wrap">
+                <h2 class="srv-heading">{!! __('messages.home.services_heading') !!}</h2>
+                <div class="srv-grid">
+                    @foreach($srvCards as $key => $c)
+                        @if(isset($srvActive[$key]))
+                            <a href="{{ $c['url'] }}" class="srv-card" style="--srv-grad: {{ $c['grad'] }};">
+                                <div class="srv-ico" aria-hidden="true">
+                                    <i data-lucide="{{ $c['icon'] }}" style="width:22px;height:22px;"></i>
+                                </div>
+                                <div class="srv-body">
+                                    <div class="srv-title">{{ $c['title'] }}</div>
+                                    <div class="srv-desc">{{ $c['desc'] }}</div>
+                                </div>
+                                <div class="srv-cta">
+                                    <span>{{ $c['cta'] }}</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </div>
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        <style>
+            .srv-strip { padding: 18px 0 8px; background: var(--white); }
+            .srv-wrap { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+            .srv-heading { margin: 0 0 14px; font-size: 1.1rem; font-weight: 900; color: #0f172a; letter-spacing: -.01em; }
+            .srv-grid {
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 12px;
+            }
+            .srv-card {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 14px 14px;
+                background: var(--srv-grad, #1459DD);
+                color: #fff;
+                border-radius: 14px;
+                text-decoration: none;
+                box-shadow: 0 10px 22px -12px rgba(15,23,42,.35);
+                overflow: hidden;
+                transition: transform .15s ease, box-shadow .15s ease;
+            }
+            .srv-card::after {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.18) 50%, transparent 80%);
+                transform: translateX(-120%);
+                transition: transform .6s ease;
+                pointer-events: none;
+            }
+            .srv-card:hover { transform: translateY(-3px); box-shadow: 0 16px 28px -10px rgba(15,23,42,.45); color: #fff; }
+            .srv-card:hover::after { transform: translateX(120%); }
+            .srv-ico {
+                width: 36px; height: 36px; flex-shrink: 0;
+                border-radius: 10px;
+                background: rgba(255,255,255,.18);
+                display: flex; align-items: center; justify-content: center;
+                position: relative; z-index: 1;
+            }
+            .srv-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+            .srv-title { font-weight: 900; font-size: .95rem; line-height: 1.15; }
+            .srv-desc  { font-size: .78rem; opacity: .85; line-height: 1.3; margin-top: 2px; }
+            .srv-cta {
+                flex-shrink: 0;
+                display: inline-flex; align-items: center; gap: 4px;
+                padding: 6px 10px;
+                background: rgba(255,255,255,.18);
+                border-radius: 999px;
+                font-size: .75rem; font-weight: 800;
+                position: relative; z-index: 1;
+            }
+            @media (max-width: 1100px) { .srv-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+            @media (max-width: 720px)  { .srv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .srv-desc { display:none; } }
+            @media (max-width: 420px)  { .srv-grid { grid-template-columns: 1fr; } .srv-desc { display:block; } }
+        </style>
+        @endif
+
 
         <!-- 3b. DERNIERS VEHICULES -->
         <section class="listings-section" id="derniers-vehicules" style="background-color: var(--white);">
