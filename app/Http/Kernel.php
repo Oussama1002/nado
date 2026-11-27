@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\InjectRadioMiniPlayer::class,
             \App\Http\Middleware\InjectPopupAutoEnchere::class,
+            \App\Http\Middleware\InjectPopupDemandes::class,
         ],
 
         'api' => [
