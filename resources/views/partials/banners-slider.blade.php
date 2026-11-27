@@ -241,15 +241,7 @@
         border-radius: 12px;
         font-weight: 800; font-size: .95rem;
         box-shadow: 0 8px 20px -6px rgba(253,216,23,.55);
-        position: relative; overflow: hidden;
-    }
-    .bsl-cta::after {
-        content: '';
-        position: absolute; inset: 0;
-        background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
-        transform: translateX(-120%);
-        animation: bslCtaShine 3s ease-in-out infinite;
-        pointer-events: none;
+        position: relative;
     }
     .bsl-link:hover .bsl-cta { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(253,216,23,.65); transition: transform .15s ease, box-shadow .15s ease; }
     .bsl-arrow { animation: bslArrow 1.4s ease-in-out infinite; }
@@ -271,7 +263,6 @@
     @keyframes bslCardZoom { 0% { transform: scale(0.94); } 50% { transform: scale(1.06); } 100% { transform: scale(0.94); } }
     @keyframes bslGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
     @keyframes bslPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
-    @keyframes bslCtaShine { 0% { transform:translateX(-120%); } 60%,100% { transform:translateX(120%); } }
     @keyframes bslArrow    { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
     @keyframes bslArrowRtl { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
 
