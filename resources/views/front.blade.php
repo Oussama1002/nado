@@ -5169,21 +5169,25 @@
                 to   { transform: translateY(0) scale(1); opacity: 1; }
             }
             .expert-modal__close {
+                /* fixed absolu dans le dialog, au-dessus du titre sticky
+                   (sinon le titre le masque). */
                 position: absolute;
-                top: .6rem;
-                right: .8rem;
-                background: rgba(255, 255, 255, .08);
-                border: none;
-                color: rgba(255, 255, 255, 0.85);
-                font-size: 1.4rem;
+                top: .55rem;
+                right: .6rem;
+                background: rgba(255, 255, 255, .14);
+                border: 1px solid rgba(255,255,255,.18);
+                color: #fff;
+                font-size: 1.3rem;
                 line-height: 1;
-                width: 32px;
-                height: 32px;
+                width: 34px;
+                height: 34px;
                 border-radius: 50%;
                 cursor: pointer;
-                transition: color 0.2s, background .2s;
+                transition: color 0.2s, background .2s, transform .15s;
+                z-index: 5;
             }
-            .expert-modal__close:hover { color: #fff; background: rgba(255,255,255,.18); }
+            .expert-modal__close:hover { background: rgba(255,255,255,.28); transform: scale(1.05); }
+            html[dir="rtl"] .expert-modal__close { right: auto; left: .6rem; }
             .expert-modal__title {
                 /* Épinglé en haut du dialog : même si le contenu scroll à cause
                    de l'autofocus ou d'un écran très court, le titre reste
