@@ -5137,7 +5137,8 @@
                 display: none;
                 align-items: center;
                 justify-content: center;
-                padding: 1rem;
+                /* Petit padding général pour que le dialog ne colle jamais aux bords. */
+                padding: 12px;
             }
             .expert-modal.open { display: flex; }
             .expert-modal__backdrop {
@@ -5149,15 +5150,17 @@
             .expert-modal__dialog {
                 position: relative;
                 width: 100%;
-                max-width: 540px;
-                max-height: 92vh;
+                /* Dialog plus compact : s'adapte à la hauteur dispo, scroll interne si besoin. */
+                max-width: 460px;
+                max-height: calc(100vh - 24px);
                 overflow-y: auto;
                 background: #0b1220;
                 border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 1.5rem;
-                padding: 2.5rem;
+                border-radius: 1.25rem;
+                padding: 1.75rem 1.5rem;
                 box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
                 animation: expertPop 0.25s ease;
+                -webkit-overflow-scrolling: touch;
             }
             @keyframes expertPop {
                 from { transform: translateY(16px) scale(0.98); opacity: 0; }
@@ -5165,52 +5168,60 @@
             }
             .expert-modal__close {
                 position: absolute;
-                top: 1rem;
-                right: 1.25rem;
-                background: none;
+                top: .6rem;
+                right: .8rem;
+                background: rgba(255, 255, 255, .08);
                 border: none;
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 2rem;
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 1.4rem;
                 line-height: 1;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
                 cursor: pointer;
-                transition: color 0.2s;
+                transition: color 0.2s, background .2s;
             }
-            .expert-modal__close:hover { color: #fff; }
+            .expert-modal__close:hover { color: #fff; background: rgba(255,255,255,.18); }
             .expert-modal__title {
-                font-size: 1.75rem;
+                font-size: 1.3rem;
                 font-weight: 900;
                 color: #fff;
                 text-transform: uppercase;
-                letter-spacing: -0.03em;
-                margin: 0 0 0.5rem;
+                letter-spacing: -0.02em;
+                margin: 0 2.5rem .35rem 0;
+                line-height: 1.15;
             }
             .expert-modal__subtitle {
                 color: rgba(255, 255, 255, 0.6);
-                font-size: 0.95rem;
-                margin: 0 0 1.75rem;
+                font-size: .85rem;
+                line-height: 1.4;
+                margin: 0 0 1.1rem;
             }
             .expert-modal__form {
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: .65rem;
             }
             .expert-modal__grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 1rem;
+                gap: .65rem;
             }
             @media (max-width: 520px) {
-                .expert-modal__grid { grid-template-columns: 1fr; }
-                .expert-modal__dialog { padding: 2rem 1.5rem; }
+                .expert-modal { padding: 8px; }
+                .expert-modal__dialog { padding: 1.25rem 1rem; max-height: calc(100vh - 16px); border-radius: 1rem; }
+                .expert-modal__grid { grid-template-columns: 1fr; gap: .55rem; }
+                .expert-modal__title { font-size: 1.1rem; }
+                .expert-modal__subtitle { font-size: .8rem; margin-bottom: .8rem; }
             }
             .expert-input {
                 width: 100%;
-                padding: 0.9rem 1rem;
+                padding: .65rem .85rem;
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.12);
-                border-radius: 0.75rem;
+                border-radius: .6rem;
                 color: #fff;
-                font-size: 0.95rem;
+                font-size: .9rem;
                 font-family: inherit;
                 outline: none;
                 transition: border-color 0.2s, background 0.2s;
@@ -5222,7 +5233,7 @@
             }
             select.expert-input { appearance: none; cursor: pointer; }
             select.expert-input option { color: #0b1220; }
-            textarea.expert-input { resize: vertical; min-height: 90px; }
+            textarea.expert-input { resize: vertical; min-height: 70px; }
             .expert-modal__feedback {
                 font-size: 0.9rem;
                 font-weight: 600;
@@ -5232,13 +5243,14 @@
             .expert-modal__feedback.is-error { color: #f87171; }
             .expert-modal__submit {
                 width: 100%;
-                padding: 1rem;
+                padding: .75rem 1rem;
+                margin-top: .25rem;
                 border: none;
-                border-radius: 0.75rem;
+                border-radius: .6rem;
                 background: var(--primary, #0b84e3);
                 color: #fff;
                 font-weight: 900;
-                font-size: 0.95rem;
+                font-size: .9rem;
                 text-transform: uppercase;
                 letter-spacing: 0.03em;
                 cursor: pointer;
