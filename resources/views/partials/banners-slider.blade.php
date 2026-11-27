@@ -81,11 +81,16 @@
     $__activeSlides = array_filter($__slides, fn ($cfg) => in_array($cfg['placement'], $__activePlacements, true));
 @endphp
 
+@php
+    // Identifiant unique par include → permet plusieurs sliders simultanés
+    // (homepage + mobile drawer) sans collision d'ID ni de handlers JS.
+    $__bslId = 'bsl_' . substr(md5(uniqid('', true)), 0, 8);
+@endphp
 @if(count($__activeSlides))
-<section class="bsl-section" aria-label="Services NADO">
+<section class="bsl-section" id="{{ $__bslId }}" aria-label="Services NADO">
     <div class="bsl-wrap">
         <div class="bsl-viewport">
-            <div class="bsl-track" id="bslTrack" data-count="{{ count($__activeSlides) }}">
+            <div class="bsl-track" data-count="{{ count($__activeSlides) }}">
                 @foreach($__activeSlides as $key => $cfg)
                     <div class="bsl-slide">
                         <a href="{{ $cfg['url'] }}"
@@ -116,7 +121,7 @@
         </div>
 
         @if(count($__activeSlides) > 1)
-            <div class="bsl-dots" id="bslDots" role="tablist">
+            <div class="bsl-dots" role="tablist">
                 @foreach($__activeSlides as $i => $cfg)
                     <button type="button" class="bsl-dot-btn {{ $loop->first ? 'is-active' : '' }}"
                             data-idx="{{ $loop->index }}" aria-label="Slide {{ $loop->iteration }}"></button>
@@ -256,12 +261,16 @@
 
 <script>
 (function () {
-    var track = document.getElementById('bslTrack');
+    // Instance scopée à {{ $__bslId }} — chaque include a son propre scope
+    // (homepage + drawer mobile = 2 sliders autonomes).
+    var section = document.getElementById('{{ $__bslId }}');
+    if (!section) return;
+    var track = section.querySelector('.bsl-track');
     if (!track) return;
     var count = parseInt(track.dataset.count || '1', 10);
     if (count <= 1) return;
 
-    var dots    = document.querySelectorAll('.bsl-dot-btn');
+    var dots    = section.querySelectorAll('.bsl-dot-btn');
     var current = 0;
     var timer   = null;
     var AUTO    = 5000;
@@ -269,8 +278,6 @@
 
     function goTo(i) {
         current = ((i % count) + count) % count;
-        // RTL : on inverse le sens du translate pour que "slide suivante"
-        // aille à gauche visuellement (direction naturelle de lecture AR).
         var offset = (isRtl ? 1 : -1) * current * 100;
         track.style.transform = 'translateX(' + offset + '%)';
         dots.forEach(function (d, idx) {
@@ -284,18 +291,13 @@
     dots.forEach(function (d) {
         d.addEventListener('click', function () {
             goTo(parseInt(d.dataset.idx, 10));
-            start(); // redémarre le timer après action manuelle
+            start();
         });
     });
 
-    // Pause au hover (desktop).
-    var section = track.closest('.bsl-section');
-    if (section) {
-        section.addEventListener('mouseenter', stop);
-        section.addEventListener('mouseleave', start);
-    }
+    section.addEventListener('mouseenter', stop);
+    section.addEventListener('mouseleave', start);
 
-    // Swipe tactile basique.
     var startX = null;
     track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; stop(); }, { passive: true });
     track.addEventListener('touchend',   function (e) {

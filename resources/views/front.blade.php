@@ -2255,6 +2255,23 @@
             letter-spacing: 0.05em;
         }
 
+        /* Slider services dans le drawer mobile : plus compact que
+           la version homepage, pas de padding externe, titre réduit. */
+        .drawer-slider { margin-top: 14px; }
+        .drawer-slider .bsl-section { padding: 0; }
+        .drawer-slider .bsl-wrap    { padding: 0; }
+        .drawer-slider .bsl-card {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            gap: 10px;
+            padding: 16px 14px;
+        }
+        .drawer-slider .bsl-title { font-size: 1rem; }
+        .drawer-slider .bsl-desc  { font-size: .82rem; }
+        .drawer-slider .bsl-cta   { width: 100%; justify-content: center; padding: 10px 14px; font-size: .85rem; }
+        .drawer-slider .bsl-dots  { margin-top: 10px; }
+
         /* MOBILE MENU DRAWER */
         .mobile-drawer-overlay {
             position: fixed;
@@ -3234,6 +3251,13 @@
                             <i data-lucide="user"></i> {{ __('messages.nav.publish_ad') }}
                         </a>
                     @endif
+
+                    {{-- Slider services dans le drawer mobile, sous le CTA.
+                         Même markup que l'homepage ; les styles .drawer-slider
+                         ci-dessous le compactent pour la largeur du drawer. --}}
+                    <div class="drawer-slider">
+                        @include('partials.banners-slider')
+                    </div>
 
                     <div style="margin:18px 0 6px;display:flex;justify-content:center;">@include('partials.lang-switcher')</div>
 
