@@ -93,7 +93,6 @@
                            class="bsl-link">
                             <div class="bsl-card {{ !empty($cfg['theme']) ? 'bsl-card--' . $cfg['theme'] : '' }}">
                                 <div class="bsl-glow" aria-hidden="true"></div>
-                                <div class="bsl-shimmer" aria-hidden="true"></div>
                                 <div class="bsl-content">
                                     <div class="bsl-badge">
                                         <span class="bsl-dot" aria-hidden="true"></span>
@@ -215,14 +214,6 @@
         animation: bslGlow 3.5s ease-in-out infinite;
     }
     html[dir="rtl"] .bsl-glow { right: auto; left: -60px; }
-    .bsl-shimmer {
-        position: absolute; top: 0; bottom: 0;
-        width: 140px;
-        background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.14) 50%, transparent 100%);
-        transform: skewX(-18deg);
-        pointer-events: none;
-        animation: bslShimmer 4.5s ease-in-out infinite;
-    }
     .bsl-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
     .bsl-badge {
         display: inline-flex; align-items: center; gap: 6px;
@@ -279,7 +270,6 @@
 
     @keyframes bslCardZoom { 0% { transform: scale(0.94); } 50% { transform: scale(1.06); } 100% { transform: scale(0.94); } }
     @keyframes bslGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
-    @keyframes bslShimmer  { 0% { left:-25%; } 60%,100% { left:120%; } }
     @keyframes bslPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
     @keyframes bslCtaShine { 0% { transform:translateX(-120%); } 60%,100% { transform:translateX(120%); } }
     @keyframes bslArrow    { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
