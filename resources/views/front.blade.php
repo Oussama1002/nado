@@ -4212,6 +4212,26 @@
         </section>
 
 
+        <!-- 3a-bis. SMALL AD BANNER (entre logos et derniers véhicules) -->
+        @php
+            // Bannière publicitaire slim gérée depuis /admin/publications
+            // (placement = "front-mid-banner"). Rien n'est rendu si aucune
+            // publication active n'est associée à ce placement.
+            $frontMidBanner = site_image('front-mid-banner', null);
+        @endphp
+        @if($frontMidBanner)
+            <section class="fmb-section" style="padding:12px 0 8px;background:var(--white);">
+                <div class="container" style="max-width:1280px;margin:0 auto;padding:0 16px;">
+                    <a href="{{ route('achat.index') }}" class="fmb-link"
+                       style="display:block;overflow:hidden;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.08);line-height:0;">
+                        <img src="{{ $frontMidBanner }}" alt="Bannière"
+                             style="width:100%;height:auto;max-height:170px;object-fit:cover;object-position:center;display:block;">
+                    </a>
+                </div>
+            </section>
+        @endif
+
+
         <!-- 3b. DERNIERS VEHICULES -->
         <section class="listings-section" id="derniers-vehicules" style="background-color: var(--white);">
             <div class="container">

@@ -40,6 +40,7 @@
                 <option value="ae-expertise" {{ old('placement', $publication->placement) == 'ae-expertise' ? 'selected' : '' }}>Image « Notre expertise » — Auto-Enchère (/nadoautoenchere/prelogin)</option>
                 <option value="reprise-hero" {{ old('placement', $publication->placement) == 'reprise-hero' ? 'selected' : '' }}>Image hero — Reprise (/reprises/formulaire)</option>
                 <option value="front-estimation" {{ old('placement', $publication->placement) == 'front-estimation' ? 'selected' : '' }}>Image section « Estimation » — Accueil</option>
+                <option value="front-mid-banner" {{ old('placement', $publication->placement) == 'front-mid-banner' ? 'selected' : '' }}>Bannière entre logos & Derniers véhicules — Accueil (1200×150)</option>
 
 
             </select>
