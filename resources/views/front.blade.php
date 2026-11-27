@@ -5133,7 +5133,9 @@
             .expert-modal {
                 position: fixed;
                 inset: 0;
-                z-index: 1000;
+                /* Doit passer AU-DESSUS de la navbar (z-index 10000) sinon
+                   la navbar sticky masque le haut du dialog. */
+                z-index: 10050;
                 display: none;
                 align-items: center;
                 justify-content: center;
