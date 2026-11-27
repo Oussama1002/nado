@@ -4213,7 +4213,16 @@
 
 
         <!-- 3a-bis. BANNIÈRE "EXPERT NADO" (entre logos et derniers véhicules) -->
-        @if(feature_on('popups.expert_banner'))
+        @php
+            // Visibilité pilotée depuis /admin/publications :
+            // bannière affichée seulement si une Publication active avec
+            // placement = "front-expert-banner" existe. L'image de la
+            // Publication est ignorée (le visuel est codé ci-dessous).
+            $expertBannerActive = \App\Models\Publication::where('placement', 'front-expert-banner')
+                ->where('status', 1)
+                ->exists();
+        @endphp
+        @if($expertBannerActive)
         <section class="exp-promo" aria-label="Expert NADO">
             <div class="container exp-promo-wrap">
                 <div class="exp-promo-card">

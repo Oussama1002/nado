@@ -40,6 +40,7 @@
                 <option value="ae-expertise" {{ old('placement', $publication->placement) == 'ae-expertise' ? 'selected' : '' }}>Image « Notre expertise » — Auto-Enchère (/nadoautoenchere/prelogin)</option>
                 <option value="reprise-hero" {{ old('placement', $publication->placement) == 'reprise-hero' ? 'selected' : '' }}>Image hero — Reprise (/reprises/formulaire)</option>
                 <option value="front-estimation" {{ old('placement', $publication->placement) == 'front-estimation' ? 'selected' : '' }}>Image section « Estimation » — Accueil</option>
+                <option value="front-expert-banner" {{ old('placement', $publication->placement) == 'front-expert-banner' ? 'selected' : '' }}>Bannière « Expert NADO » — Accueil (visuel codé, image ignorée)</option>
 
 
             </select>

@@ -275,11 +275,12 @@ class SettingsSeeder extends Seeder
                 ['retain_image', 'bool', false, 'Conserver l\'image après extraction (sinon purge)'],
             ],
 
-            // ──────────────────── popups & bannières (promo services) ──
+            // ──────────────────── popups (promo services) ──────────────
+            // Bannière "Expert NADO" : gérée depuis /admin/publications
+            // (placement = front-expert-banner), pas via les settings.
             'popups' => [
                 ['demandes_noresult', 'bool', false, 'Popup "Publier une demande" sur /achat + accueil (30 s, 7 j cooldown)'],
                 ['autoenchere_promo', 'bool', false, 'Popup "Découvrir Auto-Enchère B2B" (slide-in site-wide, sauf pros déjà approuvés)'],
-                ['expert_banner',     'bool', true,  'Bannière "Un expert, en 24 h" sur l\'accueil (entre logos & derniers véhicules)'],
             ],
 
             // ──────────────────── legalcheck (opposition NARSA) ─────────
