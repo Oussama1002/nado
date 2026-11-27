@@ -24,7 +24,7 @@ class PublicationController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'nullable|image',
-            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-mid-banner',
+            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation',
             'content' => 'nullable|string',
             'status' => 'nullable|boolean',
         ]);
@@ -58,7 +58,7 @@ class PublicationController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
             'image' => 'nullable|image',
-            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation,front-mid-banner',
+            'placement' => 'required|in:center-banner,first-banner,second-banner,third-banner,rightonindexenchere-banner,vente-hero,ae-expertise,reprise-hero,front-estimation',
             'status' => 'nullable|boolean',
         ]);
 

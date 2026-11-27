@@ -81,6 +81,12 @@ return [
     ],
 
     'expert' => [
+        // Bannière promotionnelle sur la page d'accueil (entre logos & Derniers véhicules).
+        'promo_badge' => 'Service Premium',
+        'promo_title' => 'Un expert NADO vous accompagne de A à Z',
+        'promo_desc'  => 'Inspection, négociation, démarches administratives : laissez nos experts s\'occuper de tout. Réponse en moins de 24 h.',
+        'promo_cta'   => 'Contacter un expert',
+
         'form_btn' => 'FORMULAIRE DE CONTACT',
         'title'    => 'Besoin d\'un <span class="text-primary">expert NADO</span> ?',
         'subtitle' => 'Laissez vos coordonnées, un expert vous recontacte rapidement.',

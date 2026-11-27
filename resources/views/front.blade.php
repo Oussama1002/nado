@@ -4212,24 +4212,96 @@
         </section>
 
 
-        <!-- 3a-bis. SMALL AD BANNER (entre logos et derniers véhicules) -->
-        @php
-            // Bannière publicitaire slim gérée depuis /admin/publications
-            // (placement = "front-mid-banner"). Rien n'est rendu si aucune
-            // publication active n'est associée à ce placement.
-            $frontMidBanner = site_image('front-mid-banner', null);
-        @endphp
-        @if($frontMidBanner)
-            <section class="fmb-section" style="padding:12px 0 8px;background:var(--white);">
-                <div class="container" style="max-width:1280px;margin:0 auto;padding:0 16px;">
-                    <a href="{{ route('achat.index') }}" class="fmb-link"
-                       style="display:block;overflow:hidden;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.08);line-height:0;">
-                        <img src="{{ $frontMidBanner }}" alt="Bannière"
-                             style="width:100%;height:auto;max-height:170px;object-fit:cover;object-position:center;display:block;">
-                    </a>
+        <!-- 3a-bis. BANNIÈRE "EXPERT NADO" (entre logos et derniers véhicules) -->
+        <section class="exp-promo" aria-label="Expert NADO">
+            <div class="container exp-promo-wrap">
+                <div class="exp-promo-card">
+                    <div class="exp-promo-glow" aria-hidden="true"></div>
+                    <div class="exp-promo-content">
+                        <div class="exp-promo-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2l2.39 7.35H22l-6.19 4.5L18.2 22 12 17.5 5.8 22l2.39-8.15L2 9.35h7.61z"/>
+                            </svg>
+                            <span>{{ __('messages.expert.promo_badge') }}</span>
+                        </div>
+                        <h3 class="exp-promo-title">{{ __('messages.expert.promo_title') }}</h3>
+                        <p class="exp-promo-desc">{{ __('messages.expert.promo_desc') }}</p>
+                    </div>
+                    <div class="exp-promo-cta-wrap">
+                        <button type="button" class="exp-promo-cta" onclick="openExpertModal()">
+                            <span>{{ __('messages.expert.promo_cta') }}</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </section>
-        @endif
+            </div>
+        </section>
+        <style>
+            .exp-promo { padding: 20px 0; background: var(--white); }
+            .exp-promo-wrap { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+            .exp-promo-card {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 24px;
+                padding: 22px 28px;
+                background: linear-gradient(135deg, #0f172a 0%, #1459DD 55%, #2563eb 100%);
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
+            }
+            .exp-promo-glow {
+                position: absolute;
+                top: -60px;
+                right: -60px;
+                width: 240px;
+                height: 240px;
+                background: radial-gradient(circle, rgba(253,216,23,.35) 0%, transparent 70%);
+                pointer-events: none;
+            }
+            html[dir="rtl"] .exp-promo-glow { right: auto; left: -60px; }
+            .exp-promo-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
+            .exp-promo-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 10px;
+                background: rgba(253,216,23,.18);
+                color: var(--secondary);
+                border-radius: 999px;
+                font-size: .72rem;
+                font-weight: 800;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
+            .exp-promo-title { margin: 0 0 6px; font-size: 1.35rem; font-weight: 900; line-height: 1.2; letter-spacing: -.01em; }
+            .exp-promo-desc { margin: 0; font-size: .95rem; line-height: 1.5; color: rgba(255,255,255,.85); }
+            .exp-promo-cta-wrap { flex-shrink: 0; position: relative; z-index: 1; }
+            .exp-promo-cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 13px 22px;
+                background: var(--secondary);
+                color: #0f172a;
+                border: 0;
+                border-radius: 12px;
+                font-weight: 800;
+                font-size: .95rem;
+                cursor: pointer;
+                box-shadow: 0 8px 20px -6px rgba(253,216,23,.55);
+                transition: transform .15s ease, box-shadow .15s ease;
+            }
+            .exp-promo-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(253,216,23,.65); }
+            @media (max-width: 720px) {
+                .exp-promo-card { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; padding: 20px; }
+                .exp-promo-title { font-size: 1.15rem; }
+                .exp-promo-cta { width: 100%; justify-content: center; }
+            }
+        </style>
 
 
         <!-- 3b. DERNIERS VEHICULES -->

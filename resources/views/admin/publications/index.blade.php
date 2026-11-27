@@ -12,7 +12,6 @@
         'ae-expertise'               => ['label' => 'Image « Notre expertise » — Auto-Enchère', 'page' => 'Auto-Enchère — Pré-login',              'url' => url('/nadoautoenchere/prelogin')],
         'reprise-hero'               => ['label' => 'Image hero — Reprise',                     'page' => 'Reprise — Formulaire',                  'url' => url('/reprises/formulaire')],
         'front-estimation'           => ['label' => 'Image section « Estimation »',             'page' => 'Page d\'accueil',                       'url' => url('/')],
-        'front-mid-banner'           => ['label' => 'Bannière entre logos & Derniers véhicules', 'page' => 'Page d\'accueil',                       'url' => url('/')],
         // Anciens placements (lignes existantes en base qu'on n'expose plus dans le dropdown).
         'left-banner'                => ['label' => 'Bannière Gauche (obsolète)',               'page' => '—',                                     'url' => null],
         'right-banner'               => ['label' => 'Bannière Droite (obsolète)',               'page' => '—',                                     'url' => null],
