@@ -1300,8 +1300,18 @@
                             à chaque passage de la boucle le même jour.
                         --}}
                         @if (($index + 1) % 4 === 0)
+                            {{--
+                                Chaque occurrence utilise un `offset` séquentiel
+                                (0, 1, 2, …) : ainsi deux bannières visibles dans
+                                la même page affichent systématiquement des
+                                services différents, et la rotation quotidienne
+                                du jeu de 5 est préservée.
+                            --}}
                             <div style="grid-column: 1 / -1;">
-                                @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_list_promo'])
+                                @include('partials.service-banners', [
+                                    'service' => 'auto',
+                                    'offset'  => intval(($index + 1) / 4) - 1,
+                                ])
                             </div>
                         @endif
 

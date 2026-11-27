@@ -88,9 +88,16 @@
         }
         $__srvCfg = null;
         if (count($__srvActiveList)) {
-            // Index du jour UTC (incrément toutes les 24h) + offset par slot.
+            // Index du jour UTC (incrément toutes les 24h) + offset.
+            // `offset` (int) prime sur le `slot` (string) : passer des offsets
+            // séquentiels (0, 1, 2, …) garantit des bannières différentes
+            // entre includes adjacents — pas de collision CRC32 possible.
             $__dayIdx    = (int) floor(time() / 86400);
-            $__slotOff   = abs(crc32((string) ($slot ?? 'default')));
+            if (isset($offset) && is_numeric($offset)) {
+                $__slotOff = (int) $offset;
+            } else {
+                $__slotOff = abs(crc32((string) ($slot ?? 'default')));
+            }
             $__pickIdx   = ($__dayIdx + $__slotOff) % count($__srvActiveList);
             $__pickedKey = array_keys($__srvActiveList)[$__pickIdx];
             $__srvCfg    = $__srvActiveList[$__pickedKey];
