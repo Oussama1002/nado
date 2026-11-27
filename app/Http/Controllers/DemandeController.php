@@ -8,6 +8,7 @@ use App\Models\Demande;
 use App\Models\DemandeReply;
 use App\Models\Modele;
 use App\Models\Ville;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -318,6 +319,29 @@ class DemandeController extends Controller
             Log::warning('Demande store admin email failed: ' . $e->getMessage());
         }
 
+        // Accusé WhatsApp au demandeur (template "demande_recue" — fr).
+        // Best-effort : un échec WhatsApp (flag OFF, template non approuvé,
+        // numéro invalide…) ne bloque jamais la soumission.
+        try {
+            if (feature_on('whatsapp.enabled') && $demande->telephone) {
+                $carLabelWa = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
+                if ($carLabelWa === '') {
+                    $carLabelWa = $demande->raw_query ?: 'votre recherche';
+                }
+                $firstName = trim(explode(' ', (string) $demande->nom)[0] ?? '');
+                if ($firstName === '') $firstName = 'client';
+
+                app(WhatsAppService::class)->sendTemplate(
+                    $demande->telephone,
+                    'demande_recue',
+                    'fr',
+                    [$firstName, $carLabelWa]
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Demande store WhatsApp failed: ' . $e->getMessage());
+        }
+
         return redirect()->route('demandes.confirmation', $demande->id)
             ->with('success', 'Votre demande a été soumise. L’administrateur vous contactera après validation.');
     }
@@ -491,6 +515,36 @@ class DemandeController extends Controller
             }
         } catch (\Throwable $e) {
             Log::warning('Demande propose seeker notification failed: ' . $e->getMessage());
+        }
+
+        // WhatsApp à tous les chercheurs du groupe (template "demande_proposition" fr).
+        // Même best-effort que l'email : un numéro KO ne doit pas casser la boucle.
+        try {
+            if (feature_on('whatsapp.enabled')) {
+                $carLabelWa = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
+                if ($carLabelWa === '') $carLabelWa = 'votre recherche';
+
+                // Destinataires distincts par téléphone (le groupPersons() renvoie
+                // déjà les personnes ; on dédupe nous-mêmes pour éviter le double-send).
+                $phoneRecipients = $demande->groupPersons()
+                    ->map(fn ($p) => ['nom' => $p->nom, 'phone' => ($p->telephone ?: $p->client?->phone)])
+                    ->filter(fn ($r) => ! empty($r['phone']))
+                    ->unique('phone')
+                    ->values();
+
+                $wa = app(WhatsAppService::class);
+                foreach ($phoneRecipients as $r) {
+                    $firstName = trim(explode(' ', (string) $r['nom'])[0] ?? '');
+                    if ($firstName === '') $firstName = 'client';
+                    try {
+                        $wa->sendTemplate($r['phone'], 'demande_proposition', 'fr', [$firstName, $carLabelWa]);
+                    } catch (\Throwable $e) {
+                        Log::warning('Demande propose WhatsApp (one recipient) failed: ' . $e->getMessage());
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Demande propose WhatsApp failed: ' . $e->getMessage());
         }
 
         return redirect()->route('demandes.show', $demande->id)

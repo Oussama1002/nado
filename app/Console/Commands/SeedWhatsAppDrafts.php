@@ -95,6 +95,16 @@ class SeedWhatsAppDrafts extends Command
             'fr' => "Bonjour {{1}}, votre demande de verification legale pour le matricule {{2}} a ete traitee par notre equipe. Le resultat complet est disponible dans votre espace autoenchere.ma.",
             'ar' => "مرحبا {{1}}، تمت معالجة طلبكم للتحقق القانوني للسيارة ذات اللوحة {{2}} من طرف فريقنا. النتيجة الكاملة متوفرة في حسابكم على موقع autoenchere.ma.",
         ],
+        'demande_recue' => [
+            'category' => 'UTILITY',
+            'fr' => "Bonjour {{1}}, nous avons bien recu votre demande de recherche pour {{2}}. Notre equipe vous recontacte des qu'un vehicule correspondant est disponible sur autoenchere.ma.",
+            'ar' => "مرحبا {{1}}، توصلنا بطلبكم للبحث عن {{2}}. سيتصل بكم فريقنا بمجرد توفر سيارة تناسب طلبكم على موقع autoenchere.ma.",
+        ],
+        'demande_proposition' => [
+            'category' => 'UTILITY',
+            'fr' => "Bonjour {{1}}, un vendeur vient de proposer un vehicule pour votre demande ({{2}}). Consultez l'offre complete dans votre espace autoenchere.ma.",
+            'ar' => "مرحبا {{1}}، توصلنا بعرض جديد لسيارة تناسب طلبكم ({{2}}). اطلعوا على التفاصيل الكاملة في حسابكم على موقع autoenchere.ma.",
+        ],
         'compte_approuve' => [
             'category' => 'UTILITY',
             'fr' => "Bienvenue {{1}}, votre compte autoenchere.ma est actif. Connectez-vous avec vos identifiants pour publier votre premiere annonce.",
