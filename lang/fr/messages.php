@@ -57,9 +57,9 @@ return [
     'home' => [
         // "Nos services" strip — cartes mini-bannières gated par Publication.
         'services_heading'         => 'Nos <span class="text-primary">services</span>',
-        'services_demandes_title'  => 'Demande d\'achat',
-        'services_demandes_desc'   => 'Dites-nous ce que vous cherchez.',
-        'services_demandes_cta'    => 'Publier',
+        'services_demandes_title'  => 'Demande de voiture',
+        'services_demandes_desc'   => 'Dites quelle voiture vous cherchez, les vendeurs vous contactent.',
+        'services_demandes_cta'    => 'Publier ma demande',
         'services_estim_title'     => 'Estimation gratuite',
         'services_estim_desc'      => 'Prix réel en 2 min.',
         'services_estim_cta'       => 'Estimer',
@@ -69,9 +69,9 @@ return [
         'services_legal_title'     => 'Vérif. légale',
         'services_legal_desc'      => 'Pas d\'opposition NARSA ?',
         'services_legal_cta'       => 'Vérifier',
-        'services_ae_title'        => 'Auto-Enchère B2B',
-        'services_ae_desc'         => 'Enchères pros exclusives.',
-        'services_ae_cta'          => 'Découvrir',
+        'services_ae_title'        => 'Enchères véhicules B2B',
+        'services_ae_desc'         => 'Vente aux enchères réservée aux pros de l\'auto.',
+        'services_ae_cta'          => 'Accéder aux enchères',
 
         'vehicles_heading'     => 'Nos <br><span class="text-primary">DERNIERS</span> <span class="text-secondary">VÉHICULES</span>',
         'story_heading'        => '<span class="nado-b">NADO</span><span class="nado-y">.MA</span> sur les réseaux : Ne ratez rien !',

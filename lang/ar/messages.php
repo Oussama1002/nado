@@ -56,9 +56,9 @@ return [
     'home' => [
         // شريط "خدماتنا" — بطاقات مصغّرة مرتبطة بسجلّات Publications.
         'services_heading'         => '<span class="text-primary">خدماتنا</span>',
-        'services_demandes_title'  => 'طلب شراء',
-        'services_demandes_desc'   => 'أخبرونا ما الذي تبحثون عنه.',
-        'services_demandes_cta'    => 'نشر',
+        'services_demandes_title'  => 'طلب سيارة',
+        'services_demandes_desc'   => 'أخبرونا عن السيارة التي تبحثون عنها، سيتصل بكم البائعون.',
+        'services_demandes_cta'    => 'نشر طلبي',
         'services_estim_title'     => 'تقدير مجاني',
         'services_estim_desc'      => 'السعر الحقيقي في دقيقتين.',
         'services_estim_cta'       => 'تقدير',
@@ -68,9 +68,9 @@ return [
         'services_legal_title'     => 'التحقق القانوني',
         'services_legal_desc'      => 'لا توجد معارضة NARSA؟',
         'services_legal_cta'       => 'تحقق',
-        'services_ae_title'        => 'مزادات للمحترفين',
-        'services_ae_desc'         => 'مزادات حصرية للمحترفين.',
-        'services_ae_cta'          => 'اكتشفوا',
+        'services_ae_title'        => 'مزادات السيارات للمحترفين',
+        'services_ae_desc'         => 'بيع بالمزاد مخصص لمحترفي قطاع السيارات.',
+        'services_ae_cta'          => 'الولوج إلى المزادات',
 
         'vehicles_heading'     => 'أحدث <span class="text-primary">سيارات</span> <span class="text-secondary">نادو</span>',
         'story_heading'        => '<span class="nado-b">نادو</span><span class="nado-y">.ما</span> على مواقع التواصل: لا تفوّت شيئًا !',

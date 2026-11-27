@@ -65,6 +65,9 @@
             'cta'       => __('messages.home.services_ae_cta'),
             'url'       => route('nadoautoenchere.prelogin'),
             'onclick'   => null,
+            // Palette Auto-Enchère : bleu primaire + orange accent.
+            // Override des tokens CSS pour n'affecter QUE cette slide.
+            'theme'     => 'ae',
         ],
     ];
 
@@ -86,7 +89,7 @@
                         <a href="{{ $cfg['url'] }}"
                            @if($cfg['onclick']) onclick="{{ $cfg['onclick'] }}" @endif
                            class="bsl-link">
-                            <div class="bsl-card">
+                            <div class="bsl-card {{ !empty($cfg['theme']) ? 'bsl-card--' . $cfg['theme'] : '' }}">
                                 <div class="bsl-glow" aria-hidden="true"></div>
                                 <div class="bsl-shimmer" aria-hidden="true"></div>
                                 <div class="bsl-content">
@@ -150,6 +153,31 @@
         animation: bslCardZoom 2.2s ease-in-out infinite !important;
         will-change: transform;
     }
+    /* ── Thème "Auto-Enchère" : bleu NADO + orange accent (#F37021). ── */
+    .bsl-card--ae {
+        background: linear-gradient(135deg, #0f172a 0%, #1459DD 50%, #F37021 100%);
+        box-shadow: 0 16px 36px -14px rgba(243,112,33,.45);
+    }
+    .bsl-card--ae .bsl-glow {
+        background: radial-gradient(circle, rgba(243,112,33,.5) 0%, transparent 70%);
+    }
+    .bsl-card--ae .bsl-badge {
+        background: rgba(243,112,33,.22);
+        color: #FFB183;
+    }
+    .bsl-card--ae .bsl-dot {
+        background: #F37021;
+        box-shadow: 0 0 0 0 rgba(243,112,33,.7);
+        animation: bslPulseAe 1.8s ease-in-out infinite;
+    }
+    .bsl-card--ae .bsl-cta {
+        background: #F37021;
+        color: #fff;
+        box-shadow: 0 8px 20px -6px rgba(243,112,33,.55);
+    }
+    .bsl-link:hover .bsl-card--ae + .bsl-cta,
+    .bsl-link:hover .bsl-card--ae .bsl-cta { box-shadow: 0 12px 26px -6px rgba(243,112,33,.65); }
+    @keyframes bslPulseAe { 0% { box-shadow:0 0 0 0 rgba(243,112,33,.7); } 70% { box-shadow:0 0 0 10px rgba(243,112,33,0); } 100% { box-shadow:0 0 0 0 rgba(243,112,33,0); } }
     .bsl-glow {
         position: absolute;
         top: -60px;
