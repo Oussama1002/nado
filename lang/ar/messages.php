@@ -533,11 +533,6 @@ return [
         'noresult_popup_skip'  => "لا شكراً",
     ],
 
-    'radio' => [
-        'tip_bubble_text' => '🎧 دوّزوا الوقت ديالكم فالموسيقى مع NADO Radio وانتوما كتقلّبوا على السيارة ديالكم !',
-        'tip_bubble_cta'  => 'استمعوا',
-    ],
-
     'autoenchere' => [
         'popup_badge' => 'Auto-Enchère',
         'popup_title' => 'هل أنتم محترفون في قطاع السيارات؟',
@@ -719,6 +714,9 @@ return [
         'prev'  => 'السابق',
         'next'  => 'التالي',
         'seek'  => 'الموضع',
+        // فقاعة ترويجية بجوار مشغّل الراديو المصغّر.
+        'tip_bubble_text' => '🎧 دوّزوا الوقت ديالكم فالموسيقى مع NADO Radio وانتوما كتقلّبوا على السيارة ديالكم !',
+        'tip_bubble_cta'  => 'استمعوا',
     ],
 
     'dashboard' => [

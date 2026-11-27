@@ -534,11 +534,6 @@ return [
         'noresult_popup_skip'  => "Non merci",
     ],
 
-    'radio' => [
-        'tip_bubble_text' => '🎧 Cherchez votre voiture en musique avec NADO Radio !',
-        'tip_bubble_cta'  => 'Écouter',
-    ],
-
     'autoenchere' => [
         'popup_badge' => 'Auto-Enchère',
         'popup_title' => 'Vous êtes un professionnel ?',
@@ -720,6 +715,9 @@ return [
         'prev'  => 'Précédent',
         'next'  => 'Suivant',
         'seek'  => 'Position',
+        // Bulle promo à côté du FAB mini-player.
+        'tip_bubble_text' => '🎧 Cherchez votre voiture en musique avec NADO Radio !',
+        'tip_bubble_cta'  => 'Écouter',
     ],
 
     'dashboard' => [
