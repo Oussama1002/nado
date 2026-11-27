@@ -2256,13 +2256,17 @@
         }
 
         /* Slider services dans le drawer mobile : plus compact que
-           la version homepage, pas de padding externe, titre réduit. */
-        .drawer-slider { margin-top: 14px; }
+           la version homepage, pas de padding externe, titre réduit.
+           `justify-content:center` sur la carte garantit que le contenu
+           reste centré verticalement même si le track prend la hauteur
+           de la slide la plus haute (évite le vide au-dessus du texte). */
+        .drawer-slider { margin-top: 14px; width: 100%; }
         .drawer-slider .bsl-section { padding: 0; }
         .drawer-slider .bsl-wrap    { padding: 0; }
         .drawer-slider .bsl-card {
             flex-direction: column;
             align-items: stretch;
+            justify-content: center;
             text-align: center;
             gap: 10px;
             padding: 16px 14px;

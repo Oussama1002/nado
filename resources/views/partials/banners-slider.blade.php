@@ -138,10 +138,16 @@
     .bsl-track {
         display: flex;
         width: 100%;
+        align-items: stretch;
         transition: transform .6s cubic-bezier(.22,.9,.32,1);
         will-change: transform;
     }
-    .bsl-slide { flex: 0 0 100%; min-width: 0; }
+    /* `display:flex` + `.bsl-link { display:flex; flex:1 }` → chaque carte
+       remplit toujours la hauteur du track, même si une autre slide wrap
+       plus de lignes (évite l'effet "carte collée en bas d'un vide"). */
+    .bsl-slide { flex: 0 0 100%; min-width: 0; display: flex; }
+    .bsl-slide .bsl-link { flex: 1; display: flex; }
+    .bsl-slide .bsl-card { flex: 1; }
     .bsl-link { display: block; text-decoration: none; color: inherit; }
 
     .bsl-card {
