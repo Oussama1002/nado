@@ -92,7 +92,6 @@
                            @if($cfg['onclick']) onclick="{{ $cfg['onclick'] }}" @endif
                            class="bsl-link">
                             <div class="bsl-card {{ !empty($cfg['theme']) ? 'bsl-card--' . $cfg['theme'] : '' }}">
-                                <div class="bsl-glow" aria-hidden="true"></div>
                                 <div class="bsl-content">
                                     <div class="bsl-badge">
                                         <span class="bsl-dot" aria-hidden="true"></span>
@@ -159,9 +158,6 @@
         background: linear-gradient(135deg, #000000 0%, #171717 50%, #F37021 100%);
         box-shadow: 0 16px 36px -14px rgba(243,112,33,.45);
     }
-    .bsl-card--ae .bsl-glow {
-        background: radial-gradient(circle, rgba(243,112,33,.5) 0%, transparent 70%);
-    }
     .bsl-card--ae .bsl-badge {
         background: rgba(243,112,33,.22);
         color: #FFB183;
@@ -184,9 +180,6 @@
         background: linear-gradient(135deg, #052e16 0%, #15803d 55%, #22c55e 100%);
         box-shadow: 0 16px 36px -14px rgba(34,197,94,.45);
     }
-    .bsl-card--legal .bsl-glow {
-        background: radial-gradient(circle, rgba(187,247,208,.5) 0%, transparent 70%);
-    }
     .bsl-card--legal .bsl-badge {
         background: rgba(187,247,208,.18);
         color: #bbf7d0;
@@ -203,18 +196,7 @@
     }
     .bsl-link:hover .bsl-card--legal .bsl-cta { box-shadow: 0 12px 26px -6px rgba(187,247,208,.7); }
     @keyframes bslPulseLegal { 0% { box-shadow:0 0 0 0 rgba(187,247,208,.7); } 70% { box-shadow:0 0 0 10px rgba(187,247,208,0); } 100% { box-shadow:0 0 0 0 rgba(187,247,208,0); } }
-    .bsl-glow {
-        position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 240px;
-        height: 240px;
-        background: radial-gradient(circle, rgba(253,216,23,.35) 0%, transparent 70%);
-        pointer-events: none;
-        animation: bslGlow 3.5s ease-in-out infinite;
-    }
-    html[dir="rtl"] .bsl-glow { right: auto; left: -60px; }
-    .bsl-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
+.bsl-content { flex: 1; min-width: 0; color: #fff; position: relative; z-index: 1; }
     .bsl-badge {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 4px 10px;
@@ -261,7 +243,6 @@
     .bsl-dot-btn.is-active { background: #1459DD; width: 26px; border-radius: 6px; }
 
     @keyframes bslCardZoom { 0% { transform: scale(0.94); } 50% { transform: scale(1.06); } 100% { transform: scale(0.94); } }
-    @keyframes bslGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
     @keyframes bslPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
     @keyframes bslArrow    { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
     @keyframes bslArrowRtl { 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
