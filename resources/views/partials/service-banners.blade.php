@@ -215,9 +215,9 @@
             html[dir="rtl"] .svc-promo-arrow { transform: scaleX(-1); animation: svcArrowRtl 1.4s ease-in-out infinite; }
 
             @keyframes svcCardZoom {
-                0%   { transform: scale(1); }
-                50%  { transform: scale(1.04); }
-                100% { transform: scale(1); }
+                0%   { transform: scale(0.94); }
+                50%  { transform: scale(1.06); }
+                100% { transform: scale(0.94); }
             }
             @keyframes svcGlow       { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
             @keyframes svcShimmer    { 0% { left:-25%; } 60%,100% { left:120%; } }

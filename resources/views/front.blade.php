@@ -4337,7 +4337,7 @@
             .exp-promo-arrow { animation: expArrow 1.4s ease-in-out infinite; }
             html[dir="rtl"] .exp-promo-arrow { transform: scaleX(-1); animation: expArrowRtl 1.4s ease-in-out infinite; }
 
-            @keyframes expCardZoom { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+            @keyframes expCardZoom { 0% { transform: scale(0.94); } 50% { transform: scale(1.06); } 100% { transform: scale(0.94); } }
             @keyframes expGlow     { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
             @keyframes expShimmer  { 0% { left:-25%; } 60%,100% { left:120%; } }
             @keyframes expPulse    { 0% { box-shadow:0 0 0 0 rgba(253,216,23,.7); } 70% { box-shadow:0 0 0 10px rgba(253,216,23,0); } 100% { box-shadow:0 0 0 0 rgba(253,216,23,0); } }
