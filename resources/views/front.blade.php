@@ -4213,6 +4213,7 @@
 
 
         <!-- 3a-bis. BANNIÈRE "EXPERT NADO" (entre logos et derniers véhicules) -->
+        @if(feature_on('popups.expert_banner'))
         <section class="exp-promo" aria-label="Expert NADO">
             <div class="container exp-promo-wrap">
                 <div class="exp-promo-card">
@@ -4343,6 +4344,7 @@
                 .exp-promo-cta { width: 100%; justify-content: center; }
             }
         </style>
+        @endif
 
 
         <!-- 3b. DERNIERS VEHICULES -->
