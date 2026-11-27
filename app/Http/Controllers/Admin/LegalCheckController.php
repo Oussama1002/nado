@@ -110,9 +110,14 @@ class LegalCheckController extends Controller
             return;
         }
 
+        // Langue du template : on prend la locale courante (l'admin peut basculer
+        // via le switcher), sinon fr par défaut. Pas de colonne Client.lang pour
+        // le moment — à faire évoluer quand elle existera.
+        $lang = app()->getLocale() === 'ar' ? 'ar' : 'fr';
+
         $firstName = trim(explode(' ', (string) optional($legalCheck->client)->name)[0] ?? '');
         if ($firstName === '') {
-            $firstName = 'client';
+            $firstName = $lang === 'ar' ? 'عميلنا' : 'client';
         }
         $matricule = $legalCheck->matricule_full ?: '—';
 
@@ -120,7 +125,7 @@ class LegalCheckController extends Controller
             app(WhatsAppService::class)->sendTemplate(
                 $phone,
                 'verification_legale_resultat',
-                'fr',
+                $lang,
                 [$firstName, $matricule]
             );
         } catch (\Throwable $e) {

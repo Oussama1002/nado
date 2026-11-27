@@ -319,22 +319,26 @@ class DemandeController extends Controller
             Log::warning('Demande store admin email failed: ' . $e->getMessage());
         }
 
-        // Accusé WhatsApp au demandeur (template "demande_recue" — fr).
+        // Accusé WhatsApp au demandeur (template "demande_recue").
+        // Langue : locale courante (ar si le demandeur a soumis en arabe, fr sinon).
         // Best-effort : un échec WhatsApp (flag OFF, template non approuvé,
         // numéro invalide…) ne bloque jamais la soumission.
         try {
             if (feature_on('whatsapp.enabled') && $demande->telephone) {
+                $lang = app()->getLocale() === 'ar' ? 'ar' : 'fr';
                 $carLabelWa = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
                 if ($carLabelWa === '') {
-                    $carLabelWa = $demande->raw_query ?: 'votre recherche';
+                    $carLabelWa = $demande->raw_query ?: ($lang === 'ar' ? 'بحثكم' : 'votre recherche');
                 }
                 $firstName = trim(explode(' ', (string) $demande->nom)[0] ?? '');
-                if ($firstName === '') $firstName = 'client';
+                if ($firstName === '') {
+                    $firstName = $lang === 'ar' ? 'عميلنا' : 'client';
+                }
 
                 app(WhatsAppService::class)->sendTemplate(
                     $demande->telephone,
                     'demande_recue',
-                    'fr',
+                    $lang,
                     [$firstName, $carLabelWa]
                 );
             }
@@ -517,12 +521,19 @@ class DemandeController extends Controller
             Log::warning('Demande propose seeker notification failed: ' . $e->getMessage());
         }
 
-        // WhatsApp à tous les chercheurs du groupe (template "demande_proposition" fr).
+        // WhatsApp à tous les chercheurs du groupe (template "demande_proposition").
+        // Langue : locale courante — l'auteur de la proposition navigue dans sa
+        // langue, qui est en général aussi la langue du groupe. Ce n'est pas
+        // parfait (chaque chercheur peut préférer une autre langue) mais c'est
+        // l'approximation raisonnable tant que Client.lang n'existe pas.
         // Même best-effort que l'email : un numéro KO ne doit pas casser la boucle.
         try {
             if (feature_on('whatsapp.enabled')) {
+                $lang = app()->getLocale() === 'ar' ? 'ar' : 'fr';
                 $carLabelWa = trim(($demande->brand?->name ?? '') . ' ' . ($demande->modele?->name ?? ''));
-                if ($carLabelWa === '') $carLabelWa = 'votre recherche';
+                if ($carLabelWa === '') {
+                    $carLabelWa = $lang === 'ar' ? 'بحثكم' : 'votre recherche';
+                }
 
                 // Destinataires distincts par téléphone (le groupPersons() renvoie
                 // déjà les personnes ; on dédupe nous-mêmes pour éviter le double-send).
@@ -535,9 +546,11 @@ class DemandeController extends Controller
                 $wa = app(WhatsAppService::class);
                 foreach ($phoneRecipients as $r) {
                     $firstName = trim(explode(' ', (string) $r['nom'])[0] ?? '');
-                    if ($firstName === '') $firstName = 'client';
+                    if ($firstName === '') {
+                        $firstName = $lang === 'ar' ? 'عميلنا' : 'client';
+                    }
                     try {
-                        $wa->sendTemplate($r['phone'], 'demande_proposition', 'fr', [$firstName, $carLabelWa]);
+                        $wa->sendTemplate($r['phone'], 'demande_proposition', $lang, [$firstName, $carLabelWa]);
                     } catch (\Throwable $e) {
                         Log::warning('Demande propose WhatsApp (one recipient) failed: ' . $e->getMessage());
                     }
