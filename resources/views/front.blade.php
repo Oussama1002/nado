@@ -5284,6 +5284,10 @@
                 m.classList.add('open');
                 m.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                // Masque le feed "Demandes live" (bas-gauche) pour ne pas
+                // faire chevauchement avec le dialog ; restauré à la fermeture.
+                var dmd = document.getElementById('dmdLive');
+                if (dmd) { dmd.dataset.expertHidden = dmd.style.display === 'none' ? '0' : ''; dmd.style.display = 'none'; }
                 // Force le scroll du dialog en haut APRÈS que le navigateur
                 // ait eu l'occasion de faire son autofocus (double rAF pour
                 // traverser le layout + paint + focus).
@@ -5299,6 +5303,12 @@
                 m.classList.remove('open');
                 m.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
+                // Restaure le feed "Demandes live" — sauf s'il avait déjà
+                // été masqué par l'utilisateur (bouton × du feed) avant
+                // l'ouverture du modal.
+                var dmd = document.getElementById('dmdLive');
+                if (dmd && dmd.dataset.expertHidden !== '0') { dmd.style.display = ''; }
+                if (dmd) { delete dmd.dataset.expertHidden; }
             }
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeExpertModal();
