@@ -1087,29 +1087,6 @@
                         <a href="{{ route('achat.index') }}" class="pp-af-clear">{{ __('messages.catalog.clear_all') }}</a>
                     @endif
 
-                    @if(feature_on('discovery.saved_searches'))
-                        @php
-                            $ssParams = collect(request()->only(['marque','modele','carburant','box','ville','annee_min','annee_max','annee','bodywork','prix','km','mensualite_max']))
-                                ->filter(fn($v) => $v !== null && $v !== '');
-                        @endphp
-                        @auth('client')
-                            <form action="{{ route('saved-searches.store') }}" method="POST" style="display:inline;">
-                                @csrf
-                                @foreach($ssParams as $k => $v)
-                                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-                                @endforeach
-                                <button type="submit" class="pp-save-search">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                                    {{ __('messages.discovery.save_search') }}
-                                </button>
-                            </form>
-                        @else
-                            <a href="{{ route('client.login') }}?redirect={{ urlencode(request()->fullUrl()) }}" class="pp-save-search">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                                {{ __('messages.discovery.save_search') }}
-                            </a>
-                        @endauth
-                    @endif
                 </div>
 
                 {{-- All results are sold / non-disponible → show the demande card above the grid --}}
