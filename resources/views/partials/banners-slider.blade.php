@@ -56,6 +56,8 @@
             'cta'       => __('messages.home.services_legal_cta'),
             'url'       => url('/verification-legale'),
             'onclick'   => null,
+            // Palette "sécurité / conformité" : nuances de vert.
+            'theme'     => 'legal',
         ],
         'ae' => [
             'placement' => 'front-ae-banner',
@@ -153,9 +155,9 @@
         animation: bslCardZoom 2.2s ease-in-out infinite !important;
         will-change: transform;
     }
-    /* ── Thème "Auto-Enchère" : bleu NADO + orange accent (#F37021). ── */
+    /* ── Thème "Auto-Enchère" : NOIR + orange accent (#F37021). ── */
     .bsl-card--ae {
-        background: linear-gradient(135deg, #0f172a 0%, #1459DD 50%, #F37021 100%);
+        background: linear-gradient(135deg, #000000 0%, #171717 50%, #F37021 100%);
         box-shadow: 0 16px 36px -14px rgba(243,112,33,.45);
     }
     .bsl-card--ae .bsl-glow {
@@ -175,9 +177,33 @@
         color: #fff;
         box-shadow: 0 8px 20px -6px rgba(243,112,33,.55);
     }
-    .bsl-link:hover .bsl-card--ae + .bsl-cta,
     .bsl-link:hover .bsl-card--ae .bsl-cta { box-shadow: 0 12px 26px -6px rgba(243,112,33,.65); }
     @keyframes bslPulseAe { 0% { box-shadow:0 0 0 0 rgba(243,112,33,.7); } 70% { box-shadow:0 0 0 10px rgba(243,112,33,0); } 100% { box-shadow:0 0 0 0 rgba(243,112,33,0); } }
+
+    /* ── Thème "Vérification légale" : vert (confiance / conformité). ── */
+    .bsl-card--legal {
+        background: linear-gradient(135deg, #052e16 0%, #15803d 55%, #22c55e 100%);
+        box-shadow: 0 16px 36px -14px rgba(34,197,94,.45);
+    }
+    .bsl-card--legal .bsl-glow {
+        background: radial-gradient(circle, rgba(187,247,208,.5) 0%, transparent 70%);
+    }
+    .bsl-card--legal .bsl-badge {
+        background: rgba(187,247,208,.18);
+        color: #bbf7d0;
+    }
+    .bsl-card--legal .bsl-dot {
+        background: #bbf7d0;
+        box-shadow: 0 0 0 0 rgba(187,247,208,.7);
+        animation: bslPulseLegal 1.8s ease-in-out infinite;
+    }
+    .bsl-card--legal .bsl-cta {
+        background: #bbf7d0;
+        color: #052e16;
+        box-shadow: 0 8px 20px -6px rgba(187,247,208,.55);
+    }
+    .bsl-link:hover .bsl-card--legal .bsl-cta { box-shadow: 0 12px 26px -6px rgba(187,247,208,.7); }
+    @keyframes bslPulseLegal { 0% { box-shadow:0 0 0 0 rgba(187,247,208,.7); } 70% { box-shadow:0 0 0 10px rgba(187,247,208,0); } 100% { box-shadow:0 0 0 0 rgba(187,247,208,0); } }
     .bsl-glow {
         position: absolute;
         top: -60px;
