@@ -1290,29 +1290,15 @@
                             </div>
                         </a>
 
-                        {{-- Promo insert every 4th card --}}
+                        {{--
+                            Bannière service rotative (24 h) à la place de l'ancien
+                            promo "Label Confiance / Expertise 110 points".
+                            Insérée tous les 4 cards. `slot` est un identifiant fixe
+                            pour qu'un seul banner apparaisse à chaque passage de la
+                            boucle le même jour (cohérence visuelle).
+                        --}}
                         @if (($index + 1) % 4 === 0)
-                            <div class="pp-promo">
-                                <div style="flex: 1;">
-                                    <div class="pp-promo-eyebrow">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDD817" stroke-width="2">
-                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                        </svg>
-                                        <span>{{ __('messages.catalog.trust_label') }}</span>
-                                    </div>
-                                    <h2>{!! __('messages.catalog.expertise_heading') !!}</h2>
-                                    <p class="pp-promo-body">{{ __('messages.catalog.expertise_body') }}</p>
-                                    <button class="pp-promo-cta" onclick="window.location.href='{{ route('about.index') }}'">
-                                        {{ __('messages.catalog.expertise_cta') }}
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="pp-promo-img-wrap">
-                                    <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80" alt="Expertise NADO">
-                                </div>
-                            </div>
+                            @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_list_promo'])
                         @endif
 
                         {{-- Publication banners --}}

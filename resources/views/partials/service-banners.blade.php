@@ -2,19 +2,26 @@
     Partials de bannières services — chaque bannière est une mini-carte codée,
     affichée uniquement si sa Publication (placement correspondant) est status=1.
 
-    Utilisation :
+    Utilisation (bannière fixe) :
         @include('partials.service-banners', ['service' => 'demandes'])
         @include('partials.service-banners', ['service' => 'estim'])
         @include('partials.service-banners', ['service' => 'finance'])
         @include('partials.service-banners', ['service' => 'legal'])
         @include('partials.service-banners', ['service' => 'ae'])
 
-    Chaque include est self-contained : il vérifie l'activation en base et
-    rend (ou pas) sa propre carte. On peut placer le même include plusieurs
-    fois (1 par page) sans effet de bord.
+    Utilisation (rotation quotidienne, 24 h) :
+        @include('partials.service-banners', ['service' => 'auto', 'slot' => 'achat_promo'])
+        @include('partials.service-banners', ['service' => 'auto', 'slot' => 'home_mid'])
 
-    La feuille de styles .srv-card-* est injectée une seule fois par requête
-    grâce à @once. Les gradients et icônes sont définis par service.
+    En mode 'auto', la bannière change chaque jour UTC parmi les Publications
+    actives. Deux emplacements avec des `slot` différents affichent des
+    bannières différentes le même jour (offset dérivé du nom du slot) ; même
+    `slot` ⇒ même bannière partout. Si une seule Publication est active,
+    elle s'affiche toujours.
+
+    Chaque include est self-contained : il vérifie l'activation en base et
+    rend (ou pas) sa propre carte. La feuille de styles est injectée une
+    seule fois par requête grâce à @once.
 --}}
 
 @php
@@ -65,10 +72,36 @@
             'url'       => route('nadoautoenchere.prelogin'),
         ],
     ];
-    $__srvCfg = $__srvMap[$service ?? ''] ?? null;
-    $__srvActive = $__srvCfg && \App\Models\Publication::where('placement', $__srvCfg['placement'])
-        ->where('status', 1)
-        ->exists();
+    // Mode 'auto' : rotation quotidienne parmi les bannières actives.
+    if (($service ?? '') === 'auto') {
+        $__srvActivePlacements = \App\Models\Publication::whereIn('placement', array_column($__srvMap, 'placement'))
+            ->where('status', 1)
+            ->pluck('placement')
+            ->all();
+        // Reconstruit un tableau ordonné { key => cfg } des services actifs
+        // en préservant l'ordre déclaré dans $__srvMap (déterministe).
+        $__srvActiveList = [];
+        foreach ($__srvMap as $k => $cfg) {
+            if (in_array($cfg['placement'], $__srvActivePlacements, true)) {
+                $__srvActiveList[$k] = $cfg;
+            }
+        }
+        $__srvCfg = null;
+        if (count($__srvActiveList)) {
+            // Index du jour UTC (incrément toutes les 24h) + offset par slot.
+            $__dayIdx    = (int) floor(time() / 86400);
+            $__slotOff   = abs(crc32((string) ($slot ?? 'default')));
+            $__pickIdx   = ($__dayIdx + $__slotOff) % count($__srvActiveList);
+            $__pickedKey = array_keys($__srvActiveList)[$__pickIdx];
+            $__srvCfg    = $__srvActiveList[$__pickedKey];
+        }
+        $__srvActive = $__srvCfg !== null;
+    } else {
+        $__srvCfg = $__srvMap[$service ?? ''] ?? null;
+        $__srvActive = $__srvCfg && \App\Models\Publication::where('placement', $__srvCfg['placement'])
+            ->where('status', 1)
+            ->exists();
+    }
 @endphp
 
 @if($__srvActive)
