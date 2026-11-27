@@ -113,7 +113,8 @@
 
 @if($__srvActive)
     <a href="{{ $__srvCfg['url'] }}" class="srv-card-std" style="--srv-grad: {{ $__srvCfg['grad'] }};">
-        <div class="srv-card-std__ico" aria-hidden="true">
+        <span class="srv-card-std__shimmer" aria-hidden="true"></span>
+        <div class="srv-card-std__ico srv-card-std__ico--bounce" aria-hidden="true">
             <i data-lucide="{{ $__srvCfg['icon'] }}" style="width:22px;height:22px;"></i>
         </div>
         <div class="srv-card-std__body">
@@ -122,7 +123,7 @@
         </div>
         <div class="srv-card-std__cta">
             <span>{{ $__srvCfg['cta'] }}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="srv-card-std__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
             </svg>
         </div>
@@ -146,17 +147,22 @@
                 overflow: hidden;
                 transition: transform .15s ease, box-shadow .15s ease;
                 font-family: 'Inter', sans-serif;
-            }
-            .srv-card-std::after {
-                content: '';
-                position: absolute; inset: 0;
-                background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.18) 50%, transparent 80%);
-                transform: translateX(-120%);
-                transition: transform .6s ease;
-                pointer-events: none;
+                /* Entrée façon "pop" élastique — joue une fois au scroll. */
+                animation: srvPopIn .7s cubic-bezier(.22,1.3,.36,1) both;
             }
             .srv-card-std:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -12px rgba(15,23,42,.5); color: #fff; }
-            .srv-card-std:hover::after { transform: translateX(120%); }
+
+            /* Shimmer continu + sweep accéléré au hover. */
+            .srv-card-std__shimmer {
+                position: absolute; top: 0; bottom: 0;
+                width: 160px;
+                background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.16) 50%, transparent 100%);
+                transform: skewX(-18deg);
+                pointer-events: none;
+                animation: srvShimmer 4.5s ease-in-out infinite;
+            }
+            .srv-card-std:hover .srv-card-std__shimmer { animation-duration: 1.2s; }
+
             .srv-card-std__ico {
                 width: 44px; height: 44px; flex-shrink: 0;
                 border-radius: 12px;
@@ -164,6 +170,10 @@
                 display: flex; align-items: center; justify-content: center;
                 position: relative; z-index: 1;
             }
+            /* Bounce en boucle sur l'icône + accéléré au hover. */
+            .srv-card-std__ico--bounce { animation: srvBounce 2.1s cubic-bezier(.28,.84,.42,1) infinite; }
+            .srv-card-std:hover .srv-card-std__ico--bounce { animation-duration: .9s; }
+
             .srv-card-std__body { flex: 1; min-width: 0; position: relative; z-index: 1; }
             .srv-card-std__title { font-weight: 900; font-size: 1.02rem; line-height: 1.2; }
             .srv-card-std__desc  { font-size: .85rem; opacity: .85; line-height: 1.35; margin-top: 2px; }
@@ -176,6 +186,25 @@
                 font-size: .82rem; font-weight: 800;
                 position: relative; z-index: 1;
             }
+            .srv-card-std__arrow { animation: srvArrow 1.4s ease-in-out infinite; }
+            html[dir="rtl"] .srv-card-std__arrow {
+                transform: scaleX(-1);
+                animation: srvArrowRtl 1.4s ease-in-out infinite;
+            }
+
+            @keyframes srvPopIn   { 0% { opacity:0; transform:translateY(12px) scale(.96); } 60% { opacity:1; transform:translateY(-3px) scale(1.01); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+            @keyframes srvBounce  { 0%,20%,53%,80%,100% { transform:translateY(0); } 40%,43% { transform:translateY(-8px); } 70% { transform:translateY(-4px); } 90% { transform:translateY(-2px); } }
+            @keyframes srvShimmer { 0% { left:-30%; } 60%,100% { left:120%; } }
+            @keyframes srvArrow   { 0%,100% { transform:translateX(0); } 50% { transform:translateX(4px); } }
+            @keyframes srvArrowRtl{ 0%,100% { transform:scaleX(-1) translateX(0); } 50% { transform:scaleX(-1) translateX(4px); } }
+
+            @media (prefers-reduced-motion: reduce) {
+                .srv-card-std,
+                .srv-card-std__shimmer,
+                .srv-card-std__ico--bounce,
+                .srv-card-std__arrow { animation: none; }
+            }
+
             @media (max-width: 560px) {
                 .srv-card-std { padding: 14px; gap: 10px; }
                 .srv-card-std__title { font-size: .95rem; }
