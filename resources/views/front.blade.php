@@ -5183,17 +5183,32 @@
             }
             .expert-modal__close:hover { color: #fff; background: rgba(255,255,255,.18); }
             .expert-modal__title {
-                font-size: 1.25rem;
+                /* Épinglé en haut du dialog : même si le contenu scroll à cause
+                   de l'autofocus ou d'un écran très court, le titre reste
+                   TOUJOURS visible. z-index + background pour éviter la
+                   superposition du contenu qui glisse en dessous. */
+                position: sticky;
+                top: calc(-1.75rem + 0px);  /* compense le padding-top du dialog */
+                margin: -1.75rem -1.5rem .5rem;
+                padding: 1.1rem 3rem 0.7rem 1.5rem;
+                background: #0b1220;
+                z-index: 2;
+                font-size: 1.2rem;
                 font-weight: 900;
                 color: #fff;
                 text-transform: uppercase;
                 letter-spacing: -0.02em;
-                /* Marge droite réservée au bouton X (évite tout chevauchement). */
-                margin: 0 3rem .35rem 0;
                 line-height: 1.2;
             }
             /* Le span .text-primary dans le titre doit rester lisible sur fond sombre. */
             .expert-modal__title .text-primary { color: #FDD817 !important; }
+            @media (max-width: 520px) {
+                .expert-modal__title {
+                    top: calc(-1.25rem + 0px);
+                    margin: -1.25rem -1rem .5rem;
+                    padding: .9rem 3rem .6rem 1rem;
+                }
+            }
             .expert-modal__subtitle {
                 color: rgba(255, 255, 255, 0.6);
                 font-size: .85rem;
@@ -5269,10 +5284,15 @@
                 m.classList.add('open');
                 m.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
-                // Force le scroll du dialog en haut SINON le navigateur peut
-                // sauter sur le 1er input focusable et masquer le titre.
+                // Force le scroll du dialog en haut APRÈS que le navigateur
+                // ait eu l'occasion de faire son autofocus (double rAF pour
+                // traverser le layout + paint + focus).
                 var dlg = m.querySelector('.expert-modal__dialog');
-                if (dlg) { dlg.scrollTop = 0; }
+                if (dlg) {
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () { dlg.scrollTop = 0; });
+                    });
+                }
             }
             function closeExpertModal() {
                 var m = document.getElementById('expertModal');
