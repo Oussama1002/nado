@@ -510,6 +510,14 @@ return [
         'noresult_popup_skip'  => "Non merci",
     ],
 
+    'autoenchere' => [
+        'popup_badge' => 'Auto-Enchère',
+        'popup_title' => 'Vous êtes un professionnel ?',
+        'popup_desc'  => 'Rejoignez notre marketplace B2B : sessions d\'enchères, véhicules certifiés, prix pros. Accès sur demande.',
+        'popup_cta'   => 'Découvrir',
+        'popup_skip'  => 'Pas intéressé',
+    ],
+
     'chat' => [
         'tooltip'     => 'Discuter avec nous',
         'status'      => '● En ligne — répond instantanément',

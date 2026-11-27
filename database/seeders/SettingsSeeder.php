@@ -278,6 +278,7 @@ class SettingsSeeder extends Seeder
             // ──────────────────── popups (promotion des services) ──────
             'popups' => [
                 ['demandes_noresult', 'bool', false, 'Popup "Publier une demande" sur /achat quand la recherche ne renvoie rien'],
+                ['autoenchere_promo', 'bool', false, 'Popup "Découvrir Auto-Enchère B2B" (slide-in site-wide, sauf pros déjà approuvés)'],
             ],
 
             // ──────────────────── legalcheck (opposition NARSA) ─────────
