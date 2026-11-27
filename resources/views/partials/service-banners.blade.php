@@ -138,10 +138,10 @@
                 overflow: hidden;
                 box-shadow: 0 16px 36px -14px rgba(20,89,221,.45);
                 font-family: 'Inter', sans-serif;
-                /* Bounce PERMANENT haut-bas — déclaration unique, !important
-                   pour échapper à toute surcharge locale, PAS gated par
+                /* Zoom IN/OUT permanent — déclaration unique, !important pour
+                   échapper à toute surcharge locale. Non gated par
                    prefers-reduced-motion (demande explicite utilisateur). */
-                animation: svcCardBounce 1.4s ease-in-out infinite !important;
+                animation: svcCardZoom 2.2s ease-in-out infinite !important;
                 will-change: transform;
             }
             .svc-promo-glow {
@@ -214,10 +214,10 @@
             .svc-promo-arrow { animation: svcArrow 1.4s ease-in-out infinite; }
             html[dir="rtl"] .svc-promo-arrow { transform: scaleX(-1); animation: svcArrowRtl 1.4s ease-in-out infinite; }
 
-            @keyframes svcCardBounce {
-                0%   { transform: translateY(0); }
-                50%  { transform: translateY(-18px); }
-                100% { transform: translateY(0); }
+            @keyframes svcCardZoom {
+                0%   { transform: scale(1); }
+                50%  { transform: scale(1.04); }
+                100% { transform: scale(1); }
             }
             @keyframes svcGlow       { 0%,100% { opacity:.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
             @keyframes svcShimmer    { 0% { left:-25%; } 60%,100% { left:120%; } }
